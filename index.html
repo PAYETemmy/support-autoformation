@@ -111,7 +111,7 @@ code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up)
    G        : les 91 dimensions (communes à tous les sujets).
    C        : contenus, C[idNotion][numéro] = [["Axiome",…],["Phrase",…]].
    IMG      : « En image », IMG[idNotion] = {svg, leg:[[partie, explication],…]}.
-              Un dessin par notion ; c'est le contenu affiché au départ.
+              Un dessin par notion, choisi dans le menu juste après les axiomes.
 
    La page dessine tout l'arbre. Chaque boîte = une compétence, sa notion et
    UN type de contenu, choisi dans le menu de la boîte (Principes, Pratique,
@@ -165,8 +165,8 @@ var KEY="plan-"+SUJET.nom,ACQ={},MODES={},DIM={};
 G.forEach(function(g){g.i.forEach(function(d){DIM[d[0]]=d})});
 try{var sv=JSON.parse(localStorage.getItem(KEY)||"null");if(sv){ACQ=sv.a||{};MODES=sv.ms||{}}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({a:ACQ,ms:MODES}))}catch(e){}push()}
-/* au départ, une boîte montre son image ; sans image, ses principes */
-function mode(i){var m=MODES[i],im=!!IMG[COMP[i].notion];if(m==="p"||m==="r"||DIM[m])return m;return im?"i":"p"}
+/* au départ, une boîte montre ses principes */
+function mode(i){var m=MODES[i];if(m==="r"||DIM[m]||(m==="i"&&IMG[COMP[i].notion]))return m;return "p"}
 /* notes : une par boîte, gardées à part (Recommencer ne les efface pas) */
 var NKEY="notes-"+SUJET.nom,NOTES={};
 try{NOTES=JSON.parse(localStorage.getItem(NKEY)||"{}")||{}}catch(e){}
@@ -219,9 +219,9 @@ function connect(){
 /* le menu d'une boîte : un seul type de contenu affiché à la fois dans cette boîte */
 function menu(i,onpick){
   var m=el("select");m.setAttribute("aria-label","Contenu affiché");
-  if(IMG[COMP[i].notion]){var oi=el("option",null,"En image");oi.value="i";m.appendChild(oi)}
   var g0=document.createElement("optgroup");g0.label="Axiomes";
   [["p","Principes"],["r","Pratique"]].forEach(function(x){var o=el("option",null,x[1]);o.value=x[0];g0.appendChild(o)});m.appendChild(g0);
+  if(IMG[COMP[i].notion]){var oi=el("option",null,"En image");oi.value="i";m.appendChild(oi)}
   G.forEach(function(g){var og=document.createElement("optgroup");og.label=g.t;
     g.i.forEach(function(d){var o=el("option",null,d[0]+" · "+d[1]+" — "+d[2]);o.value=d[0];og.appendChild(o)});m.appendChild(og)});
   m.value=mode(i);m.onchange=function(){MODES[i]=m.value;save();onpick()};
