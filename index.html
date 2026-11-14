@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e0e10">
+<meta name="apple-mobile-web-app-title" content="Mermaid">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="color-scheme" content="dark">
+<title>Support d’autoformation — Mermaid</title>
+<style>
+:root{--bg:#0e0e10;--fg:#e8e8ea;--m:#7c7c84;--f:#232326;--l:#34343a;--card:#16161a;--c:#7ee0a1;--up:#8ab4ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit;color:inherit;background:none;border:0;border-radius:0;cursor:pointer;padding:0;text-align:left}
+.w{max-width:680px;margin:0 auto;padding:0 calc(12px + env(safe-area-inset-right)) calc(80px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left))}
+.top{padding:calc(14px + env(safe-area-inset-top)) 0 12px}
+.sj{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--m)}
+select{display:block;width:100%;margin-top:9px;font:inherit;font-size:16px;color:#c4c4cc;background:var(--bg);border:1px solid var(--l);border-radius:0;padding:6px 28px 6px 8px;text-overflow:ellipsis;-webkit-appearance:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--m) 50%),linear-gradient(135deg,var(--m) 50%,transparent 50%);background-position:calc(100% - 15px) 50%,calc(100% - 10px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+.ms{font-size:12.5px;color:var(--m);margin-top:6px}
+.tree{position:relative;padding-right:14px}
+.tree svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.row{position:relative;display:flex;align-items:flex-start;gap:8px;margin-bottom:26px}
+.row:last-child{margin-bottom:0}
+.bx{position:relative;z-index:1;flex:1 1 0;min-width:0;border:1px solid var(--l);background:var(--card);padding:10px 12px 8px}
+.bx.acq{border-color:#2f5a41}
+.bh{display:flex;align-items:flex-start;gap:8px;width:100%}
+.bt{flex:1;min-width:0}
+.cp{display:block;font-size:11.5px;color:var(--m);line-height:1.3}
+.nt{display:block;font-size:17px;font-weight:600;line-height:1.25;margin-top:2px}
+.ck{flex:none;width:22px;height:22px;border:1px solid var(--l);font-size:13px;line-height:20px;text-align:center;color:transparent}
+.acq .ck{border-color:#2f5a41;color:var(--c)}
+.bd{margin-top:6px}
+.ax{font-size:14px;line-height:1.45;color:#c4c4cc;padding:4px 0 4px 20px;position:relative}
+.ax i{position:absolute;left:0;top:6px;font-style:normal;font-size:11px;color:var(--m)}
+.vl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#6a6a72;margin:6px 0 2px}
+.ct{font-size:14px;line-height:1.45;color:#c4c4cc;margin:2px 0}
+.ct.nc,.no{color:#6a6a72}
+.no{font-size:13px;padding:4px 0}
+.ct.li{padding-left:14px;position:relative}.ct.li:before{content:"–";position:absolute;left:0;color:var(--m)}
+code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up);padding:1px 5px;white-space:nowrap}
+.row.n2 .nt{font-size:15px}.row.n2 .ax,.row.n2 .ct{font-size:13px}.row.n2 code{white-space:normal;word-break:break-word}
+.of{display:flex;justify-content:center;margin-top:34px}
+.of button{font-size:12px;color:var(--m);padding:6px 0}
+/* notes */
+.nb{margin-top:8px;border-top:1px solid var(--f);padding-top:6px}
+.na{font-size:12.5px;color:var(--m);padding:6px 0}
+.nl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#6a6a72;margin:2px 0 4px}
+.nx{display:block;width:100%;min-height:64px;resize:none;overflow:hidden;font:inherit;font-size:16px;line-height:1.45;color:var(--fg);
+  background:var(--bg);border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
+.nx:focus{outline:none;border-color:var(--up)}
+.mn{margin-top:40px;border-top:1px solid var(--l);padding-top:16px}
+.mn h2{font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin:0 0 6px}
+.mn p{font-size:12.5px;color:var(--m);margin:0 0 10px;line-height:1.4}
+.mb{display:flex;gap:8px;flex-wrap:wrap}
+.mb button{font-size:13px;padding:7px 12px;border:1px solid var(--l)}
+.mf{font-size:12.5px;color:var(--c);margin-top:8px;min-height:18px}
+.mi{margin-top:10px}
+.mi .nx{min-height:120px}
+.mi button{margin-top:8px}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="top"><div class="sj" id="sj"></div></div>
+  <div class="tree" id="tree"></div>
+  <section class="mn">
+    <h2>Mes notes</h2>
+    <p id="mp">Tes notes restent sur cet appareil. Copie-les de temps en temps : une nouvelle version du fichier peut repartir sans elles.</p>
+    <div class="mb"><button id="cpn">Copier mes notes</button><button id="rpn">Reprendre des notes</button></div>
+    <div class="mf" id="mf"></div>
+    <div class="mi" id="mi" hidden><textarea class="nx" id="mit" placeholder="Colle ici des notes copiées depuis cette page"></textarea><button id="mig">Reprendre</button></div>
+  </section>
+  <div class="of"><button id="rs">Recommencer</button></div>
+</div>
+
+<script>
+/* ==========================================================================
+   DONNÉES DU SUJET — c'est le seul bloc à changer pour un autre sujet.
+
+   SUJET    : nom du sujet, projet fil rouge.
+   PLAN     : l'arbre des compétences, écrit en Mermaid (flowchart TD).
+              Une ligne par compétence : id["Compétence"]
+              Une ligne par lien       : parent --> enfant
+              Seules ces deux formes sont lues par la page.
+   COMP     : pour chaque compétence, la notion qui y répond.
+   NOTIONS  : pour chaque notion, son titre, ses axiomes (ax) et les numéros
+              des axiomes de pratique (pratique). Les autres sont les principes.
+   G        : les 91 dimensions (communes à tous les sujets).
+   C        : contenus, C[idNotion][numéro] = [["Axiome",…],["Phrase",…]].
+
+   La page dessine tout l'arbre. Chaque boîte = une compétence, sa notion et
+   UN type de contenu, choisi dans le menu de la boîte (Principes, Pratique,
+   ou l'une des 91 dimensions). Tout le contenu est gardé ; seul le type choisi s'affiche.
+   ========================================================================== */
+var SUJET={"nom": "Mermaid", "projet": "Enregistreur vocal de notes"};
+var PLAN=`flowchart TD
+  voir["Un diagramme montre des éléments et leurs relations"]
+  fabriquer["Mermaid est un langage de diagramme"]
+  suite["Le diagramme de flux est un type de diagramme Mermaid"]
+  designer["Un identifiant est un nom dans le code Mermaid"]
+  lecture["Le sens est la direction de lecture du diagramme de flux"]
+  action["Une étape est une boîte, désignée par un identifiant"]
+  lisible["L’indentation est un décalage devant la ligne d’une étape"]
+  ordre["Une liaison est un trait entre deux étapes"]
+  choix["Une décision est une étape d’où partent plusieurs liaisons"]
+  voir --> fabriquer
+  fabriquer --> suite
+  fabriquer --> designer
+  suite --> lecture
+  lecture --> action
+  designer --> action
+  action --> lisible
+  action --> ordre
+  lisible --> ordre
+  ordre --> choix`;
+var COMP={"voir": {"notion": "dia"}, "fabriquer": {"notion": "mer"}, "suite": {"notion": "flu"}, "designer": {"notion": "ide"}, "lecture": {"notion": "sens"}, "action": {"notion": "eta"}, "lisible": {"notion": "ind"}, "ordre": {"notion": "lia"}, "choix": {"notion": "dec"}};
+var NOTIONS={"dia": {"t": "Diagramme", "ax": ["Un diagramme est une représentation visuelle.", "Les parties qu’un diagramme relie s’appellent ses éléments.", "Un diagramme montre les relations entre ces éléments."], "pratique": []}, "mer": {"t": "Mermaid", "ax": ["Mermaid est un langage.", "Il s’écrit en texte.", "Il décrit un diagramme.", "Sa première ligne nomme le type de diagramme.", "Il s’écrit dans un bloc de code, dont le langage est Mermaid.", "Pour ajouter un bloc de code, je tape `/code`."], "pratique": [4, 5, 6]}, "flu": {"t": "Diagramme de flux", "ax": ["Un diagramme de flux représente un processus : une suite d’actions.", "Chaque point du processus est une boîte (une action ou une question).", "Des traits orientés indiquent l’ordre des actions.", "Son mot-clé, sur la première ligne, est `flowchart` (ou `graph`)."], "pratique": [4]}, "ide": {"t": "Identifiant", "ax": ["Un identifiant est un nom écrit dans le code Mermaid.", "Il désigne un seul élément du diagramme.", "Dans le diagramme, il est unique.", "Il n’a pas d’espace.", "Il est distinct du texte affiché.", "Sans texte, c’est lui qui s’affiche.", "Un identifiant court pour « Enregistrer la voix » peut être `enreg`."], "pratique": [4, 7]}, "sens": {"t": "Sens du diagramme", "ax": ["Le sens est la direction de lecture.", "Il vaut pour tout le diagramme.", "Il s’écrit sur la première ligne, après `flowchart`.", "Sans sens écrit, le diagramme se lit de haut en bas.", "De gauche à droite, j’écris flowchart `LR`.", "De droite à gauche, j’écris flowchart `RL`.", "De haut en bas, j’écris flowchart `TD` (ou `TB`).", "De bas en haut, j’écris flowchart `BT`."], "pratique": [3, 5, 6, 7, 8]}, "eta": {"t": "Étape (nœud)", "ax": ["Dans un diagramme de flux, une étape est une boîte.", "Elle porte un texte affiché.", "Elle représente une seule action, un seul état ou une seule question.", "Son terme technique est nœud.", "Elle s’écrit avec un identifiant suivi du texte entre crochets.", "Un texte à caractères spéciaux se met entre guillemets.", "L’étape « Enregistrer » d’identifiant A s’écrit `A[Enregistrer]`.", "Pour des angles arrondis, j’écris `C(Arrondi)`.", "Pour un cercle, j’écris `D((Rond))`.", "Pour un losange, j’écris `E{Question ?}`."], "pratique": [5, 6, 7, 8, 9, 10]}, "ind": {"t": "Indentation", "ax": ["Au début d’une ligne, une indentation est un décalage.", "Elle est faite d’espaces (ou d’une tabulation).", "Dans un diagramme de flux, elle ne change pas le dessin.", "Dans un diagramme de flux, elle est facultative.", "Elle se place avant l’identifiant, sous la première ligne.", "Je mets deux espaces au début de chaque ligne sous la première."], "pratique": [5, 6]}, "lia": {"t": "Liaison", "ax": ["Entre deux étapes, une liaison est un trait.", "Elle a une étape de départ et une étape d’arrivée.", "Elle s’écrit, pour les deux étapes, avec leurs identifiants.", "Une liaison avec une pointe s’appelle une flèche : elle indique l’ordre.", "Une flèche de A vers B s’écrit `A --> B`.", "Une ligne sans pointe entre B et C s’écrit `B --- C`.", "Une flèche pointillée de A vers B s’écrit `A -.-> B`.", "Une flèche épaisse de A vers B s’écrit `A ==> B`.", "Le texte « oui » sur la flèche de A vers B s’écrit `A -->|oui| B`.", "A vers B et C en une ligne s’écrit `A --> B & C`.", "A, B, C à la suite s’écrit `A --> B --> C`.", "A et B vers C s’écrit `A & B --> C`."], "pratique": [3, 5, 6, 7, 8, 9, 10, 11, 12]}, "dec": {"t": "Décision (embranchement)", "ax": ["D’une décision partent au moins deux flèches.", "Chaque flèche correspond à un résultat possible d’une condition.", "Un seul est suivi à la fois : le chemin.", "Elle se dessine en général en losange.", "La question « Dossier existant ? » s’écrit `A{Dossier existant ?}`.", "Ses sorties « oui » vers B et « non » vers C s’écrivent `A -->|oui| B` et `A -->|non| C`."], "pratique": [5, 6]}};
+var G=[{"k": "A", "t": "Constitutives", "d": "Étudient ce qui compose une construction", "i": [[1, "Constitutive", "ses composants"], [2, "Élémentaire", "ses éléments fondamentaux"], [3, "Compositionnelle", "la combinaison de ses éléments"], [4, "Décompositive", "sa décomposition en sous-éléments"], [5, "Quantitative", "le nombre et la quantité de ses composants"], [6, "Qualitative", "la nature de ses composants"]]}, {"k": "B", "t": "Sémantiques", "d": "Étudient le sens", "i": [[7, "Sémantique", "sa signification"], [8, "Définitionnelle", "sa définition"], [9, "Intensionnelle", "ses propriétés constitutives"], [10, "Extensionnelle", "l’ensemble des objets auxquels elle s’applique"], [11, "Terminologique", "les termes qui la désignent"], [12, "Lexicale", "son rapport au vocabulaire"], [13, "Interprétative", "les interprétations possibles"], [14, "Polysémique", "la pluralité de ses significations"]]}, {"k": "C", "t": "Structurelles", "d": "Étudient l’organisation interne", "i": [[15, "Structurelle", "l’organisation de ses composants"], [16, "Hiérarchique", "les niveaux et rangs"], [17, "Architecturale", "l’organisation globale"], [18, "Organisationnelle", "la disposition des éléments"], [19, "Taxonomique", "sa classification"], [20, "Typologique", "ses différents types"], [21, "Modulaire", "son organisation en unités autonomes"]]}, {"k": "D", "t": "Relationnelles", "d": "Étudient les rapports entre les éléments", "i": [[22, "Relationnelle", "les liens entre les éléments"], [23, "Logique", "les rapports de conséquence et de cohérence"], [24, "Causale", "les rapports de cause à effet"], [25, "Corrélationnelle", "les associations entre phénomènes"], [26, "Fonctionnelle", "les rapports de fonction"], [27, "Dépendancielle", "les rapports de dépendance"], [28, "Oppositionnelle", "les rapports d’opposition"], [29, "Complémentaire", "les rapports de complémentarité"], [30, "Conditionnelle", "les rapports de condition"], [31, "Comparative", "les rapports de similitude et de différence"], [32, "Interactionnelle", "les influences réciproques"], [33, "Temporelle", "les rapports de succession et de simultanéité"], [34, "Spatiale", "les rapports de position et de proximité"]]}, {"k": "E", "t": "Logiques et argumentatives", "d": "Étudient la construction du raisonnement", "i": [[35, "Propositionnelle", "les propositions formulées"], [36, "Prédicative", "les propriétés attribuées aux objets"], [37, "Inférentielle", "les déductions et inductions"], [38, "Déductive", "les conséquences nécessaires"], [39, "Inductive", "les généralisations"], [40, "Abductive", "les hypothèses explicatives"], [41, "Argumentative", "les arguments mobilisés"], [42, "Démonstrative", "les démonstrations"], [43, "Axiomatique", "les principes admis comme fondements"], [44, "Contradictoire", "les incompatibilités logiques"], [45, "Cohérentielle", "la cohérence de l’ensemble"]]}, {"k": "F", "t": "Épistémiques", "d": "Étudient le rapport à la connaissance", "i": [[46, "Épistémique", "le statut de connaissance"], [47, "Justificative", "les justifications disponibles"], [48, "Probatoire", "les preuves et éléments probants"], [49, "Véridictionnelle", "les conditions de vérité"], [50, "Vérificatoire", "les possibilités de vérification"], [51, "Falsificatoire", "les possibilités de réfutation"], [52, "Certitudinale", "le degré de certitude"], [53, "Hypothétique", "le statut des hypothèses"], [54, "Empirique", "le rapport à l’observation"], [55, "Théorique", "le rapport aux modèles explicatifs"]]}, {"k": "G", "t": "Ontologiques", "d": "Étudient la nature de ce dont on parle", "i": [[56, "Ontologique", "la nature de l’entité considérée"], [57, "Existentielle", "son existence ou sa possibilité d’existence"], [58, "Identitaire", "ce qui détermine son identité"], [59, "Catégorielle", "sa catégorie d’appartenance"], [60, "Modalitaire", "les modalités du possible, du nécessaire et du contingent"], [61, "Substantielle", "ce qui constitue son essence ou sa substance"], [62, "Délimitative", "ses frontières et limites"]]}, {"k": "H", "t": "Contextuelles", "d": "Étudient les conditions dans lesquelles la construction prend sens", "i": [[63, "Contextuelle", "son environnement de signification"], [64, "Situationnelle", "les circonstances particulières"], [65, "Historique", "son évolution dans le temps"], [66, "Culturelle", "son inscription culturelle"], [67, "Disciplinaire", "son domaine de connaissance"], [68, "Sociale", "son inscription dans les rapports sociaux"], [69, "Spatiotemporelle", "son inscription dans un espace et un temps"]]}, {"k": "I", "t": "Fonctionnelles et pragmatiques", "d": "Étudient son utilité et ses effets", "i": [[70, "Fonctionnelle", "son rôle"], [71, "Instrumentale", "les moyens qu’elle fournit"], [72, "Opératoire", "les opérations qu’elle permet"], [73, "Pragmatique", "ses effets dans l’action"], [74, "Finalitaire", "les objectifs auxquels elle contribue"], [75, "Utilitaire", "son utilité"], [76, "Performative", "ce que son énonciation accomplit"], [77, "Procédurale", "la manière de s’en servir, étape par étape"]]}, {"k": "J", "t": "Dynamiques et évolutives", "d": "Étudient ses transformations", "i": [[78, "Dynamique", "les changements qui l’affectent"], [79, "Évolutive", "son évolution"], [80, "Transformationnelle", "ses transformations"], [81, "Génétique", "son processus de formation"], [82, "Processuelle", "les processus qui la caractérisent"], [83, "Adaptative", "ses capacités d’adaptation"], [84, "Temporelle", "son évolution et ses états successifs"]]}, {"k": "K", "t": "Évaluatives", "d": "Étudient sa qualité et sa valeur", "i": [[85, "Évaluative", "son appréciation globale"], [86, "Normative", "sa conformité à des normes"], [87, "Axiologique", "sa valeur et les valeurs qu’elle engage"], [88, "Critérielle", "les critères d’appréciation"], [89, "Qualitative", "son degré de qualité"], [90, "Pertinentielle", "sa pertinence relativement à un objectif"], [91, "Optimisationnelle", "ses possibilités d’amélioration"]]}];
+var C={"dia": {"1": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Un diagramme se compose d’éléments et des relations entre eux, le tout dans une représentation visuelle."]], "2": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Ses éléments fondamentaux sont ceux que posent les axiomes : une représentation visuelle, des éléments, et les relations entre ces éléments."]], "3": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "On relie des éléments, on montre les relations entre eux, et le tout prend une forme visuelle."]], "4": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments.\nNon couvert : les axiomes ne disent rien d’une décomposition plus fine d’un élément."], ["Phrase", "Il se décompose en éléments d’un côté et en relations de l’autre."]], "5": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Aucun nombre n’est fixé : un diagramme peut compter peu ou beaucoup de boîtes."]], "6": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Les éléments sont les parties reliées, les relations sont ce qui les relie, et le tout est de nature visuelle."]], "7": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Un diagramme, c’est une représentation visuelle qui relie des éléments et montre les relations entre eux."]], "8": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Un diagramme est une représentation visuelle qui relie des éléments et montre les relations entre ces éléments."]], "9": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Être visuel, relier des éléments, montrer leurs relations : ces trois propriétés le constituent."]], "10": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Le mot s’applique aux organigrammes, aux diagrammes de flux, aux cartes mentales, aux schémas de réseau, aux arbres généalogiques…"]], "11": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase · hors axiomes", "Les axiomes emploient représentation visuelle, élément et relation ; on dit aussi « schéma », et « nœud » et « lien » sont des synonymes courants d’élément et de relation."]], "12": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Le mot vient du grec diagramma, « dessin, figure », formé sur graphein, « écrire, dessiner »."]], "13": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un même diagramme se lit différemment selon les conventions du lecteur : sens de lecture, sens des flèches, signification des formes."]], "14": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "« Diagramme » désigne aussi un graphique de données, en barres ou circulaire ; ici, il désigne un schéma de boîtes reliées."]], "15": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments.\nNon couvert : les axiomes ne disent pas comment disposer les éléments."], ["Phrase", "Sa structure : des éléments, organisés par les relations entre eux."]], "16": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Certains diagrammes sont hiérarchiques (organigramme, arbre), d’autres non (réseau) : tout dépend des traits dessinés."]], "17": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Vu de loin, un diagramme est un réseau d’éléments et de relations, présenté de façon visuelle."]], "18": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Les boîtes suivent souvent un sens de lecture, de haut en bas ou de gauche à droite."]], "19": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle."], ["Phrase", "Il se range parmi les représentations visuelles."]], "20": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Types courants : diagramme de flux, de séquence, de classes, organigramme, carte mentale. Dans la carte, c’est le diagramme de flux qu’on étudie."]], "21": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un grand diagramme peut se découper en groupes ou en sous-diagrammes qu’on lit séparément."]], "22": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Un diagramme relie ses éléments et montre les relations entre eux."]], "23": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Les axiomes s’enchaînent : il faut des éléments pour qu’il y ait des relations, et le tout prend une forme visuelle."]], "24": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme ne cause rien : il peut seulement représenter des causes."]], "25": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Placer deux boîtes côte à côte suggère qu’elles vont ensemble, même sans lien de cause."]], "26": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Les éléments sont ce qu’il relie ; les relations, ce qu’il montre entre eux."]], "27": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Les relations dépendent des éléments : l’axiome 3 parle des relations entre « ces éléments », ceux de l’axiome 2."]], "28": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Un diagramme s’oppose à ce qui n’est pas visuel ; à l’intérieur, l’élément s’oppose à la relation."]], "29": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Éléments et relations se complètent : le diagramme relie les éléments et montre les relations entre eux."]], "30": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Il y a diagramme quand des éléments et leurs relations sont montrés de façon visuelle."]], "31": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Comme un dessin, il se regarde ; comme un texte, il se lit."]], "32": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Supprimer une boîte fait aussi disparaître les traits qui la touchent."]], "33": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme peut montrer un ordre dans le temps, comme le diagramme de flux, ou une organisation sans temps, comme un organigramme."]], "34": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "La position porte du sens : ce qui est proche paraît lié, ce qui est en haut paraît premier."]], "35": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Trois propositions : c’est une représentation visuelle ; ses parties reliées s’appellent ses éléments ; il montre les relations entre ces éléments."]], "36": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "On dit d’un diagramme qu’il est visuel, qu’il relie des éléments et qu’il montre leurs relations."]], "37": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Là où un diagramme montre une relation, il y a des éléments entre lesquels elle se trouve."]], "38": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Conséquence nécessaire : les relations qu’il montre sont toujours entre des éléments."]], "39": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "En observant beaucoup de schémas faits de boîtes reliées par des traits, on généralise la notion."]], "40": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Devant une image faite de boîtes reliées par des traits, la meilleure explication est qu’il s’agit d’un diagramme."]], "41": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Argument habituel : un diagramme fait voir d’un coup ce qu’un texte devrait décrire ligne à ligne."]], "42": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Les axiomes ne se démontrent pas : on les admet. On montre qu’une image est un diagramme en vérifiant qu’elle respecte les trois."]], "43": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Trois principes fondent la notion : la représentation visuelle, les éléments, et les relations entre eux."]], "44": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Exclus : un diagramme sans forme visuelle, sans éléments, ou qui ne montre aucune relation."]], "45": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Les axiomes s’accordent : le premier dit sa forme (visuelle), le deuxième ses parties (les éléments), le troisième ce qu’il montre (les relations entre eux)."]], "46": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Dans la carte, Diagramme est la première notion, dans les Fondations : il ne suppose rien d’autre."]], "47": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "On justifie la notion par le besoin : faire voir ce qu’un texte rend difficile à suivre."]], "48": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "La preuve qu’une image est un diagramme : on peut y désigner des boîtes et les traits qui les relient."]], "49": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "« X est un diagramme » est vrai si X est visuel, relie des éléments et montre leurs relations."]], "50": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Pour vérifier : est-ce visuel ? y a-t-il des éléments ? les relations entre eux sont-elles montrées ?"]], "51": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Une photo est visuelle mais ne montre pas de relations entre des éléments : ce n’est pas un diagramme."]], "52": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "La notion est sûre : ses axiomes sont posés comme des définitions."]], "53": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "On fait des hypothèses en lisant un diagramme inconnu : on suppose ce que signifient ses formes et ses flèches."]], "54": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle."], ["Phrase", "On le reconnaît en le regardant : il est visuel."]], "55": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "En mathématiques, ce modèle s’appelle un graphe : des sommets reliés par des arêtes."]], "56": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Un diagramme n’est pas la réalité : c’est une représentation visuelle des éléments et de leurs relations."]], "57": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Il existe dès que des éléments et leurs relations sont montrés de façon visuelle."]], "58": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Ce qui en fait un diagramme, c’est la réunion des trois : être visuel, relier des éléments, montrer leurs relations."]], "59": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle."], ["Phrase", "Il appartient à la catégorie des représentations visuelles."]], "60": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Nécessaire : une représentation visuelle, des éléments, leurs relations. Accessoire : les couleurs, les formes, le nombre de boîtes."]], "61": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Sa substance : des éléments reliés et les relations entre eux, rendus visibles."]], "62": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Il s’arrête là où manque l’un des trois : la forme visuelle, les éléments ou les relations montrées."]], "63": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Dans ce projet, le diagramme sert à dessiner la structure de l’enregistreur vocal : c’est un outil de conception."]], "64": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "On fait un diagramme quand il faut expliquer, concevoir ou vérifier un système aux parties nombreuses."]], "65": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Les schémas reliés sont anciens (arbres généalogiques, cartes) ; les diagrammes de flux se répandent au XXᵉ siècle avec l’informatique."]], "66": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Le sens de lecture suit souvent celui de l’écriture : de gauche à droite et de haut en bas en Occident."]], "67": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "On l’utilise en informatique, en gestion, en ingénierie et en enseignement ; ici, pour concevoir un raccourci."]], "68": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme sert à partager une idée : il donne à plusieurs personnes la même image d’un système."]], "69": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme est figé : il montre un état ou une suite d’étapes, pas le mouvement lui-même."]], "70": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Son rôle : montrer, de façon visuelle, les relations entre des éléments."]], "71": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle."], ["Phrase · hors axiomes", "C’est un moyen visuel pour penser, expliquer et vérifier ; dans la carte, Mermaid est l’instrument qui permet de l’écrire."]], "72": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase", "Il permet de poser des éléments et de montrer les relations entre eux."]], "73": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "En pratique, il révèle les oublis : une boîte isolée ou un trait qui ne mène nulle part se voit tout de suite."]], "74": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Ici, le but final est de dessiner la structure générale de l’enregistreur en un seul diagramme."]], "75": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Il devient utile quand un texte serait trop long pour suivre tous les liens."]], "76": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Dessiner un diagramme oblige à nommer chaque boîte et chaque trait : le faire clarifie déjà la pensée."]], "77": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments.\nNon couvert : les axiomes ne disent ni avec quel outil, ni comment disposer l’ensemble."], ["Phrase · hors axiomes", "- Lister les éléments, un par idée ou par action.\n- Tracer les relations entre eux.\n- Disposer l’ensemble de façon visuelle, dans un sens de lecture.\n- Vérifier qu’aucun élément n’est isolé."]], "78": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme change quand on ajoute, retire ou déplace des boîtes et des traits."]], "79": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme évolue avec ce qu’il représente : il se complète au fil de la conception."]], "80": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme peut changer de forme, d’un croquis à du code Mermaid, sans perdre ce qu’il montre."]], "81": [["Axiome", "Axiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase · hors axiomes", "Il se forme en posant des éléments, puis en montrant les relations entre eux."]], "82": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Démarche courante : lister les boîtes, tracer les traits, puis réorganiser pour rendre l’ensemble lisible."]], "83": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme s’adapte à son lecteur : on le simplifie ou on le détaille selon ce qu’il faut montrer."]], "84": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un même diagramme passe par des versions successives, du brouillon à la version finale."]], "85": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme se juge à sa clarté : on doit le comprendre sans explication."]], "86": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase · hors axiomes", "La norme minimale est celle des axiomes : visuel, des éléments, leurs relations. Il existe aussi des normes de dessin (UML, BPMN) propres à certains genres de diagrammes."]], "87": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Sa valeur tient à la clarté et à l’honnêteté : un diagramme ne doit ni cacher ni inventer de liens."]], "88": [["Axiome", "Axiome 1 — Un diagramme est une représentation visuelle.\nAxiome 2 — Les parties qu’un diagramme relie s’appellent ses éléments.\nAxiome 3 — Un diagramme montre les relations entre ces éléments."], ["Phrase · hors axiomes", "Critères tirés des axiomes : est-ce visuel ? les éléments sont-ils identifiables ? les relations sont-elles montrées ? Critères habituels en plus : lisibilité, peu de croisements, sens de lecture constant."]], "89": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Un diagramme de qualité se comprend vite, sans légende superflue."]], "90": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "Il est peu pertinent pour une idée seule ou une liste sans liens : un texte suffit alors."]], "91": [["Axiome", "Non couvert par les axiomes."], ["Phrase · hors axiomes", "On l’améliore en retirant ce qui ne sert pas, en regroupant les boîtes proches et en évitant les traits qui se croisent."]]}};
+
+/* ==========================================================================
+   MOTEUR — commun à tous les sujets
+   ========================================================================== */
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function code(e,s){s.split("`").forEach(function(p,i){if(i%2)e.appendChild(el("code",null,p));else if(p)e.appendChild(document.createTextNode(p))})}
+
+/* lecture du plan Mermaid */
+var N={},IDS=[];
+PLAN.split("\n").forEach(function(l){var m=l.match(/^\s*([A-Za-z_]\w*)\s*\["(.*)"\]\s*$/);
+  if(m){N[m[1]]={id:m[1],t:m[2],p:[],k:[]};IDS.push(m[1])}});
+PLAN.split("\n").forEach(function(l){var m=l.match(/^\s*([A-Za-z_]\w*)\s*-->\s*([A-Za-z_]\w*)\s*$/);
+  if(m&&N[m[1]]&&N[m[2]]){N[m[1]].k.push(m[2]);N[m[2]].p.push(m[1])}});
+function depth(i){var n=N[i];if(n.d!=null)return n.d;n.d=0;n.p.forEach(function(p){n.d=Math.max(n.d,depth(p)+1)});return n.d}
+IDS.forEach(depth);
+
+/* état : compétences acquises, et type de contenu choisi pour chaque boîte
+   ("p" principes, "r" pratique, ou n° de dimension) */
+var KEY="plan-"+SUJET.nom,ACQ={},MODES={},DIM={};
+G.forEach(function(g){g.i.forEach(function(d){DIM[d[0]]=d})});
+try{var sv=JSON.parse(localStorage.getItem(KEY)||"null");if(sv){ACQ=sv.a||{};MODES=sv.ms||{}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({a:ACQ,ms:MODES}))}catch(e){}push()}
+function mode(i){var m=MODES[i];return m==="r"||DIM[m]?m:"p"}
+/* notes : une par boîte, gardées à part (Recommencer ne les efface pas) */
+var NKEY="notes-"+SUJET.nom,NOTES={};
+try{NOTES=JSON.parse(localStorage.getItem(NKEY)||"{}")||{}}catch(e){}
+function saveNotes(){try{localStorage.setItem(NKEY,JSON.stringify(NOTES))}catch(e){}push()}
+
+/* page publiée : notes et compétences acquises sont aussi gardées en ligne, dans la base
+   de la page (document etat/<sujet>, lisible et modifiable par le propriétaire seulement).
+   Sans base (fichier ouvert seul), tout reste sur cet appareil. */
+var DOC=null,LAST=null,WB=false,WN=false,ONL=false;
+var DOCP="etat/"+(SUJET.nom.toLowerCase().replace(/[^a-z0-9]+/g,"-")||"sujet");
+function snapshot(){return JSON.stringify({notes:NOTES,acq:ACQ})}
+function push(){
+  if(!DOC)return;
+  if(WB){WN=true;return}
+  var body=snapshot();if(body===LAST)return;
+  WB=true;var tries=0;
+  (function go(){DOC.set(JSON.parse(body)).then(function(){LAST=body;done()},function(e){
+    if(e&&e.code==="unavailable"&&!tries++)return setTimeout(go,800+Math.random()*700);
+    online(false,"L’enregistrement en ligne a échoué. Tes notes restent sur cet appareil : copie-les par sécurité.");done()})})();
+  function done(){WB=false;if(WN){WN=false;push()}}
+}
+function online(ok,msg){
+  ONL=ok;var p=document.getElementById("mp");if(!p)return;
+  p.textContent=msg||(ok?"Tes notes sont enregistrées en ligne avec la page : elles restent d’une version à l’autre et d’un appareil à l’autre.":
+    "Tes notes restent sur cet appareil. Copie-les de temps en temps : une nouvelle version du fichier peut repartir sans elles.");
+}
+function connect(){
+  if(connect.done||!(window.claude&&typeof window.claude.use==="function"))return;connect.done=true;
+  var timer=setTimeout(function(){online(false,"Enregistrement en ligne pas encore joignable. Tes notes restent sur cet appareil.")},10000);
+  window.claude.use("db").then(function(db){
+    if(!db){clearTimeout(timer);return online(false)}
+    var ref=db.doc(DOCP);
+    ref.get().then(function(sn){
+      clearTimeout(timer);DOC=ref;
+      var d=sn&&sn.exists?(sn.data()||{}):{},dn=d.notes||{},da=d.acq||{},changed=false;
+      var mn={},ma={};Object.keys(dn).forEach(function(k){mn[k]=dn[k]});Object.keys(da).forEach(function(k){ma[k]=da[k]});
+      Object.keys(NOTES).forEach(function(k){if(!(k in mn))mn[k]=NOTES[k]});   /* notes écrites ici avant la connexion */
+      Object.keys(ACQ).forEach(function(k){if(!(k in ma))ma[k]=ACQ[k]});
+      if(JSON.stringify(mn)!==JSON.stringify(NOTES)||JSON.stringify(ma)!==JSON.stringify(ACQ))changed=true;
+      LAST=sn&&sn.exists?JSON.stringify({notes:dn,acq:da}):null;
+      NOTES=mn;ACQ=ma;
+      try{localStorage.setItem(NKEY,JSON.stringify(NOTES))}catch(e){}
+      online(true);
+      if(changed&&!(document.activeElement&&document.activeElement.classList.contains("nx")))sync();
+      push();
+    },function(){clearTimeout(timer);online(false)});
+  },function(){clearTimeout(timer);online(false)});
+}
+
+/* le menu d'une boîte : un seul type de contenu affiché à la fois dans cette boîte */
+function menu(i,onpick){
+  var m=el("select");m.setAttribute("aria-label","Contenu affiché");
+  var g0=document.createElement("optgroup");g0.label="Axiomes";
+  [["p","Principes"],["r","Pratique"]].forEach(function(x){var o=el("option",null,x[1]);o.value=x[0];g0.appendChild(o)});m.appendChild(g0);
+  G.forEach(function(g){var og=document.createElement("optgroup");og.label=g.t;
+    g.i.forEach(function(d){var o=el("option",null,d[0]+" · "+d[1]+" — "+d[2]);o.value=d[0];og.appendChild(o)});m.appendChild(og)});
+  m.value=mode(i);m.onchange=function(){MODES[i]=m.value;save();onpick()};
+  return m;
+}
+
+/* contenu d'une boîte selon le type choisi */
+function body(nid,MODE){
+  var no=NOTIONS[nid],b=el("div","bd");
+  if(MODE==="p"||MODE==="r"){
+    var pa=no.pratique||[],l=no.ax.map(function(a,i){return [i+1,a]}).filter(function(x){return (pa.indexOf(x[0])>=0)===(MODE==="r")});
+    if(!l.length)b.appendChild(el("div","no",MODE==="r"?"Pas de pratique pour cette notion.":"Pas de principe pour cette notion."));
+    l.forEach(function(x){var d=el("div","ax");d.appendChild(el("i",null,x[0]));code(d,x[1]);b.appendChild(d)});
+  }else{
+    var v=(C[nid]||{})[MODE];
+    if(!v)b.appendChild(el("div","no","Pas encore rempli."));
+    else v.forEach(function(x){b.appendChild(el("div","vl",x[0]));
+      x[1].split("\n").forEach(function(t){var li=t.indexOf("- ")===0,c=el("div","ct"+(li?" li":"")+(t.indexOf("Non couvert")===0?" nc":""));code(c,li?t.slice(2):t);b.appendChild(c)})});
+  }
+  return b;
+}
+function box(i){
+  var n=N[i],nid=COMP[i].notion,b=el("div","bx"+(ACQ[i]?" acq":""));b.dataset.id=i;
+  var h=el("button","bh"),t=el("span","bt");t.appendChild(el("span","cp",n.t));t.appendChild(el("span","nt",NOTIONS[nid].t));
+  h.appendChild(t);h.appendChild(el("span","ck","✓"));h.setAttribute("aria-label",ACQ[i]?"Compétence acquise":"Marquer comme acquise");
+  h.onclick=function(){ACQ[i]=!ACQ[i];save();sync()};
+  b.appendChild(h);
+  b.appendChild(menu(i,function(){b.replaceChild(body(nid,mode(i)),b.lastChild);arrows(document.getElementById("tree"))}));
+  b.appendChild(body(nid,mode(i)));b.appendChild(note(i));return b;
+}
+var RAF=0;function redraw(){cancelAnimationFrame(RAF);RAF=requestAnimationFrame(function(){arrows(document.getElementById("tree"))})}
+function grow(t){t.style.height="auto";t.style.height=t.scrollHeight+2+"px"}
+function note(i){
+  var w=el("div","nb");
+  function closed(){w.innerHTML="";var a=el("button","na","✎ Ajouter une note");a.onclick=function(){opened(true)};w.appendChild(a)}
+  function opened(focus){
+    w.innerHTML="";w.appendChild(el("div","nl","Ma note"));
+    var t=el("textarea","nx");t.value=NOTES[i]||"";t.setAttribute("aria-label","Ma note");t.rows=3;
+    var tm=0;t.oninput=function(){grow(t);redraw();clearTimeout(tm);tm=setTimeout(function(){
+      if(t.value.trim())NOTES[i]=t.value;else delete NOTES[i];saveNotes()},300)};
+    t.onblur=function(){if(t.value.trim())NOTES[i]=t.value;else{delete NOTES[i];closed();redraw()}saveNotes()};
+    w.appendChild(t);requestAnimationFrame(function(){grow(t);redraw()});if(focus)t.focus();
+  }
+  if(NOTES[i])opened(false);else closed();
+  return w;
+}
+/* flèches, comme dans un flowchart TD ; une flèche qui saute un niveau passe par la marge de droite */
+function arrows(tree){
+  var old=tree.querySelector("svg");if(old)old.remove();
+  var NS="http://www.w3.org/2000/svg",s=document.createElementNS(NS,"svg");
+  s.innerHTML='<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6a6a72"/></marker></defs>';
+  var o=tree.getBoundingClientRect(),gx=o.width-5;
+  IDS.forEach(function(i){N[i].k.forEach(function(k){
+    var a=tree.querySelector('[data-id="'+i+'"]'),b=tree.querySelector('[data-id="'+k+'"]');if(!a||!b)return;
+    var ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect(),d;
+    if(N[k].d-N[i].d===1){
+      var x1=ra.left+ra.width/2-o.left,y1=ra.bottom-o.top,x2=rb.left+rb.width/2-o.left,y2=rb.top-o.top,my=y2-13;
+      d="M"+x1+" "+y1+"V"+my+"H"+x2+"V"+(y2-1);
+    }else{
+      var ya=ra.bottom-o.top-14,yb=rb.top-o.top+14;
+      d="M"+(ra.right-o.left)+" "+ya+"H"+gx+"V"+yb+"H"+(rb.right-o.left+1);
+    }
+    var p=document.createElementNS(NS,"path");p.setAttribute("d",d);
+    p.setAttribute("fill","none");p.setAttribute("stroke","#6a6a72");p.setAttribute("stroke-width","1");p.setAttribute("marker-end","url(#ah)");
+    s.appendChild(p)})});
+  tree.insertBefore(s,tree.firstChild);
+}
+function sync(){
+  document.getElementById("sj").textContent=SUJET.nom;
+  var T=document.getElementById("tree"),max=0;T.innerHTML="";IDS.forEach(function(i){max=Math.max(max,N[i].d)});
+  for(var d=0;d<=max;d++){var ids=IDS.filter(function(i){return N[i].d===d}),r=el("div","row n"+ids.length);
+    ids.forEach(function(i){r.appendChild(box(i))});T.appendChild(r)}
+  arrows(T);
+}
+var RS=document.getElementById("rs");
+RS.onclick=function(){
+  if(RS.textContent==="Recommencer"){RS.textContent="Confirmer : tout effacer";return}
+  RS.textContent="Recommencer";ACQ={};MODES={};save();sync();
+};
+/* copier et reprendre les notes (texte simple, une section « ## Notion » par boîte) */
+var MF=document.getElementById("mf");
+function flash(t){MF.textContent=t;clearTimeout(flash.t);flash.t=setTimeout(function(){MF.textContent=""},4000)}
+function exportText(){
+  var out=["Support d’autoformation — "+SUJET.nom+" · mes notes",""];
+  IDS.forEach(function(i){if(NOTES[i]){out.push("## "+NOTIONS[COMP[i].notion].t);out.push(NOTES[i].trim());out.push("")}});
+  return out.join("\n");
+}
+document.getElementById("cpn").onclick=function(){
+  if(!Object.keys(NOTES).length)return flash("Aucune note pour l’instant.");
+  var txt=exportText();
+  function fallback(){var t=el("textarea");t.value=txt;t.style.position="fixed";t.style.opacity="0";document.body.appendChild(t);t.focus();t.select();
+    t.setSelectionRange(0,txt.length);var ok=false;try{ok=document.execCommand("copy")}catch(e){}t.remove();
+    flash(ok?"Notes copiées. Colle-les dans Notes ou ailleurs.":"Copie impossible ici.")}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){flash("Notes copiées. Colle-les dans Notes ou ailleurs.")},fallback);
+  else fallback();
+};
+var MI=document.getElementById("mi");
+document.getElementById("rpn").onclick=function(){MI.hidden=!MI.hidden;if(!MI.hidden)document.getElementById("mit").focus()};
+document.getElementById("mig").onclick=function(){
+  var txt=document.getElementById("mit").value,cur=null,buf={},n=0,byT={};
+  IDS.forEach(function(i){byT[NOTIONS[COMP[i].notion].t]=i});
+  txt.split("\n").forEach(function(l){var m=l.match(/^##\s+(.+?)\s*$/);
+    if(m){cur=byT[m[1]]||null;if(cur)buf[cur]=[]}else if(cur)buf[cur].push(l)});
+  Object.keys(buf).forEach(function(i){var v=buf[i].join("\n").trim();if(v){NOTES[i]=v;n++}});
+  if(!n)return flash("Je n’ai reconnu aucune note. Colle le texte copié avec « Copier mes notes ».");
+  saveNotes();document.getElementById("mit").value="";MI.hidden=true;sync();flash(n+(n>1?" notes reprises.":" note reprise."));
+};
+document.title="Support d’autoformation — "+SUJET.nom;
+window.addEventListener("resize",function(){arrows(document.getElementById("tree"))});
+sync();
+try{connect()}catch(e){}
+window.addEventListener("load",function(){try{connect()}catch(e){}});
+</script>
+</body>
+</html>
