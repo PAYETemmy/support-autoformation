@@ -506,7 +506,11 @@ function vBar(){
   q.textContent="Notion "+n+" / "+ORDER.length+" · "+done+" / "+tot+(p===0?" · touche à droite pour avancer, à gauche pour reculer":"");
 }
 /* en avançant, on suit l'axiome qui apparaît ; en reculant, la place qui vient de se vider */
-function vShow(){var p=VDIR>0?VIS.p-1:VIS.p;if(p<0||p>=STEPS.length)return;var s=STEPS[p],tr=document.querySelector('.tri[data-id="'+s.i+'"]');if(!tr)return;
+function vShow(){var p=VDIR>0?VIS.p-1:VIS.p;
+  /* en reculant jusqu'aux liaisons d'une notion, la liaison se place au centre de l'écran, comme le premier axiome d'une notion en avançant */
+  if(VDIR<0&&VIS.p>0&&STEPS[VIS.p-1].t==="l"){var L=STEPS[VIS.p-1],tl=document.querySelector('.tri[data-id="'+L.i+'"]'),el2=tl&&tl.querySelectorAll(".lk")[L.k];
+    if(el2){var rl=el2.getBoundingClientRect(),hl=window.innerHeight-VB.offsetHeight;window.scrollBy({top:rl.top-(hl*0.45),behavior:"smooth"});return}}
+  if(p<0||p>=STEPS.length)return;var s=STEPS[p],tr=document.querySelector('.tri[data-id="'+s.i+'"]');if(!tr)return;
   var e=s.t==="a"?tr.querySelectorAll(".base .st")[s.k]:tr.querySelectorAll(".lk")[s.k];
   if(e){var r=e.getBoundingClientRect(),h=window.innerHeight-VB.offsetHeight;if(r.top<70||r.bottom>h-20)window.scrollBy({top:r.top-(h*0.45),behavior:"smooth"})}}
 function vNext(){if(VIS.all||VIS.p>=STEPS.length)return;VDIR=1;VIS.p++;vSave();vApply();vShow()}
