@@ -146,6 +146,7 @@ body.vis{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .vb .vr{height:3px;background:#26262c;border-radius:2px;margin-top:6px;overflow:hidden}
 .vb .vr i{display:block;height:100%;background:var(--up);border-radius:2px}
 .vb button{flex:none;font-size:11.5px;color:var(--m);background:none;border:1px solid #34343a;border-radius:7px;padding:6px 8px}
+.nh{font-size:13px;line-height:1.45;color:var(--m);margin:14px 0 0 !important;max-width:420px}
 </style>
 </head>
 <body>
@@ -523,7 +524,11 @@ document.addEventListener("click",function(ev){
   if(ev.clientX<window.innerWidth/3)vBack();else vNext()});
 VB.querySelector("#vall").onclick=function(){VIS.all=!VIS.all;VDIR=1;vSave();vApply();if(!VIS.all)vShow()};
 VB.querySelector("#vre").onclick=function(){VIS={p:0,all:false};vSave();vApply();window.scrollTo(0,document.body.scrollHeight)};
-var _sync=sync;sync=function(){_sync();vApply()};
+/* « Mes notes » : quand aucune note n'existe encore, dire comment en écrire une */
+var NH=document.createElement("p");NH.className="nh";document.querySelector(".mn").appendChild(NH);
+function vNotes(){var n=Object.keys(NOTES).length;NH.hidden=!(SHOWN&&!n);
+  NH.textContent="Tu n’as pas encore de note. Pour en écrire une, touche le nom d’une notion, puis « ✎ Ajouter une note » en bas de sa fiche. Elles s’afficheront sur le plan, sous leur notion."}
+var _sync=sync;sync=function(){_sync();vApply();vNotes()};
 
 sync();
 requestAnimationFrame(function(){window.scrollTo(0,document.body.scrollHeight);vShow()});
