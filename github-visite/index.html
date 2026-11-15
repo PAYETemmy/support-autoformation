@@ -570,8 +570,9 @@ function vPaint(){
   var r=tg.getBoundingClientRect();if(WI.parentNode!==document.body)document.body.appendChild(WI);
   WI.style.left=(r.left+window.scrollX)+"px";WI.style.top=(r.top+window.scrollY)+"px";
 }
-function vValid(){var m=vModel(VIS.w),ty=VIS.t;if(ty.length<m.t.length)return false;
-  for(var j=0;j<m.t.length;j++)if(nc(ty[j])!==nc(m.t[j]))return false;return true}
+/* le point final s'écrit tout seul : la copie est juste dès que tout ce qui précède le point est juste */
+function vValid(){var m=vModel(VIS.w),ty=VIS.t,L=m.t.length;if(/\.$/.test(m.t))L--;if(ty.length<L)return false;
+  for(var j=0;j<L;j++)if(nc(ty[j])!==nc(m.t[j]))return false;return true}
 WI.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault()}});
 WI.addEventListener("input",function(){
   VIS.t=WI.value.replace(/\n/g,"");vSave();
