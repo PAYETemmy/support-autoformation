@@ -68,32 +68,35 @@ code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up)
 .zt button{font-size:13px;color:var(--m);padding:6px 0}
 .of{display:flex;justify-content:center;margin-top:34px}
 .of button{font-size:12px;color:var(--m);padding:6px 0}
-/* plan en lignes : une ligne par notion, ses axiomes en stations, des correspondances entre les lignes */
-.lgd{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:var(--m);margin-top:8px}
+/* plan en triangles : chaque notion a ses axiomes en base et ses axiomes de liaison au sommet */
+.lgd{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:var(--m);margin:8px 0 26px}
 .lgd span{display:inline-flex;align-items:center;gap:6px}
-.dt{display:inline-block;width:10px;height:10px;border-radius:50%;background:#c4c4cc;box-sizing:border-box}
-.dt.pr{background:var(--bg);border:2px solid #9a9aa2}
-.dt.jx{background:var(--bg);border:3px solid var(--up)}
-.map{position:relative;--gw:40px}
-.map>svg.rl{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.ln{position:relative;margin-left:var(--gw)}
-.lh{display:flex;align-items:baseline;gap:8px;width:100%;padding:4px 0 0}
-.lh b{font-size:16.5px;font-weight:600;line-height:1.25}
-.lh .ok{color:var(--c);font-size:13px}
-.tk{display:flex;flex-wrap:wrap;row-gap:6px;padding-bottom:2px}
-.tk::-webkit-scrollbar{display:none}
-.st{position:relative;flex:0 0 33.333%;min-width:0;overflow-wrap:break-word;padding:24px 10px 4px 0;font-size:12.5px;line-height:1.35;color:#c4c4cc}
-.st:before{content:"";position:absolute;left:0;right:0;top:11px;border-top:2px solid #4a4a52}
+.lq{font-style:normal;color:#b9cff7}
+.dt{display:inline-block;width:11px;height:11px;border-radius:50%;background:#c4c4cc;box-sizing:border-box;flex:none}
+.dt.pr{background:var(--bg);border:2px solid #28282c}
+.map{position:relative;max-width:520px;margin:0 auto}
+.map>svg.tl{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.tri{position:relative;display:flex;align-items:stretch;gap:6px}
+.side{flex:none;width:24px;display:flex;align-items:center;justify-content:center;padding:0}
+.side b{writing-mode:vertical-rl;transform:rotate(180deg);font-size:16px;font-weight:600;white-space:nowrap;letter-spacing:.01em}
+.tbd{flex:1;min-width:0}
+.tp{display:flex;flex-direction:column;align-items:center;gap:6px;width:74%;margin:0 auto}
+.tp.many{flex-direction:row;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:8px;width:100%}
+.tp.many .lk{flex:0 1 calc(33.333% - 6px);min-width:0;font-size:12px;overflow-wrap:break-word}
+.tp.many.n4 .lk{flex-basis:calc(50% - 4px)}
+.lk{display:flex;flex-direction:column;align-items:center;text-align:center;font-size:13px;line-height:1.38;color:#b9cff7}
+.lk q{quotes:none}
+.lk code{white-space:normal;overflow-wrap:anywhere}
+.lk small{display:block;font-size:11px;color:var(--m);margin-top:2px;padding:2px 0;cursor:pointer}
+.base{display:flex;flex-wrap:wrap;row-gap:0;margin-top:27px}
+.tp:empty+.base{margin-top:0}
+.st{position:relative;flex:0 0 33.333%;min-width:0;padding:17px 10px 2px 0;font-size:12.5px;line-height:1.35;color:#c4c4cc;overflow-wrap:break-word}
+.st:before{content:"";position:absolute;left:0;right:0;top:10px;border-top:2px solid #4a4a52}
 .st:last-child:before{right:auto;width:7px}
-.ln.acq .st:before{border-top-color:#2f6a48}
-.st .dt{position:absolute;left:1px;top:6px;width:13px;height:13px}
+.st .dt{position:absolute;left:1px;top:5px;width:12px;height:12px;z-index:1}
 .st code{white-space:nowrap;font-size:11.5px;padding:1px 3px}
 .st code.w{white-space:normal;overflow-wrap:anywhere}
-.jn code{white-space:normal;overflow-wrap:anywhere}
-.jn{position:relative;margin-left:var(--gw);padding:12px 0 16px;font-size:13px;line-height:1.4;color:#c4c4cc}
-.jn q{quotes:"« " " »";color:var(--fg)}
-.jn small{display:block;font-size:11px;color:var(--m);margin-top:2px}
-.jn.no{color:#6a6a72;font-style:italic}
+.gap{height:40px}
 /* fiche d'une notion (plein écran) */
 #sh{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch;
   padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
@@ -119,7 +122,7 @@ code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up)
 .mb button{font-size:13px;padding:7px 12px;border:1px solid var(--l)}
 .tg{font-size:13px;padding:7px 12px;border:1px solid var(--l);margin-top:9px}
 /* notes affichées sur le plan, sous leur notion */
-.lnn{margin:2px 0 4px;padding:6px 0 0 10px;border-left:2px solid var(--up);font-size:13px;line-height:1.45;color:#c4c4cc;white-space:pre-wrap}
+.lnn{margin:8px 0 4px 30px;padding:6px 0 0 10px;border-left:2px solid var(--up);font-size:13px;line-height:1.45;color:#c4c4cc;white-space:pre-wrap}
 .mf{font-size:12.5px;color:var(--c);margin-top:8px;min-height:18px}
 .mi{margin-top:10px}
 .mi .nx{min-height:120px}
@@ -129,7 +132,7 @@ code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up)
 <body>
 <div class="w">
   <div class="top"><div class="sj" id="sj"></div>
-    <div class="lgd"><span><i class="dt"></i>principe</span><span><i class="dt pr"></i>pratique</span><span><i class="dt jx"></i>liaison</span></div></div>
+    <div class="lgd"><span><i class="dt"></i>principe</span><span><i class="dt pr"></i>pratique</span><span><i class="lq">« »</i>liaison</span></div></div>
   <div class="map" id="map"></div>
   <section class="mn">
     <h2>Mes notes</h2>
@@ -342,7 +345,7 @@ function body(nid,MODE){
   }
   return b;
 }
-var RAF=0;function redraw(){cancelAnimationFrame(RAF);RAF=requestAnimationFrame(rails)}
+var RAF=0;function redraw(){cancelAnimationFrame(RAF);RAF=requestAnimationFrame(draw)}
 function grow(t){t.style.height="auto";t.style.height=t.scrollHeight+2+"px"}
 function note(i){
   var w=el("div","nb");
@@ -364,58 +367,51 @@ function jx(c,p){var j=LIENS[c];return j&&j[p]?j[p]:null}
 /* les axiomes de liaison d'une notion : vers celles du dessous, puis vers celles du dessus */
 function linksOf(i){var o=[];N[i].p.forEach(function(p){var a=jx(i,p);if(a)o.push([p,a])});
   N[i].k.forEach(function(k){var a=jx(k,i);if(a)o.push([k,a])});return o}
-/* une ligne : le nom de la notion, puis ses axiomes en stations */
-function line(i){
-  var nid=COMP[i].notion,no=NOTIONS[nid],pa=no.pratique||[],L=el("div","ln"+(ACQ[i]?" acq":""));L.dataset.id=i;
-  var h=el("button","lh");h.appendChild(el("b",null,no.t));if(ACQ[i])h.appendChild(el("span","ok","✓"));
-  h.onclick=function(){sheet(i)};L.appendChild(h);
-  var tk=el("div","tk");
-  function station(a,cls){var st=el("div","st"),d=el("i","dt"+cls);
-    st.appendChild(d);var t=el("span");code(t,a);[].forEach.call(t.querySelectorAll("code"),function(c){if(c.textContent.length>14)c.className="w"});st.appendChild(t);tk.appendChild(st)}
-  no.ax.forEach(function(a,k){station(a,pa.indexOf(k+1)>=0?" pr":"")});
-  linksOf(i).forEach(function(x){station(x[1]," jx")});
-  L.appendChild(tk);
-  if(SHOWN&&NOTES[i])L.appendChild(el("div","lnn",NOTES[i]));
-  return L;
+/* un triangle : le nom sur le côté ; au sommet, les axiomes de liaison vers les notions qui en découlent ; en base, les axiomes */
+function triangle(i){
+  var nid=COMP[i].notion,no=NOTIONS[nid],pa=no.pratique||[],tr=el("div","tri");tr.dataset.id=i;
+  var sd=el("button","side");sd.appendChild(el("b",null,no.t));sd.onclick=function(){sheet(i)};tr.appendChild(sd);
+  var bd=el("div","tbd");tr.appendChild(bd);
+  var up=N[i].k.filter(function(k){return jx(k,i)}),tp=el("div","tp"+(up.length>1?" many":"")+(up.length===4?" n4":""));
+  up.forEach(function(k){var d=el("div","lk"),q=el("q");d.dataset.to=k;code(q,"«\u00a0"+jx(k,i).replace(/\.$/,"")+"\u00a0»");d.appendChild(q);
+    var a=el("small",null,"vers "+short(NOTIONS[COMP[k].notion].t));
+    a.onclick=function(){var t=document.querySelector('.tri[data-id="'+k+'"]');if(t)t.scrollIntoView({behavior:"smooth",block:"center"})};
+    d.appendChild(a);tp.appendChild(d)});
+  bd.appendChild(tp);
+  var b=el("div","base");
+  no.ax.forEach(function(a,k){var st=el("div","st");st.appendChild(el("i","dt"+(pa.indexOf(k+1)>=0?" pr":"")));
+    var t=el("span");code(t,a);[].forEach.call(t.querySelectorAll("code"),function(c){if(c.textContent.length>14)c.className="w"});st.appendChild(t);b.appendChild(st)});
+  bd.appendChild(b);
+  if(SHOWN&&NOTES[i])bd.appendChild(el("div","lnn",NOTES[i]));
+  return tr;
 }
 function short(t){return t.replace(/\s*\(.*\)$/,"")}
-/* une correspondance : l'axiome de liaison entre la notion du dessous et celle du dessus */
-function junction(p,c){
-  var a=jx(c,p),nc=NOTIONS[COMP[c].notion],np=NOTIONS[COMP[p].notion],J=el("div","jn"+(a==null?" no":""));J.dataset.e=p+">"+c;
-  if(a==null){J.textContent="Aucun axiome ne relie encore "+short(np.t)+" et "+short(nc.t)+".";return J}
-  var q=el("q");code(q,a.replace(/\.$/,""));J.appendChild(q);
-  J.appendChild(el("small",null,short(np.t)+" → "+short(nc.t)));return J;
-}
-/* les rails : de la ligne du dessous à celle du dessus, en passant par la correspondance */
-function rails(){
+/* les traits : la base converge vers le milieu du sommet ; une liaison se démultiplie vers les axiomes de la notion juste au-dessus */
+function draw(){
   var M=document.getElementById("map");if(!M)return;
-  var old=M.querySelector("svg.rl");if(old)old.remove();
-  var gw=parseFloat(getComputedStyle(M).getPropertyValue("--gw"))||40,o=M.getBoundingClientRect();
-  var NS="http://www.w3.org/2000/svg",s=document.createElementNS(NS,"svg");s.setAttribute("class","rl");
-  function yLine(i){var t=M.querySelector('.ln[data-id="'+i+'"] .tk');if(!t)return null;return t.getBoundingClientRect().top-o.top+12}
-  E.forEach(function(e){
-    var x=gw-13-e.lane*10,yp=yLine(e.p),yc=yLine(e.c),jb=M.querySelector('.jn[data-e="'+e.p+'>'+e.c+'"]');if(yp==null||yc==null)return;
-    var r=jb.getBoundingClientRect(),yj=r.top-o.top+Math.min(r.height/2,22),col=ACQ[e.p]?"#2f6a48":"#4a4a52";
-    var path=document.createElementNS(NS,"path");
-    path.setAttribute("d","M"+gw+" "+yp+"H"+x+"V"+yc+"H"+gw);
-    path.setAttribute("fill","none");path.setAttribute("stroke",col);path.setAttribute("stroke-width","2");s.appendChild(path);
-    var c=document.createElementNS(NS,"circle");c.setAttribute("cx",x);c.setAttribute("cy",yj);c.setAttribute("r","6");
-    c.setAttribute("fill","#0e0e10");c.setAttribute("stroke",jx(e.c,e.p)==null?"#6a6a72":"#8ab4ff");c.setAttribute("stroke-width","3");
-    if(jx(e.c,e.p)==null){c.setAttribute("stroke-width","2");c.setAttribute("stroke-dasharray","3 2.5")}
-    s.appendChild(c)});
+  var old=M.querySelector("svg.tl");if(old)old.remove();
+  var NS="http://www.w3.org/2000/svg",s=document.createElementNS(NS,"svg"),o=M.getBoundingClientRect(),m=4;s.setAttribute("class","tl");
+  function c(e){var r=e.getBoundingClientRect();return [r.left+r.width/2-o.left,r.top+r.height/2-o.top]}
+  function bxo(e){var r=e.getBoundingClientRect();return [r.left-o.left-m,r.top-o.top-m,r.right-o.left+m,r.bottom-o.top+m]}
+  function ln(a,b,col,w){var p=document.createElementNS(NS,"path");p.setAttribute("d","M"+a[0]+" "+a[1]+"L"+b[0]+" "+b[1]);
+    p.setAttribute("stroke",col);p.setAttribute("stroke-width",w||1.5);p.setAttribute("fill","none");s.appendChild(p)}
+  function toward(D,bx,below){var C=[(bx[0]+bx[2])/2,(bx[1]+bx[3])/2],dx=C[0]-D[0],dy=C[1]-D[1],t=0;
+    if(dy)t=Math.max(t,((below?bx[1]:bx[3])-D[1])/dy);
+    if(dx>0&&D[0]<bx[0])t=Math.max(t,(bx[0]-D[0])/dx);
+    if(dx<0&&D[0]>bx[2])t=Math.max(t,(bx[2]-D[0])/dx);
+    return [D[0]+dx*t,D[1]+dy*t]}
+  var tris=[].slice.call(M.querySelectorAll(".tri"));
+  tris.forEach(function(tr,k){
+    var tp=tr.querySelector(".tp"),sts=tr.querySelectorAll(".base .st");
+    if(tp.children.length&&sts.length){var bx=bxo(tp),y0=sts[0].getBoundingClientRect().top;
+      [].forEach.call(sts,function(st){if(Math.abs(st.getBoundingClientRect().top-y0)<2){var D=c(st.querySelector(".dt"));ln(toward(D,bx),D,"#5a5a63")}})}
+    var below=tris[k+1];if(!below||!sts.length)return;
+    var lk=below.querySelector('.lk[data-to="'+tr.dataset.id+'"]');if(!lk)return;
+    /* un trait par colonne, jusque sous la base */
+    var lb=bxo(lk),n=sts.length,yb=tr.querySelector(".base").getBoundingClientRect().bottom-o.top+3;
+    for(var col=0;col<Math.min(3,n);col++){var A=[c(sts[col].querySelector(".dt"))[0],yb];ln(toward(A,lb,true),A,"#8ab4ff",1.5)}
+  });
   M.insertBefore(s,M.firstChild);
-}
-/* les liens et leurs voies (deux rails qui se chevauchent prennent deux voies) */
-var E=[];
-function lanes(){
-  var pos={};ORDER.slice().reverse().forEach(function(i,k){pos[i]=k});
-  E=[];var T={};
-  ORDER.forEach(function(c){N[c].p.forEach(function(p){E.push({p:p,c:c});
-    var t=T[p]||(T[p]={lo:pos[c],hi:pos[p]});t.lo=Math.min(t.lo,pos[c])})});
-  var L=Object.keys(T).map(function(k){return T[k]}).sort(function(a,b){return (a.hi-a.lo)-(b.hi-b.lo)||a.hi-b.hi});
-  var max=0;L.forEach(function(t){var l=0;while(L.some(function(f){return f!==t&&f.lane===l&&f.lo<t.hi&&t.lo<f.hi}))l++;t.lane=l;max=Math.max(max,l)});
-  E.forEach(function(e){e.lane=T[e.p].lane});
-  return max+1;
 }
 /* la fiche d'une notion : ✓, menu, contenu choisi, note */
 /* la fiche d'une notion : la boîte d'origine (ligne « découle de », nom, menu, contenu, note), sans case à cocher */
@@ -436,12 +432,8 @@ document.getElementById("scl").onclick=function(){document.getElementById("sh").
 function sync(){
   document.getElementById("sj").textContent=SUJET.nom;
   var M=document.getElementById("map");M.innerHTML="";
-  var nl=lanes();M.style.setProperty("--gw",(18+nl*10)+"px");
-  ORDER.slice().reverse().forEach(function(c){
-    M.appendChild(line(c));
-    N[c].p.forEach(function(p){M.appendChild(junction(p,c))});
-  });
-  rails();
+  ORDER.slice().reverse().forEach(function(c,k){if(k)M.appendChild(el("div","gap"));M.appendChild(triangle(c))});
+  draw();
 }
 /* afficher ou masquer mes notes sur le plan, sous chaque notion */
 var SHOWN=false;try{SHOWN=localStorage.getItem("voir-notes-"+SUJET.nom)==="1"}catch(e){}
@@ -450,10 +442,9 @@ function tgLabel(){TG.textContent=SHOWN?"Masquer mes notes":"Afficher mes notes"
 TG.onclick=function(){SHOWN=!SHOWN;try{localStorage.setItem("voir-notes-"+SUJET.nom,SHOWN?"1":"0")}catch(e){}tgLabel();sync()};
 tgLabel();
 document.title="Support d’autoformation — "+SUJET.nom;
-window.addEventListener("resize",rails);
+window.addEventListener("resize",draw);
 sync();
-(function(){var r=document.querySelector('.ln[data-id="'+IDS.filter(function(i){return !N[i].p.length})[0]+'"]');
-  if(r)requestAnimationFrame(function(){r.scrollIntoView({block:"end"});window.scrollBy(0,16)})})();
+requestAnimationFrame(function(){window.scrollTo(0,document.body.scrollHeight)});
 try{connect()}catch(e){}
 window.addEventListener("load",function(){try{connect()}catch(e){}});
 </script>
