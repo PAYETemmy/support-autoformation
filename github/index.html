@@ -146,7 +146,6 @@ html,body{touch-action:manipulation}
 .mn .gn:focus{outline:none;border:none}
 /* mode : lecture ou écriture */
 .md{margin-top:40px;border-top:1px solid var(--l);padding-top:16px}
-.md+.mn{margin-top:24px;border-top:none;padding-top:0}
 .md h2{font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin:0 0 8px}
 .md .mo{display:flex;gap:18px}
 .md .mo button{font-size:14px;color:var(--m);padding:4px 0;border-bottom:2px solid transparent}
@@ -590,10 +589,10 @@ function vShowW(){var e=vEl(Math.min(VIS.w,STEPS.length-1));if(e)vCenter(e)}
 var _apply=vApply;vApply=function(){
   if(!WM){if(WI.parentNode){WI.blur();WI.remove()}_apply();return}
   var keep=VIS.p;VIS.p=VIS.w;_apply();VIS.p=keep;vPaint()};
-/* le choix du mode, juste au-dessus de « Mes notes » */
+/* le choix du mode, sous « Mes notes » (qui garde sa disposition d'origine) */
 var MD=document.createElement("section");MD.className="md";
 MD.innerHTML='<h2>Mode</h2><div class="mo"><button data-m="l">Lecture</button><button data-m="e">Écriture</button></div>';
-document.querySelector(".mn").before(MD);
+document.querySelector(".mn").after(MD);
 function vMode(){[].forEach.call(MD.querySelectorAll("button"),function(b){b.classList.toggle("on",(b.dataset.m==="e")===WM)})}
 [].forEach.call(MD.querySelectorAll("button"),function(b){b.onclick=function(){WM=b.dataset.m==="e";try{localStorage.setItem(MKEY,WM?"e":"l")}catch(e){}
   vMode();sync();if(WM){vShowW();vFocus()}else vShow()}});
