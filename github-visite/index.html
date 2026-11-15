@@ -140,6 +140,26 @@ body.vis{padding-bottom:calc(30vh + env(safe-area-inset-bottom))}
 .mn .gn[hidden]{display:none}
 /* pas de zoom au double toucher pendant la visite */
 html,body{touch-action:manipulation}
+/* notes globales : pas de boîte, des lignes horizontales comme sur une feuille */
+.mn .gn{border:none;border-radius:0;padding:0;background:transparent;line-height:28px;font-size:16px;
+  background-image:linear-gradient(to bottom,transparent 27px,#34343a 27px);background-size:100% 28px;background-attachment:local;min-height:140px}
+.mn .gn:focus{outline:none;border:none}
+/* mode : lecture ou écriture */
+.md{margin-top:40px;border-top:1px solid var(--l);padding-top:16px}
+.md+.mn{margin-top:24px;border-top:none;padding-top:0}
+.md h2{font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin:0 0 8px}
+.md .mo{display:flex;gap:18px}
+.md .mo button{font-size:14px;color:var(--m);padding:4px 0;border-bottom:2px solid transparent}
+.md .mo button.on{color:var(--fg);border-bottom-color:var(--up)}
+/* écriture : l'axiome à recopier est en gris foncé ; ce qui est tapé juste s'écrit par-dessus en clair */
+.cp{position:relative}
+.cp .ch{color:#5a5a62}
+.cp .ch.ok{color:var(--fg)}
+.cp .ch.er{color:#ff7b72;text-decoration:underline}
+.cp .ch.cd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92em;background:#1c1c21}
+.cp .ch.cur{box-shadow:-2px 0 0 var(--up)}
+.cp .ch.end{box-shadow:2px 0 0 var(--up)}
+#wi{position:absolute;opacity:0;font-size:16px;width:40px;height:24px;border:0;padding:0;resize:none;caret-color:transparent;color:transparent;background:transparent;z-index:2}
 </style>
 </head>
 <body>
@@ -496,8 +516,9 @@ function vShow(){var n=VIS.p-1;if(n<0)return;var e=vEl(n);if(!e)return;
   /* en avançant, chaque nouvelle rangée (ou nouvelle partie) vient au centre de l'écran ; dans une même rangée, rien ne bouge */
   if(VDIR>0){var pe=n>0?vEl(n-1):null;if(!pe||Math.abs(pe.getBoundingClientRect().top-e.getBoundingClientRect().top)>2){vCenter(e);return}}
   var r=e.getBoundingClientRect(),h=window.innerHeight;if(r.top<70||r.bottom>h-20)vCenter(e)}
-function vNext(){if(VIS.all||VIS.p>=STEPS.length)return;VDIR=1;VIS.p++;vSave();vApply();vShow()}
-function vBack(){if(VIS.all||VIS.p<=0)return;VDIR=-1;VIS.p--;vSave();vApply();vShow()}
+function vNext(){if(typeof WM!=="undefined"&&WM)return;if(VIS.all||VIS.p>=STEPS.length)return;VDIR=1;VIS.p++;vSave();vApply();vShow()}
+function vBack(){if(typeof WM!=="undefined"&&WM){if(VIS.w<=0)return;VIS.w--;VIS.t="";WI.value="";vSave();VDIR=-1;sync();vShowW();return}
+  if(VIS.all||VIS.p<=0)return;VDIR=-1;VIS.p--;vSave();vApply();vShow()}
 document.addEventListener("click",function(ev){
   if(!document.getElementById("sh").hidden)return;
   if(ev.target.closest("button,a,textarea,input,select,small,.mn,.side"))return;
@@ -523,6 +544,56 @@ GN.onblur=function(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}};
 var wasShown=SHOWN;
 function vNotes(){GN.hidden=!SHOWN;if(SHOWN){grow(GN);if(!wasShown)setTimeout(function(){GN.focus()},50)}wasShown=SHOWN}
 var _sync=sync;sync=function(){_sync();vApply();vNotes()};
+/* ---------- mode écriture : recopier chaque axiome en le tapant ---------- */
+var MKEY="mode-"+SUJET.nom,WM=false;try{WM=localStorage.getItem(MKEY)==="e"}catch(e){}
+if(VIS.w==null)VIS.w=0;if(VIS.t==null)VIS.t="";
+/* le texte à recopier : sans les backticks (le code est marqué caractère par caractère) */
+function vModel(n){var s=STEPS[n],raw=s.t==="a"?NOTIONS[COMP[s.i].notion].ax[s.k]:jx(N[s.i].k.filter(function(k){return jx(k,s.i)})[s.k],s.i).replace(/\.$/,"");
+  var t="",cd=[],inc=false;for(var j=0;j<raw.length;j++){var c=raw[j];if(c==="`"){inc=!inc;continue}t+=c;cd.push(inc)}return {t:t,cd:cd}}
+function nc(c){return c.replace(/[’‘ʼ]/,"'").replace(/[«»“”]/,'"').replace(/[  ]/," ").replace(/[–—]/,"-")}
+function vTarget(n){var s=STEPS[n],tr=s&&document.querySelector('.tri[data-id="'+s.i+'"]');if(!tr)return null;
+  return s.t==="a"?tr.querySelectorAll(".base .st")[s.k].querySelector("span"):tr.querySelectorAll(".lk")[s.k].querySelector("q")}
+var WI=document.createElement("textarea");WI.id="wi";WI.setAttribute("autocomplete","off");WI.setAttribute("autocorrect","off");
+WI.setAttribute("spellcheck","false");WI.setAttribute("autocapitalize","sentences");WI.setAttribute("aria-label","Recopier l’axiome");WI.rows=1;
+function vPaint(){
+  if(!WM||VIS.w>=STEPS.length)return;
+  var n=VIS.w,tg=vTarget(n);if(!tg)return;var m=vModel(n),ty=VIS.t,q=STEPS[n].t==="l";
+  var host=tg.closest(".st,.lk");host.classList.add("cp");host.classList.remove("vh");
+  var f=document.createDocumentFragment();if(q)f.appendChild(document.createTextNode("« "));
+  for(var j=0;j<m.t.length;j++){var c=el("span","ch"+(m.cd[j]?" cd":""));
+    if(j<ty.length){c.textContent=ty[j]===" "&&m.t[j]!==" "?"·":ty[j];c.classList.add(nc(ty[j])===nc(m.t[j])?"ok":"er")}else c.textContent=m.t[j];
+    if(j===ty.length)c.classList.add("cur");f.appendChild(c)}
+  if(ty.length>=m.t.length&&f.lastChild)f.lastChild.classList.add("end");
+  if(q)f.appendChild(document.createTextNode(" »"));
+  if(tg.dataset.o==null)tg.dataset.o=tg.innerHTML;tg.innerHTML="";tg.appendChild(f);
+  /* le champ invisible qui reçoit la frappe : posé sur l'axiome, hors du plan (il n'est jamais reconstruit, le clavier reste ouvert) */
+  var r=tg.getBoundingClientRect();if(WI.parentNode!==document.body)document.body.appendChild(WI);
+  WI.style.left=(r.left+window.scrollX)+"px";WI.style.top=(r.top+window.scrollY)+"px";
+}
+function vValid(){var m=vModel(VIS.w),ty=VIS.t;if(ty.length<m.t.length)return false;
+  for(var j=0;j<m.t.length;j++)if(nc(ty[j])!==nc(m.t[j]))return false;return true}
+WI.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault()}});
+WI.addEventListener("input",function(){
+  VIS.t=WI.value.replace(/\n/g,"");vSave();
+  if(vValid()){var tg=vTarget(VIS.w);if(tg){if(tg.dataset.o!=null){tg.innerHTML=tg.dataset.o;delete tg.dataset.o}tg.closest(".st,.lk").classList.remove("cp")}
+    VIS.w++;VIS.t="";WI.value="";vSave();VDIR=1;vApply();vShowW()}else vPaint()});
+function vFocus(){if(WM&&VIS.w<STEPS.length){try{WI.focus({preventScroll:true})}catch(e){WI.focus()}}}
+function vShowW(){var e=vEl(Math.min(VIS.w,STEPS.length-1));if(e)vCenter(e)}
+/* en écriture, la visite suit la recopie : la progression est celle de l'écriture */
+var _apply=vApply;vApply=function(){
+  if(!WM){if(WI.parentNode){WI.blur();WI.remove()}_apply();return}
+  var keep=VIS.p;VIS.p=VIS.w;_apply();VIS.p=keep;vPaint()};
+/* le choix du mode, juste au-dessus de « Mes notes » */
+var MD=document.createElement("section");MD.className="md";
+MD.innerHTML='<h2>Mode</h2><div class="mo"><button data-m="l">Lecture</button><button data-m="e">Écriture</button></div>';
+document.querySelector(".mn").before(MD);
+function vMode(){[].forEach.call(MD.querySelectorAll("button"),function(b){b.classList.toggle("on",(b.dataset.m==="e")===WM)})}
+[].forEach.call(MD.querySelectorAll("button"),function(b){b.onclick=function(){WM=b.dataset.m==="e";try{localStorage.setItem(MKEY,WM?"e":"l")}catch(e){}
+  vMode();sync();if(WM){vShowW();vFocus()}else vShow()}});
+vMode();
+/* en écriture, toucher l'écran ouvre le clavier au lieu d'avancer */
+document.addEventListener("click",function(ev){if(!WM||!document.getElementById("sh").hidden)return;
+  if(ev.target.closest("button,a,textarea,input,select,small,.mn,.md,.side"))return;vFocus()},true);
 
 sync();
 requestAnimationFrame(function(){window.scrollTo(0,document.body.scrollHeight);vShow()});
