@@ -507,13 +507,10 @@ document.addEventListener("click",function(ev){
 var SW=null,SWT=0;
 document.addEventListener("touchstart",function(e){if(e.touches.length!==1||!document.getElementById("sh").hidden||e.target.closest(".mn textarea")){SW=null;return}
   SW={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
-/* sur ordinateur : cliquer, maintenir et tirer vers la gauche recule, comme le glissement sur l'iPhone */
-var MD=null;
-document.addEventListener("mousedown",function(e){if(e.button!==0||!document.getElementById("sh").hidden||e.target.closest("button,a,textarea,input,select,.mn")){MD=null;return}
-  MD={x:e.clientX,y:e.clientY};e.preventDefault()});
-document.addEventListener("mouseup",function(e){if(!MD)return;var dx=e.clientX-MD.x,dy=e.clientY-MD.y;MD=null;
-  if(Math.abs(dx)>10||Math.abs(dy)>10)SWT=Date.now();   /* un glissement n'est pas un clic : il n'avance pas */
-  if(dx<-40&&Math.abs(dy)<Math.abs(dx)*0.7)vBack()});
+/* sur ordinateur : flèche ← pour reculer, flèche → pour avancer */
+document.addEventListener("keydown",function(e){if(!document.getElementById("sh").hidden||e.altKey||e.ctrlKey||e.metaKey)return;
+  var t=e.target;if(t&&(t.tagName==="TEXTAREA"||t.tagName==="INPUT"||t.isContentEditable))return;
+  if(e.key==="ArrowLeft"){e.preventDefault();vBack()}else if(e.key==="ArrowRight"){e.preventDefault();vNext()}});
 document.addEventListener("touchend",function(e){if(!SW)return;var t=e.changedTouches[0],dx=t.clientX-SW.x,dy=t.clientY-SW.y;SW=null;
   if(dx<-40&&Math.abs(dy)<Math.abs(dx)*0.7){SWT=Date.now();vBack()}},{passive:true});
 /* « Mes notes » : « Afficher mes notes » ouvre, juste en bas, un champ de notes globales (pour tout le sujet), sauvegardé */
