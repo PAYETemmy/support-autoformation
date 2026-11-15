@@ -97,6 +97,8 @@ code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up)
 .st code{white-space:nowrap;font-size:11.5px;padding:1px 3px}
 .st code.w{white-space:normal;overflow-wrap:anywhere}
 .gap{height:40px}
+/* les textes passent devant les pointillés */
+.st span,.lk q,.lk small{background:var(--bg);-webkit-box-decoration-break:clone;box-decoration-break:clone}
 /* fiche d'une notion (plein écran) */
 #sh{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch;
   padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
@@ -393,8 +395,9 @@ function draw(){
   var NS="http://www.w3.org/2000/svg",s=document.createElementNS(NS,"svg"),o=M.getBoundingClientRect(),m=4;s.setAttribute("class","tl");
   function c(e){var r=e.getBoundingClientRect();return [r.left+r.width/2-o.left,r.top+r.height/2-o.top]}
   function bxo(e){var r=e.getBoundingClientRect();return [r.left-o.left-m,r.top-o.top-m,r.right-o.left+m,r.bottom-o.top+m]}
-  function ln(a,b,col,w){var p=document.createElementNS(NS,"path");p.setAttribute("d","M"+a[0]+" "+a[1]+"L"+b[0]+" "+b[1]);
-    p.setAttribute("stroke",col);p.setAttribute("stroke-width",w||1.5);p.setAttribute("fill","none");s.appendChild(p)}
+  function ln(a,b,col,w,dash){var p=document.createElementNS(NS,"path");p.setAttribute("d","M"+a[0]+" "+a[1]+"L"+b[0]+" "+b[1]);
+    p.setAttribute("stroke",col);p.setAttribute("stroke-width",w||1.5);p.setAttribute("fill","none");
+    if(dash){p.setAttribute("stroke-dasharray",dash);p.setAttribute("stroke-linecap","round")}s.appendChild(p);return p}
   function toward(D,bx,below){var C=[(bx[0]+bx[2])/2,(bx[1]+bx[3])/2],dx=C[0]-D[0],dy=C[1]-D[1],t=0;
     if(dy)t=Math.max(t,((below?bx[1]:bx[3])-D[1])/dy);
     if(dx>0&&D[0]<bx[0])t=Math.max(t,(bx[0]-D[0])/dx);
@@ -411,6 +414,14 @@ function draw(){
     var lb=bxo(lk),n=sts.length,yb=tr.querySelector(".base").getBoundingClientRect().bottom-o.top+3;
     for(var col=0;col<Math.min(3,n);col++){var A=[c(sts[col].querySelector(".dt"))[0],yb];ln(toward(A,lb,true),A,"#8ab4ff",1.5)}
   });
+  /* une liaison vers une notion plus haut dans la page : ses traits se prolongent en pointillés jusqu'à la base de cette notion */
+  tris.forEach(function(tr,k){
+    [].forEach.call(tr.querySelectorAll(".lk"),function(lk){
+      var to=document.querySelector('.tri[data-id="'+lk.dataset.to+'"]');if(!to||to===tris[k-1])return;
+      var sts=to.querySelectorAll(".base .st");if(!sts.length)return;
+      var lb=bxo(lk),yb=to.querySelector(".base").getBoundingClientRect().bottom-o.top+3;
+      var bb=to.querySelector(".base").getBoundingClientRect(),A=[bb.left+bb.width/2-o.left,yb];ln(toward(A,lb,true),A,"#8ab4ff",1.5,"1 5")
+    })});
   M.insertBefore(s,M.firstChild);
 }
 /* la fiche d'une notion : ✓, menu, contenu choisi, note */
