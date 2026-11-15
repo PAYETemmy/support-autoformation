@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Maquette — triangles</title>
+<style>
+:root{--bg:#0e0e10;--fg:#e8e8ea;--m:#7c7c84;--l:#34343a;--up:#8ab4ff;--tx:#c4c4cc}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.w{max-width:520px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 14px calc(60px + env(safe-area-inset-bottom))}
+.sj{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--m)}
+.lgd{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:var(--m);margin:8px 0 26px}
+.lgd span{display:inline-flex;align-items:center;gap:6px}
+.dt{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--tx);box-sizing:border-box;flex:none}
+.dt.pr{background:var(--bg);border:2px solid #28282c}
+.lq{font-style:normal;color:#b9cff7}
+.map{position:relative}
+.map>svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.tri{position:relative;display:flex;align-items:stretch;gap:6px}
+.side{flex:none;width:24px;display:flex;align-items:center;justify-content:center}
+.side b{writing-mode:vertical-rl;transform:rotate(180deg);font-size:16px;font-weight:600;white-space:nowrap;letter-spacing:.01em}
+.body{flex:1;min-width:0}
+/* le sommet : les axiomes de liaison vers le haut */
+.top{display:flex;flex-direction:column;align-items:center;gap:12px;width:74%;margin:0 auto}
+.lk{display:flex;flex-direction:column;align-items:center;text-align:center;font-size:13px;line-height:1.38;color:#b9cff7}
+.lk q{quotes:"« " " »"}
+/* plusieurs liaisons : côte à côte, une par branche */
+.top.many{flex-direction:row;align-items:flex-end;gap:8px;width:100%}
+.top.many .lk{flex:1 1 0;min-width:0;font-size:12px;overflow-wrap:break-word}
+/* les notions suivantes, en petit, hors maquette */
+.more{font-size:22px;letter-spacing:.3em;color:var(--m);line-height:1;padding-left:.3em}
+.nx span{flex:1 1 0;min-width:0;text-align:center;font-size:12px;font-weight:600;color:var(--m);border:1px dashed #3a3a42;border-radius:6px;padding:6px 4px}
+.lk small{display:block;font-size:11px;color:var(--m);margin-top:2px}
+/* la base : les axiomes de la notion, de gauche à droite */
+.base{display:flex;flex-wrap:wrap;row-gap:6px;margin-top:70px}
+.st{position:relative;flex:0 0 33.333%;min-width:0;padding:22px 10px 4px 0;font-size:12.5px;line-height:1.35;color:var(--tx);overflow-wrap:break-word}
+.st:before{content:"";position:absolute;left:0;right:0;top:10px;border-top:2px solid #4a4a52}
+.st:last-child:before{right:auto;width:7px}
+.st .dt{position:absolute;left:1px;top:5px;width:12px;height:12px;z-index:1}
+code{font:11.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up);padding:1px 3px;white-space:nowrap}
+.gap{height:96px}
+.note{font-size:12.5px;color:var(--m);margin-top:40px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="sj">Mermaid · maquette</div>
+  <div class="lgd"><span><i class="dt"></i>principe</span><span><i class="dt pr"></i>pratique</span><span><i class="lq">« »</i>liaison</span></div>
+  <div class="map" id="map"></div>
+  <p class="note">Maquette : deux notions seulement, pour juger la forme ; les points de suspension remplacent les notions suivantes. Chaque notion est un triangle : ses axiomes forment la base, ses axiomes de liaison le sommet. Le sommet d’une notion se démultiplie vers les axiomes de la suivante.</p>
+</div>
+<script>
+var T=[ /* de haut en bas dans la page = de la dernière notion à la première */
+ {id:"mer",t:"Mermaid",
+  ax:[["Mermaid est un langage.",""],["Il s’écrit en texte.",""],["Il décrit un diagramme.",""],
+      ["Sa première ligne nomme le type de diagramme.","pr"],["Il s’écrit dans un bloc de code, dont le langage est Mermaid.","pr"],["Pour ajouter un bloc de code, je tape `/code`.","pr"]],
+  up:[],suite:true},
+ {id:"dia",t:"Diagramme",
+  ax:[["Un diagramme est une représentation visuelle.",""],["Les parties qu’un diagramme relie s’appellent ses éléments.",""],["Un diagramme montre les relations entre ces éléments.",""]],
+  up:[["Avec Mermaid, un diagramme s’écrit en texte.","Mermaid"]]}
+];
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function code(e,s){s.split("`").forEach(function(p,i){if(i%2)e.appendChild(el("code",null,p));else if(p)e.appendChild(document.createTextNode(p.replace(/« /g,"« ").replace(/ ([»?!:;])/g," $1")))})}
+var M=document.getElementById("map");
+T.forEach(function(n,k){
+  var tr=el("div","tri");tr.dataset.id=n.id;
+  var side=el("div","side");side.appendChild(el("b",null,n.t));tr.appendChild(side);
+  var bd=el("div","body");tr.appendChild(bd);
+  var top=el("div","top"+(n.up.length>1?" many":""));
+  n.up.forEach(function(u){var d=el("div","lk"),q=el("q");code(q,u[0].replace(/\.$/,""));d.appendChild(q);
+    d.appendChild(el("small",null,"vers "+u[1]));top.appendChild(d)});
+  if(n.suite)top.appendChild(el("div","more","…".replace("…","...")));
+  bd.appendChild(top);
+  var b=el("div","base");
+  n.ax.forEach(function(a){var s=el("div","st");s.appendChild(el("i","dt"+(a[1]?" "+a[1]:"")));var t=el("span");code(t,a[0]);s.appendChild(t);b.appendChild(s)});
+  bd.appendChild(b);
+  M.appendChild(tr);
+  if(k<T.length-1)M.appendChild(el("div","gap"));
+});
+function draw(){
+  var old=M.querySelector("svg");if(old)old.remove();
+  var NS="http://www.w3.org/2000/svg",s=document.createElementNS(NS,"svg"),o=M.getBoundingClientRect();
+  function c(e){var r=e.getBoundingClientRect();return [r.left+r.width/2-o.left,r.top+r.height/2-o.top]}
+  function ln(a,b,col,w){var p=document.createElementNS(NS,"path");p.setAttribute("d","M"+a[0]+" "+a[1]+"L"+b[0]+" "+b[1]);
+    p.setAttribute("stroke",col);p.setAttribute("stroke-width",w||1.5);p.setAttribute("fill","none");s.appendChild(p)}
+  var tris=M.querySelectorAll(".tri");
+  [].forEach.call(tris,function(tr,k){
+    var tp=tr.querySelector(".top").getBoundingClientRect(),m=8,
+        bx=[tp.left-o.left-m,tp.top-o.top-m,tp.right-o.left+m,tp.bottom-o.top+m],
+        C=[(bx[0]+bx[2])/2,(bx[1]+bx[3])/2];
+    function edge(D){var dx=C[0]-D[0],dy=C[1]-D[1],t=0;
+      if(dy)t=Math.max(t,(bx[3]-D[1])/dy);
+      if(dx>0&&D[0]<bx[0])t=Math.max(t,(bx[0]-D[0])/dx);
+      if(dx<0&&D[0]>bx[2])t=Math.max(t,(bx[2]-D[0])/dx);
+      return[D[0]+dx*t,D[1]+dy*t]}
+    /* chaque liaison monte vers sa notion suivante */
+    var sts=tr.querySelectorAll(".base .st"),y0=sts[0].getBoundingClientRect().top;
+    [].forEach.call(sts,function(st){if(Math.abs(st.getBoundingClientRect().top-y0)<2)(function(D){ln(edge(D),D,"#5a5a63")})(c(st.querySelector(".dt")))});
+    /* le sommet de la notion du dessous monte jusqu'à la base de celle-ci */
+    var below=tris[k+1];
+    if(below){var lk=below.querySelector(".top").getBoundingClientRect(),
+        lb=[lk.left-o.left-m,lk.top-o.top-m,lk.right-o.left+m,lk.bottom-o.top+m],
+        L=[(lb[0]+lb[2])/2,(lb[1]+lb[3])/2],
+        all=tr.querySelectorAll(".base .st"),yl=all[all.length-1].getBoundingClientRect().top;
+      [].forEach.call(all,function(st){var r=st.getBoundingClientRect();if(Math.abs(r.top-yl)>2)return;
+        var A=[c(st.querySelector(".dt"))[0],r.bottom-o.top+6],dx=L[0]-A[0],dy=L[1]-A[1],t=dy?(lb[1]-A[1])/dy:0;
+        ln([A[0]+dx*t,A[1]+dy*t],A,"#8ab4ff",1.5)})}
+  });
+  M.insertBefore(s,M.firstChild);
+}
+draw();window.addEventListener("resize",draw);
+requestAnimationFrame(function(){window.scrollTo(0,document.body.scrollHeight)});
+</script>
+</body>
+</html>
