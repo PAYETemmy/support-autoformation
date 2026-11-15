@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e0e10">
+<meta name="apple-mobile-web-app-title" content="GitHub">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="color-scheme" content="dark">
+<title>Support d’autoformation — GitHub</title>
+<style>
+:root{--bg:#0e0e10;--fg:#e8e8ea;--m:#7c7c84;--f:#232326;--l:#34343a;--card:#16161a;--c:#7ee0a1;--up:#8ab4ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit;color:inherit;background:none;border:0;border-radius:0;cursor:pointer;padding:0;text-align:left}
+.w{max-width:680px;margin:0 auto;padding:0 calc(12px + env(safe-area-inset-right)) calc(80px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left))}
+.top{padding:calc(14px + env(safe-area-inset-top)) 0 12px}
+.sj{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--m)}
+select{display:block;width:100%;margin-top:9px;font:inherit;font-size:16px;color:#c4c4cc;background:var(--bg);border:1px solid var(--l);border-radius:0;padding:6px 28px 6px 8px;text-overflow:ellipsis;-webkit-appearance:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--m) 50%),linear-gradient(135deg,var(--m) 50%,transparent 50%);background-position:calc(100% - 15px) 50%,calc(100% - 10px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+.ms{font-size:12.5px;color:var(--m);margin-top:6px}
+.tree{position:relative;padding-right:14px}
+.tree>svg.aw{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.row{position:relative;display:flex;align-items:flex-start;gap:8px;margin-bottom:26px}
+.row:last-child{margin-bottom:0}
+.bx{position:relative;z-index:1;flex:1 1 0;min-width:0;border:1px solid var(--l);background:var(--card);padding:10px 12px 8px}
+.bx.acq{border-color:#2f5a41}
+.bh{display:flex;align-items:flex-start;gap:8px;width:100%}
+.bt{flex:1;min-width:0}
+.cp{display:block;font-size:11.5px;color:var(--m);line-height:1.3}
+.nt{display:block;font-size:17px;font-weight:600;line-height:1.25;margin-top:2px}
+.ck{flex:none;width:22px;height:22px;border:1px solid var(--l);font-size:13px;line-height:20px;text-align:center;color:transparent}
+.acq .ck{border-color:#2f5a41;color:var(--c)}
+.bd{margin-top:6px}
+.axr{display:flex;align-items:stretch;gap:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
+  margin:4px 0 0;padding:2px 0 8px;scrollbar-width:none}
+.axr::-webkit-scrollbar{display:none}
+.ax{position:relative;flex:0 0 43%;scroll-snap-align:start;border:1px solid var(--f);background:var(--bg);
+  padding:8px 9px 9px;font-size:13.5px;line-height:1.4;color:#c4c4cc}
+.ax+.ax:before{content:"";position:absolute;left:-15px;top:50%;width:14px;border-top:1px solid #4a4a52}
+.ax i{display:block;font-style:normal;font-size:11px;color:var(--m);margin-bottom:3px}
+.row.n2 .ax,.row.n3 .ax{flex-basis:84%}
+.vl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#6a6a72;margin:6px 0 2px}
+.ct{font-size:14px;line-height:1.45;color:#c4c4cc;margin:2px 0}
+.ct.nc,.no{color:#6a6a72}
+.no{font-size:13px;padding:4px 0}
+.ct.li{padding-left:14px;position:relative}.ct.li:before{content:"–";position:absolute;left:0;color:var(--m)}
+code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up);padding:1px 5px;white-space:nowrap}
+.row.n2 .nt{font-size:15px}.row.n2 .ax,.row.n2 .ct{font-size:12.5px}.row.n2 code{white-space:normal;word-break:break-word}
+/* en image */
+.im{display:block;width:100%;margin-top:4px}
+.im svg{display:block;width:100%;height:auto}
+.lg{font-size:13.5px;line-height:1.45;color:#c4c4cc;margin:5px 0 0}
+.lg b{color:var(--fg);font-weight:500}
+.zh{display:none;font-size:11.5px;color:var(--m);margin-top:4px}
+.row.n2 .zh,.row.n3 .zh{display:block}.row.n2 .lg,.row.n3 .lg{font-size:12.5px}
+#zo{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch;
+  padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
+#zo[hidden]{display:none}
+.zw{max-width:680px;margin:0 auto}
+.zt{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.zt b{font-size:17px;font-weight:600}
+.zt button{font-size:13px;color:var(--m);padding:6px 0}
+.of{display:flex;justify-content:center;margin-top:34px}
+.of button{font-size:12px;color:var(--m);padding:6px 0}
+/* plan en lignes : une ligne par notion, ses axiomes en stations, des correspondances entre les lignes */
+.lgd{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:var(--m);margin-top:8px}
+.lgd span{display:inline-flex;align-items:center;gap:6px}
+.dt{display:inline-block;width:10px;height:10px;border-radius:50%;background:#c4c4cc;box-sizing:border-box}
+.dt.pr{background:var(--bg);border:2px solid #9a9aa2}
+.dt.jx{background:var(--bg);border:3px solid var(--up)}
+.map{position:relative;--gw:40px}
+.map>svg.rl{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.ln{position:relative;margin-left:var(--gw)}
+.lh{display:flex;align-items:baseline;gap:8px;width:100%;padding:4px 0 0}
+.lh b{font-size:16.5px;font-weight:600;line-height:1.25}
+.lh .ok{color:var(--c);font-size:13px}
+.tk{display:flex;flex-wrap:wrap;row-gap:6px;padding-bottom:2px}
+.tk::-webkit-scrollbar{display:none}
+.st{position:relative;flex:0 0 33.333%;min-width:0;overflow-wrap:break-word;padding:24px 10px 4px 0;font-size:12.5px;line-height:1.35;color:#c4c4cc}
+.st:before{content:"";position:absolute;left:0;right:0;top:11px;border-top:2px solid #4a4a52}
+.st:last-child:before{right:auto;width:7px}
+.ln.acq .st:before{border-top-color:#2f6a48}
+.st .dt{position:absolute;left:1px;top:6px;width:13px;height:13px}
+.st code{white-space:nowrap;font-size:11.5px;padding:1px 3px}
+.st code.w{white-space:normal;overflow-wrap:anywhere}
+.jn code{white-space:normal;overflow-wrap:anywhere}
+.jn{position:relative;margin-left:var(--gw);padding:12px 0 16px;font-size:13px;line-height:1.4;color:#c4c4cc}
+.jn q{quotes:"« " " »";color:var(--fg)}
+.jn small{display:block;font-size:11px;color:var(--m);margin-top:2px}
+.jn.no{color:#6a6a72;font-style:italic}
+/* fiche d'une notion (plein écran) */
+#sh{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch;
+  padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
+#sh[hidden]{display:none}
+#zo{z-index:30}
+/* dans la fiche : les axiomes en liste, comme dans la boîte d'origine */
+#sh .axr{display:block;overflow:visible;margin:0;padding:0}
+#sh .ax{flex:none;border:0;background:none;font-size:14px;line-height:1.45;padding:6px 0;border-top:1px solid #1a1a1e}
+#sh .ax:first-child{border-top:0}
+#sh .ax:before{display:none}
+#sh .ax .with{display:block;font-size:11.5px;color:var(--m);margin-top:1px}
+/* notes */
+.nb{margin-top:8px;border-top:1px solid var(--f);padding-top:6px}
+.na{font-size:12.5px;color:var(--m);padding:6px 0}
+.nl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#6a6a72;margin:2px 0 4px}
+.nx{display:block;width:100%;min-height:64px;resize:none;overflow:hidden;font:inherit;font-size:16px;line-height:1.45;color:var(--fg);
+  background:var(--bg);border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
+.nx:focus{outline:none;border-color:var(--up)}
+.mn{margin-top:40px;border-top:1px solid var(--l);padding-top:16px}
+.mn h2{font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin:0 0 6px}
+.mn p{font-size:12.5px;color:var(--m);margin:0 0 10px;line-height:1.4}
+.mb{display:flex;gap:8px;flex-wrap:wrap}
+.mb button{font-size:13px;padding:7px 12px;border:1px solid var(--l)}
+.tg{font-size:13px;padding:7px 12px;border:1px solid var(--l);margin-top:9px}
+/* notes affichées sur le plan, sous leur notion */
+.lnn{margin:2px 0 4px;padding:6px 0 0 10px;border-left:2px solid var(--up);font-size:13px;line-height:1.45;color:#c4c4cc;white-space:pre-wrap}
+.mf{font-size:12.5px;color:var(--c);margin-top:8px;min-height:18px}
+.mi{margin-top:10px}
+.mi .nx{min-height:120px}
+.mi button{margin-top:8px}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="top"><div class="sj" id="sj"></div>
+    <div class="lgd"><span><i class="dt"></i>principe</span><span><i class="dt pr"></i>pratique</span><span><i class="dt jx"></i>liaison</span></div></div>
+  <div class="map" id="map"></div>
+  <section class="mn">
+    <h2>Mes notes</h2>
+    <button class="tg" id="tgn"></button>
+  </section>
+</div>
+
+<div id="sh" hidden><div class="zw"><div class="zt"><b></b><button id="scl">Fermer</button></div><div id="sb"></div></div></div>
+<div id="zo" hidden><div class="zw"><div class="zt"><b id="zn"></b><button id="zc">Fermer</button></div><div id="zb"></div></div></div>
+
+<script>
+/* ==========================================================================
+   DONNÉES DU SUJET — c'est le seul bloc à changer pour un autre sujet.
+
+   SUJET    : nom du sujet, projet fil rouge.
+   PLAN     : l'arbre des compétences, écrit en Mermaid (flowchart TD).
+              Une ligne par compétence : id["Compétence"]
+              Une ligne par lien       : parent --> enfant
+              Seules ces deux formes sont lues par la page.
+   COMP     : pour chaque compétence, la notion qui y répond.
+   NOTIONS  : pour chaque notion, son titre, ses axiomes (ax) et les numéros
+              des axiomes de pratique (pratique). Les autres sont les principes.
+   G        : les 91 dimensions (communes à tous les sujets).
+   C        : contenus, C[idNotion][numéro] = [["Axiome",…],["Phrase",…]].
+   IMG      : « En image », IMG[idNotion] = {svg, leg:[[partie, explication],…]}.
+              Un dessin par notion, choisi dans le menu juste après les axiomes.
+
+   LIENS    : les axiomes de liaison. LIENS[enfant][parent] = la phrase qui relie
+              les deux notions. Elle appartient aux deux : elle apparaît sur leurs
+              deux lignes, et entre elles, comme correspondance.
+
+   La page dessine le plan comme des lignes de métro, de bas en haut : la fondation
+   en bas. Chaque notion est une ligne ; ses axiomes en sont les stations, lues de
+   gauche à droite. Entre deux notions reliées, une correspondance : l'axiome qui
+   les relie. Toucher le nom d'une notion ouvre sa fiche (menu, image, dimensions,
+   note).
+   ========================================================================== */
+var SUJET={"nom": "GitHub", "projet": "Enregistreur vocal de notes"};
+var PLAN=`flowchart TD
+  ver["Un projet change : on veut garder chacun de ses états"]
+  git["Git est l’outil qui garde les versions"]
+  gh["GitHub met les projets Git sur internet"]
+  cpt["Pour agir sur GitHub, il faut y être identifié"]
+  dep["Sur GitHub, chaque projet est un dépôt"]
+  par["Chaque dépôt se règle"]
+  vis["Un dépôt choisit qui peut le lire"]
+  fic["Un dépôt est fait de fichiers"]
+  com["Changer un fichier, c’est créer une version"]
+  his["Les versions s’empilent dans le temps"]
+  bra["Les versions peuvent suivre plusieurs chemins"]
+  pr["Un chemin peut demander à rejoindre un autre"]
+  fus["Deux chemins se rejoignent"]
+  iss["Le travail à faire se note dans le dépôt"]
+  rdm["Un dépôt se présente à ses lecteurs"]
+  act["Un commit peut déclencher un travail automatique"]
+  pag["Un dépôt peut devenir un site web"]
+  cyc["Du changement au site en ligne"]
+  ver --> git
+  git --> gh
+  gh --> cpt
+  gh --> dep
+  cpt --> dep
+  dep --> par
+  dep --> vis
+  par --> vis
+  dep --> fic
+  git --> com
+  fic --> com
+  com --> his
+  com --> bra
+  bra --> pr
+  pr --> fus
+  dep --> iss
+  fus --> iss
+  fic --> rdm
+  com --> act
+  par --> act
+  par --> pag
+  vis --> pag
+  bra --> pag
+  act --> pag
+  fic --> cyc
+  com --> cyc
+  act --> cyc
+  pag --> cyc`;
+var COMP={"ver": {"notion": "ver"}, "git": {"notion": "git"}, "gh": {"notion": "gh"}, "cpt": {"notion": "cpt"}, "dep": {"notion": "dep"}, "par": {"notion": "par"}, "vis": {"notion": "vis"}, "fic": {"notion": "fic"}, "com": {"notion": "com"}, "his": {"notion": "his"}, "bra": {"notion": "bra"}, "pr": {"notion": "pr"}, "fus": {"notion": "fus"}, "iss": {"notion": "iss"}, "rdm": {"notion": "rdm"}, "act": {"notion": "act"}, "pag": {"notion": "pag"}, "cyc": {"notion": "cyc"}};
+var NOTIONS={"ver": {"t": "Gestion de versions", "ax": ["Une version est l’état d’un projet à un moment donné.", "La gestion de versions garde chaque version d’un projet.", "Elle montre ce qui a changé d’une version à l’autre.", "Elle permet de revenir à une version précédente."], "pratique": []}, "git": {"t": "Git", "ax": ["Git est un logiciel de gestion de versions.", "Il garde les versions d’un dossier et de tous ses fichiers.", "Il est gratuit et libre.", "Il fonctionne aussi sans internet, sur un ordinateur."], "pratique": []}, "gh": {"t": "GitHub", "ax": ["GitHub est un site web.", "Il héberge sur internet des projets gérés avec Git.", "Il ajoute des outils autour de Git : discussion, publication, automatisation.", "Son interface est en anglais.", "Son usage de base est gratuit.", "Pour l’ouvrir, je tape `github.com` dans le navigateur."], "pratique": [6]}, "cpt": {"t": "Compte", "ax": ["Un compte identifie une personne sur GitHub.", "Chaque compte a un nom d’utilisateur unique.", "Ce nom apparaît dans l’adresse de ses pages : `github.com/nom`.", "Lire un projet public ne demande pas de compte ; le modifier en demande un.", "Pour me connecter, je clique sur « Sign in ».", "Le menu de mon compte s’ouvre en cliquant sur ma photo de profil, en haut à droite."], "pratique": [5, 6]}, "dep": {"t": "Dépôt", "ax": ["Un dépôt est un projet hébergé sur GitHub.", "Il contient les fichiers du projet et toutes leurs versions.", "Il appartient à un compte.", "Son adresse est `github.com/compte/dépôt`.", "En anglais, un dépôt se dit « repository », souvent abrégé « repo ».", "Sa page est découpée en onglets ; l’onglet « Code » montre ses fichiers.", "Pour créer un dépôt, je clique sur « + » en haut à droite, puis sur « New repository ».", "Je retrouve mes dépôts sur ma page de profil, onglet « Repositories »."], "pratique": [7, 8]}, "par": {"t": "Paramètres", "ax": ["Les paramètres sont les réglages d’un dépôt.", "Ils se trouvent dans l’onglet « Settings » du dépôt.", "Seuls le propriétaire du dépôt et ses administrateurs y ont accès.", "Ils sont rangés en sections, dans une colonne à gauche.", "La « Danger Zone », tout en bas, regroupe les réglages risqués.", "Si l’onglet « Settings » n’apparaît pas, je l’ouvre par le menu « … » des onglets.", "Pour renommer le dépôt, je change « Repository name », puis je clique sur « Rename »."], "pratique": [6, 7]}, "vis": {"t": "Visibilité", "ax": ["Un dépôt est public ou privé.", "Un dépôt public peut être lu par tout le monde.", "Un dépôt privé ne peut être lu que par son propriétaire et les personnes qu’il invite.", "Une étiquette « Public » ou « Private » est affichée à côté du nom du dépôt.", "La visibilité se choisit à la création du dépôt et peut changer ensuite.", "Pour la changer, j’ouvre les paramètres, puis « Change visibility » dans la « Danger Zone ».", "GitHub me demande de confirmer avant de changer la visibilité."], "pratique": [6, 7]}, "fic": {"t": "Fichier", "ax": ["Un dépôt contient des fichiers, rangés dans des dossiers.", "L’onglet « Code » affiche la liste des fichiers.", "Cliquer sur un fichier affiche son contenu.", "La fin du nom d’un fichier, l’extension, dit son type : `.html`, `.md`, `.png`.", "Pour modifier un fichier, je clique sur le crayon, en haut à droite du fichier.", "Pour créer un fichier, je clique sur « Add file », puis sur « Create new file ».", "Pour importer un fichier de mon appareil, je clique sur « Add file », puis sur « Upload files »."], "pratique": [5, 6, 7]}, "com": {"t": "Commit", "ax": ["Un commit enregistre un ou plusieurs changements dans le dépôt.", "Chaque commit crée une nouvelle version du dépôt.", "Un commit porte un message qui décrit le changement.", "Il garde son auteur et sa date.", "Il a un identifiant unique, souvent abrégé à sept caractères, comme `bd46bc0`.", "Après avoir modifié un fichier, je clique sur « Commit changes… ».", "J’écris le message dans « Commit message », puis je clique sur « Commit changes »."], "pratique": [6, 7]}, "his": {"t": "Historique", "ax": ["L’historique est la liste des commits d’un dépôt.", "Il va du commit le plus récent au plus ancien.", "Chaque ligne montre le message, l’auteur et la date d’un commit.", "Ouvrir un commit montre ses changements : en rouge ce qui est retiré, en vert ce qui est ajouté.", "Pour ouvrir l’historique, je clique sur le nombre de commits, à côté de l’horloge, au-dessus des fichiers.", "Pour voir les commits d’un seul fichier, j’ouvre ce fichier et je clique sur « History »."], "pratique": [5, 6]}, "bra": {"t": "Branche", "ax": ["Une branche est une suite de commits.", "Chaque dépôt a une branche principale, en général nommée `main`.", "Une nouvelle branche part d’une branche existante, comme une copie.", "Les commits faits sur une branche ne touchent pas les autres branches.", "Une branche sert à essayer un changement sans toucher à la branche principale.", "Le menu des branches, en haut à gauche des fichiers, montre la branche affichée.", "Pour créer une branche, j’ouvre ce menu, je tape un nom, puis je clique sur « Create branch »."], "pratique": [6, 7]}, "pr": {"t": "Pull request", "ax": ["Une pull request propose d’intégrer les commits d’une branche dans une autre.", "Elle compare deux branches : celle qui propose et celle qui reçoit.", "Elle montre les changements proposés avant toute intégration.", "On peut en discuter par des commentaires.", "Elle a un numéro, précédé de `#`.", "Elle reste ouverte jusqu’à ce qu’elle soit fusionnée ou fermée.", "Après un commit sur une branche, je clique sur « Compare & pull request ».", "Sinon, j’ouvre l’onglet « Pull requests », puis je clique sur « New pull request ».", "Je donne un titre, puis je clique sur « Create pull request »."], "pratique": [7, 8, 9]}, "fus": {"t": "Fusion", "ax": ["La fusion intègre les commits d’une branche dans une autre.", "Après la fusion, la branche qui reçoit contient les changements.", "Fusionner une pull request la ferme.", "Un conflit survient quand deux branches changent la même ligne différemment.", "Un conflit doit être résolu avant la fusion.", "Pour fusionner, je clique sur « Merge pull request », puis sur « Confirm merge ».", "Après la fusion, je peux supprimer la branche avec « Delete branch »."], "pratique": [6, 7]}, "iss": {"t": "Issue", "ax": ["Une issue note un problème, une question ou une tâche dans un dépôt.", "Elle a un titre, une description et un numéro précédé de `#`.", "Elle est ouverte ou fermée.", "On peut en discuter par des commentaires.", "Pour créer une issue, j’ouvre l’onglet « Issues », puis je clique sur « New issue ».", "Pour la fermer, je clique sur « Close issue »."], "pratique": [5, 6]}, "rdm": {"t": "README", "ax": ["Le README est le fichier qui présente un dépôt.", "Il est placé à la racine du dépôt, hors des dossiers.", "Son contenu s’affiche sous la liste des fichiers, sur la page du dépôt.", "Il s’appelle en général `README.md`.", "L’extension `.md` signale du Markdown : du texte avec des marques de mise en forme.", "En Markdown, je mets `#` en début de ligne pour faire un titre.", "En Markdown, j’entoure un mot de `**` pour le mettre en gras.", "Pour ajouter un README, je crée un fichier nommé `README.md`."], "pratique": [6, 7, 8]}, "act": {"t": "Actions", "ax": ["GitHub Actions lance des tâches automatiquement, sur les serveurs de GitHub.", "Une tâche se lance à la suite d’un événement, par exemple un commit.", "Un ensemble de tâches s’appelle un workflow.", "Chaque lancement d’un workflow s’appelle une exécution, « run » en anglais.", "Une exécution réussie a une coche verte, une exécution échouée une croix rouge, une exécution en cours un rond jaune.", "Pour suivre les exécutions, j’ouvre l’onglet « Actions ».", "Pour relancer une exécution échouée, je l’ouvre, puis je clique sur « Re-run jobs »."], "pratique": [6, 7]}, "pag": {"t": "GitHub Pages", "ax": ["GitHub Pages publie un site web à partir des fichiers d’un dépôt.", "L’adresse du site est `compte.github.io/dépôt`.", "Le fichier `index.html` est la page d’accueil du site.", "Sur un compte gratuit, le dépôt doit être public.", "Le site se met à jour après chaque commit sur la branche publiée.", "Pour activer GitHub Pages, j’ouvre les paramètres, section « Pages ».", "Sous « Source », je choisis « Deploy from a branch », puis la branche et le dossier, puis « Save »."], "pratique": [6, 7]}, "cyc": {"t": "Cycle de publication", "ax": ["Le cycle de publication mène d’un changement à sa mise en ligne.", "Il a quatre étapes : modifier, enregistrer, construire, afficher.", "Modifier : je change un fichier du dépôt.", "Enregistrer : je fais un commit sur la branche publiée.", "Construire : une exécution « pages build and deployment » se lance dans « Actions ».", "Afficher : quand elle a sa coche verte, la nouvelle version est en ligne.", "La mise en ligne prend en général une à deux minutes.", "Si le site ne change pas, je recharge sa page, car le navigateur peut garder l’ancienne version."], "pratique": [3, 4, 5, 6, 8]}};
+var G=[{"k": "A", "t": "Constitutives", "d": "Étudient ce qui compose une construction", "i": [[1, "Constitutive", "ses composants"], [2, "Élémentaire", "ses éléments fondamentaux"], [3, "Compositionnelle", "la combinaison de ses éléments"], [4, "Décompositive", "sa décomposition en sous-éléments"], [5, "Quantitative", "le nombre et la quantité de ses composants"], [6, "Qualitative", "la nature de ses composants"]]}, {"k": "B", "t": "Sémantiques", "d": "Étudient le sens", "i": [[7, "Sémantique", "sa signification"], [8, "Définitionnelle", "sa définition"], [9, "Intensionnelle", "ses propriétés constitutives"], [10, "Extensionnelle", "l’ensemble des objets auxquels elle s’applique"], [11, "Terminologique", "les termes qui la désignent"], [12, "Lexicale", "son rapport au vocabulaire"], [13, "Interprétative", "les interprétations possibles"], [14, "Polysémique", "la pluralité de ses significations"]]}, {"k": "C", "t": "Structurelles", "d": "Étudient l’organisation interne", "i": [[15, "Structurelle", "l’organisation de ses composants"], [16, "Hiérarchique", "les niveaux et rangs"], [17, "Architecturale", "l’organisation globale"], [18, "Organisationnelle", "la disposition des éléments"], [19, "Taxonomique", "sa classification"], [20, "Typologique", "ses différents types"], [21, "Modulaire", "son organisation en unités autonomes"]]}, {"k": "D", "t": "Relationnelles", "d": "Étudient les rapports entre les éléments", "i": [[22, "Relationnelle", "les liens entre les éléments"], [23, "Logique", "les rapports de conséquence et de cohérence"], [24, "Causale", "les rapports de cause à effet"], [25, "Corrélationnelle", "les associations entre phénomènes"], [26, "Fonctionnelle", "les rapports de fonction"], [27, "Dépendancielle", "les rapports de dépendance"], [28, "Oppositionnelle", "les rapports d’opposition"], [29, "Complémentaire", "les rapports de complémentarité"], [30, "Conditionnelle", "les rapports de condition"], [31, "Comparative", "les rapports de similitude et de différence"], [32, "Interactionnelle", "les influences réciproques"], [33, "Temporelle", "les rapports de succession et de simultanéité"], [34, "Spatiale", "les rapports de position et de proximité"]]}, {"k": "E", "t": "Logiques et argumentatives", "d": "Étudient la construction du raisonnement", "i": [[35, "Propositionnelle", "les propositions formulées"], [36, "Prédicative", "les propriétés attribuées aux objets"], [37, "Inférentielle", "les déductions et inductions"], [38, "Déductive", "les conséquences nécessaires"], [39, "Inductive", "les généralisations"], [40, "Abductive", "les hypothèses explicatives"], [41, "Argumentative", "les arguments mobilisés"], [42, "Démonstrative", "les démonstrations"], [43, "Axiomatique", "les principes admis comme fondements"], [44, "Contradictoire", "les incompatibilités logiques"], [45, "Cohérentielle", "la cohérence de l’ensemble"]]}, {"k": "F", "t": "Épistémiques", "d": "Étudient le rapport à la connaissance", "i": [[46, "Épistémique", "le statut de connaissance"], [47, "Justificative", "les justifications disponibles"], [48, "Probatoire", "les preuves et éléments probants"], [49, "Véridictionnelle", "les conditions de vérité"], [50, "Vérificatoire", "les possibilités de vérification"], [51, "Falsificatoire", "les possibilités de réfutation"], [52, "Certitudinale", "le degré de certitude"], [53, "Hypothétique", "le statut des hypothèses"], [54, "Empirique", "le rapport à l’observation"], [55, "Théorique", "le rapport aux modèles explicatifs"]]}, {"k": "G", "t": "Ontologiques", "d": "Étudient la nature de ce dont on parle", "i": [[56, "Ontologique", "la nature de l’entité considérée"], [57, "Existentielle", "son existence ou sa possibilité d’existence"], [58, "Identitaire", "ce qui détermine son identité"], [59, "Catégorielle", "sa catégorie d’appartenance"], [60, "Modalitaire", "les modalités du possible, du nécessaire et du contingent"], [61, "Substantielle", "ce qui constitue son essence ou sa substance"], [62, "Délimitative", "ses frontières et limites"]]}, {"k": "H", "t": "Contextuelles", "d": "Étudient les conditions dans lesquelles la construction prend sens", "i": [[63, "Contextuelle", "son environnement de signification"], [64, "Situationnelle", "les circonstances particulières"], [65, "Historique", "son évolution dans le temps"], [66, "Culturelle", "son inscription culturelle"], [67, "Disciplinaire", "son domaine de connaissance"], [68, "Sociale", "son inscription dans les rapports sociaux"], [69, "Spatiotemporelle", "son inscription dans un espace et un temps"]]}, {"k": "I", "t": "Fonctionnelles et pragmatiques", "d": "Étudient son utilité et ses effets", "i": [[70, "Fonctionnelle", "son rôle"], [71, "Instrumentale", "les moyens qu’elle fournit"], [72, "Opératoire", "les opérations qu’elle permet"], [73, "Pragmatique", "ses effets dans l’action"], [74, "Finalitaire", "les objectifs auxquels elle contribue"], [75, "Utilitaire", "son utilité"], [76, "Performative", "ce que son énonciation accomplit"], [77, "Procédurale", "la manière de s’en servir, étape par étape"]]}, {"k": "J", "t": "Dynamiques et évolutives", "d": "Étudient ses transformations", "i": [[78, "Dynamique", "les changements qui l’affectent"], [79, "Évolutive", "son évolution"], [80, "Transformationnelle", "ses transformations"], [81, "Génétique", "son processus de formation"], [82, "Processuelle", "les processus qui la caractérisent"], [83, "Adaptative", "ses capacités d’adaptation"], [84, "Temporelle", "son évolution et ses états successifs"]]}, {"k": "K", "t": "Évaluatives", "d": "Étudient sa qualité et sa valeur", "i": [[85, "Évaluative", "son appréciation globale"], [86, "Normative", "sa conformité à des normes"], [87, "Axiologique", "sa valeur et les valeurs qu’elle engage"], [88, "Critérielle", "les critères d’appréciation"], [89, "Qualitative", "son degré de qualité"], [90, "Pertinentielle", "sa pertinence relativement à un objectif"], [91, "Optimisationnelle", "ses possibilités d’amélioration"]]}];
+var C={};
+var IMG={};
+var LIENS={"git": {"ver": "Git fait la gestion de versions d’un projet."}, "gh": {"git": "GitHub héberge sur internet des projets gérés avec Git."}, "cpt": {"gh": "Pour modifier quoi que ce soit sur GitHub, il faut un compte."}, "dep": {"gh": "Sur GitHub, chaque projet est un dépôt.", "cpt": "Un dépôt appartient à un compte, dont le nom figure dans son adresse."}, "par": {"dep": "Chaque dépôt a ses propres paramètres."}, "vis": {"dep": "La visibilité dit qui peut lire un dépôt.", "par": "La visibilité se change dans la « Danger Zone » des paramètres."}, "fic": {"dep": "Les fichiers d’un projet sont rangés dans son dépôt."}, "com": {"git": "Un commit est une version enregistrée par Git.", "fic": "Une modification de fichier n’est enregistrée qu’au moment du commit."}, "his": {"com": "L’historique liste les commits, du plus récent au plus ancien."}, "bra": {"com": "Une branche est une suite de commits."}, "pr": {"bra": "Une pull request propose d’intégrer une branche dans une autre."}, "fus": {"pr": "Fusionner une pull request intègre ses commits dans la branche qui reçoit."}, "iss": {"dep": "Chaque dépôt a sa liste d’issues, dans l’onglet « Issues ».", "fus": "Une pull request dont la description contient « Closes #12 » ferme l’issue n° 12 quand elle est fusionnée."}, "rdm": {"fic": "Le README est un fichier comme les autres, que GitHub affiche sur la page du dépôt."}, "act": {"com": "Un commit peut lancer une exécution dans Actions.", "par": "Les Actions d’un dépôt se règlent dans la section « Actions » de ses paramètres."}, "pag": {"par": "GitHub Pages se règle dans la section « Pages » des paramètres.", "vis": "Sur un compte gratuit, GitHub Pages ne publie qu’un dépôt public.", "bra": "GitHub Pages publie le contenu d’une seule branche.", "act": "GitHub Pages publie le site par une exécution dans Actions."}, "cyc": {"fic": "Le cycle de publication commence par la modification d’un fichier.", "com": "Dans le cycle de publication, le commit enregistre le changement.", "act": "Dans le cycle de publication, la coche verte dans Actions signale la mise en ligne.", "pag": "Le cycle de publication se termine sur le site GitHub Pages."}};
+
+/* ==========================================================================
+   MOTEUR — commun à tous les sujets
+   ========================================================================== */
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function code(e,s){s.split("`").forEach(function(p,i){if(i%2)e.appendChild(el("code",null,p));else if(p)e.appendChild(document.createTextNode(p.replace(/« /g,"«\u00a0").replace(/ ([»?!:;])/g,"\u00a0$1")))})}
+
+/* lecture du plan Mermaid */
+var N={},IDS=[];
+PLAN.split("\n").forEach(function(l){var m=l.match(/^\s*([A-Za-z_]\w*)\s*\["(.*)"\]\s*$/);
+  if(m){N[m[1]]={id:m[1],t:m[2],p:[],k:[]};IDS.push(m[1])}});
+PLAN.split("\n").forEach(function(l){var m=l.match(/^\s*([A-Za-z_]\w*)\s*-->\s*([A-Za-z_]\w*)\s*$/);
+  if(m&&N[m[1]]&&N[m[2]]){N[m[1]].k.push(m[2]);N[m[2]].p.push(m[1])}});
+function depth(i){var n=N[i];if(n.d!=null)return n.d;n.d=0;n.p.forEach(function(p){n.d=Math.max(n.d,depth(p)+1)});return n.d}
+IDS.forEach(depth);
+
+/* état : compétences acquises, et type de contenu choisi pour chaque boîte
+   ("p" principes, "r" pratique, ou n° de dimension) */
+var KEY="plan-"+SUJET.nom,ACQ={},MODES={},DIM={};
+G.forEach(function(g){g.i.forEach(function(d){DIM[d[0]]=d})});
+try{var sv=JSON.parse(localStorage.getItem(KEY)||"null");if(sv){ACQ=sv.a||{};MODES=sv.ms||{}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({a:ACQ,ms:MODES}))}catch(e){}push()}
+/* au départ, une boîte montre ses principes */
+function mode(i){var m=MODES[i];if(m==="r"||m==="l"||DIM[m]||(m==="i"&&IMG[COMP[i].notion]))return m;return "p"}
+/* notes : une par boîte, gardées à part (Recommencer ne les efface pas) */
+var NKEY="notes-"+SUJET.nom,NOTES={};
+try{NOTES=JSON.parse(localStorage.getItem(NKEY)||"{}")||{}}catch(e){}
+function saveNotes(){try{localStorage.setItem(NKEY,JSON.stringify(NOTES))}catch(e){}push()}
+
+/* page publiée : notes et compétences acquises sont aussi gardées en ligne, dans la base
+   de la page (document etat/<sujet>, lisible et modifiable par le propriétaire seulement).
+   Sans base (fichier ouvert seul), tout reste sur cet appareil. */
+var DOC=null,LAST=null,WB=false,WN=false,ONL=false;
+var DOCP="etat/"+(SUJET.nom.toLowerCase().replace(/[^a-z0-9]+/g,"-")||"sujet");
+function snapshot(){return JSON.stringify({notes:NOTES,acq:ACQ})}
+function push(){
+  if(!DOC)return;
+  if(WB){WN=true;return}
+  var body=snapshot();if(body===LAST)return;
+  WB=true;var tries=0;
+  (function go(){DOC.set(JSON.parse(body)).then(function(){LAST=body;done()},function(e){
+    if(e&&e.code==="unavailable"&&!tries++)return setTimeout(go,800+Math.random()*700);
+    online(false,"L’enregistrement en ligne a échoué. Tes notes restent sur cet appareil : copie-les par sécurité.");done()})})();
+  function done(){WB=false;if(WN){WN=false;push()}}
+}
+function online(ok,msg){
+  ONL=ok;var p=document.getElementById("mp");if(!p)return;
+  p.textContent=msg||(ok?"Tes notes sont enregistrées en ligne avec la page : elles restent d’une version à l’autre et d’un appareil à l’autre.":
+    "Tes notes restent sur cet appareil. Copie-les de temps en temps : une nouvelle version du fichier peut repartir sans elles.");
+}
+function connect(){
+  if(connect.done||!(window.claude&&typeof window.claude.use==="function"))return;connect.done=true;
+  var timer=setTimeout(function(){online(false,"Enregistrement en ligne pas encore joignable. Tes notes restent sur cet appareil.")},10000);
+  window.claude.use("db").then(function(db){
+    if(!db){clearTimeout(timer);return online(false)}
+    var ref=db.doc(DOCP);
+    ref.get().then(function(sn){
+      clearTimeout(timer);DOC=ref;
+      var d=sn&&sn.exists?(sn.data()||{}):{},dn=d.notes||{},da=d.acq||{},changed=false;
+      var mn={},ma={};Object.keys(dn).forEach(function(k){mn[k]=dn[k]});Object.keys(da).forEach(function(k){ma[k]=da[k]});
+      Object.keys(NOTES).forEach(function(k){if(!(k in mn))mn[k]=NOTES[k]});   /* notes écrites ici avant la connexion */
+      Object.keys(ACQ).forEach(function(k){if(!(k in ma))ma[k]=ACQ[k]});
+      if(JSON.stringify(mn)!==JSON.stringify(NOTES)||JSON.stringify(ma)!==JSON.stringify(ACQ))changed=true;
+      LAST=sn&&sn.exists?JSON.stringify({notes:dn,acq:da}):null;
+      NOTES=mn;ACQ=ma;
+      try{localStorage.setItem(NKEY,JSON.stringify(NOTES))}catch(e){}
+      online(true);
+      if(changed&&!(document.activeElement&&document.activeElement.classList.contains("nx")))sync();
+      push();
+    },function(){clearTimeout(timer);online(false)});
+  },function(){clearTimeout(timer);online(false)});
+}
+
+/* le menu d'une boîte : un seul type de contenu affiché à la fois dans cette boîte */
+function menu(i,onpick){
+  var m=el("select");m.setAttribute("aria-label","Contenu affiché");
+  var g0=document.createElement("optgroup");g0.label="Axiomes";
+  [["p","Principes"],["r","Pratique"],["l","Liaisons"]].forEach(function(x){var o=el("option",null,x[1]);o.value=x[0];g0.appendChild(o)});m.appendChild(g0);
+  if(IMG[COMP[i].notion]){var oi=el("option",null,"En image");oi.value="i";m.appendChild(oi)}
+  G.forEach(function(g){var og=document.createElement("optgroup");og.label=g.t;
+    g.i.forEach(function(d){var o=el("option",null,d[0]+" · "+d[1]+" — "+d[2]);o.value=d[0];og.appendChild(o)});m.appendChild(og)});
+  m.value=mode(i);m.onchange=function(){MODES[i]=m.value;save();onpick()};
+  return m;
+}
+
+/* contenu d'une boîte selon le type choisi */
+function picture(nid){var d=el("div");d.innerHTML=IMG[nid].svg;return d.firstChild}
+function unnum(t){return t.replace(/\s*\(axiomes? [\d ,et]+\)/g,"").replace(/Axiomes? [\d ,et]+ — /g,"")}
+function legend(b,nid){IMG[nid].leg.forEach(function(l){var p=el("div","lg");p.appendChild(el("b",null,l[0]));p.appendChild(document.createTextNode(" — "+unnum(l[1])));b.appendChild(p)})}
+function zoom(nid){
+  var Z=document.getElementById("zo"),B=document.getElementById("zb");
+  document.getElementById("zn").textContent=NOTIONS[nid].t;B.innerHTML="";
+  var w=el("div","im");w.appendChild(picture(nid));B.appendChild(w);legend(B,nid);
+  Z.hidden=false;Z.scrollTop=0;
+}
+document.getElementById("zc").onclick=function(){document.getElementById("zo").hidden=true};
+function body(nid,MODE){
+  var no=NOTIONS[nid],b=el("div","bd");
+  if(MODE==="i"){
+    b.appendChild(picture(nid));
+    var z=el("button","im");z.setAttribute("aria-label","Agrandir l’image");
+    while(b.firstChild)z.appendChild(b.firstChild);
+    z.onclick=function(){zoom(nid)};b.appendChild(z);
+    b.appendChild(el("div","zh","Toucher l’image pour l’agrandir"));
+    legend(b,nid);
+  }else if(MODE==="l"){
+    var ls=linksOf(SHI||Object.keys(COMP).filter(function(k){return COMP[k].notion===nid})[0]);
+    if(!ls.length)b.appendChild(el("div","no","Pas de liaison pour cette notion."));
+    else{var r0=el("div","axr");ls.forEach(function(x){var d=el("div","ax");code(d,x[1]);d.appendChild(el("small","with","avec "+short(NOTIONS[COMP[x[0]].notion].t)));r0.appendChild(d)});b.appendChild(r0)}
+  }else if(MODE==="p"||MODE==="r"){
+    var pa=no.pratique||[],l=no.ax.map(function(a,i){return [i+1,a]}).filter(function(x){return (pa.indexOf(x[0])>=0)===(MODE==="r")});
+    if(!l.length)b.appendChild(el("div","no",MODE==="r"?"Pas de pratique pour cette notion.":"Pas de principe pour cette notion."));
+    if(l.length){var r=el("div","axr");l.forEach(function(x){var d=el("div","ax");code(d,x[1]);r.appendChild(d)});b.appendChild(r)}
+  }else{
+    var v=(C[nid]||{})[MODE];
+    if(!v)b.appendChild(el("div","no","Pas encore rempli."));
+    else v.forEach(function(x){b.appendChild(el("div","vl",x[0]));
+      x[1].split("\n").forEach(function(t){var li=t.indexOf("- ")===0,c=el("div","ct"+(li?" li":"")+(t.indexOf("Non couvert")===0?" nc":""));code(c,unnum(li?t.slice(2):t));b.appendChild(c)})});
+  }
+  return b;
+}
+var RAF=0;function redraw(){cancelAnimationFrame(RAF);RAF=requestAnimationFrame(rails)}
+function grow(t){t.style.height="auto";t.style.height=t.scrollHeight+2+"px"}
+function note(i){
+  var w=el("div","nb");
+  function closed(){w.innerHTML="";var a=el("button","na","✎ Ajouter une note");a.onclick=function(){opened(true)};w.appendChild(a)}
+  function opened(focus){
+    w.innerHTML="";w.appendChild(el("div","nl","Ma note"));
+    var t=el("textarea","nx");t.value=NOTES[i]||"";t.setAttribute("aria-label","Ma note");t.rows=3;
+    var tm=0;t.oninput=function(){grow(t);redraw();clearTimeout(tm);tm=setTimeout(function(){
+      if(t.value.trim())NOTES[i]=t.value;else delete NOTES[i];saveNotes()},300)};
+    t.onblur=function(){if(t.value.trim())NOTES[i]=t.value;else{delete NOTES[i];closed();redraw()}saveNotes()};
+    w.appendChild(t);requestAnimationFrame(function(){grow(t);redraw()});if(focus)t.focus();
+  }
+  if(NOTES[i])opened(false);else closed();
+  return w;
+}
+/* ordre des lignes, de bas en haut : celui du plan (ordre de lecture) */
+var ORDER=IDS.slice();
+function jx(c,p){var j=LIENS[c];return j&&j[p]?j[p]:null}
+/* les axiomes de liaison d'une notion : vers celles du dessous, puis vers celles du dessus */
+function linksOf(i){var o=[];N[i].p.forEach(function(p){var a=jx(i,p);if(a)o.push([p,a])});
+  N[i].k.forEach(function(k){var a=jx(k,i);if(a)o.push([k,a])});return o}
+/* une ligne : le nom de la notion, puis ses axiomes en stations */
+function line(i){
+  var nid=COMP[i].notion,no=NOTIONS[nid],pa=no.pratique||[],L=el("div","ln"+(ACQ[i]?" acq":""));L.dataset.id=i;
+  var h=el("button","lh");h.appendChild(el("b",null,no.t));if(ACQ[i])h.appendChild(el("span","ok","✓"));
+  h.onclick=function(){sheet(i)};L.appendChild(h);
+  var tk=el("div","tk");
+  function station(a,cls){var st=el("div","st"),d=el("i","dt"+cls);
+    st.appendChild(d);var t=el("span");code(t,a);[].forEach.call(t.querySelectorAll("code"),function(c){if(c.textContent.length>14)c.className="w"});st.appendChild(t);tk.appendChild(st)}
+  no.ax.forEach(function(a,k){station(a,pa.indexOf(k+1)>=0?" pr":"")});
+  linksOf(i).forEach(function(x){station(x[1]," jx")});
+  L.appendChild(tk);
+  if(SHOWN&&NOTES[i])L.appendChild(el("div","lnn",NOTES[i]));
+  return L;
+}
+function short(t){return t.replace(/\s*\(.*\)$/,"")}
+/* une correspondance : l'axiome de liaison entre la notion du dessous et celle du dessus */
+function junction(p,c){
+  var a=jx(c,p),nc=NOTIONS[COMP[c].notion],np=NOTIONS[COMP[p].notion],J=el("div","jn"+(a==null?" no":""));J.dataset.e=p+">"+c;
+  if(a==null){J.textContent="Aucun axiome ne relie encore "+short(np.t)+" et "+short(nc.t)+".";return J}
+  var q=el("q");code(q,a.replace(/\.$/,""));J.appendChild(q);
+  J.appendChild(el("small",null,short(np.t)+" → "+short(nc.t)));return J;
+}
+/* les rails : de la ligne du dessous à celle du dessus, en passant par la correspondance */
+function rails(){
+  var M=document.getElementById("map");if(!M)return;
+  var old=M.querySelector("svg.rl");if(old)old.remove();
+  var gw=parseFloat(getComputedStyle(M).getPropertyValue("--gw"))||40,o=M.getBoundingClientRect();
+  var NS="http://www.w3.org/2000/svg",s=document.createElementNS(NS,"svg");s.setAttribute("class","rl");
+  function yLine(i){var t=M.querySelector('.ln[data-id="'+i+'"] .tk');if(!t)return null;return t.getBoundingClientRect().top-o.top+12}
+  E.forEach(function(e){
+    var x=gw-13-e.lane*10,yp=yLine(e.p),yc=yLine(e.c),jb=M.querySelector('.jn[data-e="'+e.p+'>'+e.c+'"]');if(yp==null||yc==null)return;
+    var r=jb.getBoundingClientRect(),yj=r.top-o.top+Math.min(r.height/2,22),col=ACQ[e.p]?"#2f6a48":"#4a4a52";
+    var path=document.createElementNS(NS,"path");
+    path.setAttribute("d","M"+gw+" "+yp+"H"+x+"V"+yc+"H"+gw);
+    path.setAttribute("fill","none");path.setAttribute("stroke",col);path.setAttribute("stroke-width","2");s.appendChild(path);
+    var c=document.createElementNS(NS,"circle");c.setAttribute("cx",x);c.setAttribute("cy",yj);c.setAttribute("r","6");
+    c.setAttribute("fill","#0e0e10");c.setAttribute("stroke",jx(e.c,e.p)==null?"#6a6a72":"#8ab4ff");c.setAttribute("stroke-width","3");
+    if(jx(e.c,e.p)==null){c.setAttribute("stroke-width","2");c.setAttribute("stroke-dasharray","3 2.5")}
+    s.appendChild(c)});
+  M.insertBefore(s,M.firstChild);
+}
+/* les liens et leurs voies (deux rails qui se chevauchent prennent deux voies) */
+var E=[];
+function lanes(){
+  var pos={};ORDER.slice().reverse().forEach(function(i,k){pos[i]=k});
+  E=[];var T={};
+  ORDER.forEach(function(c){N[c].p.forEach(function(p){E.push({p:p,c:c});
+    var t=T[p]||(T[p]={lo:pos[c],hi:pos[p]});t.lo=Math.min(t.lo,pos[c])})});
+  var L=Object.keys(T).map(function(k){return T[k]}).sort(function(a,b){return (a.hi-a.lo)-(b.hi-b.lo)||a.hi-b.hi});
+  var max=0;L.forEach(function(t){var l=0;while(L.some(function(f){return f!==t&&f.lane===l&&f.lo<t.hi&&t.lo<f.hi}))l++;t.lane=l;max=Math.max(max,l)});
+  E.forEach(function(e){e.lane=T[e.p].lane});
+  return max+1;
+}
+/* la fiche d'une notion : ✓, menu, contenu choisi, note */
+/* la fiche d'une notion : la boîte d'origine (ligne « découle de », nom, menu, contenu, note), sans case à cocher */
+function box(i){
+  var n=N[i],nid=COMP[i].notion,b=el("div","bx");b.dataset.id=i;
+  var h=el("div","bh"),t=el("span","bt");t.appendChild(el("span","cp",n.t));t.appendChild(el("span","nt",NOTIONS[nid].t));
+  h.appendChild(t);b.appendChild(h);
+  var bd=body(nid,mode(i));
+  b.appendChild(menu(i,function(){var nb=body(nid,mode(i));b.replaceChild(nb,bd);bd=nb}));
+  b.appendChild(bd);b.appendChild(note(i));return b;
+}
+var SHI=null;
+function sheet(i){
+  SHI=i;var B=document.getElementById("sb");B.innerHTML="";B.appendChild(box(i));
+  var S=document.getElementById("sh");if(S.hidden){S.hidden=false;S.scrollTop=0}
+}
+document.getElementById("scl").onclick=function(){document.getElementById("sh").hidden=true;SHI=null;sync()};
+function sync(){
+  document.getElementById("sj").textContent=SUJET.nom;
+  var M=document.getElementById("map");M.innerHTML="";
+  var nl=lanes();M.style.setProperty("--gw",(18+nl*10)+"px");
+  ORDER.slice().reverse().forEach(function(c){
+    M.appendChild(line(c));
+    N[c].p.forEach(function(p){M.appendChild(junction(p,c))});
+  });
+  rails();
+}
+/* afficher ou masquer mes notes sur le plan, sous chaque notion */
+var SHOWN=false;try{SHOWN=localStorage.getItem("voir-notes-"+SUJET.nom)==="1"}catch(e){}
+var TG=document.getElementById("tgn");
+function tgLabel(){TG.textContent=SHOWN?"Masquer mes notes":"Afficher mes notes"}
+TG.onclick=function(){SHOWN=!SHOWN;try{localStorage.setItem("voir-notes-"+SUJET.nom,SHOWN?"1":"0")}catch(e){}tgLabel();sync()};
+tgLabel();
+document.title="Support d’autoformation — "+SUJET.nom;
+window.addEventListener("resize",rails);
+sync();
+(function(){var r=document.querySelector('.ln[data-id="'+IDS.filter(function(i){return !N[i].p.length})[0]+'"]');
+  if(r)requestAnimationFrame(function(){r.scrollIntoView({block:"end"});window.scrollBy(0,16)})})();
+try{connect()}catch(e){}
+window.addEventListener("load",function(){try{connect()}catch(e){}});
+</script>
+</body>
+</html>
