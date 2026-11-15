@@ -135,7 +135,7 @@ code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up)
 @keyframes vin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .tri.todo .side b{color:#4a4a52}
 .tri.cur .side b{color:var(--up)}
-body.vis{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+body.vis{padding-bottom:calc(96px + 22vh + env(safe-area-inset-bottom))}
 .vb{position:fixed;left:0;right:0;bottom:0;z-index:5;background:rgba(14,14,16,.96);border-top:1px solid #26262c;
   padding:10px 16px calc(10px + env(safe-area-inset-bottom));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .vb .vi{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:10px}
@@ -517,6 +517,8 @@ function vShow(){var n=VIS.p-1;if(n<0)return;var e=vEl(n);if(!e)return;
   /* en reculant, quand on change de partie (liaisons → axiomes, ou d'une notion à l'autre), l'élément se place au centre,
      comme le premier axiome d'une nouvelle notion en avançant */
   if(VDIR<0&&VIS.p<STEPS.length){var L=STEPS[n],E=STEPS[VIS.p];if(L.t!==E.t||L.i!==E.i){vCenter(e);return}}
+  /* en avançant, chaque nouvelle rangée (ou nouvelle partie) vient au centre de l'écran ; dans une même rangée, rien ne bouge */
+  if(VDIR>0){var pe=n>0?vEl(n-1):null;if(!pe||Math.abs(pe.getBoundingClientRect().top-e.getBoundingClientRect().top)>2){vCenter(e);return}}
   var r=e.getBoundingClientRect(),h=window.innerHeight-VB.offsetHeight;if(r.top<70||r.bottom>h-20)vCenter(e)}
 function vNext(){if(VIS.all||VIS.p>=STEPS.length)return;VDIR=1;VIS.p++;vSave();vApply();vShow()}
 function vBack(){if(VIS.all||VIS.p<=0)return;VDIR=-1;VIS.p--;vSave();vApply();vShow()}
