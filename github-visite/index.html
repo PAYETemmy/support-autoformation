@@ -575,7 +575,10 @@ function vValid(){var m=vModel(VIS.w),ty=VIS.t,L=m.t.length;if(/\.$/.test(m.t))L
   for(var j=0;j<L;j++)if(nc(ty[j])!==nc(m.t[j]))return false;return true}
 WI.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault()}});
 WI.addEventListener("input",function(){
-  VIS.t=WI.value.replace(/\n/g,"");vSave();
+  VIS.t=WI.value.replace(/\n/g,"");
+  /* un point (ou une espace) tapé par habitude après la validation ne déborde pas sur l'axiome suivant */
+  if(VIS.w<STEPS.length){var m0=vModel(VIS.w).t;while(VIS.t&&/^[. ]/.test(VIS.t)&&VIS.t[0]!==m0[0])VIS.t=VIS.t.slice(1);if(WI.value.replace(/\n/g,"")!==VIS.t)WI.value=VIS.t}
+  vSave();
   if(vValid()){var tg=vTarget(VIS.w);if(tg){if(tg.dataset.o!=null){tg.innerHTML=tg.dataset.o;delete tg.dataset.o}tg.closest(".st,.lk").classList.remove("cp")}
     VIS.w++;VIS.t="";WI.value="";vSave();VDIR=1;vApply();vShowW()}else vPaint()});
 function vFocus(){if(WM&&VIS.w<STEPS.length){try{WI.focus({preventScroll:true})}catch(e){WI.focus()}}}
