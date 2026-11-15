@@ -127,6 +127,25 @@ code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up)
 .mi{margin-top:10px}
 .mi .nx{min-height:120px}
 .mi button{margin-top:8px}
+/* visite guidée : un axiome à la fois, notion après notion */
+.st span,.lk{transition:opacity .3s ease-in,visibility 0s linear 0s}
+.st.vh span,.lk.vh{visibility:hidden;opacity:0;transition:opacity .3s ease-in,visibility 0s linear .3s}
+.st.vh .dt{background:var(--bg);border:2px solid #34343a}
+.st.now span,.lk.now{animation:vin .45s ease-out}
+@keyframes vin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.tri.todo .side b{color:#4a4a52}
+.tri.cur .side b{color:var(--up)}
+body.vis{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+.vb{position:fixed;left:0;right:0;bottom:0;z-index:5;background:rgba(14,14,16,.96);border-top:1px solid #26262c;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.vb .vi{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.vb .vt{flex:1;min-width:0}
+.vb .vo{font-size:13.5px;color:var(--fg)}
+.vb .vo b{color:var(--up);font-weight:600}
+.vb .vp{font-size:11.5px;color:var(--m);margin-top:2px}
+.vb .vr{height:3px;background:#26262c;border-radius:2px;margin-top:6px;overflow:hidden}
+.vb .vr i{display:block;height:100%;background:var(--up);border-radius:2px}
+.vb button{flex:none;font-size:11.5px;color:var(--m);background:none;border:1px solid #34343a;border-radius:7px;padding:6px 8px}
 </style>
 </head>
 <body>
@@ -449,8 +468,64 @@ TG.onclick=function(){SHOWN=!SHOWN;try{localStorage.setItem("voir-notes-"+SUJET.
 tgLabel();
 document.title="Support d’autoformation — "+SUJET.nom;
 window.addEventListener("resize",draw);
+/* visite guidée : les axiomes apparaissent un par un, notion après notion ; l'avancée est sauvegardée */
+var VKEY="visite-"+SUJET.nom,VIS={p:0,all:false},VDIR=1;
+try{var vs=JSON.parse(localStorage.getItem(VKEY)||"null");if(vs)VIS=vs}catch(e){}
+function vSave(){try{localStorage.setItem(VKEY,JSON.stringify(VIS))}catch(e){}}
+/* le parcours : pour chaque notion, ses axiomes de gauche à droite, puis ses axiomes de liaison */
+var STEPS=[],NSTART={};
+ORDER.forEach(function(i){var no=NOTIONS[COMP[i].notion];NSTART[i]=STEPS.length;
+  no.ax.forEach(function(a,k){STEPS.push({i:i,t:"a",k:k})});
+  N[i].k.filter(function(k){return jx(k,i)}).forEach(function(k,j){STEPS.push({i:i,t:"l",k:j})})});
+function nEnd(i){var o=ORDER.indexOf(i);return o+1<ORDER.length?NSTART[ORDER[o+1]]:STEPS.length}
+function vCur(){var p=Math.min(VIS.p,STEPS.length);if(p>=STEPS.length)return null;return STEPS[p]}
+function vApply(){
+  var p=VIS.all?STEPS.length:VIS.p,cur=vCur(),last=p>0?STEPS[p-1]:null;
+  [].forEach.call(document.querySelectorAll(".tri"),function(tr){
+    var i=tr.dataset.id,s0=NSTART[i],e=nEnd(i);
+    tr.classList.toggle("todo",!VIS.all&&p<=s0);
+    tr.classList.toggle("cur",!VIS.all&&p>s0&&p<e);
+    [].forEach.call(tr.querySelectorAll(".base .st"),function(st,k){var n=s0+k;st.classList.toggle("vh",n>=p);st.classList.toggle("now",VDIR>0&&!VIS.all&&n===p-1)});
+    var na=NOTIONS[COMP[i].notion].ax.length;
+    [].forEach.call(tr.querySelectorAll(".lk"),function(lk,j){var n=s0+na+j;lk.classList.toggle("vh",n>=p);lk.classList.toggle("now",VDIR>0&&!VIS.all&&n===p-1)});
+  });
+  vBar();
+}
+var VB=document.createElement("div");VB.className="vb";VB.innerHTML='<div class="vi"><div class="vt"><div class="vo"></div><div class="vp"></div><div class="vr"><i></i></div></div><button id="vall"></button><button id="vre">Recommencer</button></div>';
+document.body.appendChild(VB);document.body.classList.add("vis");
+function vBar(){
+  var p=VIS.p,o=VB.querySelector(".vo"),q=VB.querySelector(".vp");
+  VB.querySelector("#vall").textContent=VIS.all?"Reprendre la visite":"Tout afficher";
+  VB.querySelector(".vr i").style.width=(100*Math.min(p,STEPS.length)/STEPS.length)+"%";
+  if(VIS.all){o.textContent="Tout est affiché";q.textContent="Ta visite reste où tu l’avais laissée.";return}
+  if(p>=STEPS.length){o.textContent="Visite terminée : les "+ORDER.length+" notions sont vues";q.textContent="Touche un nom pour ouvrir sa fiche.";return}
+  var s=STEPS[p],i=s.i,t=NOTIONS[COMP[i].notion].t,n=ORDER.indexOf(i)+1,done=p-NSTART[i],tot=nEnd(i)-NSTART[i];
+  if(done===0&&p>0){var pi=STEPS[p-1].i;o.innerHTML="";o.appendChild(document.createTextNode("Notion comprise : "));o.appendChild(el("b",null,NOTIONS[COMP[pi].notion].t));
+    q.textContent="Touche l’écran pour passer à "+t+" ("+n+" / "+ORDER.length+")";return}
+  o.innerHTML="";o.appendChild(document.createTextNode("Objectif : comprendre "));o.appendChild(el("b",null,t));
+  q.textContent="Notion "+n+" / "+ORDER.length+" · "+done+" / "+tot+(p===0?" · touche à droite pour avancer, à gauche pour reculer":"");
+}
+/* en avançant, on suit l'axiome qui apparaît ; en reculant, la place qui vient de se vider */
+function vShow(){var p=VDIR>0?VIS.p-1:VIS.p;
+  /* en reculant jusqu'aux liaisons d'une notion, la liaison se place au centre de l'écran, comme le premier axiome d'une notion en avançant */
+  if(VDIR<0&&VIS.p>0&&STEPS[VIS.p-1].t==="l"){var L=STEPS[VIS.p-1],tl=document.querySelector('.tri[data-id="'+L.i+'"]'),el2=tl&&tl.querySelectorAll(".lk")[L.k];
+    if(el2){var rl=el2.getBoundingClientRect(),hl=window.innerHeight-VB.offsetHeight;window.scrollBy({top:rl.top-(hl*0.45),behavior:"smooth"});return}}
+  if(p<0||p>=STEPS.length)return;var s=STEPS[p],tr=document.querySelector('.tri[data-id="'+s.i+'"]');if(!tr)return;
+  var e=s.t==="a"?tr.querySelectorAll(".base .st")[s.k]:tr.querySelectorAll(".lk")[s.k];
+  if(e){var r=e.getBoundingClientRect(),h=window.innerHeight-VB.offsetHeight;if(r.top<70||r.bottom>h-20)window.scrollBy({top:r.top-(h*0.45),behavior:"smooth"})}}
+function vNext(){if(VIS.all||VIS.p>=STEPS.length)return;VDIR=1;VIS.p++;vSave();vApply();vShow()}
+function vBack(){if(VIS.all||VIS.p<=0)return;VDIR=-1;VIS.p--;vSave();vApply();vShow()}
+document.addEventListener("click",function(ev){
+  if(!document.getElementById("sh").hidden)return;
+  if(ev.target.closest("button,a,textarea,input,select,small,.vb,.mn,.side"))return;
+  /* toucher le tiers gauche de l'écran recule, le reste avance */
+  if(ev.clientX<window.innerWidth/3)vBack();else vNext()});
+VB.querySelector("#vall").onclick=function(){VIS.all=!VIS.all;VDIR=1;vSave();vApply();if(!VIS.all)vShow()};
+VB.querySelector("#vre").onclick=function(){VIS={p:0,all:false};vSave();vApply();window.scrollTo(0,document.body.scrollHeight)};
+var _sync=sync;sync=function(){_sync();vApply()};
+
 sync();
-requestAnimationFrame(function(){window.scrollTo(0,document.body.scrollHeight)});
+requestAnimationFrame(function(){window.scrollTo(0,document.body.scrollHeight);vShow()});
 try{connect()}catch(e){}
 window.addEventListener("load",function(){try{connect()}catch(e){}});
 </script>
