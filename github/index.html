@@ -530,7 +530,10 @@ document.addEventListener("touchstart",function(e){if(e.touches.length!==1||!doc
   SW={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
 /* sur ordinateur : flèche ← pour reculer, flèche → pour avancer */
 document.addEventListener("keydown",function(e){if(!document.getElementById("sh").hidden||e.altKey||e.ctrlKey||e.metaKey)return;
-  var t=e.target;if(t&&(t.tagName==="TEXTAREA"||t.tagName==="INPUT"||t.isContentEditable))return;
+  var t=e.target;
+  /* en écriture, la flèche ← recule aussi depuis le champ de recopie (on corrige avec la touche d'effacement) */
+  if(t&&t.id==="wi"){if(e.key==="ArrowLeft"){e.preventDefault();vBack()}else if(e.key==="ArrowRight"||e.key==="ArrowUp"||e.key==="ArrowDown")e.preventDefault();return}
+  if(t&&(t.tagName==="TEXTAREA"||t.tagName==="INPUT"||t.isContentEditable))return;
   if(e.key==="ArrowLeft"){e.preventDefault();vBack()}else if(e.key==="ArrowRight"){e.preventDefault();vNext()}});
 document.addEventListener("touchend",function(e){if(!SW)return;var t=e.changedTouches[0],dx=t.clientX-SW.x,dy=t.clientY-SW.y;SW=null;
   if(dx<-40&&Math.abs(dy)<Math.abs(dx)*0.7){SWT=Date.now();vBack()}},{passive:true});
