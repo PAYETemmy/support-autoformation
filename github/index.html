@@ -405,6 +405,10 @@ function draw(){
     var tp=tr.querySelector(".tp"),sts=tr.querySelectorAll(".base .st");
     if(tp.children.length&&sts.length){var bx=bxo(tp),y0=sts[0].getBoundingClientRect().top;
       [].forEach.call(sts,function(st){if(Math.abs(st.getBoundingClientRect().top-y0)<2){var D=c(st.querySelector(".dt"));ln(toward(D,bx),D,"#5a5a63")}})}
+    /* toutes les rangées de la base sont reliées entre elles, par un trait vertical à gauche */
+    if(sts.length>3){var bl=tr.querySelector(".base").getBoundingClientRect().left-o.left,xs=bl-5,ys=[];
+      [].forEach.call(sts,function(st,j){if(j%3===0)ys.push(c(st.querySelector(".dt"))[1])});
+      ln([xs,ys[0]],[xs,ys[ys.length-1]],"#4a4a52",2);ys.forEach(function(y){ln([xs-1,y],[bl+1,y],"#4a4a52",2)})}
     var below=tris[k+1];if(!below||!sts.length)return;
     var lk=below.querySelector('.lk[data-to="'+tr.dataset.id+'"]');if(!lk)return;
     /* un trait par colonne, jusque sous la base */
