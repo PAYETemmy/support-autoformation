@@ -135,17 +135,7 @@ code{font:12.5px ui-monospace,Menlo,monospace;background:#1f1f25;color:var(--up)
 @keyframes vin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .tri.todo .side b{color:#4a4a52}
 .tri.cur .side b{color:var(--up)}
-body.vis{padding-bottom:calc(96px + 22vh + env(safe-area-inset-bottom))}
-.vb{position:fixed;left:0;right:0;bottom:0;z-index:5;background:rgba(14,14,16,.96);border-top:1px solid #26262c;
-  padding:10px 16px calc(10px + env(safe-area-inset-bottom));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.vb .vi{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:10px}
-.vb .vt{flex:1;min-width:0}
-.vb .vo{font-size:13.5px;color:var(--fg)}
-.vb .vo b{color:var(--up);font-weight:600}
-.vb .vp{font-size:11.5px;color:var(--m);margin-top:2px}
-.vb .vr{height:3px;background:#26262c;border-radius:2px;margin-top:6px;overflow:hidden}
-.vb .vr i{display:block;height:100%;background:var(--up);border-radius:2px}
-.vb button{flex:none;font-size:11.5px;color:var(--m);background:none;border:1px solid #34343a;border-radius:7px;padding:6px 8px}
+body.vis{padding-bottom:calc(30vh + env(safe-area-inset-bottom))}
 .mn .gn{margin-top:12px;min-height:140px}
 .mn .gn[hidden]{display:none}
 /* pas de zoom au double toucher pendant la visite */
@@ -493,48 +483,32 @@ function vApply(){
     var na=NOTIONS[COMP[i].notion].ax.length;
     [].forEach.call(tr.querySelectorAll(".lk"),function(lk,j){var n=s0+na+j;lk.classList.toggle("vh",n>=p);lk.classList.toggle("now",VDIR>0&&!VIS.all&&n===p-1)});
   });
-  vBar();
 }
-var VB=document.createElement("div");VB.className="vb";VB.innerHTML='<div class="vi"><div class="vt"><div class="vo"></div><div class="vp"></div><div class="vr"><i></i></div></div><button id="vall"></button><button id="vre">Recommencer</button></div>';
-document.body.appendChild(VB);document.body.classList.add("vis");
-function vBar(){
-  var p=VIS.p,o=VB.querySelector(".vo"),q=VB.querySelector(".vp");
-  VB.querySelector("#vall").textContent=VIS.all?"Reprendre la visite":"Tout afficher";
-  VB.querySelector(".vr i").style.width=(100*Math.min(p,STEPS.length)/STEPS.length)+"%";
-  if(VIS.all){o.textContent="Tout est affiché";q.textContent="Ta visite reste où tu l’avais laissée.";return}
-  if(p>=STEPS.length){o.textContent="Visite terminée : les "+ORDER.length+" notions sont vues";q.textContent="Touche un nom pour ouvrir sa fiche.";return}
-  var s=STEPS[p],i=s.i,t=NOTIONS[COMP[i].notion].t,n=ORDER.indexOf(i)+1,done=p-NSTART[i],tot=nEnd(i)-NSTART[i];
-  if(done===0&&p>0){var pi=STEPS[p-1].i;o.innerHTML="";o.appendChild(document.createTextNode("Notion comprise : "));o.appendChild(el("b",null,NOTIONS[COMP[pi].notion].t));
-    q.textContent="Touche l’écran pour passer à "+t+" ("+n+" / "+ORDER.length+")";return}
-  o.innerHTML="";o.appendChild(document.createTextNode("Objectif : comprendre "));o.appendChild(el("b",null,t));
-  q.textContent="Notion "+n+" / "+ORDER.length+" · "+done+" / "+tot+(p===0?" · touche l’écran pour avancer, glisse vers la gauche pour reculer":"");
-}
+document.body.classList.add("vis");
 /* l'élément à suivre : en avançant, celui qui apparaît ; en reculant, le dernier encore affiché */
 function vEl(n){var s=STEPS[n],tr=s&&document.querySelector('.tri[data-id="'+s.i+'"]');if(!tr)return null;
   return s.t==="a"?tr.querySelectorAll(".base .st")[s.k]:tr.querySelectorAll(".lk")[s.k]}
-function vCenter(e){var r=e.getBoundingClientRect(),h=window.innerHeight-VB.offsetHeight;window.scrollBy({top:r.top-(h*0.45),behavior:"smooth"})}
+function vCenter(e){var r=e.getBoundingClientRect(),h=window.innerHeight;window.scrollBy({top:r.top-(h*0.45),behavior:"smooth"})}
 function vShow(){var n=VIS.p-1;if(n<0)return;var e=vEl(n);if(!e)return;
   /* en reculant, quand on change de partie (liaisons → axiomes, ou d'une notion à l'autre), l'élément se place au centre,
      comme le premier axiome d'une nouvelle notion en avançant */
   if(VDIR<0&&VIS.p<STEPS.length){var L=STEPS[n],E=STEPS[VIS.p];if(L.t!==E.t||L.i!==E.i){vCenter(e);return}}
   /* en avançant, chaque nouvelle rangée (ou nouvelle partie) vient au centre de l'écran ; dans une même rangée, rien ne bouge */
   if(VDIR>0){var pe=n>0?vEl(n-1):null;if(!pe||Math.abs(pe.getBoundingClientRect().top-e.getBoundingClientRect().top)>2){vCenter(e);return}}
-  var r=e.getBoundingClientRect(),h=window.innerHeight-VB.offsetHeight;if(r.top<70||r.bottom>h-20)vCenter(e)}
+  var r=e.getBoundingClientRect(),h=window.innerHeight;if(r.top<70||r.bottom>h-20)vCenter(e)}
 function vNext(){if(VIS.all||VIS.p>=STEPS.length)return;VDIR=1;VIS.p++;vSave();vApply();vShow()}
 function vBack(){if(VIS.all||VIS.p<=0)return;VDIR=-1;VIS.p--;vSave();vApply();vShow()}
 document.addEventListener("click",function(ev){
   if(!document.getElementById("sh").hidden)return;
-  if(ev.target.closest("button,a,textarea,input,select,small,.vb,.mn,.side"))return;
+  if(ev.target.closest("button,a,textarea,input,select,small,.mn,.side"))return;
   if(Date.now()-SWT<500)return;
   vNext()});
 /* glisser vers la gauche, n'importe où sur l'écran, recule */
 var SW=null,SWT=0;
-document.addEventListener("touchstart",function(e){if(e.touches.length!==1||!document.getElementById("sh").hidden||e.target.closest(".vb,.mn textarea")){SW=null;return}
+document.addEventListener("touchstart",function(e){if(e.touches.length!==1||!document.getElementById("sh").hidden||e.target.closest(".mn textarea")){SW=null;return}
   SW={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
 document.addEventListener("touchend",function(e){if(!SW)return;var t=e.changedTouches[0],dx=t.clientX-SW.x,dy=t.clientY-SW.y;SW=null;
   if(dx<-40&&Math.abs(dy)<Math.abs(dx)*0.7){SWT=Date.now();vBack()}},{passive:true});
-VB.querySelector("#vall").onclick=function(){VIS.all=!VIS.all;VDIR=1;vSave();vApply();if(!VIS.all)vShow()};
-VB.querySelector("#vre").onclick=function(){VIS={p:0,all:false};vSave();vApply();window.scrollTo(0,document.body.scrollHeight)};
 /* « Mes notes » : « Afficher mes notes » ouvre, juste en bas, un champ de notes globales (pour tout le sujet), sauvegardé */
 var GKEY="notes-globales-"+SUJET.nom,GN=document.createElement("textarea");GN.className="nx gn";GN.rows=6;
 GN.setAttribute("aria-label","Mes notes globales");GN.placeholder="Mes notes sur "+SUJET.nom+"…";
