@@ -387,8 +387,10 @@ function triangle(i){
 }
 function short(t){return t.replace(/\s*\(.*\)$/,"")}
 /* les traits : la base converge vers le milieu du sommet ; une liaison se démultiplie vers les axiomes de la notion juste au-dessus */
+var TRAITS=false; /* les traits sont retirés (15/11) ; remettre true pour les retrouver */
 function draw(){
   var M=document.getElementById("map");if(!M)return;
+  if(!TRAITS){var o0=M.querySelector("svg.tl");if(o0)o0.remove();return}
   var old=M.querySelector("svg.tl");if(old)old.remove();
   var NS="http://www.w3.org/2000/svg",s=document.createElementNS(NS,"svg"),o=M.getBoundingClientRect(),m=4;s.setAttribute("class","tl");
   function c(e){var r=e.getBoundingClientRect();return [r.left+r.width/2-o.left,r.top+r.height/2-o.top]}
