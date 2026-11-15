@@ -156,6 +156,8 @@ html,body{touch-action:manipulation}
 .cp .ch.cur{box-shadow:-2px 0 0 var(--up)}
 .cp .ch.end{box-shadow:2px 0 0 var(--up)}
 #wi{position:absolute;opacity:0;font-size:16px;width:40px;height:24px;border:0;padding:0;resize:none;caret-color:transparent;color:transparent;background:transparent;z-index:2}
+.md .mo .rz{font-size:12.5px;color:var(--m);border:1px solid var(--l);border-radius:7px;padding:4px 10px;align-self:center}
+.md .mo .rz.sure{color:#ff7b72;border-color:#ff7b72}
 </style>
 </head>
 <body>
@@ -588,12 +590,23 @@ var _apply=vApply;vApply=function(){
   var keep=VIS.p;VIS.p=VIS.w;_apply();VIS.p=keep;vPaint()};
 /* le choix du mode, au-dessus de « Mes notes » (les notes restent tout en bas) */
 var MD=document.createElement("section");MD.className="md";
-MD.innerHTML='<h2>Mode</h2><div class="mo"><button data-m="l">Lecture</button><button data-m="e">Écriture</button></div>';
+MD.innerHTML='<h2>Mode</h2><div class="mo"><button data-m="l">Lecture</button><button data-m="e">Écriture</button><button class="rz" id="vrz">Réinitialiser</button></div>';
 document.querySelector(".mn").before(MD);
-function vMode(){[].forEach.call(MD.querySelectorAll("button"),function(b){b.classList.toggle("on",(b.dataset.m==="e")===WM)})}
-[].forEach.call(MD.querySelectorAll("button"),function(b){b.onclick=function(){WM=b.dataset.m==="e";try{localStorage.setItem(MKEY,WM?"e":"l")}catch(e){}
+function vMode(){[].forEach.call(MD.querySelectorAll("button[data-m]"),function(b){b.classList.toggle("on",(b.dataset.m==="e")===WM)})}
+[].forEach.call(MD.querySelectorAll("button[data-m]"),function(b){b.onclick=function(){WM=b.dataset.m==="e";try{localStorage.setItem(MKEY,WM?"e":"l")}catch(e){}
   vMode();sync();if(WM){vShowW();vFocus()}else vShow()}});
 vMode();
+/* « Réinitialiser » : efface tout ce que l'utilisateur a fait (visite, recopie, mode, notes des fiches, menus des fiches),
+   sauf les notes globales du bas ; deux touches pour confirmer */
+var RZ=document.getElementById("vrz"),rzT=0;
+RZ.onclick=function(){
+  if(!RZ.classList.contains("sure")){RZ.classList.add("sure");RZ.textContent="Confirmer ?";clearTimeout(rzT);
+    rzT=setTimeout(function(){RZ.classList.remove("sure");RZ.textContent="Réinitialiser"},3000);return}
+  clearTimeout(rzT);RZ.classList.remove("sure");RZ.textContent="Réinitialiser";
+  VIS={p:0,all:false,w:0,t:""};vSave();WI.value="";if(document.activeElement===WI)WI.blur();
+  WM=false;try{localStorage.setItem(MKEY,"l")}catch(e){}
+  NOTES={};saveNotes();ACQ={};MODES={};save();
+  vMode();sync();window.scrollTo(0,document.body.scrollHeight)};
 /* en écriture, toucher l'écran ouvre le clavier au lieu d'avancer */
 document.addEventListener("click",function(ev){if(!WM||!document.getElementById("sh").hidden)return;
   if(ev.target.closest("button,a,textarea,input,select,small,.mn,.md,.side"))return;vFocus()},true);
