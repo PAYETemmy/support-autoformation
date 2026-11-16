@@ -71,6 +71,8 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 .gd{stroke:#26262c;stroke-width:2;stroke-dasharray:2 8;stroke-linecap:round;fill:none;animation:march 1s linear infinite}
 .gd.lk{stroke:#23314c}
 @keyframes march{to{stroke-dashoffset:-20}}
+.gl{opacity:0;transition:opacity .15s;pointer-events:none}
+.gl.on{opacity:1}
 .gl text{font-size:17px;font-weight:600;fill:#f0f0f3;text-anchor:middle;pointer-events:none}
 .gl.lk text{fill:#cfe0ff}
 .gl rect{fill:#18181e}
@@ -212,7 +214,7 @@ function render(){var t=performance.now()/1000;
     b.p.style.setProperty("--len",Math.max(1,s[4]-b.a.r-b.b.r));var mx=(s[0]+s[2])/2,my=(s[1]+s[3])/2;b.lx+=(mx-b.lx)*.25;b.ly+=(my-b.ly)*.25;
     b.lb.g.setAttribute("transform","translate("+b.lx.toFixed(1)+","+b.ly.toFixed(1)+")")});
   if(guide){var s=seg(V[guide.st.s],V[guide.st.o]);guide.line.setAttribute("x1",s[0]);guide.line.setAttribute("y1",s[1]);guide.line.setAttribute("x2",s[2]);guide.line.setAttribute("y2",s[3]);
-    guide.lb.g.setAttribute("transform","translate("+((s[0]+s[2])/2).toFixed(1)+","+((s[1]+s[3])/2).toFixed(1)+")")}
+    if(drag)guide.lb.g.setAttribute("transform","translate("+drag.x.toFixed(1)+","+(drag.y+18/cam.s+guide.lb.h/2+7).toFixed(1)+")")}
   if(drag){var f=drag.from,dx=drag.x-f.x,dy=drag.y-f.y,d=Math.hypot(dx,dy)||1;drag.l.setAttribute("x1",f.x+dx/d*f.r);drag.l.setAttribute("y1",f.y+dy/d*f.r);drag.l.setAttribute("x2",drag.x);drag.l.setAttribute("y2",drag.y)}
 }
 /* la vue suit la molécule en cours */
@@ -259,9 +261,9 @@ function world(e){var r=lab.getBoundingClientRect();return {x:(e.clientX-r.left-
 function near(a,p,m){return Math.hypot(a.x-p.x,a.y-p.y)<=a.r+m}
 lab.addEventListener("pointerdown",function(e){if(!guide||busy)return;var p=world(e),A1=V[guide.st.s],A2=V[guide.st.o],f=null;
   if(near(A1,p,10))f=A1;else if(near(A2,p,10))f=A2;else return;
-  drag={from:f,to:f===A1?A2:A1,x:p.x,y:p.y,l:sv("line",{"class":"dr"},gFx)};f.g.classList.add("hot");lab.setPointerCapture(e.pointerId);e.preventDefault()});
+  drag={from:f,to:f===A1?A2:A1,x:p.x,y:p.y,l:sv("line",{"class":"dr"},gFx)};f.g.classList.add("hot");render();guide.lb.g.classList.add("on");lab.setPointerCapture(e.pointerId);e.preventDefault()});
 lab.addEventListener("pointermove",function(e){if(!drag)return;var p=world(e);drag.x=p.x;drag.y=p.y;drag.to.g.classList.toggle("hot",near(drag.to,p,24))});
-function endDrag(){var d=drag;drag=null;d.l.remove();d.from.g.classList.remove("hot");d.to.g.classList.remove("hot");return d}
+function endDrag(){var d=drag;drag=null;if(guide)guide.lb.g.classList.remove("on");d.l.remove();d.from.g.classList.remove("hot");d.to.g.classList.remove("hot");return d}
 lab.addEventListener("pointerup",function(e){if(!drag)return;var p=world(e),d=endDrag();if(near(d.to,p,24))link()});
 lab.addEventListener("pointercancel",function(){if(drag)endDrag()});
 document.addEventListener("keydown",function(e){if(e.key==="ArrowLeft"){e.preventDefault();back()}});
