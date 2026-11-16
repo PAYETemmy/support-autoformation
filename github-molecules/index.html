@@ -95,6 +95,11 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 @keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;padding:1px 4px;border-radius:4px}
 .cap code{font-size:12.5px}
+/* au doigt (iPhone) : tout tient dans l'écran, sans faire défiler */
+@media (pointer:coarse){
+  .w{padding-bottom:max(14px,calc(env(safe-area-inset-bottom) + 6px))}
+  .ax{margin-top:10px}
+}
 .help{color:var(--m);font-size:12.5px;margin:10px 0 0}
 .rz{background:none;border:0;color:var(--m);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
 .rz.sure{color:var(--no)}
@@ -290,11 +295,20 @@ var rzT=0,RZ=document.getElementById("rz");
 RZ.onclick=function(){if(!RZ.classList.contains("sure")){RZ.classList.add("sure");RZ.textContent="Confirmer ?";clearTimeout(rzT);
   rzT=setTimeout(function(){RZ.classList.remove("sure");RZ.textContent="Réinitialiser"},3000);return}
   RZ.classList.remove("sure");RZ.textContent="Réinitialiser";S={p:0};save();go()};
-window.addEventListener("resize",function(){W=lab.clientWidth;H=lab.clientHeight});
+window.addEventListener("resize",function(){fit();W=lab.clientWidth;H=lab.clientHeight});
 /* "Axiomes formés" : un bouton qui affiche ou masque la liste */
-var OL=document.getElementById("ol");try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
+var OL=document.getElementById("ol");
+var MOB=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
+function fit(){if(!MOB)return;
+  /* la phrase garde la hauteur de la plus longue, pour que rien ne bouge d'une étape à l'autre */
+  var m=CAP.cloneNode(false);m.removeAttribute("id");m.style.cssText="position:absolute;visibility:hidden;min-height:0;width:"+CAP.clientWidth+"px";CAP.parentNode.appendChild(m);
+  var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
+  /* la carte prend toute la hauteur qui reste */
+  var olH=OL.hidden?0:OL.getBoundingClientRect().height+6,wH=document.querySelector(".w").getBoundingClientRect().height;
+  lab.style.height=Math.max(280,Math.floor(window.innerHeight-(wH-lab.getBoundingClientRect().height-olH)))+"px"}
+try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
 document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}};
-go();
+go();if(MOB){fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
 </script>
 </body>
 </html>
