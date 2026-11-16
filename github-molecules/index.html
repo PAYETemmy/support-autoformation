@@ -214,8 +214,8 @@ function render(){var t=performance.now()/1000;
     b.p.style.setProperty("--len",Math.max(1,s[4]-b.a.r-b.b.r));var mx=(s[0]+s[2])/2,my=(s[1]+s[3])/2;b.lx+=(mx-b.lx)*.25;b.ly+=(my-b.ly)*.25;
     b.lb.g.setAttribute("transform","translate("+b.lx.toFixed(1)+","+b.ly.toFixed(1)+")")});
   if(guide){var s=seg(V[guide.st.s],V[guide.st.o]);guide.line.setAttribute("x1",s[0]);guide.line.setAttribute("y1",s[1]);guide.line.setAttribute("x2",s[2]);guide.line.setAttribute("y2",s[3]);
-    /* sous le curseur à la souris ; au-dessus du doigt au toucher, pour qu'il ne le cache pas */
-    if(drag)guide.lb.g.setAttribute("transform","translate("+drag.x.toFixed(1)+","+(drag.touch?drag.y-64/cam.s-guide.lb.h/2-7:drag.y+18/cam.s+guide.lb.h/2+7).toFixed(1)+")")}
+    /* au-dessus du curseur à la souris ; plus haut au doigt, pour qu'il ne le cache pas */
+    if(drag)guide.lb.g.setAttribute("transform","translate("+drag.x.toFixed(1)+","+(drag.y-(drag.touch?64:18)/cam.s-guide.lb.h/2-7).toFixed(1)+")")}
   if(drag){var f=drag.from,dx=drag.x-f.x,dy=drag.y-f.y,d=Math.hypot(dx,dy)||1;drag.l.setAttribute("x1",f.x+dx/d*f.r);drag.l.setAttribute("y1",f.y+dy/d*f.r);drag.l.setAttribute("x2",drag.x);drag.l.setAttribute("y2",drag.y)}
 }
 /* la vue suit la molécule en cours */
