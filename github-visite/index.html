@@ -550,30 +550,42 @@ var MKEY="mode-"+SUJET.nom,WM=false;try{WM=localStorage.getItem(MKEY)==="e"}catc
 if(VIS.w==null)VIS.w=0;if(VIS.t==null)VIS.t="";
 /* le texte à recopier : sans les backticks (le code est marqué caractère par caractère) */
 function vModel(n){var s=STEPS[n],raw=s.t==="a"?NOTIONS[COMP[s.i].notion].ax[s.k]:jx(N[s.i].k.filter(function(k){return jx(k,s.i)})[s.k],s.i).replace(/\.$/,"");
-  var t="",cd=[],inc=false;for(var j=0;j<raw.length;j++){var c=raw[j];if(c==="`"){inc=!inc;continue}t+=c;cd.push(inc)}return {t:t,cd:cd}}
-function nc(c){return c.replace(/[’‘ʼ]/,"'").replace(/[«»“”]/,'"').replace(/[  ]/," ").replace(/[–—]/,"-")}
+  /* « … » (un seul signe, introuvable au clavier) se recopie avec trois points */
+  var t="",cd=[],inc=false;for(var j=0;j<raw.length;j++){var c=raw[j];if(c==="`"){inc=!inc;continue}
+    t+=c;cd.push(inc)}return {t:t,cd:cd}}
+/* forme « à taper » d'un texte : guillemets « » “ ” = ", sans les espaces collées à l'intérieur ; ’ = ' ; … = ... ; ° = o ;
+   espaces insécables = espace ; tiret long = - . Chaque signe garde l'indice du caractère d'origine. */
+function canon(s){var r=[],q=0;for(var j=0;j<s.length;j++){var c=s[j];
+  if(/[«»“”"]/.test(c)){c='"';q^=1;if(!q)while(r.length&&r[r.length-1].c===" ")r.pop();r.push({c:c,i:j});
+    if(q)while(j+1<s.length&&/[ \u00a0\u202f]/.test(s[j+1]))j++;continue}
+  if(c==="…"){r.push({c:".",i:j},{c:".",i:j},{c:".",i:j});continue}
+  r.push({c:nc(c),i:j})}return r}
+function nc(c){return c.replace(/°/,"o").replace(/[’‘ʼ]/,"'").replace(/[«»“”]/,'"').replace(/[  ]/," ").replace(/[–—]/,"-")}
 function vTarget(n){var s=STEPS[n],tr=s&&document.querySelector('.tri[data-id="'+s.i+'"]');if(!tr)return null;
   return s.t==="a"?tr.querySelectorAll(".base .st")[s.k].querySelector("span"):tr.querySelectorAll(".lk")[s.k].querySelector("q")}
 var WI=document.createElement("textarea");WI.id="wi";WI.setAttribute("autocomplete","off");WI.setAttribute("autocorrect","off");
 WI.setAttribute("spellcheck","false");WI.setAttribute("autocapitalize","sentences");WI.setAttribute("aria-label","Recopier l’axiome");WI.rows=1;
 function vPaint(){
   if(!WM||VIS.w>=STEPS.length)return;
-  var n=VIS.w,tg=vTarget(n);if(!tg)return;var m=vModel(n),ty=VIS.t,q=STEPS[n].t==="l";
+  var n=VIS.w,tg=vTarget(n);if(!tg)return;var m=vModel(n),q=STEPS[n].t==="l";
+  var cm=canon(m.t),ct=canon(VIS.t),k=Math.min(ct.length,cm.length),st=[],cur=k<cm.length?cm[k].i:-1;
+  for(var j=0;j<k;j++)st[cm[j].i]=(st[cm[j].i]==="er"||cm[j].c!==ct[j].c)?"er":"ok";
+  var last=k>0?cm[k-1].i:-1;
   var host=tg.closest(".st,.lk");host.classList.add("cp");host.classList.remove("vh");
-  var f=document.createDocumentFragment();if(q)f.appendChild(document.createTextNode("« "));
-  for(var j=0;j<m.t.length;j++){var c=el("span","ch"+(m.cd[j]?" cd":""));
-    if(j<ty.length){c.textContent=ty[j]===" "&&m.t[j]!==" "?"·":ty[j];c.classList.add(nc(ty[j])===nc(m.t[j])?"ok":"er")}else c.textContent=m.t[j];
-    if(j===ty.length)c.classList.add("cur");f.appendChild(c)}
-  if(ty.length>=m.t.length&&f.lastChild)f.lastChild.classList.add("end");
-  if(q)f.appendChild(document.createTextNode(" »"));
+  var f=document.createDocumentFragment();if(q)f.appendChild(document.createTextNode("«\u00a0"));
+  for(var j=0;j<m.t.length;j++){var c=el("span","ch"+(m.cd[j]?" cd":""));c.textContent=m.t[j];
+    if(st[j])c.classList.add(st[j]);else if(j<last)c.classList.add("ok");   /* espaces sautées à l'intérieur des guillemets */
+    if(j===cur)c.classList.add("cur");f.appendChild(c)}
+  if(cur<0&&f.lastChild)f.lastChild.classList.add("end");
+  if(q)f.appendChild(document.createTextNode("\u00a0»"));
   if(tg.dataset.o==null)tg.dataset.o=tg.innerHTML;tg.innerHTML="";tg.appendChild(f);
   /* le champ invisible qui reçoit la frappe : posé sur l'axiome, hors du plan (il n'est jamais reconstruit, le clavier reste ouvert) */
   var r=tg.getBoundingClientRect();if(WI.parentNode!==document.body)document.body.appendChild(WI);
   WI.style.left=(r.left+window.scrollX)+"px";WI.style.top=(r.top+window.scrollY)+"px";
 }
 /* le point final s'écrit tout seul : la copie est juste dès que tout ce qui précède le point est juste */
-function vValid(){var m=vModel(VIS.w),ty=VIS.t,L=m.t.length;if(/\.$/.test(m.t))L--;if(ty.length<L)return false;
-  for(var j=0;j<L;j++)if(nc(ty[j])!==nc(m.t[j]))return false;return true}
+function vValid(){var cm=canon(vModel(VIS.w).t),ct=canon(VIS.t),L=cm.length;if(L&&cm[L-1].c===".")L--;if(ct.length<L)return false;
+  for(var j=0;j<L;j++)if(cm[j].c!==ct[j].c)return false;return true}
 WI.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault()}});
 WI.addEventListener("input",function(){
   VIS.t=WI.value.replace(/\n/g,"");
