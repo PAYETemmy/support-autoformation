@@ -155,7 +155,7 @@ html,body{touch-action:manipulation}
 .cp .ch.cd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92em;background:#1c1c21}
 .cp .ch.cur{box-shadow:-2px 0 0 var(--up)}
 .cp .ch.end{box-shadow:2px 0 0 var(--up)}
-#wi{position:absolute;opacity:0;font-size:16px;width:40px;height:24px;border:0;padding:0;resize:none;caret-color:transparent;color:transparent;background:transparent;z-index:2}
+#wi{position:fixed;left:12px;top:30%;opacity:0;font-size:16px;width:40px;height:24px;border:0;padding:0;resize:none;caret-color:transparent;color:transparent;background:transparent;z-index:2}
 .md .mo .rz{color:var(--m)}
 .md .mo .rz.sure{color:#ff7b72}
 </style>
@@ -509,7 +509,10 @@ function vEl(n){var s=STEPS[n],tr=s&&document.querySelector('.tri[data-id="'+s.i
 /* centrer dans la partie VISIBLE de l'écran : sur iPhone, en écriture, le clavier en cache le bas (visualViewport) */
 function vCenter(e){var r=e.getBoundingClientRect(),vv=window.visualViewport,h=vv?vv.height:window.innerHeight,t0=vv?vv.offsetTop:0;
   window.scrollBy({top:r.top-(t0+h*0.45),behavior:"smooth"})}
-function vShow(){var n=VIS.p-1;if(n<0)return;var e=vEl(n);if(!e)return;
+function vShow(){
+  /* en écriture (à l'ouverture de la page ou au changement de mode), on se place sur l'axiome à recopier */
+  if(typeof WM!=="undefined"&&WM){var ew=vEl(Math.min(VIS.w,STEPS.length-1));if(ew)vCenter(ew);return}
+  var n=VIS.p-1;if(n<0)return;var e=vEl(n);if(!e)return;
   /* en reculant, quand on change de partie (liaisons → axiomes, ou d'une notion à l'autre), l'élément se place au centre,
      comme le premier axiome d'une nouvelle notion en avançant */
   if(VDIR<0&&VIS.p<STEPS.length){var L=STEPS[n],E=STEPS[VIS.p];if(L.t!==E.t||L.i!==E.i){vCenter(e);return}}
@@ -581,9 +584,9 @@ function vPaint(){
   if(cur<0&&f.lastChild)f.lastChild.classList.add("end");
   if(q)f.appendChild(document.createTextNode("\u00a0»"));
   if(tg.dataset.o==null)tg.dataset.o=tg.innerHTML;tg.innerHTML="";tg.appendChild(f);
-  /* le champ invisible qui reçoit la frappe : posé sur l'axiome, hors du plan (il n'est jamais reconstruit, le clavier reste ouvert) */
-  var r=tg.getBoundingClientRect();if(WI.parentNode!==document.body)document.body.appendChild(WI);
-  WI.style.left=(r.left+window.scrollX)+"px";WI.style.top=(r.top+window.scrollY)+"px";
+  /* le champ invisible qui reçoit la frappe reste fixe dans la partie visible de l'écran :
+     le navigateur n'a jamais besoin de faire défiler la page pour le montrer (sinon l'axiome sautait en haut) */
+  if(WI.parentNode!==document.body)document.body.appendChild(WI);
 }
 /* le point final s'écrit tout seul : la copie est juste dès que tout ce qui précède le point est juste */
 function vValid(){var cm=canon(vModel(VIS.w).t),ct=canon(VIS.t),L=cm.length;if(L&&cm[L-1].c===".")L--;if(ct.length<L)return false;
@@ -596,7 +599,9 @@ WI.addEventListener("input",function(){
   vSave();
   if(vValid()){var tg=vTarget(VIS.w);if(tg){if(tg.dataset.o!=null){tg.innerHTML=tg.dataset.o;delete tg.dataset.o}tg.closest(".st,.lk").classList.remove("cp")}
     VIS.w++;VIS.t="";WI.value="";vSave();VDIR=1;vApply();vShowW()}else vPaint()});
-function vFocus(){if(WM&&VIS.w<STEPS.length){try{WI.focus({preventScroll:true})}catch(e){WI.focus()}}}
+function vFocus(){if(WM&&VIS.w<STEPS.length){try{WI.focus({preventScroll:true})}catch(e){WI.focus()}
+  var e=vEl(VIS.w);if(e){var r=e.getBoundingClientRect(),vv=window.visualViewport,h=vv?vv.height:window.innerHeight,t0=vv?vv.offsetTop:0;
+    if(r.top<t0+40||r.bottom>t0+h-20)vCenter(e)}}}
 function vShowW(){var n=Math.min(VIS.w,STEPS.length-1),e=vEl(n);if(!e)return;
   var pe=n>0?vEl(n-1):null,vv=window.visualViewport,h=vv?vv.height:window.innerHeight,t0=vv?vv.offsetTop:0,r=e.getBoundingClientRect();
   if(!pe||STEPS[n].i!==STEPS[n-1].i||STEPS[n].t!==STEPS[n-1].t||Math.abs(pe.getBoundingClientRect().top-r.top)>2||r.top<t0+40||r.bottom>t0+h-20)vCenter(e)}
