@@ -100,6 +100,8 @@ code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;paddin
   .w{padding-bottom:max(14px,calc(env(safe-area-inset-bottom) + 6px))}
   .ax{margin-top:10px}
 }
+/* page verrouillée : elle ne glisse plus (liste des axiomes fermée) */
+html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .help{color:var(--m);font-size:12.5px;margin:10px 0 0}
 .rz{background:none;border:0;color:var(--m);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
 .rz.sure{color:var(--no)}
@@ -314,7 +316,11 @@ function refit(){if(!MOB)return;var h0=lab.clientHeight;fit();if(lab.clientHeigh
 if(window.visualViewport)visualViewport.addEventListener("resize",refit);
 setTimeout(refit,400);setTimeout(refit,1200);setTimeout(refit,2500);
 try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
-document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}};
+document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}lock()};
+/* au doigt, tant que tout tient dans l'écran, la page ne bouge pas ; liste ouverte, on peut descendre */
+function lock(){if(!MOB)return;var on=OL.hidden;document.documentElement.classList.toggle("lock",on);if(on)window.scrollTo(0,0)}
+document.addEventListener("touchmove",function(e){if(document.documentElement.classList.contains("lock"))e.preventDefault()},{passive:false});
+lock();
 go();if(MOB){fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
 </script>
 </body>
