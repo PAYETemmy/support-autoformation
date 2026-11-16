@@ -32,8 +32,7 @@ h1{font-size:26px;font-weight:600;margin:4px 0 2px}
   background:radial-gradient(ellipse at center,#15151a 0%,var(--bg) 70%);touch-action:none;user-select:none;-webkit-user-select:none}
 svg{position:absolute;inset:0;width:100%;height:100%}
 /* la phrase de l'étape en cours */
-.cap{position:absolute;left:0;right:0;bottom:0;padding:26px 24px 14px;text-align:center;font-size:14px;color:#a9a9b2;pointer-events:none;transition:opacity .35s,color .35s;
-  background:linear-gradient(to top,rgba(14,14,16,.96) 55%,rgba(14,14,16,0))}
+.cap{margin:12px 0 0;min-height:44px;text-align:center;font-size:14px;color:#a9a9b2;transition:opacity .35s,color .35s}
 .cap.lk{color:#93a9d0}
 .cap.ok{color:var(--ok)}
 .cap.out{opacity:0}
@@ -85,7 +84,8 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 @keyframes spk{to{opacity:0;transform:translate(var(--dx),var(--dy))}}
 /* texte sous la carte */
 .ax{margin:18px 0 0}
-.ax h2{font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin:0 0 8px}
+#ol{margin:6px 0 0}
+#ol[hidden]{display:none}
 .ax h3{font-size:13px;font-weight:600;color:#a9a9b2;margin:12px 0 4px}
 .ax ol{margin:0;padding:0 0 0 20px;color:#c4c4cc;font-size:14px}
 .ax li{margin:3px 0;animation:fin .5s ease-out}
@@ -102,9 +102,9 @@ code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;paddin
 <div class="w">
   <h1 id="ti"></h1>
   <div class="st"><span></span><span id="cnt"></span></div>
-  <div id="lab"><svg id="svg"></svg><div class="cap" id="cap"></div></div>
-  <p class="help">Une nouvelle idée apparaît, et sa phrase s’écrit en bas. Trace la liaison en pointillés : appuie sur un des deux atomes et tire jusqu’à l’autre. Flèche ← du clavier : revenir en arrière.</p>
-  <div class="ax"><h2>Axiomes formés</h2><div id="ol"></div></div>
+  <div id="lab"><svg id="svg"></svg></div>
+  <div class="cap" id="cap"></div>
+  <div class="ax"><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
   <p class="help"><button class="rz" id="rz">Réinitialiser</button></p>
 </div>
 <script>
@@ -221,8 +221,8 @@ function camTarget(){var ids=[],fin=S.p>=STEPS.length;
   var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
   if(fin)ids=Object.keys(V);else{var st=STEPS[S.p];for(var id in V)if(V[id].n===st.n){ids.push(id);
     if(V[id].c){x0=V[id].x-230;x1=V[id].x+230;y0=V[id].y-230;y1=V[id].y+230}}ids.push(st.s,st.o)}ids.forEach(function(id){var a=V[id];if(!a)return;x0=Math.min(x0,a.x-a.r-30);x1=Math.max(x1,a.x+a.r+30);y0=Math.min(y0,a.y-a.r-30);y1=Math.max(y1,a.y+a.r+30)});
-  var s=Math.min((W-60)/(x1-x0),(H-110)/(y1-y0),1);s=Math.max(s,fin?.2:.4);
-  return {x:(x0+x1)/2,y:(y0+y1)/2+30/s,s:s}}
+  var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),1);s=Math.max(s,fin?.2:.4);
+  return {x:(x0+x1)/2,y:(y0+y1)/2,s:s}}
 function step(){tick(true);var T=camTarget();cam.x+=(T.x-cam.x)*.05;cam.y+=(T.y-cam.y)*.05;cam.s+=(T.s-cam.s)*.05;render();raf=requestAnimationFrame(step)}
 /* ---------- l'étape en cours ---------- */
 function dim(n){for(var id in V){var a=V[id],st=STEPS[S.p];a.g.classList.toggle("far",n!=null&&a.n!==n&&!(st&&(id===st.s||id===st.o)))}
@@ -289,6 +289,9 @@ RZ.onclick=function(){if(!RZ.classList.contains("sure")){RZ.classList.add("sure"
   rzT=setTimeout(function(){RZ.classList.remove("sure");RZ.textContent="Réinitialiser"},3000);return}
   RZ.classList.remove("sure");RZ.textContent="Réinitialiser";S={p:0};save();go()};
 window.addEventListener("resize",function(){W=lab.clientWidth;H=lab.clientHeight});
+/* "Axiomes formés" : un bouton qui affiche ou masque la liste */
+var OL=document.getElementById("ol");try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
+document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}};
 go();
 </script>
 </body>
