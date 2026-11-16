@@ -27,6 +27,7 @@ h1{font-size:26px;font-weight:600;margin:4px 0 2px}
 .nv span.dn:after{content:" ✓";color:var(--ok)}
 .st{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--m);margin:4px 0 6px}
 .st b{color:var(--fg);font-weight:600}
+.st .sp{margin:0 14px}
 #lab{position:relative;width:100%;height:620px;border-top:1px solid var(--l);border-bottom:1px solid var(--l);overflow:hidden;
   background:radial-gradient(ellipse at center,#15151a 0%,var(--bg) 70%);touch-action:none;user-select:none;-webkit-user-select:none}
 svg{position:absolute;inset:0;width:100%;height:100%}
@@ -270,7 +271,7 @@ function head(){var st=STEPS[Math.min(S.p,STEPS.length-1)],n=S.p>=STEPS.length?M
   for(var i=0;i<S.p;i++)if(STEPS[i].n===n)done++;
   var nv=document.getElementById("nv");nv.innerHTML="";MOL.forEach(function(m,k){var s=document.createElement("span");s.textContent=m.t;
     var f=0;for(var i=0;i<S.p;i++)if(STEPS[i].n===k)f++;if(f===NB[k])s.className="dn";if(k===n&&S.p<STEPS.length)s.className+=" on";nv.appendChild(s)});
-  document.getElementById("cnt").innerHTML=S.p>=STEPS.length?"<b>"+STEPS.length+"</b> axiomes.":(n+1)+" / "+MOL.length+" Notion · <b>"+done+"</b> / "+NB[n]+" liaisons."}
+  document.getElementById("cnt").innerHTML=S.p>=STEPS.length?"<b>"+STEPS.length+"</b> axiomes.":(n+1)+" / "+MOL.length+" Notion<span class=\"sp\">·</span><b>"+done+"</b> / "+NB[n]+" liaisons."}
 function addLine(st){var ol=document.getElementById("ol"),sec=ol.querySelector('[data-n="'+st.n+'"]');
   if(!sec){sec=document.createElement("div");sec.dataset.n=st.n;var h=document.createElement("h3");h.textContent=MOL[st.n].t;sec.appendChild(h);sec.appendChild(document.createElement("ol"));ol.appendChild(sec)}
   var li=document.createElement("li");if(st.lk)li.className="lk";txt(li,st.ax);sec.querySelector("ol").appendChild(li)}
