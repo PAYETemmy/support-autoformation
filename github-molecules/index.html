@@ -271,7 +271,7 @@ function head(){var st=STEPS[Math.min(S.p,STEPS.length-1)],n=S.p>=STEPS.length?M
   for(var i=0;i<S.p;i++)if(STEPS[i].n===n)done++;
   var nv=document.getElementById("nv");nv.innerHTML="";MOL.forEach(function(m,k){var s=document.createElement("span");s.textContent=m.t;
     var f=0;for(var i=0;i<S.p;i++)if(STEPS[i].n===k)f++;if(f===NB[k])s.className="dn";if(k===n&&S.p<STEPS.length)s.className+=" on";nv.appendChild(s)});
-  document.getElementById("cnt").innerHTML=S.p>=STEPS.length?"<b>"+STEPS.length+"</b> axiomes.":(n+1)+" / "+MOL.length+" Notion<span class=\"sp\">·</span><b>"+done+"</b> / "+NB[n]+" liaisons."}
+  document.getElementById("cnt").innerHTML=S.p>=STEPS.length?STEPS.length+" axiomes.":(n+1)+" / "+MOL.length+" Notion<span class=\"sp\">·</span>"+done+" / "+NB[n]+" liaisons."}
 function addLine(st){var ol=document.getElementById("ol"),sec=ol.querySelector('[data-n="'+st.n+'"]');
   if(!sec){sec=document.createElement("div");sec.dataset.n=st.n;var h=document.createElement("h3");h.textContent=MOL[st.n].t;sec.appendChild(h);sec.appendChild(document.createElement("ol"));ol.appendChild(sec)}
   var li=document.createElement("li");if(st.lk)li.className="lk";txt(li,st.ax);sec.querySelector("ol").appendChild(li)}
