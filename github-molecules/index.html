@@ -299,13 +299,22 @@ window.addEventListener("resize",function(){fit();W=lab.clientWidth;H=lab.client
 /* "Axiomes formés" : un bouton qui affiche ou masque la liste */
 var OL=document.getElementById("ol");
 var MOB=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
+/* hauteur réellement visible : en web app, l'iPhone ne donne pas toujours la même valeur selon la mesure, on garde la plus petite */
+function viewH(){var p=document.createElement("div");p.style.cssText="position:fixed;top:0;bottom:0;left:0;width:1px;visibility:hidden;pointer-events:none";document.body.appendChild(p);
+  var v=[window.innerHeight,document.documentElement.clientHeight,p.getBoundingClientRect().height];if(window.visualViewport)v.push(visualViewport.height);p.remove();
+  v=v.filter(function(x){return x>200});return v.length?Math.min.apply(null,v):window.innerHeight}
 function fit(){if(!MOB)return;
   /* la phrase garde la hauteur de la plus longue, pour que rien ne bouge d'une étape à l'autre */
   var m=CAP.cloneNode(false);m.removeAttribute("id");m.style.cssText="position:absolute;visibility:hidden;min-height:0;width:"+CAP.clientWidth+"px";CAP.parentNode.appendChild(m);
   var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
   /* la carte prend toute la hauteur qui reste */
   var olH=OL.hidden?0:OL.getBoundingClientRect().height+6,wH=document.querySelector(".w").getBoundingClientRect().height;
-  lab.style.height=Math.max(280,Math.floor(window.innerHeight-(wH-lab.getBoundingClientRect().height-olH)))+"px"}
+  lab.style.height=Math.max(280,Math.floor(viewH()-(wH-lab.getBoundingClientRect().height-olH)))+"px"}
+/* en web app, l'écran se règle parfois juste après l'ouverture : on remesure */
+function refit(){if(!MOB)return;var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}}
+["load","pageshow","orientationchange"].forEach(function(ev){window.addEventListener(ev,function(){setTimeout(refit,60)})});
+if(window.visualViewport)visualViewport.addEventListener("resize",refit);
+setTimeout(refit,400);setTimeout(refit,1200);
 try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
 document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}};
 go();if(MOB){fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
