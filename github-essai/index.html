@@ -581,6 +581,11 @@ function vTarget(n){var s=STEPS[n],tr=s&&document.querySelector('.tri[data-id="'
   return s.t==="a"?tr.querySelectorAll(".base .st")[s.k].querySelector("span"):tr.querySelectorAll(".lk")[s.k].querySelector("q")}
 var WI=document.createElement("textarea");WI.id="wi";WI.setAttribute("autocomplete","off");WI.setAttribute("autocorrect","off");
 WI.setAttribute("spellcheck","false");WI.setAttribute("autocapitalize","sentences");WI.setAttribute("aria-label","Recopier l’axiome");WI.rows=1;
+/* essai « initiales », adouci : les petits mots restent entiers ; dans les autres, on montre la 1re lettre (les 2 premières si le mot est long) */
+var PETITS=/^(le|la|les|l|un|une|des|de|du|d|à|au|aux|et|ou|en|dans|sur|par|pour|avec|sans|qui|que|qu|ce|cet|cette|ces|son|sa|ses|mon|ma|mes|il|elle|ils|je|j|on|est|sont|a|ont|ne|n|pas|se|s|y|puis|tout|tous|très|plus|comme|sous|chaque|lui|leur|leurs)$/i;
+function vHid(t,j){var L=/[\p{L}\p{N}]/u;if(!L.test(t[j]))return false;
+  var a=j;while(a>0&&L.test(t[a-1]))a--;var b=j;while(b<t.length&&L.test(t[b]))b++;
+  var w=t.slice(a,b);if(PETITS.test(w))return false;var show=w.length>=6?2:1;return j-a>=show}
 function vPaint(){
   if(!WM||VIS.w>=STEPS.length)return;
   var n=VIS.w,tg=vTarget(n);if(!tg)return;var m=vModel(n),q=STEPS[n].t==="l";
@@ -592,7 +597,7 @@ function vPaint(){
   for(var j=0;j<m.t.length;j++){var c=el("span","ch"+(m.cd[j]?" cd":""));c.textContent=m.t[j];
     if(st[j])c.classList.add(st[j]);else if(j<last)c.classList.add("ok");   /* espaces sautées à l'intérieur des guillemets */
     /* essai « initiales » : une lettre pas encore tapée qui n'ouvre pas un mot est masquée */
-    if(typeof INDICES!=="undefined"&&INDICES&&!c.classList.contains("ok")&&!c.classList.contains("er")&&/[\p{L}\p{N}]/u.test(m.t[j])&&j>0&&/[\p{L}\p{N}]/u.test(m.t[j-1]))c.classList.add("hid");
+    if(typeof INDICES!=="undefined"&&INDICES&&!c.classList.contains("ok")&&!c.classList.contains("er")&&vHid(m.t,j))c.classList.add("hid");
     if(j===cur)c.classList.add("cur");f.appendChild(c)}
   if(cur<0&&f.lastChild)f.lastChild.classList.add("end");
   
