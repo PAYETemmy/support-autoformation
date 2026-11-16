@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e0e10">
+<meta name="apple-mobile-web-app-title" content="Molécules">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="color-scheme" content="dark">
+<title>Molécules — GitHub</title>
+<style>
+:root{--bg:#0e0e10;--fg:#e8e8ea;--m:#7c7c84;--l:#26262c;--up:#8ab4ff;--ok:#7ee0a1;--no:#ff7b72}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+.w{max-width:980px;margin:0 auto;padding:22px 20px 60px}
+.sj{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--m)}
+h1{font-size:26px;font-weight:600;margin:4px 0 2px}
+.sub{color:var(--m);font-size:13px;margin:0 0 16px}
+.nv{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 10px;font-size:13.5px}
+.nv button{background:none;border:0;padding:3px 0;color:var(--m);font:inherit;cursor:pointer;border-bottom:2px solid transparent}
+.nv button.on{color:var(--fg);border-bottom-color:var(--up)}
+.nv button.dn{color:#a9a9b2}
+.nv button.dn:after{content:" ✓";color:var(--ok)}
+.nv button:disabled{opacity:.35;cursor:default}
+.st{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--m);margin:4px 0 6px}
+.st b{color:var(--fg);font-weight:600}
+#lab{position:relative;width:100%;height:540px;border-top:1px solid var(--l);border-bottom:1px solid var(--l);overflow:hidden;
+  background:radial-gradient(ellipse at center,#15151a 0%,var(--bg) 70%);touch-action:none;user-select:none;-webkit-user-select:none}
+svg{position:absolute;inset:0;width:100%;height:100%}
+.atom{cursor:crosshair}
+.atom circle.core{fill:#1b1b21;stroke:#4a4a52;stroke-width:1.5;transition:stroke .2s,fill .2s}
+.atom.center circle.core{fill:#1a2233;stroke:var(--up);stroke-width:2}
+.atom.ext circle.core{fill:#14141a;stroke:var(--up);stroke-dasharray:4 4}
+.atom.hot circle.core{stroke:var(--fg)}
+.atom.bound circle.core{stroke:#8a8a94}
+.atom.center.bound circle.core{stroke:var(--up)}
+.atom text{fill:#d6d6dc;font-size:12.5px;text-anchor:middle;pointer-events:none}
+.atom.center text{fill:#fff;font-weight:600;font-size:13.5px}
+.atom.ext text{fill:#b9cff7}
+.atom .orb{fill:none;stroke:#2c2c34;stroke-width:1}
+.atom .el{fill:#5a5a62}
+.atom.center .el{fill:var(--up)}
+.bond{stroke:#8a8a94;stroke-width:2;fill:none}
+.bond.lk{stroke:var(--up);stroke-dasharray:6 5}
+.bond.new{animation:grow .7s ease-out}
+@keyframes grow{from{stroke-dashoffset:var(--len);stroke-dasharray:var(--len)}to{stroke-dashoffset:0}}
+.bl{font-size:11px;fill:#a9a9b2;text-anchor:middle;pointer-events:none}
+.bl.lk{fill:#b9cff7}
+.blbg{fill:var(--bg);opacity:.85}
+.drag{stroke:var(--fg);stroke-width:1.5;stroke-dasharray:3 4;fill:none;pointer-events:none}
+.ring{fill:none;stroke-width:2;pointer-events:none;animation:ring .7s ease-out forwards}
+@keyframes ring{from{opacity:.9}to{opacity:0;r:70}}
+.spark{pointer-events:none;animation:spk .8s ease-out forwards}
+@keyframes spk{to{opacity:0;transform:translate(var(--dx),var(--dy))}}
+.atom.bad circle.core{stroke:var(--no);fill:#2a1416}
+.done .atom circle.core{animation:glow 1.6s ease-in-out infinite alternate}
+@keyframes glow{from{filter:drop-shadow(0 0 0 transparent)}to{filter:drop-shadow(0 0 6px rgba(138,180,255,.55))}}
+.msg{position:absolute;left:0;right:0;bottom:16px;text-align:center;pointer-events:none;opacity:0;transition:opacity .4s}
+.msg.on{opacity:1;pointer-events:auto}
+.msg span{display:inline-block;background:#16161a;border:1px solid #34343a;border-radius:10px;padding:10px 16px;font-size:14px}
+.msg button{margin-left:12px;background:none;border:0;color:var(--up);font:inherit;cursor:pointer}
+.ax{margin:18px 0 0}
+.ax h2{font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin:0 0 8px}
+.ax ol{margin:0;padding:0 0 0 20px;color:#c4c4cc;font-size:14px}
+.ax li{margin:3px 0;animation:fin .5s ease-out}
+.ax li.lk{color:#b9cff7}
+@keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;padding:1px 4px;border-radius:4px}
+.help{color:var(--m);font-size:12.5px;margin:10px 0 0}
+.rz{background:none;border:0;color:var(--m);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
+.rz.sure{color:var(--no)}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="sj">Support d’autoformation — GitHub · prototype</div>
+  <h1>Molécules</h1>
+  <p class="sub">Chaque idée est un atome. Un axiome relie deux idées : c’est une liaison. Relie les atomes qui forment un axiome.</p>
+  <div class="nv" id="nv"></div>
+  <div class="st"><span id="nt"></span><span id="cnt"></span></div>
+  <div id="lab"><svg id="svg"></svg><div class="msg" id="msg"><span>Molécule complète<button id="nx">Notion suivante →</button></span></div></div>
+  <p class="help">Clique sur un atome, maintiens, et tire jusqu’à un autre atome. Si les deux idées forment un axiome, la liaison se crée. Les atomes en pointillés bleus viennent des notions précédentes : leurs liaisons sont les axiomes de liaison.</p>
+  <div class="ax"><h2>Axiomes formés</h2><ol id="ol"></ol></div>
+  <p class="help"><button class="rz" id="rz">Réinitialiser</button></p>
+</div>
+<script>
+/* ---------- les molécules : atomes (idées) et liaisons (axiomes) ----------
+   b = [atome, atome, ce qui les relie, l'axiome complet, liaison entre notions ?] */
+var MOL=[
+ {id:"ver",t:"Gestion de versions",c:"gv",
+  a:{gv:"Gestion de versions",v:"Version",p:"Projet",ch:"Ce qui a changé",r:"Version précédente"},
+  b:[["v","p","est l’état, à un moment donné, d’un","Une version est l’état d’un projet à un moment donné."],
+     ["gv","v","garde chaque","La gestion de versions garde chaque version d’un projet."],
+     ["gv","ch","montre","Elle montre ce qui a changé d’une version à l’autre."],
+     ["gv","r","permet de revenir à une","Elle permet de revenir à une version précédente."]]},
+ {id:"git",t:"Git",c:"git",
+  a:{git:"Git",gv:"Gestion de versions",log:"Logiciel",dos:"Dossier et fichiers",lib:"Gratuit et libre",net:"Internet"},ext:["gv"],
+  b:[["git","log","est un","Git est un logiciel de gestion de versions."],
+     ["git","dos","garde les versions d’un","Il garde les versions d’un dossier et de tous ses fichiers."],
+     ["git","lib","est","Il est gratuit et libre."],
+     ["git","net","fonctionne aussi sans","Il fonctionne aussi sans internet, sur un ordinateur."],
+     ["git","gv","fait la","Git fait la gestion de versions d’un projet.",1]]},
+ {id:"gh",t:"GitHub",c:"gh",
+  a:{gh:"GitHub",git:"Git",web:"Site web",out:"Outils",ang:"Anglais",gra:"Gratuit",url:"github.com"},ext:["git"],
+  b:[["gh","web","est un","GitHub est un site web."],
+     ["gh","git","héberge sur internet des projets gérés avec","GitHub héberge sur internet des projets gérés avec Git.",1],
+     ["gh","out","ajoute des","Il ajoute des outils autour de Git : discussion, publication, automatisation."],
+     ["gh","ang","a une interface en","Son interface est en anglais."],
+     ["gh","gra","est, dans son usage de base,","Son usage de base est gratuit."],
+     ["gh","url","s’ouvre en tapant","Pour l’ouvrir, je tape `github.com` dans le navigateur."]]},
+ {id:"cpt",t:"Compte",c:"cpt",
+  a:{cpt:"Compte",gh:"GitHub",pers:"Personne",nom:"Nom d’utilisateur",adr:"github.com/nom",mod:"Modifier",sign:"\"Sign in\"",photo:"Photo de profil"},ext:["gh"],
+  b:[["cpt","pers","identifie une","Un compte identifie une personne sur GitHub."],
+     ["cpt","nom","a un","Chaque compte a un nom d’utilisateur unique."],
+     ["nom","adr","apparaît dans l’adresse","Ce nom apparaît dans l’adresse de ses pages : `github.com/nom`."],
+     ["mod","cpt","demande un","Lire un projet public ne demande pas de compte ; le modifier en demande un."],
+     ["cpt","sign","se connecte par","Pour me connecter, je clique sur \"Sign in\"."],
+     ["cpt","photo","ouvre son menu par la","Le menu de mon compte s’ouvre en cliquant sur ma photo de profil, en haut à droite."],
+     ["gh","cpt","demande, pour modifier quoi que ce soit, un","Pour modifier quoi que ce soit sur GitHub, il faut un compte.",1]]}
+];
+/* ---------- état sauvegardé ---------- */
+var KEY="molecules-GitHub",S={n:0,f:{}};
+try{var s0=JSON.parse(localStorage.getItem(KEY)||"null");if(s0)S=s0}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function formed(m){return S.f[m.id]||(S.f[m.id]=[])}
+function isDone(m){return formed(m).length===m.b.length}
+/* ---------- outils ---------- */
+var NS="http://www.w3.org/2000/svg",svg=document.getElementById("svg"),lab=document.getElementById("lab");
+function sv(t,at,p){var e=document.createElementNS(NS,t);for(var k in at)e.setAttribute(k,at[k]);if(p)p.appendChild(e);return e}
+function txt(e,s){s.split("`").forEach(function(p,i){if(i%2){var c=document.createElement("code");c.textContent=p;e.appendChild(c)}else if(p)e.appendChild(document.createTextNode(p))})}
+function wrap(s,n){var w=s.split(" "),L=[],cur="";w.forEach(function(x){if((cur+" "+x).trim().length>n&&cur){L.push(cur);cur=x}else cur=(cur+" "+x).trim()});if(cur)L.push(cur);return L}
+/* ---------- la molécule en cours : atomes, liaisons, petite physique ---------- */
+var M,A={},B=[],W=0,H=0,gB,gA,gFx,drag=null,raf=0;
+function build(){
+  M=MOL[S.n];svg.innerHTML="";A={};B=[];lab.classList.remove("done");document.getElementById("msg").classList.remove("on");
+  W=lab.clientWidth;H=lab.clientHeight;
+  gB=sv("g",{},svg);gFx=sv("g",{},svg);gA=sv("g",{},svg);
+  var ids=Object.keys(M.a),n=ids.length;
+  ids.forEach(function(id,k){var c=id===M.c,ext=(M.ext||[]).indexOf(id)>=0,ang=k/n*Math.PI*2+Math.random()*.4;
+    var R=c?0:Math.min(W,H)*(.28+Math.random()*.12),r=c?40:30;
+    var a={id:id,x:W/2+Math.cos(ang)*R+(c?0:0),y:H/2+Math.sin(ang)*R,vx:0,vy:0,r:r,c:c,ext:ext,ph:Math.random()*6.28};
+    /* arrivée : les atomes viennent du bord */
+    var e0=Math.random()*6.28;a.x=W/2+Math.cos(e0)*W*.7;a.y=H/2+Math.sin(e0)*H*.7;a.tx=W/2+Math.cos(ang)*R;a.ty=H/2+Math.sin(ang)*R;
+    var g=sv("g",{"class":"atom"+(c?" center":"")+(ext?" ext":"")},gA);g.dataset.id=id;
+    sv("ellipse",{"class":"orb",rx:r+9,ry:(r+9)*.38},g);
+    var e1=sv("circle",{"class":"el",r:2.2},g);
+    sv("circle",{"class":"core",r:r},g);
+    var lines=wrap(M.a[id],c?14:12);lines.forEach(function(l,i){sv("text",{y:(i-(lines.length-1)/2)*14+4},g).textContent=l});
+    a.g=g;a.e=e1;A[id]=a});
+  formed(M).forEach(function(i){addBond(i,false)});
+  render();
+  if(isDone(M))finish(false);
+}
+function key(x,y){return [x,y].sort().join("|")}
+function addBond(i,anim){var b=M.b[i],a1=A[b[0]],a2=A[b[1]],lk=!!b[4];
+  var p=sv("line",{"class":"bond"+(lk?" lk":"")+(anim?" new":"")},gB);
+  var bg=sv("rect",{"class":"blbg",rx:4,height:16},gB),t=sv("text",{"class":"bl"+(lk?" lk":"")},gB);t.textContent=b[2];
+  B.push({i:i,a:a1,b:a2,p:p,t:t,bg:bg,lk:lk});a1.g.classList.add("bound");a2.g.classList.add("bound");
+  p.addEventListener("mouseenter",function(){p.setAttribute("title",b[3])});
+}
+function render(){
+  for(var id in A){var a=A[id],t=performance.now()/1000;
+    a.g.setAttribute("transform","translate("+a.x.toFixed(1)+","+a.y.toFixed(1)+")");
+    /* un électron qui tourne sur l'orbite */
+    var ph=a.ph+t*(a.c?1.4:1.9);a.e.setAttribute("cx",(Math.cos(ph)*(a.r+9)).toFixed(1));a.e.setAttribute("cy",(Math.sin(ph)*(a.r+9)*.38).toFixed(1))}
+  B.forEach(function(b){var x1=b.a.x,y1=b.a.y,x2=b.b.x,y2=b.b.y,dx=x2-x1,dy=y2-y1,d=Math.hypot(dx,dy)||1;
+    var sx=x1+dx/d*b.a.r,sy=y1+dy/d*b.a.r,ex=x2-dx/d*b.b.r,ey=y2-dy/d*b.b.r;
+    b.p.setAttribute("x1",sx);b.p.setAttribute("y1",sy);b.p.setAttribute("x2",ex);b.p.setAttribute("y2",ey);
+    b.p.style.setProperty("--len",Math.max(1,d-b.a.r-b.b.r));
+    var mx=(sx+ex)/2,my=(sy+ey)/2;b.t.setAttribute("x",mx);b.t.setAttribute("y",my+4);
+    var tw=b.t.getComputedTextLength?b.t.getComputedTextLength():60;b.bg.setAttribute("x",mx-tw/2-4);b.bg.setAttribute("y",my-8);b.bg.setAttribute("width",tw+8)});
+}
+/* physique : les atomes se repoussent, les liaisons les retiennent, tout vibre un peu */
+function step(){
+  var ids=Object.keys(A),dt=1;
+  ids.forEach(function(i){var a=A[i];
+    if(a.tx!=null){a.vx+=(a.tx-a.x)*.02;a.vy+=(a.ty-a.y)*.02;if(Math.hypot(a.tx-a.x,a.ty-a.y)<4){a.tx=null}}
+    a.vx+=(W/2-a.x)*.0009;a.vy+=(H/2-a.y)*.0012;
+    a.vx+=(Math.random()-.5)*.12;a.vy+=(Math.random()-.5)*.12});
+  for(var p=0;p<ids.length;p++)for(var q=p+1;q<ids.length;q++){var a=A[ids[p]],b=A[ids[q]],dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy+.01,d=Math.sqrt(d2);
+    var f=Math.min(4,5200/d2),mn=a.r+b.r+26;if(d<mn)f+= (mn-d)*.08;a.vx-=dx/d*f;a.vy-=dy/d*f;b.vx+=dx/d*f;b.vy+=dy/d*f}
+  B.forEach(function(b){var dx=b.b.x-b.a.x,dy=b.b.y-b.a.y,d=Math.hypot(dx,dy)||1,L=b.a.r+b.b.r+120,f=(d-L)*.012;
+    b.a.vx+=dx/d*f;b.a.vy+=dy/d*f;b.b.vx-=dx/d*f;b.b.vy-=dy/d*f});
+  ids.forEach(function(i){var a=A[i];if(a.c&&a.tx==null){a.vx+=(W/2-a.x)*.01;a.vy+=(H/2-a.y)*.01}
+    a.vx*=.86;a.vy*=.86;a.x+=a.vx*dt;a.y+=a.vy*dt;
+    a.x=Math.max(a.r+12,Math.min(W-a.r-12,a.x));a.y=Math.max(a.r+10,Math.min(H-a.r-10,a.y))});
+  render();if(drag)drawDrag();raf=requestAnimationFrame(step)}
+/* ---------- relier deux atomes ---------- */
+var dl=null;
+function atomAt(x,y){var best=null;for(var i in A){var a=A[i];if(Math.hypot(a.x-x,a.y-y)<=a.r+6)best=a}return best}
+function pt(e){var r=lab.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}}
+lab.addEventListener("pointerdown",function(e){var p=pt(e),a=atomAt(p.x,p.y);if(!a||isDone(M))return;
+  drag={a:a,x:p.x,y:p.y};a.g.classList.add("hot");dl=sv("line",{"class":"drag"},gFx);lab.setPointerCapture(e.pointerId);e.preventDefault()});
+lab.addEventListener("pointermove",function(e){if(!drag)return;var p=pt(e);drag.x=p.x;drag.y=p.y;
+  for(var i in A)A[i].g.classList.toggle("hot",A[i]===drag.a||A[i]===atomAt(p.x,p.y))});
+function drawDrag(){if(!dl)return;dl.setAttribute("x1",drag.a.x);dl.setAttribute("y1",drag.a.y);dl.setAttribute("x2",drag.x);dl.setAttribute("y2",drag.y)}
+lab.addEventListener("pointerup",function(e){if(!drag)return;var p=pt(e),b=atomAt(p.x,p.y),a=drag.a;drag=null;if(dl){dl.remove();dl=null}
+  for(var i in A)A[i].g.classList.remove("hot");if(!b||b===a)return;tryBond(a,b)});
+lab.addEventListener("pointercancel",function(){drag=null;if(dl){dl.remove();dl=null}});
+function tryBond(a,b){
+  var k=key(a.id,b.id),i=-1;M.b.forEach(function(x,j){if(key(x[0],x[1])===k)i=j});
+  if(i<0||formed(M).indexOf(i)>=0){
+    if(i>=0)return;   /* déjà liés */
+    /* pas d'axiome entre ces deux idées : ils se repoussent */
+    [a,b].forEach(function(x){x.g.classList.add("bad");setTimeout(function(){x.g.classList.remove("bad")},450)});
+    var dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1;a.vx-=dx/d*9;a.vy-=dy/d*9;b.vx+=dx/d*9;b.vy+=dy/d*9;return}
+  formed(M).push(i);save();addBond(i,true);burst(a,b,!!M.b[i][4]);addLine(i,true);count();
+  if(isDone(M))setTimeout(function(){finish(true)},500);
+}
+function burst(a,b,lk){var col=lk?"#8ab4ff":"#7ee0a1";
+  [a,b].forEach(function(x){var c=sv("circle",{"class":"ring",cx:x.x,cy:x.y,r:x.r,stroke:col},gFx);setTimeout(function(){c.remove()},750)});
+  var mx=(a.x+b.x)/2,my=(a.y+b.y)/2;for(var k=0;k<12;k++){var an=Math.random()*6.28,dd=20+Math.random()*40;
+    var s=sv("circle",{"class":"spark",cx:mx,cy:my,r:1.8,fill:col},gFx);s.style.setProperty("--dx",(Math.cos(an)*dd)+"px");s.style.setProperty("--dy",(Math.sin(an)*dd)+"px");
+    (function(s){setTimeout(function(){s.remove()},820)})(s)}}
+function finish(anim){lab.classList.add("done");var last=S.n>=MOL.length-1,m=document.getElementById("msg");
+  m.querySelector("span").firstChild.textContent=last?"Molécule complète — fin du prototype":"Molécule complète";
+  document.getElementById("nx").hidden=last;m.classList.add("on");if(anim&&!last){}nav()}
+document.getElementById("nx").onclick=function(){if(S.n<MOL.length-1){S.n++;save();go()}};
+/* ---------- texte : axiomes formés, compteur, navigation ---------- */
+function addLine(i,anim){var b=M.b[i],li=document.createElement("li");if(b[4])li.className="lk";txt(li,b[3]);document.getElementById("ol").appendChild(li)}
+function count(){document.getElementById("cnt").innerHTML="<b>"+formed(M).length+"</b> / "+M.b.length+" liaisons";
+  document.getElementById("nt").textContent=M.t}
+function nav(){var nv=document.getElementById("nv");nv.innerHTML="";MOL.forEach(function(m,k){var b=document.createElement("button");b.textContent=m.t;
+  if(k===S.n)b.className="on";if(isDone(m))b.className+=" dn";b.disabled=k>0&&!isDone(MOL[k-1])&&k!==S.n;
+  b.onclick=function(){if(b.disabled)return;S.n=k;save();go()};nv.appendChild(b)})}
+function go(){cancelAnimationFrame(raf);document.getElementById("ol").innerHTML="";build();formed(M).forEach(function(i){addLine(i,false)});count();nav();raf=requestAnimationFrame(step)}
+var rzT=0,RZ=document.getElementById("rz");
+RZ.onclick=function(){if(!RZ.classList.contains("sure")){RZ.classList.add("sure");RZ.textContent="Confirmer ?";clearTimeout(rzT);
+  rzT=setTimeout(function(){RZ.classList.remove("sure");RZ.textContent="Réinitialiser"},3000);return}
+  RZ.classList.remove("sure");RZ.textContent="Réinitialiser";S={n:0,f:{}};save();go()};
+window.addEventListener("resize",function(){var w=lab.clientWidth,h=lab.clientHeight;for(var i in A){A[i].x*=w/W;A[i].y*=h/H}W=w;H=h});
+go();
+</script>
+</body>
+</html>
