@@ -71,9 +71,10 @@ svg{position:absolute;inset:0;width:100%;height:100%}
 .gd{stroke:#26262c;stroke-width:2;stroke-dasharray:2 8;stroke-linecap:round;fill:none;animation:march 1s linear infinite}
 .gd.lk{stroke:#23314c}
 @keyframes march{to{stroke-dashoffset:-20}}
-.gl text{font-size:12.5px;fill:#9a9aa4;text-anchor:middle;pointer-events:none}
-.gl.lk text{fill:#8fa9d6}
-.gl rect{fill:var(--bg);opacity:.9}
+.gl text{font-size:17px;font-weight:600;fill:#f0f0f3;text-anchor:middle;pointer-events:none}
+.gl.lk text{fill:#cfe0ff}
+.gl rect{fill:#18181e;stroke:#3e3e48;stroke-width:1}
+.gl.lk rect{fill:#141b29;stroke:#3b5584}
 .dr{stroke:var(--fg);stroke-width:2;fill:none;pointer-events:none}
 .ring{fill:none;stroke-width:2;pointer-events:none;animation:ring .7s ease-out forwards}
 @keyframes ring{from{opacity:.9}to{opacity:0;r:70}}
@@ -150,9 +151,9 @@ var NS="http://www.w3.org/2000/svg",svg=document.getElementById("svg"),lab=docum
 function sv(t,at,p){var e=document.createElementNS(NS,t);for(var k in at)e.setAttribute(k,at[k]);if(p)p.appendChild(e);return e}
 function txt(e,s){e.innerHTML="";s.split("`").forEach(function(p,i){if(i%2){var c=document.createElement("code");c.textContent=p;e.appendChild(c)}else if(p)e.appendChild(document.createTextNode(p))})}
 function wrap(s,n){var w=s.split(" "),L=[],cur="";w.forEach(function(x){if((cur+" "+x).trim().length>n&&cur){L.push(cur);cur=x}else cur=(cur+" "+x).trim()});if(cur)L.push(cur);return L}
-function label(p,s,n,cls,pad){var g=sv("g",{"class":cls},p),bg=sv("rect",{},g),L=wrap(s,n),w=0;
-  L.forEach(function(l,j){var t=sv("text",{y:((j-(L.length-1)/2)*16+4.5).toFixed(1)},g);t.textContent=l;w=Math.max(w,t.getComputedTextLength())});
-  var h=L.length*16;bg.setAttribute("x",-w/2-pad);bg.setAttribute("y",-h/2-2);bg.setAttribute("width",w+pad*2);bg.setAttribute("height",h+4);bg.setAttribute("rx",4);
+function label(p,s,n,cls,pad,lh,vp,rx){lh=lh||16;vp=vp||2;var g=sv("g",{"class":cls},p),bg=sv("rect",{},g),L=wrap(s,n),w=0;
+  L.forEach(function(l,j){var t=sv("text",{y:((j-(L.length-1)/2)*lh+lh*.3).toFixed(1)},g);t.textContent=l;w=Math.max(w,t.getComputedTextLength())});
+  var h=L.length*lh;bg.setAttribute("x",-w/2-pad);bg.setAttribute("y",-h/2-vp);bg.setAttribute("width",w+pad*2);bg.setAttribute("height",h+vp*2);bg.setAttribute("rx",rx||4);
   return {g:g,w:w,h:h}}
 var seed=7;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
 /* ---------- la carte : tous les atomes, et l'ordre des étapes (une nouvelle idée à la fois) ---------- */
@@ -170,8 +171,8 @@ MOL.forEach(function(m,k){var ext=m.ext||[];
     var b=m.b[rest.splice(pick,1)[0]],s=gid(b[0]),o=gid(b[1]);
     STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
 /* ---------- état de la carte affichée ---------- */
-var V={},B=[],W=0,H=0,gW,gB,gG,gA,gFx,meter,cam={x:0,y:0,s:1},drag=null,raf=0,guide=null,busy=false;
-function textW(s){var L=wrap(s,26),w=0;meter.style.display="";L.forEach(function(l){meter.firstChild.textContent=l;w=Math.max(w,meter.firstChild.getComputedTextLength())});return w}
+var V={},B=[],W=0,H=0,gW,gB,gG,gA,gFx,meter,meterG,cam={x:0,y:0,s:1},drag=null,raf=0,guide=null,busy=false;
+function textW(s,m,n){m=m||meter;var L=wrap(s,n||26),w=0;L.forEach(function(l){m.firstChild.textContent=l;w=Math.max(w,m.firstChild.getComputedTextLength())});return w}
 function mkAtom(id,x,y,anim){var d=G[id],c=d.c,r=c?52:40;
   var g=sv("g",{"class":"atom"+(c?" center":"")+(anim?" pop":"")},gA),inn=sv("g",{"class":"in"},g);
   var orb=sv("ellipse",{"class":"orb"},inn),e1=sv("circle",{"class":"el",r:2.6},inn),core=sv("circle",{"class":"core"},inn);
@@ -182,7 +183,7 @@ function mkAtom(id,x,y,anim){var d=G[id],c=d.c,r=c?52:40;
   orb.setAttribute("rx",r+11);orb.setAttribute("ry",(r+11)*.38);core.setAttribute("r",r);
   var a={id:id,c:c,n:d.n,r:r,x:x,y:y,hx:x,hy:y,vx:0,vy:0,ph:rnd()*TAU,g:g,e:e1};V[id]=a;
   if(anim)setTimeout(function(){g.classList.remove("pop")},800);return a}
-function bondLen(st,r1,r2){return st.lk&&G[st.s].c&&G[st.o].c?400:r1+r2+Math.max(130,textW(st.rel)+40)}
+function bondLen(st,r1,r2){return st.lk&&G[st.s].c&&G[st.o].c?400:r1+r2+Math.max(130,textW(st.rel)+40,textW(st.rel,meterG,22)+64)}
 /* la nouvelle idée se pose à un endroit libre, à chaque fois nouveau */
 function place(st){var Y=V[st.neu===st.s?st.o:st.s],isC=G[st.neu].c,D=bondLen(st,Y.r,isC?52:40),best=null,bs=-1e9;
   var all=Object.keys(V).map(function(k){return V[k]}),cx=0,cy=0;all.forEach(function(a){cx+=a.x;cy+=a.y});cx/=all.length;cy/=all.length;
@@ -233,7 +234,7 @@ function showStep(anim){if(guide){guide.line.remove();guide.lb.g.remove();guide=
   var st=STEPS[S.p];
   if(st.neu&&!V[st.neu]){var P=place(st),a=mkAtom(st.neu,P[0],P[1],anim);
     if(anim){var c=sv("circle",{"class":"ring",cx:a.x,cy:a.y,r:a.r,stroke:st.lk?"#8ab4ff":"#d6d6dc"},gFx);setTimeout(function(){c.remove()},750)}}
-  var l=sv("line",{"class":"gd"+(st.lk?" lk":"")},gG),lb=label(gG,st.rel,26,"gl"+(st.lk?" lk":""),5);guide={st:st,line:l,lb:lb};
+  var l=sv("line",{"class":"gd"+(st.lk?" lk":"")},gG),lb=label(gG,st.rel,22,"gl"+(st.lk?" lk":""),12,21,7,9);guide={st:st,line:l,lb:lb};
   (st.neu?[V[st.neu]]:[V[st.s],V[st.o]]).forEach(function(a){a.g.classList.add("next")});
   CAP.className="cap"+(st.lk?" lk":"");txt(CAP,st.ax);dim(st.n)}
 function link(){var st=STEPS[S.p];busy=true;guide.line.remove();guide.lb.g.remove();guide=null;
@@ -278,8 +279,8 @@ function removeLine(){var ol=document.getElementById("ol"),sec=ol.lastElementChi
 /* ---------- construire la carte (en rejouant les étapes déjà faites) ---------- */
 function go(){cancelAnimationFrame(raf);drag=null;guide=null;busy=false;seed=7;svg.innerHTML="";V={};B=[];document.getElementById("ol").innerHTML="";
   W=lab.clientWidth;H=lab.clientHeight;
-  gW=sv("g",{},svg);gB=sv("g",{},gW);gG=sv("g",{},gW);gA=sv("g",{},gW);gFx=sv("g",{},gW);
-  meter=sv("g",{"class":"bl",style:"visibility:hidden"},gW);sv("text",{},meter);
+  gW=sv("g",{},svg);gB=sv("g",{},gW);gA=sv("g",{},gW);gG=sv("g",{},gW);gFx=sv("g",{},gW);
+  meter=sv("g",{"class":"bl",style:"visibility:hidden"},gW);sv("text",{},meter);meterG=sv("g",{"class":"gl",style:"visibility:hidden"},gW);sv("text",{},meterG);
   mkAtom(FIRST,0,0,S.p===0);
   for(var i=0;i<S.p;i++){var st=STEPS[i];if(st.neu&&!V[st.neu]){var P=place(st);mkAtom(st.neu,P[0],P[1],false)}addBond(st,false);addLine(st);for(var k=0;k<80;k++)tick(false)}
   for(var id in V){V[id].hx=V[id].x;V[id].hy=V[id].y}
