@@ -489,9 +489,9 @@ tgLabel();
 document.title="Support d’autoformation — "+SUJET.nom;
 window.addEventListener("resize",draw);
 /* ---------- essai : en écriture, lire l'axiome, puis l'écrire de mémoire (appui long = le revoir) ---------- */
-var MEMOIRE=true;
+var MEMOIRE=true,SUF="-essai";   /* l'essai garde sa propre progression, séparée de la page principale */
 /* visite guidée : les axiomes apparaissent un par un, notion après notion ; l'avancée est sauvegardée */
-var VKEY="visite-"+SUJET.nom,VIS={p:0,all:false},VDIR=1;
+var VKEY="visite-"+SUJET.nom+(typeof SUF!=="undefined"?SUF:""),VIS={p:0,all:false},VDIR=1;
 try{var vs=JSON.parse(localStorage.getItem(VKEY)||"null");if(vs)VIS=vs}catch(e){}
 function vSave(){try{localStorage.setItem(VKEY,JSON.stringify(VIS))}catch(e){}}
 /* le parcours : pour chaque notion, ses axiomes de gauche à droite, puis ses axiomes de liaison */
@@ -561,7 +561,7 @@ var wasShown=SHOWN;
 function vNotes(){GN.hidden=!SHOWN;if(SHOWN){grow(GN);if(!wasShown)setTimeout(function(){GN.focus()},50)}wasShown=SHOWN}
 var _sync=sync;sync=function(){_sync();vApply();vNotes()};
 /* ---------- mode écriture : recopier chaque axiome en le tapant ---------- */
-var MKEY="mode-"+SUJET.nom,WM=false;try{WM=localStorage.getItem(MKEY)==="e"}catch(e){}
+var MKEY="mode-"+SUJET.nom+(typeof SUF!=="undefined"?SUF:""),WM=false;try{WM=localStorage.getItem(MKEY)==="e"}catch(e){}
 if(VIS.w==null)VIS.w=0;if(VIS.t==null)VIS.t="";
 /* le texte à recopier : sans les backticks (le code est marqué caractère par caractère) */
 function vModel(n){var s=STEPS[n],raw=s.t==="a"?NOTIONS[COMP[s.i].notion].ax[s.k]:jx(N[s.i].k.filter(function(k){return jx(k,s.i)})[s.k],s.i).replace(/\.$/,"");
@@ -594,6 +594,7 @@ function vPaint(){
   var n=VIS.w,tg=vTarget(n);if(!tg)return;var m=vModel(n),q=STEPS[n].t==="l";
   var cm=canon(m.t),ct=canon(VIS.t),k=Math.min(ct.length,cm.length),st=[],cur=k<cm.length?cm[k].i:-1;
   for(var j=0;j<k;j++)st[cm[j].i]=(st[cm[j].i]==="er"||cm[j].c!==ct[j].c)?"er":"ok";
+  var ERR=st.indexOf("er")>=0||ct.length>cm.length+1;
   var last=k>0?cm[k-1].i:-1;
   var host=tg.closest(".st,.lk");host.classList.add("cp");host.classList.remove("vh");
   var f=document.createDocumentFragment();
@@ -602,7 +603,8 @@ function vPaint(){
     /* essai « initiales » : une lettre pas encore tapée qui n'ouvre pas un mot est masquée */
     if(typeof INDICES!=="undefined"&&INDICES&&!c.classList.contains("ok")&&!c.classList.contains("er")&&vHid(m.t,j))c.classList.add("hid");
     /* essai « de mémoire » : tant que rien n'est tapé, l'axiome se lit normalement ; dès la 1re lettre, ce qui reste à écrire disparaît */
-    if(typeof MEMOIRE!=="undefined"&&MEMOIRE&&!c.classList.contains("ok")&&!c.classList.contains("er"))c.classList.add(VIS.t.length?"mem":"rd");
+    /* … sauf après une faute : l'axiome réapparaît en gris, pour voir où ta phrase s'écarte */
+    if(typeof MEMOIRE!=="undefined"&&MEMOIRE&&!c.classList.contains("ok")&&!c.classList.contains("er")&&!ERR)c.classList.add(VIS.t.length?"mem":"rd");
     if(j===cur)c.classList.add("cur");f.appendChild(c)}
   if(cur<0&&f.lastChild)f.lastChild.classList.add("end");
   
