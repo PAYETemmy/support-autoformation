@@ -506,7 +506,9 @@ document.body.classList.add("vis");
 /* l'élément à suivre : en avançant, celui qui apparaît ; en reculant, le dernier encore affiché */
 function vEl(n){var s=STEPS[n],tr=s&&document.querySelector('.tri[data-id="'+s.i+'"]');if(!tr)return null;
   return s.t==="a"?tr.querySelectorAll(".base .st")[s.k]:tr.querySelectorAll(".lk")[s.k]}
-function vCenter(e){var r=e.getBoundingClientRect(),h=window.innerHeight;window.scrollBy({top:r.top-(h*0.45),behavior:"smooth"})}
+/* centrer dans la partie VISIBLE de l'écran : sur iPhone, en écriture, le clavier en cache le bas (visualViewport) */
+function vCenter(e){var r=e.getBoundingClientRect(),vv=window.visualViewport,h=vv?vv.height:window.innerHeight,t0=vv?vv.offsetTop:0;
+  window.scrollBy({top:r.top-(t0+h*0.45),behavior:"smooth"})}
 function vShow(){var n=VIS.p-1;if(n<0)return;var e=vEl(n);if(!e)return;
   /* en reculant, quand on change de partie (liaisons → axiomes, ou d'une notion à l'autre), l'élément se place au centre,
      comme le premier axiome d'une nouvelle notion en avançant */
@@ -595,7 +597,12 @@ WI.addEventListener("input",function(){
   if(vValid()){var tg=vTarget(VIS.w);if(tg){if(tg.dataset.o!=null){tg.innerHTML=tg.dataset.o;delete tg.dataset.o}tg.closest(".st,.lk").classList.remove("cp")}
     VIS.w++;VIS.t="";WI.value="";vSave();VDIR=1;vApply();vShowW()}else vPaint()});
 function vFocus(){if(WM&&VIS.w<STEPS.length){try{WI.focus({preventScroll:true})}catch(e){WI.focus()}}}
-function vShowW(){var e=vEl(Math.min(VIS.w,STEPS.length-1));if(e)vCenter(e)}
+function vShowW(){var n=Math.min(VIS.w,STEPS.length-1),e=vEl(n);if(!e)return;
+  var pe=n>0?vEl(n-1):null,vv=window.visualViewport,h=vv?vv.height:window.innerHeight,t0=vv?vv.offsetTop:0,r=e.getBoundingClientRect();
+  if(!pe||STEPS[n].i!==STEPS[n-1].i||STEPS[n].t!==STEPS[n-1].t||Math.abs(pe.getBoundingClientRect().top-r.top)>2||r.top<t0+40||r.bottom>t0+h-20)vCenter(e)}
+/* quand le clavier de l'iPhone s'ouvre ou se ferme, la zone visible change : on recentre l'axiome en cours */
+if(window.visualViewport){var vvT=0;window.visualViewport.addEventListener("resize",function(){if(!WM)return;clearTimeout(vvT);
+  vvT=setTimeout(function(){var e=vEl(Math.min(VIS.w,STEPS.length-1));if(e)vCenter(e)},120)})}
 /* en écriture, la visite suit la recopie : la progression est celle de l'écriture */
 var _apply=vApply;vApply=function(){
   if(!WM){if(WI.parentNode){WI.blur();WI.remove()}_apply();return}
