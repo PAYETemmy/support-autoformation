@@ -581,11 +581,11 @@ function vTarget(n){var s=STEPS[n],tr=s&&document.querySelector('.tri[data-id="'
   return s.t==="a"?tr.querySelectorAll(".base .st")[s.k].querySelector("span"):tr.querySelectorAll(".lk")[s.k].querySelector("q")}
 var WI=document.createElement("textarea");WI.id="wi";WI.setAttribute("autocomplete","off");WI.setAttribute("autocorrect","off");
 WI.setAttribute("spellcheck","false");WI.setAttribute("autocapitalize","sentences");WI.setAttribute("aria-label","Recopier l’axiome");WI.rows=1;
-/* essai « initiales », adouci deux fois : les petits mots (et ceux de moins de 4 lettres) restent entiers ; dans les autres, seule la seconde moitié est cachée */
+/* essai « initiales », adouci trois fois : seuls les mots de 6 lettres ou plus perdent leur dernier tiers ; tout le reste est écrit */
 var PETITS=/^(le|la|les|l|un|une|des|de|du|d|à|au|aux|et|ou|en|dans|sur|par|pour|avec|sans|qui|que|qu|ce|cet|cette|ces|son|sa|ses|mon|ma|mes|il|elle|ils|je|j|on|est|sont|a|ont|ne|n|pas|se|s|y|puis|tout|tous|très|plus|comme|sous|chaque|lui|leur|leurs)$/i;
 function vHid(t,j){var L=/[\p{L}\p{N}]/u;if(!L.test(t[j]))return false;
   var a=j;while(a>0&&L.test(t[a-1]))a--;var b=j;while(b<t.length&&L.test(t[b]))b++;
-  var w=t.slice(a,b);if(PETITS.test(w)||w.length<4)return false;var show=Math.ceil(w.length/2);return j-a>=show}
+  var w=t.slice(a,b);if(PETITS.test(w)||w.length<6)return false;var show=w.length-Math.floor(w.length/3);return j-a>=show}
 function vPaint(){
   if(!WM||VIS.w>=STEPS.length)return;
   var n=VIS.w,tg=vTarget(n);if(!tg)return;var m=vModel(n),q=STEPS[n].t==="l";
