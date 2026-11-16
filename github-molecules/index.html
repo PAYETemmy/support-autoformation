@@ -16,7 +16,9 @@
 :root{--bg:#0e0e10;--fg:#e8e8ea;--m:#7c7c84;--l:#26262c;--up:#8ab4ff;--ok:#7ee0a1;--no:#ff7b72}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
-.w{max-width:980px;margin:0 auto;padding:22px 20px 60px}
+.w{max-width:980px;margin:0 auto;padding:22px 20px 60px;
+  /* iPhone : rester sous la Dynamic Island et hors des bords arrondis */
+  padding-top:max(22px,calc(env(safe-area-inset-top) + 10px));padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right));padding-bottom:max(60px,calc(env(safe-area-inset-bottom) + 30px))}
 .sj{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--m)}
 h1{font-size:26px;font-weight:600;margin:4px 0 2px}
 .sub{color:var(--m);font-size:13px;margin:0 0 16px}
