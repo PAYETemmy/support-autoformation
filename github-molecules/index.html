@@ -266,15 +266,22 @@ function burst(a,b,lk){var col=lk?"#8ab4ff":"#7ee0a1";
     (function(s){setTimeout(function(){s.remove()},820)})(s)}}
 /* ---------- tracer : d'un des deux atomes jusqu'à l'autre ---------- */
 function world(e){var r=lab.getBoundingClientRect();return {x:(e.clientX-r.left-W/2)/cam.s+cam.x,y:(e.clientY-r.top-H/2)/cam.s+cam.y}}
-function near(a,p,m){return Math.hypot(a.x-p.x,a.y-p.y)<=a.r+m}
+function near(a,p,m){return Math.hypot(a.x-p.x,a.y-p.y)<=a.r+m/cam.s}
+/* marge autour des atomes, en pixels d'écran : plus large au doigt */
+function zoneDep(e){return e.pointerType==="touch"?30:10}
+function zoneArr(e){return e.pointerType==="touch"?40:24}
 lab.addEventListener("pointerdown",function(e){if(!guide||busy)return;var p=world(e),A1=V[guide.st.s],A2=V[guide.st.o],f=null;
-  if(near(A1,p,10))f=A1;else if(near(A2,p,10))f=A2;else return;
+  var z=zoneDep(e);if(near(A1,p,z))f=A1;else if(near(A2,p,z))f=A2;else return;
   drag={from:f,to:f===A1?A2:A1,x:p.x,y:p.y,touch:e.pointerType==="touch",l:sv("line",{"class":"dr"},gFx)};f.g.classList.add("hot");render();guide.lb.g.classList.add("on");lab.setPointerCapture(e.pointerId);e.preventDefault()});
-lab.addEventListener("pointermove",function(e){if(!drag)return;var p=world(e);drag.x=p.x;drag.y=p.y;drag.to.g.classList.toggle("hot",near(drag.to,p,24))});
+lab.addEventListener("pointermove",function(e){if(!drag)return;var p=world(e);drag.x=p.x;drag.y=p.y;drag.to.g.classList.toggle("hot",near(drag.to,p,zoneArr(e)))});
 function endDrag(){var d=drag;drag=null;if(guide)guide.lb.g.classList.remove("on");d.l.remove();d.from.g.classList.remove("hot");d.to.g.classList.remove("hot");return d}
-lab.addEventListener("pointerup",function(e){if(!drag)return;var p=world(e),d=endDrag();if(near(d.to,p,24))link()});
+lab.addEventListener("pointerup",function(e){if(!drag)return;var p=world(e),d=endDrag();if(near(d.to,p,zoneArr(e)))link()});
 lab.addEventListener("pointercancel",function(){if(drag)endDrag()});
 document.addEventListener("keydown",function(e){if(e.key==="ArrowLeft"){e.preventDefault();back()}});
+var SW=null;
+document.addEventListener("touchstart",function(e){var t=e.touches[0];SW=e.touches.length===1&&!drag?{x:t.clientX,y:t.clientY}:null},{passive:true});
+document.addEventListener("touchend",function(e){if(!SW)return;var t=e.changedTouches[0],dx=t.clientX-SW.x,dy=t.clientY-SW.y;SW=null;
+  if(dx<-60&&Math.abs(dy)<Math.abs(dx)*.6)back()},{passive:true});
 /* ---------- texte : en-tête, axiomes formés ---------- */
 function head(){var st=STEPS[Math.min(S.p,STEPS.length-1)],n=S.p>=STEPS.length?MOL.length-1:st.n,done=0;
   for(var i=0;i<S.p;i++)if(STEPS[i].n===n)done++;
