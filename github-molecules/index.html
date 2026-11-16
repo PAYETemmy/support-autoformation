@@ -105,6 +105,8 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .help{color:var(--m);font-size:12.5px;margin:10px 0 0}
 .rz{background:none;border:0;color:var(--m);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
 .rz.sure{color:var(--no)}
+.rz:disabled{opacity:.35;cursor:default}
+.ax .bk{display:block;margin:0 0 8px}
 </style>
 </head>
 <body>
@@ -113,7 +115,7 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
   <div class="st"><span></span><span id="cnt"></span></div>
   <div id="lab"><svg id="svg"></svg></div>
   <div class="cap" id="cap"></div>
-  <div class="ax"><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
+  <div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
   <p class="help"><button class="rz" id="rz">Réinitialiser</button></p>
 </div>
 <script>
@@ -278,12 +280,13 @@ function endDrag(){var d=drag;drag=null;if(guide)guide.lb.g.classList.remove("on
 lab.addEventListener("pointerup",function(e){if(!drag)return;var p=world(e),d=endDrag();if(near(d.to,p,zoneArr(e)))link()});
 lab.addEventListener("pointercancel",function(){if(drag)endDrag()});
 document.addEventListener("keydown",function(e){if(e.key==="ArrowLeft"){e.preventDefault();back()}});
+document.getElementById("bk").onclick=function(){back()};
 var SW=null;
 document.addEventListener("touchstart",function(e){var t=e.touches[0];SW=e.touches.length===1&&!drag?{x:t.clientX,y:t.clientY}:null},{passive:true});
 document.addEventListener("touchend",function(e){if(!SW)return;var t=e.changedTouches[0],dx=t.clientX-SW.x,dy=t.clientY-SW.y;SW=null;
   if(dx<-60&&Math.abs(dy)<Math.abs(dx)*.6)back()},{passive:true});
 /* ---------- texte : en-tête, axiomes formés ---------- */
-function head(){var st=STEPS[Math.min(S.p,STEPS.length-1)],n=S.p>=STEPS.length?MOL.length-1:st.n,done=0;
+function head(){document.getElementById("bk").disabled=S.p===0;var st=STEPS[Math.min(S.p,STEPS.length-1)],n=S.p>=STEPS.length?MOL.length-1:st.n,done=0;
   for(var i=0;i<S.p;i++)if(STEPS[i].n===n)done++;
   document.getElementById("ti").textContent=S.p>=STEPS.length?"Carte complète":MOL[n].t;
   document.getElementById("cnt").innerHTML=S.p>=STEPS.length?STEPS.length+" axiomes.":(n+1)+" / "+MOL.length+" notion<span class=\"sp\">·</span>"+done+" / "+NB[n]+" liaisons."}
