@@ -166,6 +166,20 @@ html,body{touch-action:manipulation}
 .cp .ch.cd.mem{background:#1c1c21}
 body.peek .cp .ch.mem{color:#5a5a62}
 body.vis.wm .map{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+/* essai « rangement » */
+.rhide{display:none!important}
+/* le tas reste collé en haut de l'écran : on fait défiler la page jusqu'à une notion ancienne sans le perdre de vue */
+#pool{position:sticky;top:0;z-index:4;margin:0 0 34px;padding:12px 0 14px;background:var(--bg);box-shadow:0 10px 14px -10px #000}
+#pool .ph{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin:0 0 10px}
+#pool .pc{display:flex;flex-wrap:wrap;gap:8px;max-height:36vh;overflow:auto}
+#pool .chip{max-width:100%;font-size:12.5px;line-height:1.35;color:#c4c4cc;background:#16161a;border:1px solid #34343a;border-radius:8px;padding:7px 10px;cursor:grab;user-select:none}
+#pool .chip.lc{color:#b9cff7}
+#pool .chip.drag{opacity:.4}
+#pool .chip.bad{animation:shk .35s;border-color:#ff7b72}
+@keyframes shk{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.tri.over{outline:1px dashed var(--up);outline-offset:6px;border-radius:6px}
+.tri.no{animation:nop .4s}
+@keyframes nop{0%,100%{outline:1px dashed transparent}40%{outline:1px dashed #ff7b72;outline-offset:6px}}
 </style>
 </head>
 <body>
@@ -675,6 +689,81 @@ if(typeof MEMOIRE!=="undefined"&&MEMOIRE){
   document.addEventListener("mouseup",pkEnd);
   document.addEventListener("contextmenu",function(e){if(WM&&!e.target.closest(".mn,textarea"))e.preventDefault()});
 }
+
+/* ---------- essai : rangement par glisser-déposer (ordinateur pour l'instant) ----------
+   Une notion à la fois : on ne voit que les notions déjà rangées et la notion en cours (places vides).
+   En haut, un tas d'axiomes à ranger : ceux de la notion en cours (et ses liaisons), plus quelques axiomes
+   des notions déjà rangées (révision). Chacun se dépose sur SA notion, à n'importe quelle place. */
+var RKEY="range-"+SUJET.nom+(typeof SUF!=="undefined"?SUF:""),RG={n:0,ok:[],rev:[],ord:null};
+try{var rs=JSON.parse(localStorage.getItem(RKEY)||"null");if(rs)RG=rs}catch(e){}
+function rSave(){try{localStorage.setItem(RKEY,JSON.stringify(RG))}catch(e){}}
+var RM=false;try{RM=localStorage.getItem(MKEY)==="r"}catch(e){}
+if(RM)WM=false;
+function rItems(i){var no=NOTIONS[COMP[i].notion],out=[];
+  no.ax.forEach(function(a,k){out.push({id:i+"|a|"+k,i:i,txt:a})});
+  N[i].k.filter(function(c){return jx(c,i)}).forEach(function(c,j){out.push({id:i+"|l|"+j,i:i,txt:jx(c,i).replace(/\.$/,""),l:1})});return out}
+function rItem(id){var p=id.split("|"),i=p[0],no=NOTIONS[COMP[i].notion];
+  if(p[1]==="a")return {id:id,i:i,txt:no.ax[+p[2]]};
+  var c=N[i].k.filter(function(c){return jx(c,i)})[+p[2]];return {id:id,i:i,txt:jx(c,i).replace(/\.$/,""),l:1}}
+function shuffle(a){for(var j=a.length-1;j>0;j--){var r=Math.floor(Math.random()*(j+1)),t=a[j];a[j]=a[r];a[r]=t}return a}
+/* au début d'une notion : son tas, mélangé avec 2 axiomes des notions déjà rangées */
+function rStart(){RG.ok=[];var cur=ORDER[RG.n];if(!cur){RG.rev=[];RG.ord=[];rSave();return}
+  var done=[];ORDER.slice(0,RG.n).forEach(function(i){NOTIONS[COMP[i].notion].ax.forEach(function(a,k){done.push(i+"|a|"+k)})});
+  RG.rev=shuffle(done).slice(0,2);RG.ord=shuffle(rItems(cur).map(function(x){return x.id}).concat(RG.rev));rSave()}
+if(!RG.ord)rStart();
+function rLeft(){var cur=ORDER[RG.n];if(!cur)return [];
+  return RG.ord.filter(function(id){return id.split("|")[0]===cur?RG.ok.indexOf(id)<0:RG.rev.indexOf(id)>=0})}
+var POOL=document.createElement("div");POOL.id="pool";
+function rApply(){
+  var M=document.getElementById("map"),cur=ORDER[RG.n],ci=RG.n;
+  [].forEach.call(M.children,function(e){e.classList.remove("rhide")});
+  var tris=[].slice.call(M.querySelectorAll(".tri"));
+  tris.forEach(function(tr){var i=tr.dataset.id,o=ORDER.indexOf(i);tr.classList.remove("todo","cur");
+    if(o>ci){tr.classList.add("rhide");var g=tr.nextElementSibling;if(g&&g.classList.contains("gap"))g.classList.add("rhide");return}
+    [].forEach.call(tr.querySelectorAll(".base .st"),function(st,k){st.classList.remove("now");st.classList.toggle("vh",o===ci&&RG.ok.indexOf(i+"|a|"+k)<0)});
+    [].forEach.call(tr.querySelectorAll(".lk"),function(lk,j){lk.classList.remove("now");lk.classList.toggle("vh",o===ci&&RG.ok.indexOf(i+"|l|"+j)<0)});
+    if(o===ci)tr.classList.add("cur")});
+  /* le tas, juste au-dessus de la notion en cours */
+  POOL.innerHTML="";var h=el("div","ph",cur?"À ranger":"Tout est rangé");POOL.appendChild(h);
+  var box=el("div","pc");rLeft().forEach(function(id){var x=rItem(id),c=el("div","chip"+(x.l?" lc":""));c.draggable=true;c.dataset.id=id;code(c,x.txt);box.appendChild(c)});
+  POOL.appendChild(box);
+  var ct=cur?M.querySelector('.tri[data-id="'+cur+'"]'):M.firstElementChild;if(ct)M.insertBefore(POOL,ct);
+}
+/* glisser-déposer : un axiome se dépose sur sa notion ; juste = il se range, faux = il revient dans le tas */
+var DRG=null;
+document.addEventListener("dragstart",function(e){var c=e.target.closest&&e.target.closest(".chip");if(!c||!RM)return;DRG=c.dataset.id;
+  try{e.dataTransfer.setData("text/plain",DRG);e.dataTransfer.effectAllowed="move"}catch(x){}c.classList.add("drag")});
+document.addEventListener("dragend",function(e){var c=e.target.closest&&e.target.closest(".chip");if(c)c.classList.remove("drag");
+  [].forEach.call(document.querySelectorAll(".tri.over"),function(t){t.classList.remove("over")})});
+document.addEventListener("dragover",function(e){if(!RM||!DRG)return;var t=e.target.closest&&e.target.closest(".tri:not(.rhide)");
+  [].forEach.call(document.querySelectorAll(".tri.over"),function(x){if(x!==t)x.classList.remove("over")});
+  if(t){e.preventDefault();t.classList.add("over")}});
+document.addEventListener("drop",function(e){if(!RM||!DRG)return;var t=e.target.closest&&e.target.closest(".tri:not(.rhide)");if(!t)return;e.preventDefault();
+  var id=DRG,it=rItem(id);DRG=null;t.classList.remove("over");
+  if(it.i!==t.dataset.id){var c=POOL.querySelector('.chip[data-id="'+CSS.escape(id)+'"]');if(c){c.classList.remove("bad");void c.offsetWidth;c.classList.add("bad")}
+    t.classList.remove("no");void t.offsetWidth;t.classList.add("no");return}
+  var cur=ORDER[RG.n];
+  if(it.i===cur)RG.ok.push(id);else RG.rev=RG.rev.filter(function(r){return r!==id});
+  var fini=!rLeft().length;rSave();
+  if(fini){RG.n++;rStart()}
+  sync();
+  /* l'axiome rangé s'allume un instant à sa place */
+  var p=id.split("|"),tr=document.querySelector('.tri[data-id="'+p[0]+'"]');
+  if(tr){var e2=p[1]==="a"?tr.querySelectorAll(".base .st")[+p[2]]:tr.querySelectorAll(".lk")[+p[2]];if(e2)e2.classList.add("now")}
+  if(fini)rShow()});
+function rShow(){var r=POOL.getBoundingClientRect();window.scrollBy({top:r.top-24,behavior:"smooth"})}
+/* le rangement remplace la visite : toucher, flèches et glissements n'avancent pas */
+var _vn=vNext,_vb=vBack;vNext=function(){if(RM)return;_vn()};vBack=function(){if(RM)return;_vb()};
+var _va=vApply;vApply=function(){_va();if(RM)rApply();else if(POOL.parentNode){POOL.remove();[].forEach.call(document.querySelectorAll(".rhide"),function(e){e.classList.remove("rhide")})}};
+var _vs=vShow;vShow=function(){if(RM){rShow();return}_vs()};
+/* le choix d'action : Lecture · Écriture · Rangement · Réinitialiser */
+var RB=document.createElement("button");RB.dataset.m="r";RB.textContent="Rangement";MD.querySelector("#vrz").before(RB);
+vMode=function(){document.body.classList.toggle("wm",WM);document.body.classList.toggle("rm",RM);
+  [].forEach.call(MD.querySelectorAll("button[data-m]"),function(b){var m=b.dataset.m;b.classList.toggle("on",m==="r"?RM:m==="e"?(WM&&!RM):(!WM&&!RM))})};
+[].forEach.call(MD.querySelectorAll("button[data-m]"),function(b){b.onclick=function(){var m=b.dataset.m;RM=m==="r";WM=m==="e";
+  try{localStorage.setItem(MKEY,m)}catch(e){}if(!WM&&WI.parentNode){WI.blur();WI.remove()}vMode();sync();if(WM){vShowW();vFocus()}else vShow()}});
+var _rz=RZ.onclick;RZ.onclick=function(){var sure=RZ.classList.contains("sure");_rz.apply(this,arguments);if(sure){RG={n:0,ok:[],rev:[],ord:null};rStart();RM=false;vMode();sync()}};
+vMode();
 
 sync();
 requestAnimationFrame(function(){window.scrollTo(0,document.body.scrollHeight);vShow()});
