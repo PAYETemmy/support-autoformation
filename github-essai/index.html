@@ -160,9 +160,12 @@ html,body{touch-action:manipulation}
 #wi{position:fixed;left:12px;top:30%;opacity:0;font-size:16px;width:40px;height:24px;border:0;padding:0;resize:none;caret-color:transparent;color:transparent;background:transparent;z-index:2}
 .md .mo .rz{color:var(--m)}
 .md .mo .rz.sure{color:#ff7b72}
-/* essai « initiales » : les lettres à retrouver sont invisibles mais gardent leur place, soulignées comme un blanc à remplir */
-.cp .ch.hid{color:transparent;border-bottom:1px solid #3a3a42}
-.cp .ch.cd.hid{background:#1c1c21}
+/* essai « de mémoire » */
+.cp .ch.rd{color:#c4c4cc}
+.cp .ch.mem{color:transparent}
+.cp .ch.cd.mem{background:#1c1c21}
+body.peek .cp .ch.mem{color:#5a5a62}
+body.vis.wm .map{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 </style>
 </head>
 <body>
@@ -485,8 +488,8 @@ TG.onclick=function(){SHOWN=!SHOWN;try{localStorage.setItem("voir-notes-"+SUJET.
 tgLabel();
 document.title="Support d’autoformation — "+SUJET.nom;
 window.addEventListener("resize",draw);
-/* ---------- essai : en écriture, seules les initiales sont montrées (il faut retrouver les mots) ---------- */
-var INDICES=true;
+/* ---------- essai : en écriture, lire l'axiome, puis l'écrire de mémoire (appui long = le revoir) ---------- */
+var MEMOIRE=true;
 /* visite guidée : les axiomes apparaissent un par un, notion après notion ; l'avancée est sauvegardée */
 var VKEY="visite-"+SUJET.nom,VIS={p:0,all:false},VDIR=1;
 try{var vs=JSON.parse(localStorage.getItem(VKEY)||"null");if(vs)VIS=vs}catch(e){}
@@ -598,6 +601,8 @@ function vPaint(){
     if(st[j])c.classList.add(st[j]);else if(j<last)c.classList.add("ok");   /* espaces sautées à l'intérieur des guillemets */
     /* essai « initiales » : une lettre pas encore tapée qui n'ouvre pas un mot est masquée */
     if(typeof INDICES!=="undefined"&&INDICES&&!c.classList.contains("ok")&&!c.classList.contains("er")&&vHid(m.t,j))c.classList.add("hid");
+    /* essai « de mémoire » : tant que rien n'est tapé, l'axiome se lit normalement ; dès la 1re lettre, ce qui reste à écrire disparaît */
+    if(typeof MEMOIRE!=="undefined"&&MEMOIRE&&!c.classList.contains("ok")&&!c.classList.contains("er"))c.classList.add(VIS.t.length?"mem":"rd");
     if(j===cur)c.classList.add("cur");f.appendChild(c)}
   if(cur<0&&f.lastChild)f.lastChild.classList.add("end");
   
@@ -634,7 +639,7 @@ var _apply=vApply;vApply=function(){
 var MD=document.createElement("section");MD.className="md";
 MD.innerHTML='<h2>Action</h2><div class="mo"><button data-m="l">Lecture</button><button data-m="e">Écriture</button><button class="rz" id="vrz">Réinitialiser</button></div>';
 document.querySelector(".mn").before(MD);
-function vMode(){[].forEach.call(MD.querySelectorAll("button[data-m]"),function(b){b.classList.toggle("on",(b.dataset.m==="e")===WM)})}
+function vMode(){document.body.classList.toggle("wm",WM);[].forEach.call(MD.querySelectorAll("button[data-m]"),function(b){b.classList.toggle("on",(b.dataset.m==="e")===WM)})}
 [].forEach.call(MD.querySelectorAll("button[data-m]"),function(b){b.onclick=function(){WM=b.dataset.m==="e";try{localStorage.setItem(MKEY,WM?"e":"l")}catch(e){}
   vMode();sync();if(WM){vShowW();vFocus()}else vShow()}});
 vMode();
@@ -652,6 +657,22 @@ RZ.onclick=function(){
 /* en écriture, toucher l'écran ouvre le clavier au lieu d'avancer */
 document.addEventListener("click",function(ev){if(!WM||!document.getElementById("sh").hidden)return;
   if(ev.target.closest("button,a,textarea,input,select,small,.mn,.md,.side"))return;vFocus()},true);
+
+/* essai « de mémoire » : un appui long sur l'écran (doigt ou souris) fait réapparaître l'axiome tant qu'on appuie */
+if(typeof MEMOIRE!=="undefined"&&MEMOIRE){
+  var PK=null,PKT=0;
+  function pkStart(x,y,t){if(!WM||!document.getElementById("sh").hidden||(t&&t.closest&&t.closest("button,a,select,.mn,.md,.side")))return;
+    PK={x:x,y:y};clearTimeout(PKT);PKT=setTimeout(function(){if(PK){document.body.classList.add("peek");SWT=Date.now()}},420)}
+  function pkMove(x,y){if(PK&&(Math.abs(x-PK.x)>10||Math.abs(y-PK.y)>10)){PK=null;clearTimeout(PKT)}}
+  function pkEnd(){PK=null;clearTimeout(PKT);if(document.body.classList.contains("peek")){setTimeout(function(){document.body.classList.remove("peek")},250);SWT=Date.now()}}
+  document.addEventListener("touchstart",function(e){if(e.touches.length===1)pkStart(e.touches[0].clientX,e.touches[0].clientY,e.target)},{passive:true});
+  document.addEventListener("touchmove",function(e){pkMove(e.touches[0].clientX,e.touches[0].clientY)},{passive:true});
+  document.addEventListener("touchend",pkEnd,{passive:true});document.addEventListener("touchcancel",pkEnd,{passive:true});
+  document.addEventListener("mousedown",function(e){if(e.button===0)pkStart(e.clientX,e.clientY,e.target)});
+  document.addEventListener("mousemove",function(e){pkMove(e.clientX,e.clientY)});
+  document.addEventListener("mouseup",pkEnd);
+  document.addEventListener("contextmenu",function(e){if(WM&&!e.target.closest(".mn,textarea"))e.preventDefault()});
+}
 
 sync();
 requestAnimationFrame(function(){window.scrollTo(0,document.body.scrollHeight);vShow()});
