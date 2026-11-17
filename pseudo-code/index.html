@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e0e10">
+<meta name="apple-mobile-web-app-title" content="Pseudo-code">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="color-scheme" content="dark">
+<title>Molécules — Pseudo-code</title>
+<style>
+:root{--bg:#0e0e10;--fg:#e8e8ea;--m:#7c7c84;--l:#26262c;--up:#8ab4ff;--ok:#7ee0a1;--no:#ff7b72}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+.w{max-width:980px;margin:0 auto;padding:22px 20px 60px;
+  /* iPhone : rester sous la Dynamic Island et hors des bords arrondis */
+  padding-top:max(22px,calc(env(safe-area-inset-top) + 10px));padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right));padding-bottom:max(60px,calc(env(safe-area-inset-bottom) + 30px))}
+.sj{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--m)}
+h1{font-size:26px;font-weight:600;margin:4px 0 2px}
+.sub{color:var(--m);font-size:13px;margin:0 0 16px}
+.nv{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 10px;font-size:13.5px}
+.nv span{padding:3px 0;color:#4a4a52;border-bottom:2px solid transparent}
+.nv span.on{color:var(--fg);border-bottom-color:var(--up)}
+.nv span.dn{color:#a9a9b2}
+.nv span.dn:after{content:" ✓";color:var(--ok)}
+.st{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--m);margin:4px 0 6px}
+.st b{color:var(--fg);font-weight:600}
+.st .sp{margin:0 10px}
+#lab{position:relative;width:100%;height:620px;border-top:1px solid var(--l);border-bottom:1px solid var(--l);overflow:hidden;
+  background:radial-gradient(ellipse at center,#15151a 0%,var(--bg) 70%);touch-action:none;user-select:none;-webkit-user-select:none}
+svg{position:absolute;inset:0;width:100%;height:100%}
+/* pas de ligatures : "<-" doit rester écrit comme on le tape */
+body,svg text,code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+/* la phrase de l'étape en cours */
+.cap{margin:12px 0 0;min-height:44px;text-align:center;font-size:14px;color:#a9a9b2;transition:opacity .35s,color .35s}
+.cap.lk{color:#93a9d0}
+.cap.ok{color:var(--ok)}
+.cap.out{opacity:0}
+.cap.fin{color:var(--fg)}
+/* atomes */
+.atom{transition:opacity .5s}
+.atom.far{opacity:.4}
+.atom .in{animation:none}
+.atom.pop .in{animation:pop .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.atom circle.core{fill:#1b1b21;stroke:#4a4a52;stroke-width:1.5;transition:stroke .2s,fill .2s}
+.atom.center circle.core{fill:#1a2233;stroke:var(--up);stroke-width:2}
+.atom.bound circle.core{stroke:#8a8a94}
+.atom.center.bound circle.core{stroke:var(--up)}
+.atom.next circle.core{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{stroke:#fff;stroke-width:2.6}}
+.atom.hot circle.core{stroke:var(--fg);stroke-width:2.6}
+.atom text{fill:#d6d6dc;font-size:14.5px;text-anchor:middle;pointer-events:none}
+.atom.center text{fill:#fff;font-weight:600;font-size:16px}
+.atom .orb{fill:none;stroke:#2c2c34;stroke-width:1}
+.atom .el{fill:#5a5a62}
+.atom.center .el{fill:var(--up)}
+.atom.glow circle.core{animation:glow .8s ease-in-out 2 alternate}
+@keyframes glow{to{filter:drop-shadow(0 0 7px rgba(138,180,255,.7))}}
+/* liaisons */
+.bond{stroke:#8a8a94;stroke-width:2;fill:none;transition:opacity .5s}
+.bond.lk{stroke:var(--up);stroke-dasharray:6 5}
+.bond.new{animation:grow .6s ease-out}
+@keyframes grow{from{stroke-dashoffset:var(--len);stroke-dasharray:var(--len)}to{stroke-dashoffset:0}}
+.bl{transition:opacity .5s}
+.bl text{font-size:12.5px;fill:#a9a9b2;text-anchor:middle;pointer-events:none}
+.bl.lk text{fill:#b9cff7}
+.bl rect{fill:var(--bg);opacity:.85}
+.far{opacity:.4}
+/* le trait à tracer */
+.gd{stroke:#26262c;stroke-width:2;stroke-dasharray:2 8;stroke-linecap:round;fill:none;animation:march 1s linear infinite}
+.gd.lk{stroke:#23314c}
+@keyframes march{to{stroke-dashoffset:-20}}
+.gl{opacity:0;transition:opacity .15s;pointer-events:none}
+.gl.on{opacity:1}
+.gl text{font-size:17px;font-weight:600;fill:#f0f0f3;text-anchor:middle;pointer-events:none}
+.gl.lk text{fill:#cfe0ff}
+.gl rect{fill:#18181e}
+.gl.lk rect{fill:#141b29}
+.dr{stroke:var(--fg);stroke-width:2;fill:none;pointer-events:none}
+.ring{fill:none;stroke-width:2;pointer-events:none;animation:ring .7s ease-out forwards}
+@keyframes ring{from{opacity:.9}to{opacity:0;r:70}}
+.spark{pointer-events:none;animation:spk .8s ease-out forwards}
+@keyframes spk{to{opacity:0;transform:translate(var(--dx),var(--dy))}}
+/* texte sous la carte */
+.ax{margin:18px 0 0}
+#ol{margin:6px 0 0}
+#ol[hidden]{display:none}
+.ax h3{font-size:13px;font-weight:600;color:#a9a9b2;margin:12px 0 4px}
+.ax ol{margin:0;padding:0 0 0 20px;color:#c4c4cc;font-size:14px}
+.ax li{margin:3px 0;animation:fin .5s ease-out}
+.ax li.lk{color:#b9cff7}
+@keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;padding:1px 4px;border-radius:4px}
+.cap code{font-size:12.5px}
+/* au doigt (iPhone) : tout tient dans l'écran, sans faire défiler */
+@media (pointer:coarse){
+  .w{padding-bottom:max(14px,calc(env(safe-area-inset-bottom) + 6px))}
+  .ax{margin-top:10px}
+}
+/* page verrouillée : elle ne glisse plus (liste des axiomes fermée) */
+html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
+.help{color:var(--m);font-size:12.5px;margin:10px 0 0}
+.rz{background:none;border:0;color:var(--m);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
+.rz.sure{color:var(--no)}
+.rz:disabled{opacity:.35;cursor:default}
+.ax .bk{display:block;margin:0 0 8px}
+</style>
+</head>
+<body>
+<div class="w">
+  <h1 id="ti"></h1>
+  <div class="st"><span></span><span id="cnt"></span></div>
+  <div id="lab"><svg id="svg"></svg></div>
+  <div class="cap" id="cap"></div>
+  <div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
+  <p class="help"><button class="rz" id="rz">Réinitialiser</button></p>
+</div>
+<script>
+/* ---------- les molécules : atomes (idées) et liaisons (axiomes) ----------
+   b = [atome, atome, ce qui les relie, axiome complet, liaison entre notions ?] */
+var MOL=[
+ {id:"alg",t:"Algorithme",c:"alg",
+  a:{alg:"Algorithme",ins:"Instructions",ordre:"De haut en bas",pc:"Pseudo-code",lang:"Python, C++",nom:"Nom de l’algorithme",sec:"Section Variables",df:"Début et Fin",com:"Commentaire"},
+  b:[["alg","ins","est une suite d’","Un algorithme est une suite d’instructions qui résout un problème."],
+     ["ins","ordre","s’exécutent","Les instructions s’exécutent une par une, de haut en bas."],
+     ["alg","pc","s’écrit en","Le pseudo-code écrit un algorithme en français, avec quelques mots-clés fixes."],
+     ["pc","lang","se traduit ensuite en","Le pseudo-code se traduit ensuite dans un vrai langage : Python, C++…"],
+     ["alg","nom","commence par le","La première ligne donne le nom de l’algorithme : `Algorithme Moyenne`."],
+     ["alg","sec","annonce ses données dans la","Sous le nom, la section `Variables` annonce les données utilisées."],
+     ["ins","df","s’écrivent entre","Les instructions s’écrivent entre `Début` et `Fin`."],
+     ["alg","com","s’explique par un","Un commentaire commence par `//` : il explique, il ne s’exécute pas."]]},
+ {id:"var",t:"Variable",c:"var",
+  a:{var:"Variable",sec:"Section Variables",val:"Valeur",exe:"Exécution",nom:"Nom",esp:"Sans espace",decl:"Déclaration",ens:"Plusieurs noms"},ext:["sec"],
+  b:[["sec","var","déclare chaque","La section `Variables` déclare chaque variable avant qu’elle serve.",1],
+     ["var","val","garde une","Une variable est une boîte qui garde une valeur."],
+     ["val","exe","peut changer pendant l’","La valeur d’une variable peut changer pendant l’exécution."],
+     ["var","nom","se désigne par son","Chaque variable a un nom, qui sert à la désigner."],
+     ["nom","esp","s’écrit","Un nom s’écrit sans espace et dit ce que la variable contient : `somme`, `nbNotes`."],
+     ["var","decl","se crée par une","Une déclaration crée une variable : son nom, deux-points, son type : `age : entier`."],
+     ["decl","ens","peut regrouper","Plusieurs variables du même type se déclarent ensemble : `a, b : entier`."]]},
+ {id:"typ",t:"Type",c:"typ",
+  a:{typ:"Type",var:"Variable",sorte:"Sorte de valeur",ent:"entier",reel:"réel",txt:"texte",bool:"booléen"},ext:["var"],
+  b:[["var","typ","a un","Chaque variable a un type, fixé à sa déclaration.",1],
+     ["typ","sorte","fixe la","Le type fixe la sorte de valeur que la variable peut garder."],
+     ["typ","ent","pour compter :","`entier` sert à compter : un nombre sans virgule, comme `12` ou `-3`."],
+     ["typ","reel","pour mesurer :","`réel` sert à mesurer : un nombre à virgule, écrit avec un point, comme `3.5`."],
+     ["typ","txt","pour écrire :","`texte` garde des caractères, entre guillemets droits : `\"Bonjour\"`."],
+     ["typ","bool","pour dire oui ou non :","`booléen` n’a que deux valeurs : `vrai` ou `faux`."]]},
+ {id:"aff",t:"Affectation",c:"aff",
+  a:{aff:"Affectation",var:"Variable",fl:"<-",dg:"De droite à gauche",anc:"Ancienne valeur",calc:"Calcul",self:"La variable elle-même",dep:"Valeur de départ"},ext:["var"],
+  b:[["aff","var","range une valeur dans une","L’affectation range une valeur dans une variable.",1],
+     ["aff","fl","s’écrit avec","L’affectation s’écrit avec `<-` : `age <- 18`."],
+     ["fl","dg","se lit","`<-` se lit de droite à gauche : la valeur de droite va dans la variable de gauche."],
+     ["aff","anc","efface l’","L’affectation efface l’ancienne valeur de la variable."],
+     ["aff","calc","peut ranger le résultat d’un","À droite de `<-`, on peut mettre un calcul : `total <- prix * 2`."],
+     ["calc","self","peut utiliser","Une variable peut servir à son propre calcul : `compteur <- compteur + 1`."],
+     ["aff","dep","donne d’abord une","Avant d’utiliser une variable, on lui donne une valeur de départ : `somme <- 0`."]]},
+ {id:"es",t:"Lire et Écrire",c:"es",
+  a:{es:"Lire et Écrire",alg:"Algorithme",lire:"Lire",clav:"Clavier",quest:"Question",ecr:"Écrire",ecran:"Écran",msg:"Message",plus:"Plusieurs éléments"},ext:["alg"],
+  b:[["alg","es","dialogue avec l’utilisateur par","Un algorithme dialogue avec l’utilisateur par `Lire` et `Écrire`.",1],
+     ["es","lire","fait entrer une valeur avec","`Lire` fait entrer une valeur dans l’algorithme."],
+     ["lire","clav","attend le","`Lire age` attend que l’utilisateur tape une valeur au clavier, puis la range dans `age`."],
+     ["es","ecr","fait sortir une valeur avec","`Écrire` fait sortir une valeur de l’algorithme."],
+     ["ecr","ecran","affiche à l’","`Écrire age` affiche à l’écran la valeur de `age`."],
+     ["ecr","msg","affiche tel quel un","`Écrire \"Bonjour\"` affiche tel quel le texte entre guillemets."],
+     ["ecr","plus","sépare par des virgules","`Écrire` affiche plusieurs éléments séparés par des virgules : `Écrire \"Total : \", total`."],
+     ["lire","quest","vient après une","Avant un `Lire`, un `Écrire` pose la question : `Écrire \"Ton âge ?\"`."]]},
+ {id:"op",t:"Opérateurs",c:"op",
+  a:{op:"Opérateur",calc:"Calcul",ar:"+ - * /",prio:"Priorité",dm:"div et mod",cmp:"Comparaison",vf:"vrai ou faux",eg:"= et <-",log:"et, ou, non"},ext:["calc"],
+  b:[["calc","op","se fait avec des","Un calcul se fait avec des opérateurs.",1],
+     ["op","ar","calcule avec","Les opérateurs de calcul sont `+`, `-`, `*` et `/`."],
+     ["ar","prio","suivent une","`*` et `/` passent avant `+` et `-` ; les parenthèses changent cet ordre."],
+     ["op","dm","divise en entiers avec","`div` donne le quotient entier et `mod` le reste : `7 div 2` vaut `3`, `7 mod 2` vaut `1`."],
+     ["op","cmp","sert aussi à la","Les opérateurs de comparaison sont `=`, `<>` (différent), `<`, `>`, `<=` et `>=`."],
+     ["cmp","vf","donne","Une comparaison donne `vrai` ou `faux` : `age >= 18` est un booléen."],
+     ["cmp","eg","ne confond pas","`=` compare deux valeurs ; `<-` range une valeur : ce sont deux choses différentes."],
+     ["op","log","combine des conditions avec","`et`, `ou` et `non` combinent des conditions : `age >= 18 et age < 65`."]]},
+ {id:"si",t:"Si",c:"si",
+  a:{si:"Si",cmp:"Comparaison",alors:"Alors",ind:"Indentation",sinon:"Sinon",fac:"Facultatif",finsi:"FinSi",imb:"Si imbriqué"},ext:["cmp"],
+  b:[["si","cmp","teste une condition, souvent une","`Si` teste une condition, le plus souvent une comparaison : `Si age >= 18 Alors`.",1],
+     ["si","alors","exécute, si c’est vrai, le bloc","Si la condition est vraie, les instructions après `Alors` s’exécutent."],
+     ["alors","ind","décale son bloc par l’","Les instructions d’un bloc sont décalées vers la droite : c’est l’indentation."],
+     ["si","sinon","exécute, si c’est faux, le bloc","Si la condition est fausse, ce sont les instructions après `Sinon` qui s’exécutent."],
+     ["sinon","fac","est","`Sinon` est facultatif : sans lui, quand la condition est fausse, rien ne se passe."],
+     ["si","finsi","se ferme par","Un `Si` se ferme toujours par `FinSi`."],
+     ["si","imb","peut contenir un","Un `Si` peut contenir un autre `Si` : ils sont imbriqués."]]},
+ {id:"sel",t:"Selon",c:"sel",
+  a:{sel:"Selon",si:"Si",vr:"Une seule variable",cas:"Cas",un:"Un seul à la fois",aut:"Autrement",fin:"FinSelon"},ext:["si"],
+  b:[["si","sel","en série se remplace par","Une série de `Si` sur la même variable se remplace par un `Selon`.",1],
+     ["sel","vr","regarde la valeur d’","`Selon jour Faire` regarde la valeur d’une seule variable."],
+     ["sel","cas","propose chaque valeur dans un","Chaque `Cas` donne une valeur possible et ses instructions : `Cas 1 : Écrire \"Lundi\"`."],
+     ["cas","un","s’exécute","Un seul `Cas` s’exécute : celui qui correspond à la valeur."],
+     ["sel","aut","prévoit le reste avec","`Autrement :` s’exécute quand aucun `Cas` ne correspond."],
+     ["sel","fin","se ferme par","Un `Selon` se ferme par `FinSelon`."]]},
+ {id:"pour",t:"Pour",c:"pour",
+  a:{pour:"Pour",ins:"Instructions",bcl:"Boucle",cpt:"Compteur",tour:"Tour",bloc:"Bloc",pas:"pas",fin:"FinPour"},ext:["ins"],
+  b:[["pour","ins","répète des","`Pour` répète des instructions un nombre de fois connu d’avance.",1],
+     ["pour","bcl","est une","`Pour` est une boucle : une structure qui répète un bloc d’instructions."],
+     ["pour","cpt","avance avec un","`Pour i de 1 à 5 Faire` : le compteur `i` vaut 1, puis 2, 3, 4 et 5."],
+     ["cpt","tour","augmente de 1 à chaque","Le compteur augmente de 1 tout seul à chaque tour de boucle."],
+     ["cpt","bloc","s’utilise dans le","Le compteur s’utilise dans le bloc répété : `Écrire i`."],
+     ["pour","pas","change son avance avec","`pas` change l’avance du compteur : `Pour i de 10 à 1 pas -1 Faire` compte à l’envers."],
+     ["pour","fin","se ferme par","Un `Pour` se ferme par `FinPour`."]]},
+ {id:"tq",t:"TantQue",c:"tq",
+  a:{tq:"TantQue",bcl:"Boucle",cond:"Condition",avant:"Avant chaque tour",zero:"Zéro tour",inf:"Boucle infinie",fin:"FinTantQue"},ext:["bcl"],
+  b:[["tq","bcl","est une autre","`TantQue` est une autre boucle, pour un nombre de tours inconnu d’avance.",1],
+     ["tq","cond","répète tant qu’est vraie sa","`TantQue reste > 0 Faire` répète le bloc tant que la condition est vraie."],
+     ["cond","avant","se teste","La condition se teste avant chaque tour."],
+     ["tq","zero","peut faire","Si la condition est fausse dès le départ, le bloc ne s’exécute pas du tout."],
+     ["tq","inf","risque la","Si rien dans le bloc ne change la condition, la boucle ne s’arrête jamais : c’est une boucle infinie."],
+     ["tq","fin","se ferme par","Un `TantQue` se ferme par `FinTantQue`."]]},
+ {id:"rep",t:"Répéter",c:"rep",
+  a:{rep:"Répéter",tq:"TantQue",jq:"Jusqu'à",arr:"Condition d’arrêt",une:"Au moins un tour",sai:"Saisie contrôlée"},ext:["tq"],
+  b:[["rep","tq","ressemble à","`Répéter` ressemble à `TantQue`, mais teste sa condition après le bloc.",1],
+     ["rep","jq","se ferme par","`Répéter` se ferme par `Jusqu'à`, suivi d’une condition."],
+     ["jq","arr","donne la","La boucle s’arrête quand la condition de `Jusqu'à` devient vraie."],
+     ["rep","une","fait toujours","Le bloc d’un `Répéter` s’exécute toujours au moins une fois."],
+     ["rep","sai","sert à la","`Répéter` redemande une saisie tant qu’elle est mauvaise : `Répéter Lire n Jusqu'à n > 0`."]]},
+ {id:"lst",t:"Liste",c:"lst",
+  a:{lst:"Liste",typ:"Type",elt:"Éléments du même type",cro:"Crochets",ind:"Indice",z:"0",lon:"Longueur",aj:"Ajouter",parc:"Parcours"},ext:["typ"],
+  b:[["lst","typ","est un","`liste` est un type qui garde plusieurs valeurs sous un seul nom.",1],
+     ["lst","elt","range des","Une liste se déclare avec le type de ses éléments : `notes : liste de réel`."],
+     ["lst","cro","s’écrit entre","Une liste s’écrit entre crochets : `notes <- [12, 15, 9]`."],
+     ["lst","ind","numérote ses éléments par un","Chaque élément a un numéro, son indice : `notes[1]` désigne un élément."],
+     ["ind","z","commence à","Les indices commencent à 0, comme en Python et en C++ : `notes[0]` est le premier élément."],
+     ["lst","lon","connaît sa","`Longueur(notes)` donne le nombre d’éléments de la liste."],
+     ["lst","aj","grandit avec","`Ajouter(notes, 14)` met un élément de plus à la fin de la liste."],
+     ["lst","parc","se lit en entier par un","Une boucle `Pour` parcourt la liste : `Pour i de 0 à Longueur(notes) - 1 Faire`."]]},
+ {id:"fn",t:"Fonction",c:"fn",
+  a:{fn:"Fonction",alg:"Algorithme",par:"Paramètres",tr:"Type du résultat",ret:"Retourner",app:"Appel",loc:"Variables locales",proc:"Procédure"},ext:["alg"],
+  b:[["fn","alg","est un petit","Une fonction est un petit algorithme qui porte un nom et qu’on peut réutiliser.",1],
+     ["fn","par","reçoit des","Une fonction reçoit des paramètres entre parenthèses : `Fonction Carré(x : réel) : réel`."],
+     ["fn","tr","annonce le","Après les parenthèses, la fonction annonce le type de son résultat."],
+     ["fn","ret","rend son résultat avec","`Retourner` rend le résultat et termine la fonction : `Retourner x * x`."],
+     ["fn","app","s’utilise par un","On appelle une fonction par son nom, avec ses valeurs : `y <- Carré(3)`."],
+     ["fn","loc","garde pour elle ses","Les variables déclarées dans une fonction n’existent que dans cette fonction."],
+     ["fn","proc","sans résultat s’appelle","Une `Procédure` est une fonction qui ne retourne rien : elle agit seulement."]]}
+];
+/* ---------- état sauvegardé : le nombre d'étapes faites ---------- */
+var KEY="molecules-guide-Pseudo-code",S={p:0};
+try{var s0=JSON.parse(localStorage.getItem(KEY)||"null");if(s0&&typeof s0.p==="number")S=s0}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+/* ---------- outils ---------- */
+var NS="http://www.w3.org/2000/svg",svg=document.getElementById("svg"),lab=document.getElementById("lab"),CAP=document.getElementById("cap"),TAU=Math.PI*2;
+function sv(t,at,p){var e=document.createElementNS(NS,t);for(var k in at)e.setAttribute(k,at[k]);if(p)p.appendChild(e);return e}
+function txt(e,s){e.innerHTML="";s.split("`").forEach(function(p,i){if(i%2){var c=document.createElement("code");c.textContent=p;e.appendChild(c)}else if(p)e.appendChild(document.createTextNode(p))})}
+function wrap(s,n){var w=s.split(" "),L=[],cur="";w.forEach(function(x){if((cur+" "+x).trim().length>n&&cur){L.push(cur);cur=x}else cur=(cur+" "+x).trim()});if(cur)L.push(cur);return L}
+function label(p,s,n,cls,pad,lh,vp,rx){lh=lh||16;vp=vp||2;var g=sv("g",{"class":cls},p),bg=sv("rect",{},g),L=wrap(s,n),w=0;
+  L.forEach(function(l,j){var t=sv("text",{y:((j-(L.length-1)/2)*lh+lh*.3).toFixed(1)},g);t.textContent=l;w=Math.max(w,t.getComputedTextLength())});
+  var h=L.length*lh;bg.setAttribute("x",-w/2-pad);bg.setAttribute("y",-h/2-vp);bg.setAttribute("width",w+pad*2);bg.setAttribute("height",h+vp*2);bg.setAttribute("rx",rx||4);
+  return {g:g,w:w,h:h}}
+var seed=7;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
+/* ---------- la carte : tous les atomes, et l'ordre des étapes (une nouvelle idée à la fois) ---------- */
+var G={},STEPS=[],FIRST,NB=[];
+MOL.forEach(function(m,k){var ext=m.ext||[];
+  function gid(key){if(ext.indexOf(key)>=0)for(var j=k-1;j>=0;j--){var q=MOL[j];if(q.a[key]&&(q.ext||[]).indexOf(key)<0)return q.id+"/"+key}return m.id+"/"+key}
+  for(var key in m.a){var g=gid(key);if(!G[g])G[g]={label:m.a[key],c:key===m.c,n:k}}
+  var kn={};ext.forEach(function(e){kn[gid(e)]=1});if(k===0){FIRST=gid(m.c);kn[FIRST]=1}
+  var rest=m.b.map(function(b,i){return i});NB[k]=rest.length;
+  while(rest.length){var pick=-1;
+    /* d'abord la liaison avec la notion précédente, puis chaque idée qui touche ce qui est déjà tracé */
+    [1,0].some(function(lf){rest.some(function(i,j){var b=m.b[i],x=kn[gid(b[0])]?1:0,y=kn[gid(b[1])]?1:0;if(x+y===1&&(!lf||b[4])){pick=j;return true}});return pick>=0});
+    if(pick<0)rest.some(function(i,j){var b=m.b[i];if(kn[gid(b[0])]&&kn[gid(b[1])]){pick=j;return true}});
+    if(pick<0)pick=0;
+    var b=m.b[rest.splice(pick,1)[0]],s=gid(b[0]),o=gid(b[1]);
+    STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
+/* ---------- état de la carte affichée ---------- */
+var V={},B=[],W=0,H=0,gW,gB,gG,gA,gFx,meter,meterG,cam={x:0,y:0,s:1},drag=null,raf=0,guide=null,busy=false;
+function textW(s,m,n){m=m||meter;var L=wrap(s,n||26),w=0;L.forEach(function(l){m.firstChild.textContent=l;w=Math.max(w,m.firstChild.getComputedTextLength())});return w}
+function mkAtom(id,x,y,anim){var d=G[id],c=d.c,r=c?52:40;
+  var g=sv("g",{"class":"atom"+(c?" center":"")+(anim?" pop":"")},gA),inn=sv("g",{"class":"in"},g);
+  var orb=sv("ellipse",{"class":"orb"},inn),e1=sv("circle",{"class":"el",r:2.6},inn),core=sv("circle",{"class":"core"},inn);
+  var lines=wrap(d.label,c?14:12),ts=[],wm=0;
+  lines.forEach(function(l,i){var t=sv("text",{y:(i-(lines.length-1)/2)*17+5},inn);t.textContent=l;ts.push(t);wm=Math.max(wm,t.getComputedTextLength())});
+  r=Math.min(r+14,Math.max(r,(wm+18)/2));
+  ts.forEach(function(t){var w=t.getComputedTextLength(),mx=2*r-16;if(w>mx)t.style.fontSize=((c?16:14.5)*mx/w).toFixed(1)+"px"});
+  orb.setAttribute("rx",r+11);orb.setAttribute("ry",(r+11)*.38);core.setAttribute("r",r);
+  var a={id:id,c:c,n:d.n,r:r,x:x,y:y,hx:x,hy:y,vx:0,vy:0,ph:rnd()*TAU,g:g,e:e1};V[id]=a;
+  if(anim)setTimeout(function(){g.classList.remove("pop")},800);return a}
+function bondLen(st,r1,r2){return st.lk&&G[st.s].n!==G[st.o].n?400:r1+r2+Math.max(130,textW(st.rel)+40,textW(st.rel,meterG,22)+64)}
+/* la nouvelle idée se pose à un endroit libre, à chaque fois nouveau */
+function place(st){var Y=V[st.neu===st.s?st.o:st.s],isC=G[st.neu].c,D=bondLen(st,Y.r,isC?52:40),best=null,bs=-1e9;
+  var all=Object.keys(V).map(function(k){return V[k]}),cx=0,cy=0;all.forEach(function(a){cx+=a.x;cy+=a.y});cx/=all.length;cy/=all.length;
+  var nn=G[st.neu].n;
+  (isC?[1,1.25,1.5,1.7]:[1,1.35]).forEach(function(f,fi){for(var k=0;k<48;k++){var an=k/48*TAU,x=Y.x+Math.cos(an)*D*f,y=Y.y+Math.sin(an)*D*f,m=1e9;
+    all.forEach(function(Z){if(Z!==Y)m=Math.min(m,Math.hypot(x-Z.x,y-Z.y)-Z.r-(Z.n!==nn?140:0)-(isC&&Z.c?260:0))});
+    var sc=Math.min(m,isC?600:260)+(isC?.5*Math.hypot(x-cx,y-cy):0)+rnd()*25-fi*40;if(sc>bs){bs=sc;best=[x,y]}}});
+  return best}
+function addBond(st,anim){var a1=V[st.s],a2=V[st.o];
+  var p=sv("line",{"class":"bond"+(st.lk?" lk":"")+(anim?" new":"")},gB),lb=label(gB,st.rel,26,"bl"+(st.lk?" lk":""),5);
+  var mx=(a1.x+a2.x)/2,my=(a1.y+a2.y)/2;B.push({st:st,a:a1,b:a2,p:p,lb:lb,L:st.lk&&a1.n!==a2.n?Math.max(300,Math.hypot(a2.x-a1.x,a2.y-a1.y)):bondLen(st,a1.r,a2.r),lx:mx,ly:my});
+  a1.g.classList.add("bound");a2.g.classList.add("bound")}
+/* petite physique : les atomes se repoussent, les liaisons les retiennent, chacun reste près de sa place */
+function tick(jit){var L=Object.keys(V).map(function(k){return V[k]});
+  L.forEach(function(a){a.vx+=(a.hx-a.x)*.004;a.vy+=(a.hy-a.y)*.004;if(jit){a.vx+=(Math.random()-.5)*.1;a.vy+=(Math.random()-.5)*.1}});
+  for(var p=0;p<L.length;p++)for(var q=p+1;q<L.length;q++){var a=L[p],b=L[q],dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy+.01;if(d2>360000)continue;
+    var d=Math.sqrt(d2),f=Math.min(4,5200/d2),mn=a.r+b.r+30;if(d<mn)f+=(mn-d)*.08;a.vx-=dx/d*f;a.vy-=dy/d*f;b.vx+=dx/d*f;b.vy+=dy/d*f}
+  B.forEach(function(b){var dx=b.b.x-b.a.x,dy=b.b.y-b.a.y,d=Math.hypot(dx,dy)||1,f=(d-b.L)*.012;b.a.vx+=dx/d*f;b.a.vy+=dy/d*f;b.b.vx-=dx/d*f;b.b.vy-=dy/d*f});
+  L.forEach(function(a){a.vx*=.86;a.vy*=.86;a.x+=a.vx;a.y+=a.vy})}
+function seg(a,b){var dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1;return [a.x+dx/d*a.r,a.y+dy/d*a.r,b.x-dx/d*b.r,b.y-dy/d*b.r,d]}
+function render(){var t=performance.now()/1000;
+  gW.setAttribute("transform","translate("+(W/2).toFixed(1)+","+(H/2).toFixed(1)+") scale("+cam.s.toFixed(4)+") translate("+(-cam.x).toFixed(1)+","+(-cam.y).toFixed(1)+")");
+  for(var id in V){var a=V[id];a.g.setAttribute("transform","translate("+a.x.toFixed(1)+","+a.y.toFixed(1)+")");
+    var ph=a.ph+t*(a.c?1.4:1.9);a.e.setAttribute("cx",(Math.cos(ph)*(a.r+11)).toFixed(1));a.e.setAttribute("cy",(Math.sin(ph)*(a.r+11)*.38).toFixed(1))}
+  B.forEach(function(b){var s=seg(b.a,b.b);b.p.setAttribute("x1",s[0]);b.p.setAttribute("y1",s[1]);b.p.setAttribute("x2",s[2]);b.p.setAttribute("y2",s[3]);
+    b.p.style.setProperty("--len",Math.max(1,s[4]-b.a.r-b.b.r));var mx=(s[0]+s[2])/2,my=(s[1]+s[3])/2;b.lx+=(mx-b.lx)*.25;b.ly+=(my-b.ly)*.25;
+    b.lb.g.setAttribute("transform","translate("+b.lx.toFixed(1)+","+b.ly.toFixed(1)+")")});
+  if(guide){var s=seg(V[guide.st.s],V[guide.st.o]);guide.line.setAttribute("x1",s[0]);guide.line.setAttribute("y1",s[1]);guide.line.setAttribute("x2",s[2]);guide.line.setAttribute("y2",s[3]);
+    /* au-dessus du curseur à la souris ; plus haut au doigt, pour qu'il ne le cache pas */
+    if(drag)guide.lb.g.setAttribute("transform","translate("+drag.x.toFixed(1)+","+(drag.y-(drag.touch?64:18)/cam.s-guide.lb.h/2-7).toFixed(1)+")")}
+  if(drag){var f=drag.from,dx=drag.x-f.x,dy=drag.y-f.y,d=Math.hypot(dx,dy)||1;drag.l.setAttribute("x1",f.x+dx/d*f.r);drag.l.setAttribute("y1",f.y+dy/d*f.r);drag.l.setAttribute("x2",drag.x);drag.l.setAttribute("y2",drag.y)}
+}
+/* la vue suit la molécule en cours */
+function camTarget(){var ids=[],fin=S.p>=STEPS.length;
+  var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  /* écran étroit (iPhone) : cadrer seulement les deux atomes à relier, pour que les textes restent lisibles */
+  if(fin)ids=Object.keys(V);else if(W<600){var st=STEPS[S.p];ids=[st.s,st.o]}else{var st=STEPS[S.p];for(var id in V)if(V[id].n===st.n){ids.push(id);
+    if(V[id].c&&!(st.lk&&st.neu)){x0=V[id].x-230;x1=V[id].x+230;y0=V[id].y-230;y1=V[id].y+230}}ids.push(st.s,st.o)}ids.forEach(function(id){var a=V[id];if(!a)return;x0=Math.min(x0,a.x-a.r-30);x1=Math.max(x1,a.x+a.r+30);y0=Math.min(y0,a.y-a.r-30);y1=Math.max(y1,a.y+a.r+30)});
+  var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),1);s=Math.max(s,fin?.06:.36);
+  return {x:(x0+x1)/2,y:(y0+y1)/2,s:s}}
+function step(){tick(true);var T=camTarget();cam.x+=(T.x-cam.x)*.05;cam.y+=(T.y-cam.y)*.05;cam.s+=(T.s-cam.s)*.05;render();raf=requestAnimationFrame(step)}
+/* ---------- l'étape en cours ---------- */
+function dim(n){for(var id in V){var a=V[id],st=STEPS[S.p];a.g.classList.toggle("far",n!=null&&a.n!==n&&!(st&&(id===st.s||id===st.o)))}
+  B.forEach(function(b){var f=n!=null&&b.st.n!==n;b.p.classList.toggle("far",f);b.lb.g.classList.toggle("far",f)})}
+function showStep(anim){if(guide){guide.line.remove();guide.lb.g.remove();guide=null}
+  for(var id in V)V[id].g.classList.remove("next");
+  head();
+  if(S.p>=STEPS.length){CAP.className="cap fin";CAP.textContent="Carte complète : "+MOL.length+" notions, "+STEPS.length+" axiomes.";dim(null);
+    for(var i in V){(function(a){a.g.classList.add("glow");setTimeout(function(){a.g.classList.remove("glow")},1700)})(V[i])}return}
+  var st=STEPS[S.p];
+  if(st.neu&&!V[st.neu]){var P=place(st),a=mkAtom(st.neu,P[0],P[1],anim);
+    if(anim){var c=sv("circle",{"class":"ring",cx:a.x,cy:a.y,r:a.r,stroke:st.lk?"#8ab4ff":"#d6d6dc"},gFx);setTimeout(function(){c.remove()},750)}}
+  var l=sv("line",{"class":"gd"+(st.lk?" lk":"")},gG),lb=label(gG,st.rel,22,"gl"+(st.lk?" lk":""),12,21,7,9);guide={st:st,line:l,lb:lb};
+  (st.neu?[V[st.neu]]:[V[st.s],V[st.o]]).forEach(function(a){a.g.classList.add("next")});
+  CAP.className="cap"+(st.lk?" lk":"");txt(CAP,st.ax);dim(st.n)}
+function link(){var st=STEPS[S.p];busy=true;guide.line.remove();guide.lb.g.remove();guide=null;
+  for(var id in V)V[id].g.classList.remove("next");
+  addBond(st,true);burst(V[st.s],V[st.o],st.lk);addLine(st);S.p++;save();CAP.classList.add("ok");head();
+  var endN=S.p>=STEPS.length||STEPS[S.p].n!==st.n;
+  if(endN)for(var id in V)if(V[id].n===st.n){(function(a){a.g.classList.add("glow");setTimeout(function(){a.g.classList.remove("glow")},1700)})(V[id])}
+  setTimeout(function(){CAP.classList.add("out")},endN?1100:650);
+  setTimeout(function(){busy=false;showStep(true)},endN?1500:950)}
+function back(){if(busy||S.p===0)return;
+  var cur=STEPS[S.p];if(cur&&cur.neu&&V[cur.neu]){V[cur.neu].g.remove();delete V[cur.neu]}
+  var b=B.pop();b.p.remove();b.lb.g.remove();S.p--;save();
+  [b.a,b.b].forEach(function(a){a.g.classList.toggle("bound",B.some(function(x){return x.a===a||x.b===a}))});
+  removeLine();showStep(false)}
+function burst(a,b,lk){var col=lk?"#8ab4ff":"#7ee0a1";
+  [a,b].forEach(function(x){var c=sv("circle",{"class":"ring",cx:x.x,cy:x.y,r:x.r,stroke:col},gFx);setTimeout(function(){c.remove()},750)});
+  var mx=(a.x+b.x)/2,my=(a.y+b.y)/2;for(var k=0;k<12;k++){var an=Math.random()*TAU,dd=20+Math.random()*40;
+    var s=sv("circle",{"class":"spark",cx:mx,cy:my,r:1.8,fill:col},gFx);s.style.setProperty("--dx",(Math.cos(an)*dd)+"px");s.style.setProperty("--dy",(Math.sin(an)*dd)+"px");
+    (function(s){setTimeout(function(){s.remove()},820)})(s)}}
+/* ---------- tracer : d'un des deux atomes jusqu'à l'autre ---------- */
+function world(e){var r=lab.getBoundingClientRect();return {x:(e.clientX-r.left-W/2)/cam.s+cam.x,y:(e.clientY-r.top-H/2)/cam.s+cam.y}}
+function near(a,p,m){return Math.hypot(a.x-p.x,a.y-p.y)<=a.r+m/cam.s}
+/* marge autour des atomes, en pixels d'écran : plus large au doigt */
+function zoneDep(e){return e.pointerType==="touch"?30:10}
+function zoneArr(e){return e.pointerType==="touch"?40:24}
+lab.addEventListener("pointerdown",function(e){if(!guide||busy)return;var p=world(e),A1=V[guide.st.s],A2=V[guide.st.o],f=null;
+  var z=zoneDep(e);if(near(A1,p,z))f=A1;else if(near(A2,p,z))f=A2;else return;
+  drag={from:f,to:f===A1?A2:A1,x:p.x,y:p.y,touch:e.pointerType==="touch",l:sv("line",{"class":"dr"},gFx)};f.g.classList.add("hot");render();guide.lb.g.classList.add("on");lab.setPointerCapture(e.pointerId);e.preventDefault()});
+lab.addEventListener("pointermove",function(e){if(!drag)return;var p=world(e);drag.x=p.x;drag.y=p.y;drag.to.g.classList.toggle("hot",near(drag.to,p,zoneArr(e)))});
+function endDrag(){var d=drag;drag=null;if(guide)guide.lb.g.classList.remove("on");d.l.remove();d.from.g.classList.remove("hot");d.to.g.classList.remove("hot");return d}
+lab.addEventListener("pointerup",function(e){if(!drag)return;var p=world(e),d=endDrag();if(near(d.to,p,zoneArr(e)))link()});
+lab.addEventListener("pointercancel",function(){if(drag)endDrag()});
+document.addEventListener("keydown",function(e){if(e.key==="ArrowLeft"){e.preventDefault();back()}});
+document.getElementById("bk").onclick=function(){back()};
+var SW=null;
+document.addEventListener("touchstart",function(e){var t=e.touches[0];SW=e.touches.length===1&&!drag?{x:t.clientX,y:t.clientY}:null},{passive:true});
+document.addEventListener("touchend",function(e){if(!SW)return;var t=e.changedTouches[0],dx=t.clientX-SW.x,dy=t.clientY-SW.y;SW=null;
+  if(dx<-60&&Math.abs(dy)<Math.abs(dx)*.6)back()},{passive:true});
+/* ---------- texte : en-tête, axiomes formés ---------- */
+function head(){document.getElementById("bk").disabled=S.p===0;var st=STEPS[Math.min(S.p,STEPS.length-1)],n=S.p>=STEPS.length?MOL.length-1:st.n,done=0;
+  for(var i=0;i<S.p;i++)if(STEPS[i].n===n)done++;
+  document.getElementById("ti").textContent=S.p>=STEPS.length?"Carte complète":MOL[n].t;
+  document.getElementById("cnt").innerHTML=S.p>=STEPS.length?STEPS.length+" axiomes.":(n+1)+" / "+MOL.length+" notion<span class=\"sp\">·</span>"+done+" / "+NB[n]+" liaisons."}
+function addLine(st){var ol=document.getElementById("ol"),sec=ol.querySelector('[data-n="'+st.n+'"]');
+  if(!sec){sec=document.createElement("div");sec.dataset.n=st.n;var h=document.createElement("h3");h.textContent=MOL[st.n].t;sec.appendChild(h);sec.appendChild(document.createElement("ol"));ol.appendChild(sec)}
+  var li=document.createElement("li");if(st.lk)li.className="lk";txt(li,st.ax);sec.querySelector("ol").appendChild(li)}
+function removeLine(){var ol=document.getElementById("ol"),sec=ol.lastElementChild;if(!sec)return;var o=sec.querySelector("ol");o.lastElementChild.remove();if(!o.children.length)sec.remove()}
+/* ---------- construire la carte (en rejouant les étapes déjà faites) ---------- */
+function go(){cancelAnimationFrame(raf);drag=null;guide=null;busy=false;seed=7;svg.innerHTML="";V={};B=[];document.getElementById("ol").innerHTML="";
+  W=lab.clientWidth;H=lab.clientHeight;
+  gW=sv("g",{},svg);gB=sv("g",{},gW);gA=sv("g",{},gW);gG=sv("g",{},gW);gFx=sv("g",{},gW);
+  meter=sv("g",{"class":"bl",style:"visibility:hidden"},gW);sv("text",{},meter);meterG=sv("g",{"class":"gl",style:"visibility:hidden"},gW);sv("text",{},meterG);
+  mkAtom(FIRST,0,0,S.p===0);
+  for(var i=0;i<S.p;i++){var st=STEPS[i];if(st.neu&&!V[st.neu]){var P=place(st);mkAtom(st.neu,P[0],P[1],false)}addBond(st,false);addLine(st);for(var k=0;k<80;k++)tick(false)}
+  for(var id in V){V[id].hx=V[id].x;V[id].hy=V[id].y}
+  showStep(S.p>0);var T=camTarget();cam={x:T.x,y:T.y,s:T.s};render();raf=requestAnimationFrame(step)}
+var rzT=0,RZ=document.getElementById("rz");
+RZ.onclick=function(){if(!RZ.classList.contains("sure")){RZ.classList.add("sure");RZ.textContent="Confirmer ?";clearTimeout(rzT);
+  rzT=setTimeout(function(){RZ.classList.remove("sure");RZ.textContent="Réinitialiser"},3000);return}
+  RZ.classList.remove("sure");RZ.textContent="Réinitialiser";S={p:0};save();go()};
+window.addEventListener("resize",function(){fit();W=lab.clientWidth;H=lab.clientHeight});
+/* "Axiomes formés" : un bouton qui affiche ou masque la liste */
+var OL=document.getElementById("ol");
+var MOB=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
+/* hauteur de l'écran ; en web app, l'iPhone règle ses marges (île, barre du bas) juste après l'ouverture, d'où les nouvelles mesures plus bas */
+function viewH(){return window.innerHeight}
+function fit(){if(!MOB)return;
+  /* la phrase garde la hauteur de la plus longue, pour que rien ne bouge d'une étape à l'autre */
+  var m=CAP.cloneNode(false);m.removeAttribute("id");m.style.cssText="position:absolute;visibility:hidden;min-height:0;width:"+CAP.clientWidth+"px";CAP.parentNode.appendChild(m);
+  var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
+  /* la carte prend toute la hauteur qui reste */
+  var olH=OL.hidden?0:OL.getBoundingClientRect().height+6,wH=document.querySelector(".w").getBoundingClientRect().height;
+  lab.style.height=Math.max(280,Math.floor(viewH()-(wH-lab.getBoundingClientRect().height-olH)))+"px"}
+/* en web app, l'écran se règle parfois juste après l'ouverture : on remesure */
+function refit(){if(!MOB)return;var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}}
+["load","pageshow","orientationchange"].forEach(function(ev){window.addEventListener(ev,function(){setTimeout(refit,60)})});
+if(window.visualViewport)visualViewport.addEventListener("resize",refit);
+setTimeout(refit,400);setTimeout(refit,1200);setTimeout(refit,2500);
+try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
+document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}lock()};
+/* au doigt, tant que tout tient dans l'écran, la page ne bouge pas ; liste ouverte, on peut descendre */
+function lock(){if(!MOB)return;var on=OL.hidden;document.documentElement.classList.toggle("lock",on);if(on)window.scrollTo(0,0)}
+document.addEventListener("touchmove",function(e){if(document.documentElement.classList.contains("lock"))e.preventDefault()},{passive:false});
+lock();
+go();if(MOB){fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
+</script>
+</body>
+</html>
