@@ -360,8 +360,10 @@ function camTarget(){var ids=[],fin=S.p>=STEPS.length;
   var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
   /* écran étroit (iPhone) : cadrer seulement les deux atomes à relier, pour que les textes restent lisibles */
   if(fin)ids=Object.keys(V);else if(W<600){var st=STEPS[S.p];ids=[st.s,st.o]}else{var st=STEPS[S.p];for(var id in V)if(V[id].n===st.n){ids.push(id);
-    if(V[id].c&&!(st.lk&&st.neu)){x0=V[id].x-230;x1=V[id].x+230;y0=V[id].y-230;y1=V[id].y+230}}ids.push(st.s,st.o)}ids.forEach(function(id){var a=V[id];if(!a)return;x0=Math.min(x0,a.x-a.r-30);x1=Math.max(x1,a.x+a.r+30);y0=Math.min(y0,a.y-a.r-30);y1=Math.max(y1,a.y+a.r+30)});
-  var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),1);s=Math.max(s,fin?.06:.36);
+    if(V[id].c&&!(st.lk&&st.neu)){x0=V[id].x-230;x1=V[id].x+230;y0=V[id].y-230;y1=V[id].y+230}}ids.push(st.s,st.o)}/* écran étroit : un peu plus de marge autour des deux atomes, et un zoom plafonné plus bas */
+  var nar=W<600&&!fin,pad=nar?60:30;
+  ids.forEach(function(id){var a=V[id];if(!a)return;x0=Math.min(x0,a.x-a.r-pad);x1=Math.max(x1,a.x+a.r+pad);y0=Math.min(y0,a.y-a.r-pad);y1=Math.max(y1,a.y+a.r+pad)});
+  var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),nar?.78:1);s=Math.max(s,fin?.06:.36);
   return {x:(x0+x1)/2,y:(y0+y1)/2,s:s}}
 function step(){if(ANI){W=lab.clientWidth;H=lab.clientHeight}tick(true);var T=camTarget();cam.x+=(T.x-cam.x)*.05;cam.y+=(T.y-cam.y)*.05;cam.s+=(T.s-cam.s)*.05;render();raf=requestAnimationFrame(step)}
 /* ---------- l'étape en cours ---------- */
