@@ -480,6 +480,8 @@ function guides(){var L=GN.value.split("\n"),lv=L.map(function(l){return l.trim(
     return '<div class="ngl"><span class="'+col(n)+'">'+(t||" ")+"</span>"+s+"</div>"}).join("");
   NG.style.width=GN.clientWidth+"px";NG.style.height=GN.clientHeight+"px";NG.scrollTop=GN.scrollTop}
 GN.addEventListener("scroll",function(){NG.scrollTop=GN.scrollTop});
+/* sauvegarde aussi quand on quitte ou ferme l'app, même juste après avoir tapé */
+window.addEventListener("pagehide",function(){saveNotes()});document.addEventListener("visibilitychange",function(){if(document.hidden)saveNotes()});
 GN.onblur=function(){saveNotes();if(MOB&&KB){KB=false;document.documentElement.classList.remove("kb");WRP.style.height=WRP.style.transform="";window.scrollTo(0,0)}setTimeout(refit,100)};
 GN.onfocus=function(){if(MOB&&window.visualViewport){KB=true;document.documentElement.classList.add("kb");kbSync();[60,200,400,700,1000].forEach(function(t){setTimeout(kbSync,t)})}else{setTimeout(refit,100);setTimeout(refit,400)}};
 try{GN.hidden=localStorage.getItem("molecules-voir-notes")!=="1"}catch(e){}
@@ -487,6 +489,9 @@ function notesMode(){document.documentElement.classList.toggle("nt",!GN.hidden);
 /* "Indenter" : 5 espaces à l'endroit du curseur dans les notes ; le bouton ne prend pas le focus (le clavier de l'iPhone reste ouvert) */
 function indent(){var s=GN.selectionStart,e=GN.selectionEnd;GN.setRangeText(" ".repeat(IND),s,e,"end");
   if(document.activeElement!==GN)GN.focus({preventScroll:true});GN.dispatchEvent(new Event("input"))}
+/* PC : la touche Tab dans les notes ajoute 5 espaces au lieu de quitter le champ (Ctrl+Z l'annule) */
+GN.addEventListener("keydown",function(e){if(e.key!=="Tab"||e.shiftKey||e.ctrlKey||e.altKey||e.metaKey)return;e.preventDefault();
+  if(!(document.execCommand&&document.execCommand("insertText",false," ".repeat(IND))))indent()});
 var IBT=0;
 IB.addEventListener("mousedown",function(e){e.preventDefault()});
 IB.addEventListener("touchstart",function(e){e.preventDefault()},{passive:false});
