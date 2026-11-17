@@ -131,15 +131,22 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 html.anim #lab{transition:height .42s cubic-bezier(.4,0,.2,1)}
 html.anim .nw{transition:height .42s cubic-bezier(.4,0,.2,1),margin-top .42s cubic-bezier(.4,0,.2,1),opacity .32s ease}
 html.anim .nw .nx{transition:transform .42s cubic-bezier(.4,0,.2,1)}
-.nx{position:relative;z-index:1;display:block;width:100%;height:140px;margin:0;resize:none;overflow-y:auto;overscroll-behavior:contain;font:inherit;font-size:14px;line-height:1.45;color:var(--fg);
+.nx{position:relative;z-index:1;display:block;width:100%;height:140px;margin:0;resize:none;overflow-y:auto;overscroll-behavior:contain;font:inherit;font-size:14px;line-height:1.45;color:transparent;-webkit-text-fill-color:transparent;caret-color:var(--fg);
   background:transparent;border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
 .nx:focus{outline:none;border-color:var(--up)}
 /* repères d'indentation : une barre verticale par niveau de 5 espaces, dessinée derrière le texte des notes */
 .nx,.ng{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0;tab-size:5}
 .ng{position:absolute;top:1px;left:1px;z-index:0;overflow:hidden;pointer-events:none;box-sizing:border-box;padding:8px;
-  font:inherit;font-size:14px;line-height:1.45;color:transparent;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal}
+  font:inherit;font-size:14px;line-height:1.45;color:var(--fg);white-space:pre-wrap;overflow-wrap:break-word;word-break:normal}
 .ng .ngl{position:relative}
-.ng .ngl b{position:absolute;top:0;bottom:0;width:1px;background:#3a3a44}
+.ng .ngl b{position:absolute;top:0;bottom:0;width:1px;opacity:.4}
+.nx::placeholder{color:#5a5a62;-webkit-text-fill-color:#5a5a62}
+.nx::selection{background:rgba(138,180,255,.28)}
+/* couleurs des notes : une couleur par niveau d'indentation (texte et barre), guillemets à part */
+.ng .c0{color:#e8e8ea}.ng .c1{color:#8ab4ff}.ng .c2{color:#86d9a0}.ng .c3{color:#c6a4f5}.ng .c4{color:#e6c870}.ng .c5{color:#f29cc4}.ng .c6{color:#7fd2dc}
+.ng b.c1{background:#8ab4ff}.ng b.c2{background:#86d9a0}.ng b.c3{background:#c6a4f5}.ng b.c4{background:#e6c870}.ng b.c5{background:#f29cc4}.ng b.c6{background:#7fd2dc}
+.ng .q{color:#f2a46a}
+.ng .ngl>span{position:relative;z-index:1}
 .nx[hidden]{display:none}
 </style>
 </head>
@@ -451,8 +458,14 @@ function guides(){var L=GN.value.split("\n"),lv=L.map(function(l){return l.trim(
   /* largeur de 5 espaces dans la police des notes */
   NG.innerHTML='<span style="white-space:pre">'+" ".repeat(IND)+'</span>';var w=NG.firstChild.getBoundingClientRect().width;
   /* une ligne = un bloc ; ses barres descendent sur toute sa hauteur, même quand elle passe à la ligne */
-  NG.innerHTML=L.map(function(l,i){var s="";for(var k=0;k<lv[i];k++)s+='<b style="left:'+(k*w+1).toFixed(2)+'px"></b>';
-    return '<div class="ngl">'+s+(esc(l)||" ")+"</div>"}).join("");
+  /* couleur d'un niveau : 0 = blanc, puis 6 couleurs qui tournent */
+  function col(n){return "c"+(n===0?0:((n-1)%6)+1)}
+  NG.innerHTML=L.map(function(l,i){var s="",n=l.trim()?Math.floor(l.match(/^ */)[0].length/IND):lv[i];
+    /* la barre k accompagne les lignes du niveau k+1 : même couleur qu'elles */
+    for(var k=0;k<lv[i];k++)s+='<b class="'+col(k+1)+'" style="left:'+(k*w+1).toFixed(2)+'px"></b>';
+    /* ce qui est entre guillemets droits ressort, comme du texte dans un programme */
+    var t=esc(l).replace(/"[^"]*"?/g,function(q){return '<span class="q">'+q+'</span>'});
+    return '<div class="ngl"><span class="'+col(n)+'">'+(t||" ")+"</span>"+s+"</div>"}).join("");
   NG.style.width=GN.clientWidth+"px";NG.style.height=GN.clientHeight+"px";NG.scrollTop=GN.scrollTop}
 GN.addEventListener("scroll",function(){NG.scrollTop=GN.scrollTop});
 GN.onblur=function(){saveNotes();setTimeout(refit,100)};
