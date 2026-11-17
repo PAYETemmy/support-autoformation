@@ -115,7 +115,8 @@ html:not(.btcol) #ol{order:9;flex-basis:100%}
 /* bouton "Indenter" : seulement avec les notes ouvertes ; jamais compté dans la mesure de la carte */
 #ib[hidden],html.btcol #ib{display:none}
 #ib .ia{font-size:1.1em;line-height:1}
-@media (pointer:coarse){#ib .il{display:none}html.nt:not(.btcol) .bt{gap:6px 6px}html.nt:not(.btcol) .bt .rz{font-size:12px}}
+/* iPhone : pas de "Réinitialiser" (gardé seulement pour la mesure de la carte), "⇥ Indenter" en entier */
+@media (pointer:coarse){html:not(.btcol) #rz{display:none}}
 /* page verrouillée : elle ne glisse plus (liste des axiomes fermée) */
 html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .help{color:var(--m);font-size:12.5px;margin:10px 0 0}
