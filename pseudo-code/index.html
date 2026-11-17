@@ -120,9 +120,17 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .ax .rz{display:block;line-height:1.5;margin:0 0 8px}
 .ax + .help{margin-top:6px}
 /* notes globales : champ encadré, tout en bas */
-.nx{display:block;width:100%;height:140px;margin:6px 0 0;resize:none;overflow-y:auto;overscroll-behavior:contain;font:inherit;font-size:14px;line-height:1.45;color:var(--fg);
-  background:var(--bg);border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
+.nw{position:relative;margin:6px 0 0;background:var(--bg)}
+.nw[hidden]{display:none}
+.nx{position:relative;z-index:1;display:block;width:100%;height:140px;margin:0;resize:none;overflow-y:auto;overscroll-behavior:contain;font:inherit;font-size:14px;line-height:1.45;color:var(--fg);
+  background:transparent;border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
 .nx:focus{outline:none;border-color:var(--up)}
+/* repères d'indentation : une barre verticale par niveau de 5 espaces, dessinée derrière le texte des notes */
+.nx,.ng{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0;tab-size:5}
+.ng{position:absolute;top:1px;left:1px;z-index:0;overflow:hidden;pointer-events:none;box-sizing:border-box;padding:8px;
+  font:inherit;font-size:14px;line-height:1.45;color:transparent;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal}
+.ng .ngl{position:relative}
+.ng .ngl b{position:absolute;top:0;bottom:0;width:1px;background:#3a3a44}
 .nx[hidden]{display:none}
 </style>
 </head>
@@ -132,7 +140,7 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
   <div class="st"><span></span><span id="cnt"></span></div>
   <div id="lab"><svg id="svg"></svg></div>
   <div class="cap" id="cap"></div>
-  <textarea class="nx" id="gn" aria-label="Mes notes globales" hidden></textarea>
+  <div class="nw" id="gw" hidden><div class="ng" id="ng" aria-hidden="true"></div><textarea class="nx" id="gn" aria-label="Mes notes globales" hidden></textarea></div>
   <div class="bt"><div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
   <p class="help"><button class="rz" id="rz">Réinitialiser</button></p></div>
 </div>
@@ -422,11 +430,26 @@ var SUJ=KEY.replace("molecules-guide-",""),GKEY="notes-globales-"+SUJ,GN=documen
 GN.placeholder="Mes notes sur "+SUJ+"…";try{GN.value=localStorage.getItem(GKEY)||""}catch(e){}
 function saveNotes(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}}
 function nbLabel(){NBT.textContent=GN.hidden?"Afficher mes notes":"Masquer mes notes"}
-var gtm=0;GN.oninput=function(){clearTimeout(gtm);gtm=setTimeout(saveNotes,300)};
+var gtm=0;GN.oninput=function(){guides();clearTimeout(gtm);gtm=setTimeout(saveNotes,300)};
+/* repères d'indentation : la copie du texte, invisible, derrière le champ ; chaque groupe de 5 espaces en début de ligne porte une barre */
+var NG=document.getElementById("ng"),GW=document.getElementById("gw"),IND=5,
+    IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+if(IOS)NG.style.padding="8px 11px";   /* iOS décale le texte d'un champ de 3 px */
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function guides(){var L=GN.value.split("\n"),lv=L.map(function(l){return l.trim()?Math.floor(l.match(/^ */)[0].length/IND):-1});
+  /* une ligne vide garde les barres qui l'entourent */
+  lv=lv.map(function(v,i){if(v>=0)return v;var p=0,n=0,j;for(j=i-1;j>=0;j--)if(lv[j]>=0){p=lv[j];break}for(j=i+1;j<lv.length;j++)if(lv[j]>=0){n=lv[j];break}return Math.min(p,n)});
+  /* largeur de 5 espaces dans la police des notes */
+  NG.innerHTML='<span style="white-space:pre">'+" ".repeat(IND)+'</span>';var w=NG.firstChild.getBoundingClientRect().width;
+  /* une ligne = un bloc ; ses barres descendent sur toute sa hauteur, même quand elle passe à la ligne */
+  NG.innerHTML=L.map(function(l,i){var s="";for(var k=0;k<lv[i];k++)s+='<b style="left:'+(k*w+1).toFixed(2)+'px"></b>';
+    return '<div class="ngl">'+s+(esc(l)||" ")+"</div>"}).join("");
+  NG.style.width=GN.clientWidth+"px";NG.style.height=GN.clientHeight+"px";NG.scrollTop=GN.scrollTop}
+GN.addEventListener("scroll",function(){NG.scrollTop=GN.scrollTop});
 GN.onblur=function(){saveNotes();setTimeout(refit,100)};
 GN.onfocus=function(){setTimeout(refit,100);setTimeout(refit,400)};
 try{GN.hidden=localStorage.getItem("molecules-voir-notes")!=="1"}catch(e){}
-function notesMode(){document.documentElement.classList.toggle("nt",!GN.hidden)}
+function notesMode(){document.documentElement.classList.toggle("nt",!GN.hidden);GW.hidden=GN.hidden;if(!GN.hidden)guides()}
 NBT.onclick=function(){GN.hidden=!GN.hidden;try{localStorage.setItem("molecules-voir-notes",GN.hidden?"0":"1")}catch(e){}
   nbLabel();notesMode();refit();lock();if(!GN.hidden&&!MOB)setTimeout(function(){GN.focus()},50)};
 nbLabel();notesMode();
@@ -448,7 +471,7 @@ function fit(){
   var labH=lab.getBoundingClientRect().height;
   lab.style.height=Math.max(kb?110:(MOB?240:300),Math.floor(avail-(end()-labH)))+"px";
   /* notes ouvertes : boutons sur une ligne, et le champ s'agrandit jusqu'en bas de l'écran (ou jusqu'au clavier) */
-  if(notes){R.classList.add("ntr");var base=GN.getBoundingClientRect().height;GN.style.height=Math.max(80,Math.floor(base+avail-end()))+"px"}
+  if(notes){R.classList.add("ntr");var base=GN.getBoundingClientRect().height;GN.style.height=Math.max(80,Math.floor(base+avail-end()))+"px";guides()}
 }
 /* remesurer : ouverture de la web app, clavier, notes ouvertes ou fermées */
 function refit(){var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}if(kbOpen()&&OL.hidden)window.scrollTo(0,0)}
