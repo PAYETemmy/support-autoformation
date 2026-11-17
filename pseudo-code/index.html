@@ -455,7 +455,7 @@ var MOB=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
 /* "Afficher mes notes" : les notes globales du sujet deviennent un élément principal, juste sous la phrase de l'étape.
    La carte se réduit pour que tout tienne dans l'écran : on suit le guide en notant, sans que la page bouge. */
 var SUJ=KEY.replace("molecules-guide-",""),GKEY="notes-globales-"+SUJ,GN=document.getElementById("gn"),NBT=document.getElementById("nb");
-GN.placeholder="Mes notes sur "+SUJ+"…";try{GN.value=localStorage.getItem(GKEY)||""}catch(e){}
+GN.placeholder="Mes notes sur "+(document.title.split("— ")[1]||SUJ)+"…";try{GN.value=localStorage.getItem(GKEY)||""}catch(e){}
 function saveNotes(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}}
 function nbLabel(){NBT.textContent=GN.hidden?"Afficher mes notes":"Masquer mes notes"}
 var gtm=0;GN.oninput=function(){guides();clearTimeout(gtm);gtm=setTimeout(saveNotes,300)};
