@@ -108,7 +108,13 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .rz{background:none;border:0;color:var(--m);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
 .rz.sure{color:var(--no)}
 .rz:disabled{opacity:.35;cursor:default}
-.ax .bk{display:block;margin:0 0 8px}
+.ax .rz{display:block;line-height:1.5;margin:0 0 8px}
+.ax + .help{margin-top:6px}
+/* notes globales : champ encadré, tout en bas */
+.nx{display:block;width:100%;min-height:140px;margin:14px 0 0;resize:none;overflow:hidden;font:inherit;font-size:16px;line-height:1.45;color:var(--fg);
+  background:var(--bg);border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
+.nx:focus{outline:none;border-color:var(--up)}
+.nx[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -117,8 +123,9 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
   <div class="st"><span></span><span id="cnt"></span></div>
   <div id="lab"><svg id="svg"></svg></div>
   <div class="cap" id="cap"></div>
-  <div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
+  <div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
   <p class="help"><button class="rz" id="rz">Réinitialiser</button></p>
+  <textarea class="nx" id="gn" rows="6" aria-label="Mes notes globales" hidden></textarea>
 </div>
 <script>
 /* ---------- les molécules : atomes (idées) et liaisons (axiomes) ----------
@@ -368,10 +375,10 @@ lab.addEventListener("pointermove",function(e){if(!drag)return;var p=world(e);dr
 function endDrag(){var d=drag;drag=null;if(guide)guide.lb.g.classList.remove("on");d.l.remove();d.from.g.classList.remove("hot");d.to.g.classList.remove("hot");return d}
 lab.addEventListener("pointerup",function(e){if(!drag)return;var p=world(e),d=endDrag();if(near(d.to,p,zoneArr(e)))link()});
 lab.addEventListener("pointercancel",function(){if(drag)endDrag()});
-document.addEventListener("keydown",function(e){if(e.key==="ArrowLeft"){e.preventDefault();back()}});
+document.addEventListener("keydown",function(e){var t=e.target;if(t&&(t.tagName==="TEXTAREA"||t.tagName==="INPUT"))return;if(e.key==="ArrowLeft"){e.preventDefault();back()}});
 document.getElementById("bk").onclick=function(){back()};
 var SW=null;
-document.addEventListener("touchstart",function(e){var t=e.touches[0];SW=e.touches.length===1&&!drag?{x:t.clientX,y:t.clientY}:null},{passive:true});
+document.addEventListener("touchstart",function(e){var t=e.touches[0];SW=e.touches.length===1&&!drag&&!(e.target&&e.target.tagName==="TEXTAREA")?{x:t.clientX,y:t.clientY}:null},{passive:true});
 document.addEventListener("touchend",function(e){if(!SW)return;var t=e.changedTouches[0],dx=t.clientX-SW.x,dy=t.clientY-SW.y;SW=null;
   if(dx<-60&&Math.abs(dy)<Math.abs(dx)*.6)back()},{passive:true});
 /* ---------- texte : en-tête, axiomes formés ---------- */
@@ -399,6 +406,17 @@ RZ.onclick=function(){if(!RZ.classList.contains("sure")){RZ.classList.add("sure"
 window.addEventListener("resize",function(){fit();W=lab.clientWidth;H=lab.clientHeight});
 /* "Axiomes formés" : un bouton qui affiche ou masque la liste */
 var OL=document.getElementById("ol");
+/* "Afficher mes notes" : un champ de notes globales pour tout le sujet, tout en bas, sauvegardé */
+var SUJ=KEY.replace("molecules-guide-",""),GKEY="notes-globales-"+SUJ,GN=document.getElementById("gn"),NBT=document.getElementById("nb");
+GN.placeholder="Mes notes sur "+SUJ.replace(/-/g," ")+"…";try{GN.value=localStorage.getItem(GKEY)||""}catch(e){}
+function grow(){GN.style.height="auto";GN.style.height=Math.max(140,GN.scrollHeight+2)+"px"}
+function nbLabel(){NBT.textContent=GN.hidden?"Afficher mes notes":"Masquer mes notes"}
+var gtm=0;GN.oninput=function(){grow();clearTimeout(gtm);gtm=setTimeout(function(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}},300)};
+GN.onblur=function(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}};
+try{GN.hidden=localStorage.getItem("molecules-voir-notes")!=="1"}catch(e){}
+NBT.onclick=function(){GN.hidden=!GN.hidden;try{localStorage.setItem("molecules-voir-notes",GN.hidden?"0":"1")}catch(e){}
+  nbLabel();lock();if(!GN.hidden){grow();setTimeout(function(){GN.focus()},50)}};
+nbLabel();if(!GN.hidden)grow();
 var MOB=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
 /* hauteur de l'écran ; en web app, l'iPhone règle ses marges (île, barre du bas) juste après l'ouverture, d'où les nouvelles mesures plus bas */
 function viewH(){return window.innerHeight}
@@ -407,7 +425,7 @@ function fit(){if(!MOB)return;
   var m=CAP.cloneNode(false);m.removeAttribute("id");m.style.cssText="position:absolute;visibility:hidden;min-height:0;width:"+CAP.clientWidth+"px";CAP.parentNode.appendChild(m);
   var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
   /* la carte prend toute la hauteur qui reste */
-  var olH=OL.hidden?0:OL.getBoundingClientRect().height+6,wH=document.querySelector(".w").getBoundingClientRect().height;
+  var olH=(OL.hidden?0:OL.getBoundingClientRect().height+6)+(GN.hidden?0:GN.getBoundingClientRect().height+14),wH=document.querySelector(".w").getBoundingClientRect().height;
   lab.style.height=Math.max(280,Math.floor(viewH()-(wH-lab.getBoundingClientRect().height-olH)))+"px"}
 /* en web app, l'écran se règle parfois juste après l'ouverture : on remesure */
 function refit(){if(!MOB)return;var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}}
@@ -417,7 +435,7 @@ setTimeout(refit,400);setTimeout(refit,1200);setTimeout(refit,2500);
 try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
 document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}lock()};
 /* au doigt, tant que tout tient dans l'écran, la page ne bouge pas ; liste ouverte, on peut descendre */
-function lock(){if(!MOB)return;var on=OL.hidden;document.documentElement.classList.toggle("lock",on);if(on)window.scrollTo(0,0)}
+function lock(){if(!MOB)return;var on=OL.hidden&&GN.hidden;document.documentElement.classList.toggle("lock",on);if(on)window.scrollTo(0,0)}
 document.addEventListener("touchmove",function(e){if(document.documentElement.classList.contains("lock"))e.preventDefault()},{passive:false});
 lock();
 go();if(MOB){fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
