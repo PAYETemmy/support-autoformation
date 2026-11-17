@@ -147,6 +147,8 @@ html.anim .nw .nx{transition:transform .42s cubic-bezier(.4,0,.2,1)}
 .ng b.c1{background:#4085ff}.ng b.c2{background:#8f4ceb}.ng b.c3{background:#ecd490}.ng b.c4{background:#7ed699}.ng b.c5{background:#4dc1ce}.ng b.c6{background:#eaeaeb}.ng b.c7{background:#c5e86c}.ng b.c8{background:#ff9e8a}.ng b.c9{background:#c9b6ff}.ng b.c10{background:#9ef0e0}.ng b.c11{background:#ffd1e8}
 .ng .q{color:#f2a46a}
 .ng .ngl>span{position:relative;z-index:1}
+/* rappel tout petit, en bas à droite du cadre des notes */
+.nw .lvm{position:absolute;right:7px;bottom:4px;z-index:2;font-size:9.5px;line-height:1;color:#4a4a52;pointer-events:none;letter-spacing:.02em}
 .nx[hidden]{display:none}
 </style>
 </head>
@@ -156,7 +158,7 @@ html.anim .nw .nx{transition:transform .42s cubic-bezier(.4,0,.2,1)}
   <div class="st"><span></span><span id="cnt"></span></div>
   <div id="lab"><svg id="svg"></svg></div>
   <div class="cap" id="cap"></div>
-  <div class="nw" id="gw" hidden><div class="ng" id="ng" aria-hidden="true"></div><textarea class="nx" id="gn" aria-label="Mes notes globales" hidden></textarea></div>
+  <div class="nw" id="gw" hidden><div class="ng" id="ng" aria-hidden="true"></div><textarea class="nx" id="gn" aria-label="Mes notes globales" hidden></textarea><span class="lvm" aria-hidden="true">9 levels max</span></div>
   <div class="bt"><div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="ib" title="Ajouter 5 espaces" aria-label="Indenter : ajouter 5 espaces" hidden><span class="ia">⇥</span><span class="il"> Indenter</span></button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
   <p class="help"><button class="rz" id="rz">Réinitialiser</button></p></div>
 </div>
