@@ -112,6 +112,10 @@ html:not(.btcol) .bt .ax,html:not(.btcol) .bt .help{display:contents}
 html:not(.btcol) .ax .rz{margin:0}
 html:not(.btcol) #ol{order:9;flex-basis:100%}
 @media (pointer:coarse){html:not(.btcol) .bt{justify-content:space-between;gap:6px 8px}html:not(.btcol) .bt .rz{white-space:nowrap}}
+/* bouton "Indenter" : seulement avec les notes ouvertes ; jamais compté dans la mesure de la carte */
+#ib[hidden],html.btcol #ib{display:none}
+#ib .ia{font-size:1.1em;line-height:1}
+@media (pointer:coarse){#ib .il{display:none}html.nt:not(.btcol) .bt{gap:6px 6px}html.nt:not(.btcol) .bt .rz{font-size:12px}}
 /* page verrouillée : elle ne glisse plus (liste des axiomes fermée) */
 html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .help{color:var(--m);font-size:12.5px;margin:10px 0 0}
@@ -146,7 +150,7 @@ html.anim .nw .nx{transition:transform .42s cubic-bezier(.4,0,.2,1)}
   <div id="lab"><svg id="svg"></svg></div>
   <div class="cap" id="cap"></div>
   <div class="nw" id="gw" hidden><div class="ng" id="ng" aria-hidden="true"></div><textarea class="nx" id="gn" aria-label="Mes notes globales" hidden></textarea></div>
-  <div class="bt"><div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
+  <div class="bt"><div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="ib" title="Ajouter 5 espaces" aria-label="Indenter : ajouter 5 espaces" hidden><span class="ia">⇥</span><span class="il"> Indenter</span></button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
   <p class="help"><button class="rz" id="rz">Réinitialiser</button></p></div>
 </div>
 <script>
@@ -437,7 +441,7 @@ function saveNotes(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}}
 function nbLabel(){NBT.textContent=GN.hidden?"Afficher mes notes":"Masquer mes notes"}
 var gtm=0;GN.oninput=function(){guides();clearTimeout(gtm);gtm=setTimeout(saveNotes,300)};
 /* repères d'indentation : la copie du texte, invisible, derrière le champ ; chaque groupe de 5 espaces en début de ligne porte une barre */
-var NG=document.getElementById("ng"),GW=document.getElementById("gw"),IND=5,
+var NG=document.getElementById("ng"),GW=document.getElementById("gw"),IB=document.getElementById("ib"),IND=5,
     IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
 if(IOS)NG.style.padding="8px 11px";   /* iOS décale le texte d'un champ de 3 px */
 function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
@@ -454,7 +458,15 @@ GN.addEventListener("scroll",function(){NG.scrollTop=GN.scrollTop});
 GN.onblur=function(){saveNotes();setTimeout(refit,100)};
 GN.onfocus=function(){setTimeout(refit,100);setTimeout(refit,400)};
 try{GN.hidden=localStorage.getItem("molecules-voir-notes")!=="1"}catch(e){}
-function notesMode(){document.documentElement.classList.toggle("nt",!GN.hidden);GW.hidden=GN.hidden;if(!GN.hidden)guides()}
+function notesMode(){document.documentElement.classList.toggle("nt",!GN.hidden);GW.hidden=GN.hidden;IB.hidden=GN.hidden;if(!GN.hidden)guides()}
+/* "Indenter" : 5 espaces à l'endroit du curseur dans les notes ; le bouton ne prend pas le focus (le clavier de l'iPhone reste ouvert) */
+function indent(){var s=GN.selectionStart,e=GN.selectionEnd;GN.setRangeText(" ".repeat(IND),s,e,"end");
+  if(document.activeElement!==GN)GN.focus({preventScroll:true});GN.dispatchEvent(new Event("input"))}
+var IBT=0;
+IB.addEventListener("mousedown",function(e){e.preventDefault()});
+IB.addEventListener("touchstart",function(e){e.preventDefault()},{passive:false});
+IB.addEventListener("touchend",function(e){e.preventDefault();IBT=Date.now();indent()},{passive:false});
+IB.addEventListener("click",function(){if(Date.now()-IBT>600)indent()});
 NBT.onclick=function(){if(ANI)return;var show=GN.hidden;try{localStorage.setItem("molecules-voir-notes",show?"1":"0")}catch(e){}animNotes(show)};
 /* animation : on calcule la disposition d'arrivée, on revient à celle de départ, puis on glisse de l'une à l'autre */
 var ANI=false;
