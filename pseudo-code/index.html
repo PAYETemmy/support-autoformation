@@ -104,7 +104,7 @@ code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;paddin
   .nx{height:112px}
 }
 /* notes ouvertes sur ordinateur : tout tient dans l'écran */
-@media (pointer:fine){html.nt .w{padding-bottom:16px}}
+@media (pointer:fine){.w{padding-bottom:16px}}
 /* notes ouvertes : les boutons passent sur une ligne, sous le champ, qui prend la place libérée */
 /* boutons toujours sur une ligne, sous la phrase (ou sous les notes) ; html.btcol = mesure temporaire en colonne */
 html:not(.btcol) .bt{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin-top:10px}
@@ -459,8 +459,6 @@ function viewH(){return window.innerHeight}
 /* clavier de l'iPhone ouvert sur les notes */
 function kbOpen(){return MOB&&document.activeElement===GN&&!!window.visualViewport&&visualViewport.height<window.innerHeight-120}
 function fit(){
-  /* sur ordinateur sans notes : la carte garde sa taille d'origine */
-  if(!MOB&&GN.hidden){lab.style.height="";CAP.style.minHeight="";GN.style.height="";document.documentElement.classList.remove("btcol");return}
   /* la phrase garde la hauteur de la plus longue, pour que rien ne bouge d'une étape à l'autre */
   var m=CAP.cloneNode(false);m.removeAttribute("id");m.style.cssText="position:absolute;visibility:hidden;min-height:0;width:"+CAP.clientWidth+"px";CAP.parentNode.appendChild(m);
   var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
@@ -486,7 +484,7 @@ function lock(){if(!MOB)return;var on=OL.hidden;document.documentElement.classLi
 /* page verrouillée : seul le texte des notes peut défiler, à l'intérieur de son cadre */
 document.addEventListener("touchmove",function(e){if(document.documentElement.classList.contains("lock")&&e.target!==GN)e.preventDefault()},{passive:false});
 lock();
-go();if(MOB||!GN.hidden){fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
+go();{fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
 </script>
 </body>
 </html>
