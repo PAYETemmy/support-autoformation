@@ -122,6 +122,10 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 /* iPhone, clavier ouvert : la page est un bloc fixe, calé sur la zone visible au-dessus du clavier (iOS ne peut plus la faire glisser) */
 html.kb .w{position:fixed;left:0;right:0;top:0;overflow:hidden;box-sizing:border-box;will-change:transform}
 @media (pointer:coarse){html.kb .nx{height:96px}}
+/* clavier ouvert : seul "⇥ Indenter" reste, juste sous les notes, au-dessus du clavier (zone de toucher un peu plus grande) */
+html.kb #bk,html.kb #nb,html.kb #axb,html.kb #rz,html.kb #ol{display:none!important}
+html.kb .bt{margin-top:4px}
+html.kb #ib{padding:6px 14px 6px 0}
 .help{color:var(--m);font-size:12.5px;margin:10px 0 0}
 .rz{background:none;border:0;color:var(--m);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
 .rz.sure{color:var(--no)}
@@ -517,10 +521,10 @@ function fit(){
   var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
   var kb=kbOpen(),avail=kb?visualViewport.height:viewH(),sy=window.scrollY,R=document.documentElement,WR=document.querySelector(".w"),notes=!GN.hidden;
   /* clavier ouvert : mesures depuis le haut du bloc fixe ; sinon depuis le haut de la page */
-  function end(){return kb?GN.getBoundingClientRect().bottom-WR.getBoundingClientRect().top+8:WR.getBoundingClientRect().bottom+sy-(OL.hidden?0:OL.getBoundingClientRect().height+6)}
+  function end(){return kb?(notes?IB:GN).getBoundingClientRect().bottom-WR.getBoundingClientRect().top+6:WR.getBoundingClientRect().bottom+sy-(OL.hidden?0:OL.getBoundingClientRect().height+6)}
   /* la carte prend la hauteur qui reste (mesurée avec le champ à sa taille de base et les boutons en colonne) ;
      clavier ouvert : tout jusqu'aux notes tient au-dessus du clavier */
-  GN.style.height="";R.classList.toggle("btcol",notes);
+  GN.style.height="";R.classList.toggle("btcol",notes&&!kb);
   var labH=lab.getBoundingClientRect().height;
   lab.style.height=Math.max(kb?110:(MOB?240:300),Math.floor(avail-(end()-labH)))+"px";
   /* notes ouvertes : boutons sur une ligne, et le champ s'agrandit jusqu'en bas de l'écran (ou jusqu'au clavier) */
