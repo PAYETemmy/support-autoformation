@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -105,6 +105,12 @@ code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;paddin
 }
 /* notes ouvertes sur ordinateur : tout tient dans l'écran */
 @media (pointer:fine){html.nt .w{padding-bottom:16px}}
+/* notes ouvertes : les boutons passent sur une ligne, sous le champ, qui prend la place libérée */
+html.ntr .bt{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin-top:10px}
+html.ntr .bt .ax,html.ntr .bt .help{display:contents}
+html.ntr .ax .rz{margin:0}
+html.ntr #ol{order:9;flex-basis:100%}
+@media (pointer:coarse){html.ntr .bt{justify-content:space-between;gap:6px 8px}html.ntr .bt .rz{white-space:nowrap}}
 /* page verrouillée : elle ne glisse plus (liste des axiomes fermée) */
 html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .help{color:var(--m);font-size:12.5px;margin:10px 0 0}
@@ -114,7 +120,7 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .ax .rz{display:block;line-height:1.5;margin:0 0 8px}
 .ax + .help{margin-top:6px}
 /* notes globales : champ encadré, tout en bas */
-.nx{display:block;width:100%;height:140px;margin:6px 0 0;resize:none;overflow-y:auto;overscroll-behavior:contain;font:inherit;font-size:16px;line-height:1.45;color:var(--fg);
+.nx{display:block;width:100%;height:140px;margin:6px 0 0;resize:none;overflow-y:auto;overscroll-behavior:contain;font:inherit;font-size:14px;line-height:1.45;color:var(--fg);
   background:var(--bg);border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
 .nx:focus{outline:none;border-color:var(--up)}
 .nx[hidden]{display:none}
@@ -127,8 +133,8 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
   <div id="lab"><svg id="svg"></svg></div>
   <div class="cap" id="cap"></div>
   <textarea class="nx" id="gn" aria-label="Mes notes globales" hidden></textarea>
-  <div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
-  <p class="help"><button class="rz" id="rz">Réinitialiser</button></p>
+  <div class="bt"><div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
+  <p class="help"><button class="rz" id="rz">Réinitialiser</button></p></div>
 </div>
 <script>
 /* ---------- les molécules : atomes (idées) et liaisons (axiomes) ----------
@@ -430,14 +436,20 @@ function viewH(){return window.innerHeight}
 function kbOpen(){return MOB&&document.activeElement===GN&&!!window.visualViewport&&visualViewport.height<window.innerHeight-120}
 function fit(){
   /* sur ordinateur sans notes : la carte garde sa taille d'origine */
-  if(!MOB&&GN.hidden){lab.style.height="";CAP.style.minHeight="";return}
+  if(!MOB&&GN.hidden){lab.style.height="";CAP.style.minHeight="";GN.style.height="";document.documentElement.classList.remove("ntr");return}
   /* la phrase garde la hauteur de la plus longue, pour que rien ne bouge d'une étape à l'autre */
   var m=CAP.cloneNode(false);m.removeAttribute("id");m.style.cssText="position:absolute;visibility:hidden;min-height:0;width:"+CAP.clientWidth+"px";CAP.parentNode.appendChild(m);
   var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
-  /* la carte prend la hauteur qui reste ; clavier ouvert : tout jusqu'aux notes tient au-dessus du clavier */
-  var kb=kbOpen(),avail=kb?visualViewport.height:viewH(),labH=lab.getBoundingClientRect().height,sy=window.scrollY,
-      end=kb?GN.getBoundingClientRect().bottom+sy+8:document.querySelector(".w").getBoundingClientRect().bottom+sy-(OL.hidden?0:OL.getBoundingClientRect().height+6);
-  lab.style.height=Math.max(kb?110:(MOB?240:300),Math.floor(avail-(end-labH)))+"px"}
+  var kb=kbOpen(),avail=kb?visualViewport.height:viewH(),sy=window.scrollY,R=document.documentElement,WR=document.querySelector(".w"),notes=!GN.hidden;
+  function end(){return kb?GN.getBoundingClientRect().bottom+sy+8:WR.getBoundingClientRect().bottom+sy-(OL.hidden?0:OL.getBoundingClientRect().height+6)}
+  /* la carte prend la hauteur qui reste (mesurée avec le champ à sa taille de base et les boutons en colonne) ;
+     clavier ouvert : tout jusqu'aux notes tient au-dessus du clavier */
+  GN.style.height="";R.classList.remove("ntr");
+  var labH=lab.getBoundingClientRect().height;
+  lab.style.height=Math.max(kb?110:(MOB?240:300),Math.floor(avail-(end()-labH)))+"px";
+  /* notes ouvertes : boutons sur une ligne, et le champ s'agrandit jusqu'en bas de l'écran (ou jusqu'au clavier) */
+  if(notes){R.classList.add("ntr");var base=GN.getBoundingClientRect().height;GN.style.height=Math.max(80,Math.floor(base+avail-end()))+"px"}
+}
 /* remesurer : ouverture de la web app, clavier, notes ouvertes ou fermées */
 function refit(){var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}if(kbOpen()&&OL.hidden)window.scrollTo(0,0)}
 ["load","pageshow","orientationchange"].forEach(function(ev){window.addEventListener(ev,function(){setTimeout(refit,60)})});
