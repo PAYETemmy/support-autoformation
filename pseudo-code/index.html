@@ -123,6 +123,10 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 /* notes globales : champ encadré, tout en bas */
 .nw{position:relative;margin:6px 0 0;background:var(--bg)}
 .nw[hidden]{display:none}
+/* ouverture / fermeture des notes : la carte et le champ glissent ensemble */
+html.anim #lab{transition:height .42s cubic-bezier(.4,0,.2,1)}
+html.anim .nw{transition:height .42s cubic-bezier(.4,0,.2,1),margin-top .42s cubic-bezier(.4,0,.2,1),opacity .32s ease}
+html.anim .nw .nx{transition:transform .42s cubic-bezier(.4,0,.2,1)}
 .nx{position:relative;z-index:1;display:block;width:100%;height:140px;margin:0;resize:none;overflow-y:auto;overscroll-behavior:contain;font:inherit;font-size:14px;line-height:1.45;color:var(--fg);
   background:transparent;border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
 .nx:focus{outline:none;border-color:var(--up)}
@@ -348,7 +352,7 @@ function camTarget(){var ids=[],fin=S.p>=STEPS.length;
     if(V[id].c&&!(st.lk&&st.neu)){x0=V[id].x-230;x1=V[id].x+230;y0=V[id].y-230;y1=V[id].y+230}}ids.push(st.s,st.o)}ids.forEach(function(id){var a=V[id];if(!a)return;x0=Math.min(x0,a.x-a.r-30);x1=Math.max(x1,a.x+a.r+30);y0=Math.min(y0,a.y-a.r-30);y1=Math.max(y1,a.y+a.r+30)});
   var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),1);s=Math.max(s,fin?.06:.36);
   return {x:(x0+x1)/2,y:(y0+y1)/2,s:s}}
-function step(){tick(true);var T=camTarget();cam.x+=(T.x-cam.x)*.05;cam.y+=(T.y-cam.y)*.05;cam.s+=(T.s-cam.s)*.05;render();raf=requestAnimationFrame(step)}
+function step(){if(ANI){W=lab.clientWidth;H=lab.clientHeight}tick(true);var T=camTarget();cam.x+=(T.x-cam.x)*.05;cam.y+=(T.y-cam.y)*.05;cam.s+=(T.s-cam.s)*.05;render();raf=requestAnimationFrame(step)}
 /* ---------- l'étape en cours ---------- */
 function dim(n){for(var id in V){var a=V[id],st=STEPS[S.p];a.g.classList.toggle("far",n!=null&&a.n!==n&&!(st&&(id===st.s||id===st.o)))}
   B.forEach(function(b){var f=n!=null&&b.st.n!==n;b.p.classList.toggle("far",f);b.lb.g.classList.toggle("far",f)})}
@@ -421,7 +425,7 @@ var rzT=0,RZ=document.getElementById("rz");
 RZ.onclick=function(){if(!RZ.classList.contains("sure")){RZ.classList.add("sure");RZ.textContent="Confirmer ?";clearTimeout(rzT);
   rzT=setTimeout(function(){RZ.classList.remove("sure");RZ.textContent="Réinitialiser"},3000);return}
   RZ.classList.remove("sure");RZ.textContent="Réinitialiser";S={p:0};save();go()};
-window.addEventListener("resize",function(){fit();W=lab.clientWidth;H=lab.clientHeight});
+window.addEventListener("resize",function(){if(ANI)return;fit();W=lab.clientWidth;H=lab.clientHeight});
 /* "Axiomes formés" : un bouton qui affiche ou masque la liste */
 var OL=document.getElementById("ol");
 var MOB=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
@@ -451,8 +455,19 @@ GN.onblur=function(){saveNotes();setTimeout(refit,100)};
 GN.onfocus=function(){setTimeout(refit,100);setTimeout(refit,400)};
 try{GN.hidden=localStorage.getItem("molecules-voir-notes")!=="1"}catch(e){}
 function notesMode(){document.documentElement.classList.toggle("nt",!GN.hidden);GW.hidden=GN.hidden;if(!GN.hidden)guides()}
-NBT.onclick=function(){GN.hidden=!GN.hidden;try{localStorage.setItem("molecules-voir-notes",GN.hidden?"0":"1")}catch(e){}
-  nbLabel();notesMode();refit();lock();if(!GN.hidden&&!MOB)setTimeout(function(){GN.focus()},50)};
+NBT.onclick=function(){if(ANI)return;var show=GN.hidden;try{localStorage.setItem("molecules-voir-notes",show?"1":"0")}catch(e){}animNotes(show)};
+/* animation : on calcule la disposition d'arrivée, on revient à celle de départ, puis on glisse de l'une à l'autre */
+var ANI=false;
+function animNotes(show){ANI=true;var R=document.documentElement,E="cubic-bezier(.4,0,.2,1)",
+    l0=lab.getBoundingClientRect().height,g0=show?0:GW.getBoundingClientRect().height;
+  GN.hidden=!show;nbLabel();notesMode();fit();
+  var lT=lab.getBoundingClientRect().height,gT=show?GW.getBoundingClientRect().height:0;
+  GW.hidden=false;GW.style.overflow="hidden";GW.style.height=g0+"px";GW.style.marginTop=show?"0px":"6px";GW.style.opacity=show?0:1;
+  GN.style.transform=show?"translateY(-14px)":"none";lab.style.height=l0+"px";
+  void GW.offsetHeight;R.classList.add("anim");
+  lab.style.height=lT+"px";GW.style.height=gT+"px";GW.style.marginTop=show?"6px":"0px";GW.style.opacity=show?1:0;GN.style.transform=show?"none":"translateY(-14px)";
+  setTimeout(function(){R.classList.remove("anim");GW.style.height=GW.style.marginTop=GW.style.opacity=GW.style.overflow=GN.style.transform="";
+    if(!show)GW.hidden=true;ANI=false;W=lab.clientWidth;H=lab.clientHeight;lock();if(show&&!MOB)GN.focus({preventScroll:true})},460)}
 nbLabel();notesMode();
 /* hauteur de l'écran ; en web app, l'iPhone règle ses marges (île, barre du bas) juste après l'ouverture, d'où les nouvelles mesures plus bas */
 function viewH(){return window.innerHeight}
@@ -473,7 +488,7 @@ function fit(){
   if(notes){R.classList.remove("btcol");var base=GN.getBoundingClientRect().height;GN.style.height=Math.max(80,Math.floor(base+avail-end()))+"px";guides()}
 }
 /* remesurer : ouverture de la web app, clavier, notes ouvertes ou fermées */
-function refit(){var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}if(kbOpen()&&OL.hidden)window.scrollTo(0,0)}
+function refit(){if(ANI)return;var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}if(kbOpen()&&OL.hidden)window.scrollTo(0,0)}
 ["load","pageshow","orientationchange"].forEach(function(ev){window.addEventListener(ev,function(){setTimeout(refit,60)})});
 if(window.visualViewport){visualViewport.addEventListener("resize",refit);visualViewport.addEventListener("scroll",function(){if(kbOpen()&&OL.hidden)window.scrollTo(0,0)})}
 setTimeout(refit,400);setTimeout(refit,1200);setTimeout(refit,2500);
