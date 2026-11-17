@@ -151,9 +151,8 @@ html.anim .nw .nx{transition:transform .42s cubic-bezier(.4,0,.2,1)}
 .nx::placeholder{color:#5a5a62;-webkit-text-fill-color:#5a5a62}
 .nx::selection{background:rgba(138,180,255,.28)}
 /* couleurs des notes : une couleur par niveau, de la moins claire (nom de la notion, sans retrait) au plus clair (niveau le plus en retrait) */
-.ng .c0{color:#ed76ad}.ng .c1{color:#4085ff}.ng .c2{color:#8f4ceb}.ng .c3{color:#ecd490}.ng .c4{color:#7ed699}.ng .c5{color:#4dc1ce}.ng .c6{color:#eaeaeb}.ng .c7{color:#c5e86c}.ng .c8{color:#ff9e8a}.ng .c9{color:#c9b6ff}.ng .c10{color:#9ef0e0}.ng .c11{color:#ffd1e8}
-.ng b.c1{background:#4085ff}.ng b.c2{background:#8f4ceb}.ng b.c3{background:#ecd490}.ng b.c4{background:#7ed699}.ng b.c5{background:#4dc1ce}.ng b.c6{background:#eaeaeb}.ng b.c7{background:#c5e86c}.ng b.c8{background:#ff9e8a}.ng b.c9{background:#c9b6ff}.ng b.c10{background:#9ef0e0}.ng b.c11{background:#ffd1e8}
-.ng .q{color:#f2a46a}
+.ng{color:var(--fg)}
+.ng .ngl b{background:var(--fg)}
 .ng .ngl>span{position:relative;z-index:1}
 /* rappel tout petit, en bas à droite du cadre des notes */
 .nw .lvm{position:absolute;right:7px;bottom:4px;z-index:2;font-size:9.5px;line-height:1;color:#4a4a52;pointer-events:none;letter-spacing:.02em}
