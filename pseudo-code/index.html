@@ -119,6 +119,9 @@ html:not(.btcol) #ol{order:9;flex-basis:100%}
 @media (pointer:coarse){html:not(.btcol) #rz{display:none}}
 /* page verrouillée : elle ne glisse plus (liste des axiomes fermée) */
 html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
+/* iPhone, clavier ouvert : la page est un bloc fixe, calé sur la zone visible au-dessus du clavier (iOS ne peut plus la faire glisser) */
+html.kb .w{position:fixed;left:0;right:0;top:0;overflow:hidden;box-sizing:border-box;will-change:transform}
+@media (pointer:coarse){html.kb .nx{height:96px}}
 .help{color:var(--m);font-size:12.5px;margin:10px 0 0}
 .rz{background:none;border:0;color:var(--m);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
 .rz.sure{color:var(--no)}
@@ -473,8 +476,8 @@ function guides(){var L=GN.value.split("\n"),lv=L.map(function(l){return l.trim(
     return '<div class="ngl"><span class="'+col(n)+'">'+(t||" ")+"</span>"+s+"</div>"}).join("");
   NG.style.width=GN.clientWidth+"px";NG.style.height=GN.clientHeight+"px";NG.scrollTop=GN.scrollTop}
 GN.addEventListener("scroll",function(){NG.scrollTop=GN.scrollTop});
-GN.onblur=function(){saveNotes();setTimeout(refit,100)};
-GN.onfocus=function(){setTimeout(refit,100);setTimeout(refit,400)};
+GN.onblur=function(){saveNotes();if(MOB&&KB){KB=false;document.documentElement.classList.remove("kb");WRP.style.height=WRP.style.transform="";window.scrollTo(0,0)}setTimeout(refit,100)};
+GN.onfocus=function(){if(MOB&&window.visualViewport){KB=true;document.documentElement.classList.add("kb");kbSync();[60,200,400,700,1000].forEach(function(t){setTimeout(kbSync,t)})}else{setTimeout(refit,100);setTimeout(refit,400)}};
 try{GN.hidden=localStorage.getItem("molecules-voir-notes")!=="1"}catch(e){}
 function notesMode(){document.documentElement.classList.toggle("nt",!GN.hidden);GW.hidden=GN.hidden;IB.hidden=GN.hidden;if(!GN.hidden)guides()}
 /* "Indenter" : 5 espaces à l'endroit du curseur dans les notes ; le bouton ne prend pas le focus (le clavier de l'iPhone reste ouvert) */
@@ -502,13 +505,19 @@ nbLabel();notesMode();
 /* hauteur de l'écran ; en web app, l'iPhone règle ses marges (île, barre du bas) juste après l'ouverture, d'où les nouvelles mesures plus bas */
 function viewH(){return window.innerHeight}
 /* clavier de l'iPhone ouvert sur les notes */
-function kbOpen(){return MOB&&document.activeElement===GN&&!!window.visualViewport&&visualViewport.height<window.innerHeight-120}
+var KB=false,WRP=document.querySelector(".w");
+function kbOpen(){return MOB&&KB&&!!window.visualViewport}
+/* clavier ouvert : la page suit la zone visible (hauteur et décalage donnés par visualViewport), puis la carte se règle */
+var kbRaf=0;
+function kbSync(){if(!kbOpen())return;var vv=visualViewport;WRP.style.height=vv.height+"px";WRP.style.transform="translateY("+vv.offsetTop+"px)";refit()}
+function kbLater(){cancelAnimationFrame(kbRaf);kbRaf=requestAnimationFrame(kbSync)}
 function fit(){
   /* la phrase garde la hauteur de la plus longue, pour que rien ne bouge d'une étape à l'autre */
   var m=CAP.cloneNode(false);m.removeAttribute("id");m.style.cssText="position:absolute;visibility:hidden;min-height:0;width:"+CAP.clientWidth+"px";CAP.parentNode.appendChild(m);
   var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
   var kb=kbOpen(),avail=kb?visualViewport.height:viewH(),sy=window.scrollY,R=document.documentElement,WR=document.querySelector(".w"),notes=!GN.hidden;
-  function end(){return kb?GN.getBoundingClientRect().bottom+sy+8:WR.getBoundingClientRect().bottom+sy-(OL.hidden?0:OL.getBoundingClientRect().height+6)}
+  /* clavier ouvert : mesures depuis le haut du bloc fixe ; sinon depuis le haut de la page */
+  function end(){return kb?GN.getBoundingClientRect().bottom-WR.getBoundingClientRect().top+8:WR.getBoundingClientRect().bottom+sy-(OL.hidden?0:OL.getBoundingClientRect().height+6)}
   /* la carte prend la hauteur qui reste (mesurée avec le champ à sa taille de base et les boutons en colonne) ;
      clavier ouvert : tout jusqu'aux notes tient au-dessus du clavier */
   GN.style.height="";R.classList.toggle("btcol",notes);
@@ -518,9 +527,10 @@ function fit(){
   if(notes){R.classList.remove("btcol");var base=GN.getBoundingClientRect().height;GN.style.height=Math.max(80,Math.floor(base+avail-end()))+"px";guides()}
 }
 /* remesurer : ouverture de la web app, clavier, notes ouvertes ou fermées */
-function refit(){if(ANI)return;var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}if(kbOpen()&&OL.hidden)window.scrollTo(0,0)}
+function refit(){if(ANI)return;var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}}
 ["load","pageshow","orientationchange"].forEach(function(ev){window.addEventListener(ev,function(){setTimeout(refit,60)})});
-if(window.visualViewport){visualViewport.addEventListener("resize",refit);visualViewport.addEventListener("scroll",function(){if(kbOpen()&&OL.hidden)window.scrollTo(0,0)})}
+if(window.visualViewport){visualViewport.addEventListener("resize",function(){if(KB)kbLater();else refit()});visualViewport.addEventListener("scroll",function(){if(KB)kbLater()})}
+window.addEventListener("scroll",function(){if(KB)kbLater()},{passive:true});
 setTimeout(refit,400);setTimeout(refit,1200);setTimeout(refit,2500);
 try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
 document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}lock()};
