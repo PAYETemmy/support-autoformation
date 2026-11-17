@@ -97,6 +97,14 @@ body,svg text,code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"c
 @keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;padding:1px 4px;border-radius:4px}
 .cap code{font-size:12.5px}
+/* aperçu "dans tes notes" au début d'une notion : coin bas gauche de la carte, mêmes couleurs, retrait et barre que les notes */
+.pvw{position:absolute;left:10px;bottom:10px;z-index:3;pointer-events:none;font-size:12.5px;line-height:1.45;padding:6px 10px 7px;border-radius:6px;
+  background:rgba(14,14,16,.88);opacity:0;transform:translateY(4px);transition:opacity .35s,transform .35s}
+.pvw.on{opacity:1;transform:none}
+html:not(.nt) .pvw{display:none}
+.pvw span{display:block;white-space:nowrap}
+.pvw .p0{color:#ed76ad}
+.pvw .p1{color:#4085ff;padding-left:2.3em;background:linear-gradient(to right,transparent 0 1px,rgba(64,133,255,.45) 1px 2px,transparent 2px)}
 /* au doigt (iPhone) : tout tient dans l'écran, sans faire défiler */
 @media (pointer:coarse){
   .w{padding-bottom:max(14px,calc(env(safe-area-inset-bottom) + 6px))}
@@ -164,7 +172,7 @@ html.anim .nw .nx{transition:transform .42s cubic-bezier(.4,0,.2,1)}
 <div class="w">
   <h1 id="ti"></h1>
   <div class="st"><span></span><span id="cnt"></span></div>
-  <div id="lab"><svg id="svg"></svg></div>
+  <div id="lab"><svg id="svg"></svg><div class="pvw" id="pv" aria-hidden="true"><span class="p0"></span><span class="p1"></span></div></div>
   <div class="cap" id="cap"></div>
   <div class="nw" id="gw" hidden><div class="ng" id="ng" aria-hidden="true"></div><textarea class="nx" id="gn" aria-label="Mes notes globales" hidden></textarea><span class="lvm" aria-hidden="true">9 levels max</span></div>
   <div class="bt"><div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="ib" title="Ajouter 5 espaces" aria-label="Indenter : ajouter 5 espaces" hidden><span class="ia">⇥</span><span class="il"> Indenter</span></button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
@@ -182,7 +190,7 @@ var MOL=[
      ["gat","ing","demande 6","Il demande 6 ingrédients : chocolat, beurre, sucre, œufs, farine et sel."],
      ["gat","etp","se fait en 5","Il se fait en 5 étapes : préparer, faire fondre, mélanger, cuire, démouler."],
      ["gat","duree","prend","Il prend environ 45 minutes en tout, dont 20 à 25 minutes de cuisson."]]},
- {id:"ing",t:"Ingrédients",c:"bal",
+ {id:"ing",t:"Ingrédients",r:"le gâteau en demande 6",c:"bal",
   a:{bal:"Balance",ing:"Ingrédients",choc:"Chocolat noir",beu:"Beurre doux",suc:"Sucre",far:"Farine",oeu:"Œufs",sel:"Sel"},ext:["ing"],
   b:[["ing","bal","se pèsent avec une","Les ingrédients se pèsent avec une balance : en pâtisserie, les doses comptent.",1],
      ["bal","choc","pesez 200 g de","200 g de chocolat noir pâtissier, entre 50 et 70 % de cacao."],
@@ -191,14 +199,14 @@ var MOL=[
      ["bal","far","pesez 50 g de","50 g de farine seulement : peu de farine garde le gâteau fondant."],
      ["bal","oeu","ne pèse pas les","Les œufs ne se pèsent pas : il en faut 4, entiers."],
      ["sel","choc","relève le goût du","Une pincée de sel relève le goût du chocolat."]]},
- {id:"prep",t:"Préparer",c:"prep",
+ {id:"prep",t:"Préparer",r:"première des 5 étapes",c:"prep",
   a:{prep:"Avant de commencer",etp:"Étapes",four:"Four à 180 °C",mou:"Moule beurré",tamb:"Œufs à température ambiante",ust:"Saladiers et fouet"},ext:["etp"],
   b:[["etp","prep","commencent","Les étapes commencent avant de cuisiner : on prépare tout.",1],
      ["prep","four","allume le","On préchauffe le four à 180 °C."],
      ["prep","mou","prépare le","On beurre le moule puis on le farine, pour un démoulage facile."],
      ["prep","tamb","sort les","On sort les œufs du frigo 30 minutes avant, pour qu’ils soient à température ambiante."],
      ["prep","ust","sort les","On sort deux saladiers, un fouet et une spatule."]]},
- {id:"fon",t:"Faire fondre",c:"fon",
+ {id:"fon",t:"Faire fondre",r:"le chocolat et le beurre",c:"fon",
   a:{fon:"Faire fondre",choc:"Chocolat noir",bm:"Bain-marie",mo:"Micro-ondes",doux:"Feu doux",lis:"Mélange lisse",tiede:"Chocolat tiède"},ext:["choc"],
   b:[["choc","fon","se met à","Le chocolat se met à fondre avec le beurre, en morceaux.",1],
      ["fon","bm","se fait au","On fait fondre au bain-marie : un saladier posé sur une casserole d’eau qui frémit."],
@@ -206,7 +214,7 @@ var MOL=[
      ["bm","doux","se garde à","Le bain-marie se garde à feu doux : trop chauffé, le chocolat devient granuleux."],
      ["fon","lis","donne un","On remue jusqu’à obtenir un mélange lisse et brillant."],
      ["lis","tiede","refroidit en","Le mélange refroidit quelques minutes : trop chaud, il cuirait les œufs."]]},
- {id:"mel",t:"Mélanger",c:"mel",
+ {id:"mel",t:"Mélanger",r:"une fois le chocolat tiède",c:"mel",
   a:{mel:"Mélanger",tiede:"Chocolat tiède",blanc:"Œufs et sucre",mous:"Mélange mousseux",fart:"Farine et sel",spat:"Spatule",trop:"Sans trop battre"},ext:["tiede"],
   b:[["tiede","mel","est prêt à","Une fois tiède, le chocolat est prêt à être mélangé au reste.",1],
      ["mel","blanc","commence par les","On commence par fouetter les œufs avec le sucre."],
@@ -215,7 +223,7 @@ var MOL=[
      ["mel","fart","ajoute ensuite","On ajoute ensuite la farine tamisée et la pincée de sel."],
      ["fart","spat","s’incorporent à la","La farine et le sel s’incorporent à la spatule, d’un geste doux."],
      ["mel","trop","se fait","On mélange sans trop battre : juste assez pour une pâte homogène."]]},
- {id:"cui",t:"Cuire",c:"cui",
+ {id:"cui",t:"Cuire",r:"dans le four à 180 °C",c:"cui",
   a:{cui:"Cuisson",four:"Four à 180 °C",milieu:"Milieu du four",duree:"20 à 25 min",lame:"Pointe de couteau",humide:"Légèrement humide",sec:"Trop cuit"},ext:["four"],
   b:[["four","cui","une fois chaud, lance la","Une fois le four chaud, la pâte versée dans le moule part à la cuisson.",1],
      ["cui","milieu","se fait au","Le moule se place au milieu du four."],
@@ -223,7 +231,7 @@ var MOL=[
      ["cui","lame","se vérifie avec la","On vérifie la cuisson en plantant la pointe d’un couteau au centre."],
      ["lame","humide","doit ressortir","La lame doit ressortir légèrement humide : c’est le signe d’un cœur fondant."],
      ["cui","sec","évite le","Mieux vaut sortir le gâteau un peu tôt : trop cuit, il devient sec."]]},
- {id:"dem",t:"Démouler et servir",c:"dem",
+ {id:"dem",t:"Démouler et servir",r:"à la sortie du four",c:"dem",
   a:{dem:"Démouler",cui:"Cuisson",repos:"10 min de repos",grille:"Grille",deco:"Cacao ou sucre glace",lend:"Le lendemain",garde:"3 jours sous cloche"},ext:["cui"],
   b:[["cui","dem","se termine par","À la sortie du four, on passe au démoulage.",1],
      ["dem","repos","attend","On laisse reposer le gâteau 10 minutes dans le moule avant de le démouler."],
@@ -259,7 +267,7 @@ MOL.forEach(function(m,k){var ext=m.ext||[];
     if(pick<0)rest.some(function(i,j){var b=m.b[i];if(kn[gid(b[0])]&&kn[gid(b[1])]){pick=j;return true}});
     if(pick<0)pick=0;
     var b=m.b[rest.splice(pick,1)[0]],s=gid(b[0]),o=gid(b[1]);
-    STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
+    STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],nt:m.t,r:b[4]&&m.r?m.r:null,neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
 /* ---------- état de la carte affichée ---------- */
 var V={},B=[],W=0,H=0,gW,gB,gG,gA,gFx,meter,meterG,cam={x:0,y:0,s:1},drag=null,raf=0,guide=null,busy=false;
 function textW(s,m,n){m=m||meter;var L=wrap(s,n||26),w=0;L.forEach(function(l){m.firstChild.textContent=l;w=Math.max(w,m.firstChild.getComputedTextLength())});return w}
@@ -323,14 +331,17 @@ function dim(n){for(var id in V){var a=V[id],st=STEPS[S.p];a.g.classList.toggle(
 function showStep(anim){if(guide){guide.line.remove();guide.lb.g.remove();guide=null}
   for(var id in V)V[id].g.classList.remove("next");
   head();
-  if(S.p>=STEPS.length){CAP.className="cap fin";CAP.textContent="Carte complète : "+MOL.length+" notions, "+STEPS.length+" axiomes.";dim(null);
+  if(S.p>=STEPS.length){pvShow(null);CAP.className="cap fin";CAP.textContent="Carte complète : "+MOL.length+" notions, "+STEPS.length+" axiomes.";dim(null);
     for(var i in V){(function(a){a.g.classList.add("glow");setTimeout(function(){a.g.classList.remove("glow")},1700)})(V[i])}return}
   var st=STEPS[S.p];
   if(st.neu&&!V[st.neu]){var P=place(st),a=mkAtom(st.neu,P[0],P[1],anim);
     if(anim){var c=sv("circle",{"class":"ring",cx:a.x,cy:a.y,r:a.r,stroke:st.lk?"#8ab4ff":"#d6d6dc"},gFx);setTimeout(function(){c.remove()},750)}}
   var l=sv("line",{"class":"gd"+(st.lk?" lk":"")},gG),lb=label(gG,st.rel,22,"gl"+(st.lk?" lk":""),12,21,7,9);guide={st:st,line:l,lb:lb};
   (st.neu?[V[st.neu]]:[V[st.s],V[st.o]]).forEach(function(a){a.g.classList.add("next")});
-  CAP.className="cap"+(st.lk?" lk":"");txt(CAP,st.ax);dim(st.n)}
+  CAP.className="cap"+(st.lk?" lk":"");txt(CAP,st.ax);pvShow(st);dim(st.n)}
+/* début d'une notion (notes ouvertes) : petit aperçu, dans le coin de la carte, de comment l'écrire dans les notes :
+   un nouveau bloc au nom de la notion, puis le lien avec la notion d'avant en renvoi "->" (pas en retrait) */
+function pvShow(st){var p=document.getElementById("pv");if(!p)return;if(st&&st.r){p.firstChild.textContent=st.nt;p.lastChild.textContent="-> "+st.r;p.classList.add("on")}else p.classList.remove("on")}
 function link(){var st=STEPS[S.p];busy=true;guide.line.remove();guide.lb.g.remove();guide=null;
   for(var id in V)V[id].g.classList.remove("next");
   addBond(st,true);burst(V[st.s],V[st.o],st.lk);addLine(st);S.p++;save();CAP.classList.add("ok");head();
