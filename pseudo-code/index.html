@@ -101,7 +101,10 @@ code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;paddin
 @media (pointer:coarse){
   .w{padding-bottom:max(14px,calc(env(safe-area-inset-bottom) + 6px))}
   .ax{margin-top:10px}
+  .nx{height:112px}
 }
+/* notes ouvertes sur ordinateur : tout tient dans l'écran */
+@media (pointer:fine){html.nt .w{padding-bottom:16px}}
 /* page verrouillée : elle ne glisse plus (liste des axiomes fermée) */
 html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .help{color:var(--m);font-size:12.5px;margin:10px 0 0}
@@ -111,7 +114,7 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
 .ax .rz{display:block;line-height:1.5;margin:0 0 8px}
 .ax + .help{margin-top:6px}
 /* notes globales : champ encadré, tout en bas */
-.nx{display:block;width:100%;min-height:140px;margin:14px 0 0;resize:none;overflow:hidden;font:inherit;font-size:16px;line-height:1.45;color:var(--fg);
+.nx{display:block;width:100%;height:140px;margin:6px 0 0;resize:none;overflow-y:auto;overscroll-behavior:contain;font:inherit;font-size:16px;line-height:1.45;color:var(--fg);
   background:var(--bg);border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
 .nx:focus{outline:none;border-color:var(--up)}
 .nx[hidden]{display:none}
@@ -123,9 +126,9 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
   <div class="st"><span></span><span id="cnt"></span></div>
   <div id="lab"><svg id="svg"></svg></div>
   <div class="cap" id="cap"></div>
+  <textarea class="nx" id="gn" aria-label="Mes notes globales" hidden></textarea>
   <div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
   <p class="help"><button class="rz" id="rz">Réinitialiser</button></p>
-  <textarea class="nx" id="gn" rows="6" aria-label="Mes notes globales" hidden></textarea>
 </div>
 <script>
 /* ---------- les molécules : atomes (idées) et liaisons (axiomes) ----------
@@ -406,39 +409,48 @@ RZ.onclick=function(){if(!RZ.classList.contains("sure")){RZ.classList.add("sure"
 window.addEventListener("resize",function(){fit();W=lab.clientWidth;H=lab.clientHeight});
 /* "Axiomes formés" : un bouton qui affiche ou masque la liste */
 var OL=document.getElementById("ol");
-/* "Afficher mes notes" : un champ de notes globales pour tout le sujet, tout en bas, sauvegardé */
-var SUJ=KEY.replace("molecules-guide-",""),GKEY="notes-globales-"+SUJ,GN=document.getElementById("gn"),NBT=document.getElementById("nb");
-GN.placeholder="Mes notes sur "+SUJ.replace(/-/g," ")+"…";try{GN.value=localStorage.getItem(GKEY)||""}catch(e){}
-function grow(){GN.style.height="auto";GN.style.height=Math.max(140,GN.scrollHeight+2)+"px"}
-function nbLabel(){NBT.textContent=GN.hidden?"Afficher mes notes":"Masquer mes notes"}
-var gtm=0;GN.oninput=function(){grow();clearTimeout(gtm);gtm=setTimeout(function(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}},300)};
-GN.onblur=function(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}};
-try{GN.hidden=localStorage.getItem("molecules-voir-notes")!=="1"}catch(e){}
-NBT.onclick=function(){GN.hidden=!GN.hidden;try{localStorage.setItem("molecules-voir-notes",GN.hidden?"0":"1")}catch(e){}
-  nbLabel();lock();if(!GN.hidden){grow();setTimeout(function(){GN.focus()},50)}};
-nbLabel();if(!GN.hidden)grow();
 var MOB=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
+/* "Afficher mes notes" : les notes globales du sujet deviennent un élément principal, juste sous la phrase de l'étape.
+   La carte se réduit pour que tout tienne dans l'écran : on suit le guide en notant, sans que la page bouge. */
+var SUJ=KEY.replace("molecules-guide-",""),GKEY="notes-globales-"+SUJ,GN=document.getElementById("gn"),NBT=document.getElementById("nb");
+GN.placeholder="Mes notes sur "+SUJ+"…";try{GN.value=localStorage.getItem(GKEY)||""}catch(e){}
+function saveNotes(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}}
+function nbLabel(){NBT.textContent=GN.hidden?"Afficher mes notes":"Masquer mes notes"}
+var gtm=0;GN.oninput=function(){clearTimeout(gtm);gtm=setTimeout(saveNotes,300)};
+GN.onblur=function(){saveNotes();setTimeout(refit,100)};
+GN.onfocus=function(){setTimeout(refit,100);setTimeout(refit,400)};
+try{GN.hidden=localStorage.getItem("molecules-voir-notes")!=="1"}catch(e){}
+function notesMode(){document.documentElement.classList.toggle("nt",!GN.hidden)}
+NBT.onclick=function(){GN.hidden=!GN.hidden;try{localStorage.setItem("molecules-voir-notes",GN.hidden?"0":"1")}catch(e){}
+  nbLabel();notesMode();refit();lock();if(!GN.hidden&&!MOB)setTimeout(function(){GN.focus()},50)};
+nbLabel();notesMode();
 /* hauteur de l'écran ; en web app, l'iPhone règle ses marges (île, barre du bas) juste après l'ouverture, d'où les nouvelles mesures plus bas */
 function viewH(){return window.innerHeight}
-function fit(){if(!MOB)return;
+/* clavier de l'iPhone ouvert sur les notes */
+function kbOpen(){return MOB&&document.activeElement===GN&&!!window.visualViewport&&visualViewport.height<window.innerHeight-120}
+function fit(){
+  /* sur ordinateur sans notes : la carte garde sa taille d'origine */
+  if(!MOB&&GN.hidden){lab.style.height="";CAP.style.minHeight="";return}
   /* la phrase garde la hauteur de la plus longue, pour que rien ne bouge d'une étape à l'autre */
   var m=CAP.cloneNode(false);m.removeAttribute("id");m.style.cssText="position:absolute;visibility:hidden;min-height:0;width:"+CAP.clientWidth+"px";CAP.parentNode.appendChild(m);
   var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
-  /* la carte prend toute la hauteur qui reste */
-  var olH=(OL.hidden?0:OL.getBoundingClientRect().height+6)+(GN.hidden?0:GN.getBoundingClientRect().height+14),wH=document.querySelector(".w").getBoundingClientRect().height;
-  lab.style.height=Math.max(280,Math.floor(viewH()-(wH-lab.getBoundingClientRect().height-olH)))+"px"}
-/* en web app, l'écran se règle parfois juste après l'ouverture : on remesure */
-function refit(){if(!MOB)return;var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}}
+  /* la carte prend la hauteur qui reste ; clavier ouvert : tout jusqu'aux notes tient au-dessus du clavier */
+  var kb=kbOpen(),avail=kb?visualViewport.height:viewH(),labH=lab.getBoundingClientRect().height,sy=window.scrollY,
+      end=kb?GN.getBoundingClientRect().bottom+sy+8:document.querySelector(".w").getBoundingClientRect().bottom+sy-(OL.hidden?0:OL.getBoundingClientRect().height+6);
+  lab.style.height=Math.max(kb?110:(MOB?240:300),Math.floor(avail-(end-labH)))+"px"}
+/* remesurer : ouverture de la web app, clavier, notes ouvertes ou fermées */
+function refit(){var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}if(kbOpen()&&OL.hidden)window.scrollTo(0,0)}
 ["load","pageshow","orientationchange"].forEach(function(ev){window.addEventListener(ev,function(){setTimeout(refit,60)})});
-if(window.visualViewport)visualViewport.addEventListener("resize",refit);
+if(window.visualViewport){visualViewport.addEventListener("resize",refit);visualViewport.addEventListener("scroll",function(){if(kbOpen()&&OL.hidden)window.scrollTo(0,0)})}
 setTimeout(refit,400);setTimeout(refit,1200);setTimeout(refit,2500);
 try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
 document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}lock()};
-/* au doigt, tant que tout tient dans l'écran, la page ne bouge pas ; liste ouverte, on peut descendre */
-function lock(){if(!MOB)return;var on=OL.hidden&&GN.hidden;document.documentElement.classList.toggle("lock",on);if(on)window.scrollTo(0,0)}
-document.addEventListener("touchmove",function(e){if(document.documentElement.classList.contains("lock"))e.preventDefault()},{passive:false});
+/* au doigt, la page ne bouge pas (notes comprises) ; liste des axiomes ouverte, on peut descendre */
+function lock(){if(!MOB)return;var on=OL.hidden;document.documentElement.classList.toggle("lock",on);if(on)window.scrollTo(0,0)}
+/* page verrouillée : seul le texte des notes peut défiler, à l'intérieur de son cadre */
+document.addEventListener("touchmove",function(e){if(document.documentElement.classList.contains("lock")&&e.target!==GN)e.preventDefault()},{passive:false});
 lock();
-go();if(MOB){fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
+go();if(MOB||!GN.hidden){fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
 </script>
 </body>
 </html>
