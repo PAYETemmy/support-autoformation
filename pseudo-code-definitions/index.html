@@ -307,8 +307,9 @@ function textW(s,m,n){m=m||meter;var L=wrap(s,n||26),w=0;L.forEach(function(l){m
 function mkAtom(id,x,y,anim){var d=G[id],c=d.c,r=c?52:40;
   var g=sv("g",{"class":"atom"+(c?" center":"")+(anim?" pop":"")},gA),inn=sv("g",{"class":"in"},g);
   var orb=sv("ellipse",{"class":"orb"},inn),e1=sv("circle",{"class":"el",r:2.6},inn),core=sv("circle",{"class":"core"},inn);
-  var lines=wrap(d.label,c?14:12),ts=[],wm=0;
-  lines.forEach(function(l,i){var t=sv("text",{y:(i-(lines.length-1)/2)*17+5},inn);t.textContent=l;ts.push(t);wm=Math.max(wm,t.getComputedTextLength())});
+  /* cartes "en définitions" : "def" en petit au-dessus du nom de chaque notion */
+  var DK=typeof DIR!=="undefined"&&DIR&&c,lines=(DK?["def"]:[]).concat(wrap(d.label,c?14:12)),ts=[],wm=0;
+  lines.forEach(function(l,i){var t=sv("text",{y:DK?(i?((i-1)-(lines.length-2)/2)*17+9:-8):(i-(lines.length-1)/2)*17+5},inn);t.textContent=l;if(DK&&!i)t.setAttribute("style","font-size:10px;font-weight:400;fill:#9a9aa4;letter-spacing:.05em");ts.push(t);wm=Math.max(wm,t.getComputedTextLength())});
   r=Math.min(r+14,Math.max(r,(wm+18)/2));
   ts.forEach(function(t){var w=t.getComputedTextLength(),mx=2*r-16;if(w>mx)t.style.fontSize=((c?16:14.5)*mx/w).toFixed(1)+"px"});
   orb.setAttribute("rx",r+11);orb.setAttribute("ry",(r+11)*.38);core.setAttribute("r",r);
