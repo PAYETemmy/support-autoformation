@@ -75,8 +75,7 @@ body,svg text,code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"c
 .gd{stroke:#26262c;stroke-width:2;stroke-dasharray:2 8;stroke-linecap:round;fill:none;animation:march 1s linear infinite}
 .gd.lk{stroke:#23314c}
 @keyframes march{to{stroke-dashoffset:-20}}
-.gl{opacity:0;transition:opacity .15s;pointer-events:none}
-.gl.on{opacity:1}
+.gl{pointer-events:none}
 .gl text{font-size:17px;font-weight:600;fill:#f0f0f3;text-anchor:middle;pointer-events:none}
 .gl.lk text{fill:#cfe0ff}
 .gl rect{fill:#18181e}
@@ -459,7 +458,9 @@ function render(){var t=performance.now()/1000;
     b.lb.g.setAttribute("transform","translate("+b.lx.toFixed(1)+","+b.ly.toFixed(1)+")")});
   if(guide){var s=seg(V[guide.st.s],V[guide.st.o]);guide.line.setAttribute("x1",s[0]);guide.line.setAttribute("y1",s[1]);guide.line.setAttribute("x2",s[2]);guide.line.setAttribute("y2",s[3]);
     /* au-dessus du curseur à la souris ; plus haut au doigt, pour qu'il ne le cache pas */
-    if(drag)guide.lb.g.setAttribute("transform","translate("+drag.x.toFixed(1)+","+(drag.y-(drag.touch?64:18)/cam.s-guide.lb.h/2-7).toFixed(1)+")")}
+    if(drag)guide.lb.g.setAttribute("transform","translate("+drag.x.toFixed(1)+","+(drag.y-(drag.touch?64:18)/cam.s-guide.lb.h/2-7).toFixed(1)+")");
+    /* sinon, la relation reste affichée au milieu du trait à tracer */
+    else guide.lb.g.setAttribute("transform","translate("+((s[0]+s[2])/2).toFixed(1)+","+((s[1]+s[3])/2).toFixed(1)+")")}
   if(drag){var f=drag.from,dx=drag.x-f.x,dy=drag.y-f.y,d=Math.hypot(dx,dy)||1;drag.l.setAttribute("x1",f.x+dx/d*f.r);drag.l.setAttribute("y1",f.y+dy/d*f.r);drag.l.setAttribute("x2",drag.x);drag.l.setAttribute("y2",drag.y)}
 }
 /* la vue suit la molécule en cours */

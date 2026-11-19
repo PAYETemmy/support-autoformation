@@ -75,8 +75,7 @@ body,svg text,code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"c
 .gd{stroke:#26262c;stroke-width:2;stroke-dasharray:2 8;stroke-linecap:round;fill:none;animation:march 1s linear infinite}
 .gd.lk{stroke:#23314c}
 @keyframes march{to{stroke-dashoffset:-20}}
-.gl{opacity:0;transition:opacity .15s;pointer-events:none}
-.gl.on{opacity:1}
+.gl{pointer-events:none}
 .gl text{font-size:17px;font-weight:600;fill:#f0f0f3;text-anchor:middle;pointer-events:none}
 .gl.lk text{fill:#cfe0ff}
 .gl rect{fill:#18181e}
@@ -288,7 +287,7 @@ MOL.forEach(function(m,k){var ext=m.ext||[];
     if(pick<0)rest.some(function(i,j){var b=m.b[i];if(kn[gid(b[0])]&&kn[gid(b[1])]){pick=j;return true}});
     if(pick<0)pick=0;
     var b=m.b[rest.splice(pick,1)[0]],s=gid(b[0]),o=gid(b[1]);
-    STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
+    STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],lt:b[5]||null,neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
 /* cartes "en définitions" : les notions forment un arbre (chaque notion pend sous celle qui porte son genre) ;
    on calcule d'avance la place de chaque notion : une rangée par génération, les enfants côte à côte sous leur parent */
 var TREE=null;
@@ -300,7 +299,8 @@ if(typeof DIR!=="undefined"&&DIR){TREE={};var PAR=[],KIDS=MOL.map(function(){ret
   var slot=0,DX=1000,DY=1150,X=[],Y=[];
   (function lay(k,d){Y[k]=d*DY;if(!KIDS[k].length){X[k]=slot++*DX;return}KIDS[k].forEach(function(c){lay(c,d+1)});
     X[k]=(X[KIDS[k][0]]+X[KIDS[k][KIDS[k].length-1]])/2})(0,0);
-  MOL.forEach(function(m,k){TREE[k]={x:X[k]-X[0],y:Y[k],kids:KIDS[k]}})}
+  /* une carte peut aussi fixer elle-même la place de chaque notion (at:[colonne,rangée]) */
+  MOL.forEach(function(m,k){TREE[k]=m.at?{x:m.at[0]*DX,y:m.at[1]*DY,kids:KIDS[k]}:{x:X[k]-X[0],y:Y[k],kids:KIDS[k]}})}
 /* ---------- état de la carte affichée ---------- */
 var V={},B=[],W=0,H=0,gW,gB,gG,gA,gFx,meter,meterG,cam={x:0,y:0,s:1},drag=null,raf=0,guide=null,busy=false;
 function textW(s,m,n){m=m||meter;var L=wrap(s,n||26),w=0;L.forEach(function(l){m.firstChild.textContent=l;w=Math.max(w,m.firstChild.getComputedTextLength())});return w}
@@ -366,7 +366,9 @@ function render(){var t=performance.now()/1000;
     b.lb.g.setAttribute("transform","translate("+b.lx.toFixed(1)+","+b.ly.toFixed(1)+")")});
   if(guide){var s=seg(V[guide.st.s],V[guide.st.o]);guide.line.setAttribute("x1",s[0]);guide.line.setAttribute("y1",s[1]);guide.line.setAttribute("x2",s[2]);guide.line.setAttribute("y2",s[3]);
     /* au-dessus du curseur à la souris ; plus haut au doigt, pour qu'il ne le cache pas */
-    if(drag)guide.lb.g.setAttribute("transform","translate("+drag.x.toFixed(1)+","+(drag.y-(drag.touch?64:18)/cam.s-guide.lb.h/2-7).toFixed(1)+")")}
+    if(drag)guide.lb.g.setAttribute("transform","translate("+drag.x.toFixed(1)+","+(drag.y-(drag.touch?64:18)/cam.s-guide.lb.h/2-7).toFixed(1)+")");
+    /* sinon, la relation reste affichée au milieu du trait à tracer */
+    else guide.lb.g.setAttribute("transform","translate("+((s[0]+s[2])/2).toFixed(1)+","+((s[1]+s[3])/2).toFixed(1)+")")}
   if(drag){var f=drag.from,dx=drag.x-f.x,dy=drag.y-f.y,d=Math.hypot(dx,dy)||1;drag.l.setAttribute("x1",f.x+dx/d*f.r);drag.l.setAttribute("y1",f.y+dy/d*f.r);drag.l.setAttribute("x2",drag.x);drag.l.setAttribute("y2",drag.y)}
 }
 /* la vue suit la molécule en cours */
@@ -377,7 +379,7 @@ function camTarget(){var ids=[],fin=S.p>=STEPS.length;
     if(V[id].c&&!(st.lk&&st.neu)){x0=V[id].x-230;x1=V[id].x+230;y0=V[id].y-230;y1=V[id].y+230}}ids.push(st.s,st.o)}/* écran étroit : un peu plus de marge autour des deux atomes, et un zoom plafonné plus bas */
   var nar=W<600&&!fin,pad=nar?60:30;
   ids.forEach(function(id){var a=V[id];if(!a)return;x0=Math.min(x0,a.x-a.r-pad);x1=Math.max(x1,a.x+a.r+pad);y0=Math.min(y0,a.y-a.r-pad);y1=Math.max(y1,a.y+a.r+pad)});
-  var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),nar?.78:1);s=Math.max(s,fin?.06:(typeof DIR!=="undefined"&&DIR&&!fin&&STEPS[S.p]&&STEPS[S.p].lk?.18:.36));
+  var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),nar?.78:1);s=Math.max(s,fin?.06:(typeof DIR!=="undefined"&&DIR&&!fin&&STEPS[S.p]&&STEPS[S.p].lk?(W<600?.12:.18):.36));
   return {x:(x0+x1)/2,y:(y0+y1)/2,s:s}}
 function step(){if(ANI){W=lab.clientWidth;H=lab.clientHeight}tick(true);var T=camTarget();cam.x+=(T.x-cam.x)*.05;cam.y+=(T.y-cam.y)*.05;cam.s+=(T.s-cam.s)*.05;render();raf=requestAnimationFrame(step)}
 /* ---------- l'étape en cours ---------- */
@@ -451,6 +453,7 @@ function lda(){if(typeof DIR==="undefined"||!DIR)return;var ol=document.getEleme
     if(r==="admet"){var w=G[st.o].label;if(d.pw.indexOf(w)<0)d.pw.push(w);continue}
     var role=r,obj=O,cut=r.indexOf(" : ");
     if(cut>=0){role=r.slice(0,cut);obj=up(r.slice(cut+3)+" "+low(O))}
+    if(st.lt)obj=st.lt;
     var line=D+" -- "+role+" -- "+obj;
     if(role.indexOf("a pour genre prochain")===0||role.indexOf("a pour genre éloigné")===0){
       (role.indexOf("prochain")>=0?d.g:d.e).push(line);
