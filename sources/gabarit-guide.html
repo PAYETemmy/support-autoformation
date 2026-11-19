@@ -197,6 +197,18 @@ MOL.forEach(function(m,k){var ext=m.ext||[];
     if(pick<0)pick=0;
     var b=m.b[rest.splice(pick,1)[0]],s=gid(b[0]),o=gid(b[1]);
     STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
+/* cartes "en définitions" : les notions forment un arbre (chaque notion pend sous celle qui porte son genre) ;
+   on calcule d'avance la place de chaque notion : une rangée par génération, les enfants côte à côte sous leur parent */
+var TREE=null;
+if(typeof DIR!=="undefined"&&DIR){TREE={};var PAR=[],KIDS=MOL.map(function(){return []});
+  MOL.forEach(function(m,k){PAR[k]=-1;if(!k)return;var ext=m.ext||[];
+    m.b.some(function(b){if(!b[4])return false;[b[0],b[1]].some(function(key){if(ext.indexOf(key)<0)return false;
+      for(var j=k-1;j>=0;j--){var q=MOL[j];if(q.a[key]&&(q.ext||[]).indexOf(key)<0){PAR[k]=j;return true}}return false});return true});
+    if(PAR[k]<0)PAR[k]=0;KIDS[PAR[k]].push(k)});
+  var slot=0,DX=1000,DY=1150,X=[],Y=[];
+  (function lay(k,d){Y[k]=d*DY;if(!KIDS[k].length){X[k]=slot++*DX;return}KIDS[k].forEach(function(c){lay(c,d+1)});
+    X[k]=(X[KIDS[k][0]]+X[KIDS[k][KIDS[k].length-1]])/2})(0,0);
+  MOL.forEach(function(m,k){TREE[k]={x:X[k]-X[0],y:Y[k],kids:KIDS[k]}})}
 /* ---------- état de la carte affichée ---------- */
 var V={},B=[],W=0,H=0,gW,gB,gG,gA,gFx,meter,meterG,cam={x:0,y:0,s:1},drag=null,raf=0,guide=null,busy=false;
 function textW(s,m,n){m=m||meter;var L=wrap(s,n||26),w=0;L.forEach(function(l){m.firstChild.textContent=l;w=Math.max(w,m.firstChild.getComputedTextLength())});return w}
@@ -214,28 +226,39 @@ function bondLen(st,r1,r2){return st.lk&&G[st.s].n!==G[st.o].n?400:r1+r2+Math.ma
 /* la nouvelle idée se pose à un endroit libre, à chaque fois nouveau */
 /* cartes "en définitions" (DIR) : chaque rôle a sa direction — genres en haut, critères sur les côtés, termes primitifs en bas */
 function dirOf(st){if(typeof DIR==="undefined"||!DIR)return null;var r=st.rel;
-  if(st.lk)return {ok:function(d){return (d>=25&&d<=42)||(d>=138&&d<=155)},f:[1.6,1.9,2.2,2.5]};
-  if(r.indexOf("a pour vrai cas")===0)return {ok:function(d){return (d>=62&&d<=76)||(d>=104&&d<=118)},f:[1,1.15]};
+  if(st.lk)return {ok:function(d){return d>=22&&d<=158},f:[1.6,1.9,2.2,2.5,2.9,3.3]};
+  if(r.indexOf("a pour vrai cas")===0)return {ok:function(d){return d>=25&&d<=155},f:[1,1.2,1.4]};
   if(r.indexOf("a pour genre prochain")===0)return {ok:function(d){return d>=255&&d<=285},f:[1,1.15]};
   if(r.indexOf("a pour genre éloigné")===0)return {ok:function(d){return (d>=240&&d<=262)||(d>=278&&d<=300)},f:[2.2,2.5,2.8]};
   if(r.indexOf("a pour critère discriminant")===0)return {ok:function(d){return d<=18||d>=340||(d>=162&&d<=198)},f:[1,1.35,1.7]};
-  if(r==="prim")return {ok:function(d){return d>=84&&d<=96},f:[1.6,1.8]};
-  if(r==="admet")return {ok:function(d){return d>=15&&d<=165},f:[1,1.3]};
+  if(r==="prim")return {ok:function(d){return d>=65&&d<=115},f:[1.6,1.8,2]};
+  if(r==="admet")return {ok:function(d){return d>=0&&d<=180},f:[1,1.3,1.6]};
   return null}
 function place(st){var Y=V[st.neu===st.s?st.o:st.s],isC=G[st.neu].c,D=bondLen(st,Y.r,isC?52:40),best=null,bs=-1e9,dr=dirOf(st);
+  if(TREE&&st.lk&&isC&&V[FIRST]){var P=TREE[G[st.neu].n];if(P)return [V[FIRST].x+P.x,V[FIRST].y+P.y]}
   var all=Object.keys(V).map(function(k){return V[k]}),cx=0,cy=0;all.forEach(function(a){cx+=a.x;cy+=a.y});cx/=all.length;cy/=all.length;
   var nn=G[st.neu].n;
   (dr?dr.f:(isC?[1,1.25,1.5,1.7]:[1,1.35])).forEach(function(f,fi){for(var k=0;k<48;k++){if(dr&&!dr.ok(k*7.5))continue;var an=k/48*TAU,x=Y.x+Math.cos(an)*D*f,y=Y.y+Math.sin(an)*D*f,m=1e9;
     all.forEach(function(Z){if(Z!==Y)m=Math.min(m,Math.hypot(x-Z.x,y-Z.y)-Z.r-(Z.n!==nn?140:0)-(isC&&Z.c?260:0))});
-    var sc=Math.min(m,isC?600:260)+(isC?.5*Math.hypot(x-cx,y-cy):0)+rnd()*25-fi*40;if(sc>bs){bs=sc;best=[x,y]}}});
+    /* cartes "en définitions" : la nouvelle liaison ne doit passer sur aucun atome */
+    if(dr)all.forEach(function(Z){if(Z===Y)return;var dx=x-Y.x,dy=y-Y.y,L2=dx*dx+dy*dy,t=Math.max(0,Math.min(1,((Z.x-Y.x)*dx+(Z.y-Y.y)*dy)/L2)),q=Math.hypot(Y.x+t*dx-Z.x,Y.y+t*dy-Z.y)-Z.r-24;if(q<0)m=Math.min(m,q*4-200)});
+    /* … ni sur une liaison déjà tracée */
+    if(dr)B.forEach(function(bd){var ax=bd.a.x,ay=bd.a.y,dx=bd.b.x-ax,dy=bd.b.y-ay,L2=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((x-ax)*dx+(y-ay)*dy)/L2)),q=Math.hypot(ax+t*dx-x,ay+t*dy-y)-(isC?52:40)-18;if(q<0)m=Math.min(m,q*4-200)});
+    /* … et un atome ne se pose pas sur le chemin des liaisons qui mèneront aux notions suivantes */
+    if(dr&&TREE&&!st.lk&&V[FIRST]&&TREE[nn])TREE[nn].kids.forEach(function(c){var ax=V[FIRST].x+TREE[nn].x,ay=V[FIRST].y+TREE[nn].y,bx=V[FIRST].x+TREE[c].x,by=V[FIRST].y+TREE[c].y,
+      dx=bx-ax,dy=by-ay,L2=dx*dx+dy*dy,t=Math.max(0,Math.min(1,((x-ax)*dx+(y-ay)*dy)/L2)),q=Math.hypot(ax+t*dx-x,ay+t*dy-y)-(isC?52:40)-45;if(q<0)m=Math.min(m,q*4-200)});
+    var sc=Math.min(m,isC?600:260)+(isC?.5*Math.hypot(x-cx,y-cy):0)+rnd()*25-fi*40;
+    /* cartes "en définitions" : une nouvelle notion se pose au plus près de son genre, là où sa molécule aura toute la place */
+    if(dr&&isC)sc=m>=300?3000-fi*100+rnd()*10:m+rnd()*25-fi*40;
+    if(sc>bs){bs=sc;best=[x,y]}}});
   return best}
 function addBond(st,anim){var a1=V[st.s],a2=V[st.o];
   var p=sv("line",{"class":"bond"+(st.lk?" lk":"")+(anim?" new":"")},gB),lb=label(gB,st.rel,26,"bl"+(st.lk?" lk":""),5);
-  var mx=(a1.x+a2.x)/2,my=(a1.y+a2.y)/2;B.push({st:st,a:a1,b:a2,p:p,lb:lb,L:st.lk&&a1.n!==a2.n?Math.max(300,Math.hypot(a2.x-a1.x,a2.y-a1.y)):bondLen(st,a1.r,a2.r),lx:mx,ly:my});
+  var mx=(a1.x+a2.x)/2,my=(a1.y+a2.y)/2;B.push({st:st,a:a1,b:a2,p:p,lb:lb,L:st.lk&&a1.n!==a2.n?Math.max(300,Math.hypot(a2.x-a1.x,a2.y-a1.y)):(typeof DIR!=="undefined"&&DIR?Math.max(bondLen(st,a1.r,a2.r),Math.hypot(a2.x-a1.x,a2.y-a1.y)):bondLen(st,a1.r,a2.r)),lx:mx,ly:my});
   a1.g.classList.add("bound");a2.g.classList.add("bound")}
 /* petite physique : les atomes se repoussent, les liaisons les retiennent, chacun reste près de sa place */
 function tick(jit){var L=Object.keys(V).map(function(k){return V[k]});
-  L.forEach(function(a){a.vx+=(a.hx-a.x)*.004;a.vy+=(a.hy-a.y)*.004;if(jit){a.vx+=(Math.random()-.5)*.1;a.vy+=(Math.random()-.5)*.1}});
+  var HK=typeof DIR!=="undefined"&&DIR?.03:.004;L.forEach(function(a){a.vx+=(a.hx-a.x)*HK;a.vy+=(a.hy-a.y)*HK;if(jit){a.vx+=(Math.random()-.5)*.1;a.vy+=(Math.random()-.5)*.1}});
   for(var p=0;p<L.length;p++)for(var q=p+1;q<L.length;q++){var a=L[p],b=L[q],dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy+.01;if(d2>360000)continue;
     var d=Math.sqrt(d2),f=Math.min(4,5200/d2),mn=a.r+b.r+30;if(d<mn)f+=(mn-d)*.08;a.vx-=dx/d*f;a.vy-=dy/d*f;b.vx+=dx/d*f;b.vy+=dy/d*f}
   B.forEach(function(b){var dx=b.b.x-b.a.x,dy=b.b.y-b.a.y,d=Math.hypot(dx,dy)||1,f=(d-b.L)*.012;b.a.vx+=dx/d*f;b.a.vy+=dy/d*f;b.b.vx-=dx/d*f;b.b.vy-=dy/d*f});
@@ -261,7 +284,7 @@ function camTarget(){var ids=[],fin=S.p>=STEPS.length;
     if(V[id].c&&!(st.lk&&st.neu)){x0=V[id].x-230;x1=V[id].x+230;y0=V[id].y-230;y1=V[id].y+230}}ids.push(st.s,st.o)}/* écran étroit : un peu plus de marge autour des deux atomes, et un zoom plafonné plus bas */
   var nar=W<600&&!fin,pad=nar?60:30;
   ids.forEach(function(id){var a=V[id];if(!a)return;x0=Math.min(x0,a.x-a.r-pad);x1=Math.max(x1,a.x+a.r+pad);y0=Math.min(y0,a.y-a.r-pad);y1=Math.max(y1,a.y+a.r+pad)});
-  var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),nar?.78:1);s=Math.max(s,fin?.06:.36);
+  var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),nar?.78:1);s=Math.max(s,fin?.06:(typeof DIR!=="undefined"&&DIR&&!fin&&STEPS[S.p]&&STEPS[S.p].lk?.18:.36));
   return {x:(x0+x1)/2,y:(y0+y1)/2,s:s}}
 function step(){if(ANI){W=lab.clientWidth;H=lab.clientHeight}tick(true);var T=camTarget();cam.x+=(T.x-cam.x)*.05;cam.y+=(T.y-cam.y)*.05;cam.s+=(T.s-cam.s)*.05;render();raf=requestAnimationFrame(step)}
 /* ---------- l'étape en cours ---------- */
