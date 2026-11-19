@@ -94,6 +94,9 @@ body,svg text,code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"c
 .ax ol{margin:0;padding:0 0 0 20px;color:#c4c4cc;font-size:14px}
 .ax li{margin:3px 0;animation:fin .5s ease-out}
 .ax li.lk{color:#b9cff7}
+#lda{margin:16px 0 0;padding:12px 0 0;border-top:1px solid var(--l);font:12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#c4c4cc;white-space:pre-wrap;overflow-wrap:break-word;-webkit-user-select:text;user-select:text}
+#lda div{min-height:1.6em}
+#lda .sp{white-space:nowrap}
 @keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;padding:1px 4px;border-radius:4px}
 .cap code{font-size:12.5px}
@@ -368,8 +371,33 @@ function head(){document.getElementById("bk").disabled=S.p===0;var st=STEPS[Math
   document.getElementById("cnt").innerHTML=S.p>=STEPS.length?STEPS.length+" axiomes.":(n+1)+" / "+MOL.length+" notion<span class=\"sp\">·</span>"+done+" / "+NB[n]+" liaisons."}
 function addLine(st){var ol=document.getElementById("ol"),sec=ol.querySelector('[data-n="'+st.n+'"]');
   if(!sec){sec=document.createElement("div");sec.dataset.n=st.n;var h=document.createElement("h3");h.textContent=MOL[st.n].t;sec.appendChild(h);sec.appendChild(document.createElement("ol"));ol.appendChild(sec)}
-  var li=document.createElement("li");if(st.lk)li.className="lk";txt(li,st.ax);sec.querySelector("ol").appendChild(li)}
-function removeLine(){var ol=document.getElementById("ol"),sec=ol.lastElementChild;if(!sec)return;var o=sec.querySelector("ol");o.lastElementChild.remove();if(!o.children.length)sec.remove()}
+  var li=document.createElement("li");if(st.lk)li.className="lk";txt(li,st.ax);sec.querySelector("ol").appendChild(li);lda()}
+function removeLine(){var ol=document.getElementById("ol"),sec=ol.querySelector("[data-n]:last-of-type");if(!sec)return;var o=sec.querySelector("ol");o.lastElementChild.remove();if(!o.children.length)sec.remove();lda()}
+/* cartes "en définitions" : les axiomes formés, réécrits automatiquement dans le langage de déclaration d'axiomes */
+function lda(){if(typeof DIR==="undefined"||!DIR)return;var ol=document.getElementById("ol"),pre=document.getElementById("lda");
+  if(!pre){pre=document.createElement("div");pre.id="lda"}
+  var k=ol.querySelectorAll("li").length,by={},ord=[],low=function(w){return w.charAt(0).toLowerCase()+w.slice(1)},up=function(w){return w.charAt(0).toUpperCase()+w.slice(1)};
+  for(var i=0;i<k&&i<STEPS.length;i++){var st=STEPS[i],n=st.n,m=MOL[n];
+    if(!by[n]){by[n]={pg:[],pw:[],g:[],e:[],c:[],v:[]};ord.push(n)}var d=by[n],r=st.rel;
+    var cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
+    var D=cen?G[cen].label:m.t,oth=st.s===cen?st.o:st.s,O=G[oth]?G[oth].label:"";
+    if(r==="prim")continue;
+    if(r==="admet"){var w=G[st.o].label;if(d.pw.indexOf(w)<0)d.pw.push(w);continue}
+    var role=r,obj=O,cut=r.indexOf(" : ");
+    if(cut>=0){role=r.slice(0,cut);obj=up(r.slice(cut+3)+" "+low(O))}
+    var line=D+" -- "+role+" -- "+obj;
+    if(role.indexOf("a pour genre prochain")===0||role.indexOf("a pour genre éloigné")===0){
+      (role.indexOf("prochain")>=0?d.g:d.e).push(line);
+      if(cut<0&&!(G[oth]&&G[oth].c)&&d.pg.indexOf(O)<0)d.pg.push(O)}
+    else if(role.indexOf("a pour critère discriminant")===0)d.c.push(line);
+    else if(role.indexOf("a pour vrai cas")===0)d.v.push(line);
+    else d.c.push(line)}
+  var out=ord.map(function(n){var d=by[n],cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
+    var t="def "+(cen?G[cen].label:MOL[n].t),pr=d.pg.concat(d.pw).map(low);
+    if(pr.length)t+="\n     prim\n          "+pr.join(", ");
+    d.g.concat(d.e,d.c,d.v).forEach(function(l){t+="\n     "+l});return t}).join("\n\n");
+  out=out.replace(/\u2019/g,"'");pre.textContent="";out.split("\n").forEach(function(l){var dv=document.createElement("div"),n=l.length-l.replace(/^ +/,"").length;
+    if(l){dv.style.paddingLeft=(n+2)+"ch";dv.style.textIndent=-(n+2)+"ch";l.split(" -- ").forEach(function(seg,i){if(i){var sp=document.createElement("span");sp.className="sp";sp.textContent=" --";dv.appendChild(sp);dv.appendChild(document.createTextNode(" "))}dv.appendChild(document.createTextNode(seg))})}else dv.appendChild(document.createElement("br"));pre.appendChild(dv)});pre.hidden=!out;ol.appendChild(pre)}
 /* ---------- construire la carte (en rejouant les étapes déjà faites) ---------- */
 function go(){cancelAnimationFrame(raf);drag=null;guide=null;busy=false;seed=7;svg.innerHTML="";V={};B=[];document.getElementById("ol").innerHTML="";
   W=lab.clientWidth;H=lab.clientHeight;
