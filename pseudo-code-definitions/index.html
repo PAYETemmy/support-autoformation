@@ -189,34 +189,48 @@ var MOL=[
      ["s_q1","s_q4","quand ?","Niveau 2. Quand changent-elles ? Chaque fois qu'on y range une nouvelle valeur.",0,null,116],
      ["s_c1","s_c2","quoi ?","Niveau 2. Décrire la solution, c'est quoi ? Une suite d'étapes, du début à la fin.",0,null,262],
      ["s_c1","s_c3","comment ?","Niveau 2. Comment décrit-on chaque étape ? Par une consigne précise.",0,null,322]]},
- {"id":"algo","t":"Algorithme","c":"algo","a":{"algo":"Algorithme","n0":"Une marche à suivre, une méthode","n1":"Par des étapes sans ambiguïté","n2":"Un nombre fini d'étapes","n3":"Transformer des données en résultat"},"b":[["algo","s_c2","quoi ?","Une suite d'étapes, du début à la fin, c'est un algorithme.",1],
+ {"id":"algo","t":"Algorithme","c":"algo","a":{"algo":"Algorithme","n0":"Une marche à suivre, une méthode","n1":"Par des étapes sans ambiguïté","n2":"Un nombre fini d'étapes","n3":"Transformer des données en résultat","e0":"Calcul d'une moyenne","e1":"Recherche du plus grand nombre"},"b":[["algo","s_c2","quoi ?","Une suite d'étapes, du début à la fin, c'est un algorithme.",1],
      ["algo","n0","quoi ?","Quoi ? Un algorithme est une marche à suivre : une méthode."],
      ["algo","n1","comment ?","Comment ? Par des étapes sans ambiguïté."],
      ["algo","n2","combien ?","Combien ? Un nombre fini d'étapes : il se termine."],
-     ["algo","n3","pourquoi ?","Pourquoi ? Pour transformer des données en résultat."]],"at":[0,-1.43],"ext":["s_c2"],"kw":false},
- {"id":"instr","t":"Instruction","c":"instr","a":{"instr":"Instruction","n0":"Un élément d'un algorithme","n1":"Entre Début et Fin","n2":"À l'exécution","n3":"Provoquer une action"},"ext":["s_c3"],"b":[["instr","s_c3","quoi ?","Chaque consigne précise est une instruction.",1],
+     ["algo","n3","pourquoi ?","Pourquoi ? Pour transformer des données en résultat."],
+     ["algo","e0","exemple","Exemple : Calcul d'une moyenne."],
+     ["algo","e1","exemple","Exemple : Recherche du plus grand nombre."]],"at":[0,-1.43],"ext":["s_c2"],"kw":false},
+ {"id":"instr","t":"Instruction","c":"instr","a":{"instr":"Instruction","n0":"Un élément d'un algorithme","n1":"Entre Début et Fin","n2":"À l'exécution","n3":"Provoquer une action","e0":"x <- 5","e1":"Lire x"},"ext":["s_c3"],"b":[["instr","s_c3","quoi ?","Chaque consigne précise est une instruction.",1],
      ["instr","n0","quoi ?","Quoi ? Une instruction est un élément d'un algorithme."],
      ["instr","n1","où ?","Où ? Entre Début et Fin."],
      ["instr","n2","quand ?","Quand agit-elle ? À l'exécution."],
-     ["instr","n3","pourquoi ?","Pourquoi ? Pour provoquer une action."]],"at":[1.29,-0.89],"kw":false},
- {"id":"var","t":"Variable","c":"var","a":{"var":"Variable","n0":"Une case mémoire d'un algorithme","n1":"Sa valeur peut changer pendant l'exécution","n2":"Désignée par un nom"},"ext":["s_q2"],"b":[["var","s_q2","quoi ?","Une case de la mémoire désignée par un nom, c'est une variable.",1],
+     ["instr","n3","pourquoi ?","Pourquoi ? Pour provoquer une action."],
+     ["instr","e0","exemple","Exemple : x <- 5."],
+     ["instr","e1","exemple","Exemple : Lire x."]],"at":[1.29,-0.89],"kw":false},
+ {"id":"var","t":"Variable","c":"var","a":{"var":"Variable","n0":"Une case mémoire d'un algorithme","n1":"Sa valeur peut changer pendant l'exécution","n2":"Désignée par un nom","e0":"age","e1":"notes"},"ext":["s_q2"],"b":[["var","s_q2","quoi ?","Une case de la mémoire désignée par un nom, c'est une variable.",1],
      ["var","n0","quoi ?","Quoi ? Une variable est une case mémoire utilisée par un algorithme."],
      ["var","n1","quand ?","Quand ? Sa valeur peut changer pendant l'exécution."],
-     ["var","n2","comment ?","Comment la retrouve-t-on ? Par son nom."]],"at":[1.61,0.32],"kw":false},
- {"id":"type","t":"Type","c":"type","a":{"type":"Type","n0":"La catégorie des valeurs d'une variable","n1":"Désigné par un mot-clé du langage"},"ext":["s_q3"],"b":[["type","s_q3","quoi ?","La sorte de valeur, c'est le type.",1],
+     ["var","n2","comment ?","Comment la retrouve-t-on ? Par son nom."],
+     ["var","e0","exemple","Exemple : age."],
+     ["var","e1","exemple","Exemple : notes."]],"at":[1.61,0.32],"kw":false},
+ {"id":"type","t":"Type","c":"type","a":{"type":"Type","n0":"La catégorie des valeurs d'une variable","n1":"Désigné par un mot-clé du langage","e0":"entier","e1":"booléen"},"ext":["s_q3"],"b":[["type","s_q3","quoi ?","La sorte de valeur, c'est le type.",1],
      ["type","n0","quoi ?","Quoi ? Un type est la catégorie des valeurs d'une variable."],
-     ["type","n1","comment ?","Comment le désigne-t-on ? Par un mot-clé du langage."]],"at":[0.72,1.29],"kw":false},
- {"id":"aff","t":"Affectation","c":"aff","a":{"aff":"Affectation","n0":"Une instruction","n1":"Avec <-","n2":"Ranger une valeur dans une variable"},"ext":["s_q4"],"b":[["aff","s_q4","quoi ?","Ranger une nouvelle valeur dans une variable, c'est l'affectation.",1],
+     ["type","n1","comment ?","Comment le désigne-t-on ? Par un mot-clé du langage."],
+     ["type","e0","exemple","Exemple : entier."],
+     ["type","e1","exemple","Exemple : booléen."]],"at":[0.72,1.29],"kw":false},
+ {"id":"aff","t":"Affectation","c":"aff","a":{"aff":"Affectation","n0":"Une instruction","n1":"Avec <-","n2":"Ranger une valeur dans une variable","e0":"x <- 5","e1":"moyenne <- somme / 3"},"ext":["s_q4"],"b":[["aff","s_q4","quoi ?","Ranger une nouvelle valeur dans une variable, c'est l'affectation.",1],
      ["aff","n0","quoi ?","Quoi ? Une affectation est une instruction."],
      ["aff","n1","comment ?","Comment s'écrit-elle ? Avec <-."],
-     ["aff","n2","pourquoi ?","Pourquoi ? Pour ranger une valeur dans une variable."]],"at":[-0.72,1.29],"kw":false},
- {"id":"lire","t":"Lire","c":"lire","a":{"lire":"Lire","n0":"L'utilisateur tape une valeur au clavier","n1":"Une instruction","n2":"La valeur est rangée dans une variable"},"ext":["s_u2"],"b":[["lire","s_u2","quoi ?","Pour que l'utilisateur fournisse les données, il y a l'instruction Lire.",1],
+     ["aff","n2","pourquoi ?","Pourquoi ? Pour ranger une valeur dans une variable."],
+     ["aff","e0","exemple","Exemple : x <- 5."],
+     ["aff","e1","exemple","Exemple : moyenne <- somme / 3."]],"at":[-0.72,1.29],"kw":false},
+ {"id":"lire","t":"Lire","c":"lire","a":{"lire":"Lire","n0":"L'utilisateur tape une valeur au clavier","n1":"Une instruction","n2":"La valeur est rangée dans une variable","e0":"Lire age","e1":"Lire nom"},"ext":["s_u2"],"b":[["lire","s_u2","quoi ?","Pour que l'utilisateur fournisse les données, il y a l'instruction Lire.",1],
      ["lire","n0","qui ?","Qui agit ? L'utilisateur, qui tape une valeur au clavier."],
      ["lire","n1","quoi ?","Quoi ? Lire est une instruction."],
-     ["lire","n2","où ?","Où va la valeur ? Dans une variable."]],"at":[-1.61,0.32],"kw":false},
- {"id":"ecrire","t":"Écrire","c":"ecrire","a":{"ecrire":"Écrire","n0":"Une instruction","n1":"À l'écran"},"ext":["s_u3"],"b":[["ecrire","s_u3","quoi ?","Pour que l'utilisateur voie le résultat, il y a l'instruction Écrire.",1],
+     ["lire","n2","où ?","Où va la valeur ? Dans une variable."],
+     ["lire","e0","exemple","Exemple : Lire age."],
+     ["lire","e1","exemple","Exemple : Lire nom."]],"at":[-1.61,0.32],"kw":false},
+ {"id":"ecrire","t":"Écrire","c":"ecrire","a":{"ecrire":"Écrire","n0":"Une instruction","n1":"À l'écran","e0":"Écrire \"Bonjour\"","e1":"Écrire \"Moyenne : \", m"},"ext":["s_u3"],"b":[["ecrire","s_u3","quoi ?","Pour que l'utilisateur voie le résultat, il y a l'instruction Écrire.",1],
      ["ecrire","n0","quoi ?","Quoi ? Écrire est une instruction."],
-     ["ecrire","n1","où ?","Où ? Elle affiche à l'écran."]],"at":[-1.29,-0.89],"kw":false}
+     ["ecrire","n1","où ?","Où ? Elle affiche à l'écran."],
+     ["ecrire","e0","exemple","Exemple : Écrire \"Bonjour\"."],
+     ["ecrire","e1","exemple","Exemple : Écrire \"Moyenne : \", m."]],"at":[-1.29,-0.89],"kw":false}
 ];
 var DIR=1;var NOPRIM=1;
 /* ---------- état sauvegardé : le nombre d'étapes faites ---------- */
@@ -282,6 +296,7 @@ function dirOf(st){if(typeof DIR==="undefined"||!DIR)return null;var r=st.rel;
   /* situation d'ensemble : ses éléments autour d'elle ; chaque difficulté se pose sur le chemin de la notion qui y répond */
   /* une carte peut imposer la direction d'un atome (b[6], en degrés) */
   if(st.ang!=null){var A=st.ang;return {ok:function(d){var e=Math.abs(d-A);return Math.min(e,360-e)<=10},f:[1,1.2,1.4,1.6],nocor:1}}
+  if(r==="exemple")return {ok:function(d){return d>=25&&d<=155},f:[1,1.2,1.4]};
   /* questions du QQOQCCP posées à une notion : tout autour, sauf sur les liaisons */
   if(/ \?$/.test(r)&&!(MOL[st.n]&&MOL[st.n].kw==="situation"))return {ok:function(){return true},f:[1,1.25,1.5]};
   if(MOL[st.n]&&MOL[st.n].kw==="situation"){

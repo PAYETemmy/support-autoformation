@@ -231,6 +231,7 @@ function dirOf(st){if(typeof DIR==="undefined"||!DIR)return null;var r=st.rel;
   /* situation d'ensemble : ses éléments autour d'elle ; chaque difficulté se pose sur le chemin de la notion qui y répond */
   /* une carte peut imposer la direction d'un atome (b[6], en degrés) */
   if(st.ang!=null){var A=st.ang;return {ok:function(d){var e=Math.abs(d-A);return Math.min(e,360-e)<=10},f:[1,1.2,1.4,1.6],nocor:1}}
+  if(r==="exemple")return {ok:function(d){return d>=25&&d<=155},f:[1,1.2,1.4]};
   /* questions du QQOQCCP posées à une notion : tout autour, sauf sur les liaisons */
   if(/ \?$/.test(r)&&!(MOL[st.n]&&MOL[st.n].kw==="situation"))return {ok:function(){return true},f:[1,1.25,1.5]};
   if(MOL[st.n]&&MOL[st.n].kw==="situation"){
