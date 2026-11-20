@@ -393,7 +393,7 @@ function lda(){if(typeof DIR==="undefined"||!DIR)return;var ol=document.getEleme
     else d.c.push(line)}
   var out=ord.map(function(n){var d=by[n],cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
     var t=((MOL[n]&&MOL[n].kw)||(typeof KW!=="undefined"?KW:"def"))+" "+(cen?G[cen].label:MOL[n].t),pr=d.pg.concat(d.pw).map(low);
-    if(pr.length)t+="\n     prim\n          "+pr.join(", ");
+    if(pr.length&&!(typeof NOPRIM!=="undefined"&&NOPRIM))t+="\n     prim\n          "+pr.join(", ");
     d.g.concat(d.e,d.c,d.v,d.f).forEach(function(l){t+="\n     "+l});
     if(d.top)(function walk(list,ind){list.forEach(function(it){t+="\n"+ind+it.line;
       walk(((d.sub||{})[it.o]||[]).map(function(x){return {o:x.o,line:G[x.s].label+" -- "+x.rel+" -- "+G[x.o].label}}),ind+"     ")})})(d.top,"     ");
