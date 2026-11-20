@@ -175,9 +175,22 @@ html.anim .nw .nx{transition:transform .42s cubic-bezier(.4,0,.2,1)}
 /* ---------- les molécules : atomes (idées) et liaisons (axiomes) ----------
    b = [atome, atome, ce qui les relie, axiome complet, liaison entre notions ?] */
 var MOL=[
- {id:"algo",t:"Algorithme",c:"algo",
-  a:{algo:"Algorithme",prim:"Termes primitifs",etape:"Étape",ambig:"Ambiguïté",nfini:"Nombre fini",donnees:"Données",resultat:"Résultat",marche:"Marche à suivre",methode:"Méthode",c1:"Faite d’étapes sans ambiguïté",c2:"Se termine après un nombre fini d’étapes",c3:"Transforme des données en résultat",v1:"Calcul d’une moyenne",v2:"Recherche du plus grand nombre"},
-  b:[["algo","prim","prim","La définition d’un algorithme s’appuie sur des termes primitifs : des mots admis sans être définis, dont ses deux genres."],
+ {"id":"sit","t":"Calculer sa moyenne","c":"sit","kw":"situation","at":[0,0],"a":{"sit":"Calculer sa moyenne","ctx":"Fin du trimestre : tes 5 notes de maths sont dans ton carnet","act":"Toi, qui expliques à un ordinateur ce qu'il doit faire","dep":"5 notes sur 20 : 12, 14, 9, 16 et 11","but":"Connaître ta moyenne sans la calculer toi-même","tache":"Écrire les consignes que l'ordinateur suivra","ctr":"L'ordinateur ne devine rien : tout doit être écrit, dans l'ordre","crit":"Avec ces 5 notes, l'ordinateur affiche 12,4","d1":"Il faut lui donner toute la marche à suivre","d2":"Chaque consigne doit provoquer une action précise","d3":"Il doit garder chaque note et le total, sous un nom","d4":"Une note est un nombre : il faut dire quelle sorte de valeur on garde","d5":"Il faut ranger le total, puis la moyenne","d6":"Il ne connaît pas tes notes : tu dois les taper","d7":"Il doit te montrer la moyenne à l'écran"},"b":[["sit","ctx","a pour contexte","On part d'une situation d'ensemble (situation imaginée par nous : ajout). Le contexte : c'est la fin du trimestre, tes 5 notes de maths sont dans ton carnet."],
+     ["sit","act","a pour acteur","L'acteur, c'est toi : tu dois expliquer à un ordinateur ce qu'il doit faire."],
+     ["sit","dep","a pour état de départ","Au départ, tu connais tes 5 notes sur 20 : 12, 14, 9, 16 et 11."],
+     ["sit","but","a pour but","Le but : connaître ta moyenne sans la calculer toi-même."],
+     ["sit","tache","a pour tâche","La tâche : écrire les consignes que l'ordinateur suivra."],
+     ["sit","ctr","a pour contrainte","La contrainte : l'ordinateur ne devine rien. Tout doit être écrit, dans l'ordre."],
+     ["sit","crit","a pour critère de réussite","Tu auras réussi si, avec ces 5 notes, l'ordinateur affiche 12,4."],
+     ["sit","d1","a pour difficulté","Première difficulté : l'ordinateur ne sait rien faire seul, il faut lui donner toute la marche à suivre."],
+     ["sit","d2","a pour difficulté","Deuxième difficulté : chaque consigne doit provoquer une action précise."],
+     ["sit","d3","a pour difficulté","Troisième difficulté : il doit garder chaque note et le total, et les retrouver par un nom."],
+     ["sit","d4","a pour difficulté","Quatrième difficulté : une note est un nombre, pas un mot. Il faut dire quelle sorte de valeur on garde."],
+     ["sit","d5","a pour difficulté","Cinquième difficulté : il faut ranger le total, puis la moyenne."],
+     ["sit","d6","a pour difficulté","Sixième difficulté : il ne connaît pas tes notes, tu dois les taper."],
+     ["sit","d7","a pour difficulté","Septième difficulté : il doit te montrer la moyenne à l'écran."]]},
+ {"id":"algo","t":"Algorithme","c":"algo","a":{"algo":"Algorithme","prim":"Termes primitifs","etape":"Étape","ambig":"Ambiguïté","nfini":"Nombre fini","donnees":"Données","resultat":"Résultat","marche":"Marche à suivre","methode":"Méthode","c1":"Faite d’étapes sans ambiguïté","c2":"Se termine après un nombre fini d’étapes","c3":"Transforme des données en résultat","v1":"Calcul d’une moyenne","v2":"Recherche du plus grand nombre"},"b":[["algo","d1","répond à la difficulté","Pour lui donner toute la marche à suivre, il faut un algorithme.",1],
+     ["algo","prim","prim","La définition d’un algorithme s’appuie sur des termes primitifs : des mots admis sans être définis, dont ses deux genres."],
      ["prim","etape","admet","Étape : terme primitif, admis sans définition."],
      ["prim","ambig","admet","Ambiguïté : terme primitif, admis sans définition."],
      ["prim","nfini","admet","Nombre fini : terme primitif, admis sans définition."],
@@ -189,10 +202,9 @@ var MOL=[
      ["algo","c2","a pour critère discriminant","Un algorithme se termine après un nombre fini d’étapes."],
      ["algo","c3","a pour critère discriminant","Un algorithme transforme des données en résultat."],
      ["algo","v1","a pour vrai cas","Le calcul d’une moyenne est un vrai cas d’algorithme."],
-     ["algo","v2","a pour vrai cas","La recherche du plus grand nombre d’une liste est un vrai cas d’algorithme."]]},
- {id:"instr",t:"Instruction",c:"instr",
-  a:{instr:"Instruction",algo:"Algorithme",prim:"Termes primitifs",elem:"Élément",action:"Action",exec:"Exécution",debut:"Début",fin:"Fin",c1:"Provoque une action à l’exécution",c2:"Placée entre Début et Fin",v1:"x <- 5",v2:"Lire x"},ext:["algo"],
-  b:[["instr","algo","a pour genre prochain : élément d’un","Une instruction est un élément d’un algorithme.",1],
+     ["algo","v2","a pour vrai cas","La recherche du plus grand nombre d’une liste est un vrai cas d’algorithme."]],"at":[0,-1.43],"ext":["d1"]},
+ {"id":"instr","t":"Instruction","c":"instr","a":{"instr":"Instruction","prim":"Termes primitifs","elem":"Élément","action":"Action","exec":"Exécution","debut":"Début","fin":"Fin","c1":"Provoque une action à l’exécution","c2":"Placée entre Début et Fin","v1":"x <- 5","v2":"Lire x","g":"Élément d’un algorithme"},"ext":["d2"],"b":[["instr","d2","répond à la difficulté","Chaque consigne précise est une instruction.",1],
+     ["instr","g","a pour genre prochain","Une instruction est un élément d’un algorithme."],
      ["instr","prim","prim","La définition d’une instruction s’appuie sur des termes primitifs : des mots admis sans être définis."],
      ["prim","elem","admet","Élément : terme primitif, admis sans définition."],
      ["prim","action","admet","Action : terme primitif, admis sans définition."],
@@ -202,10 +214,9 @@ var MOL=[
      ["instr","c1","a pour critère discriminant","Une instruction provoque une action quand l’algorithme s’exécute."],
      ["instr","c2","a pour critère discriminant","Une instruction est placée entre `Début` et `Fin`."],
      ["instr","v1","a pour vrai cas","`x <- 5` est un vrai cas d’instruction."],
-     ["instr","v2","a pour vrai cas","`Lire x` est un vrai cas d’instruction."]]},
- {id:"var",t:"Variable",c:"var",
-  a:{var:"Variable",algo:"Algorithme",prim:"Termes primitifs",casem:"Case mémoire",nom:"Nom",valeur:"Valeur",exec:"Exécution",c1:"Désignée par un nom",c2:"Valeur modifiable pendant l’exécution",v1:"age",v2:"notes"},ext:["algo"],
-  b:[["var","algo","a pour genre prochain : case mémoire d’un","Une variable est une case mémoire utilisée par un algorithme.",1],
+     ["instr","v2","a pour vrai cas","`Lire x` est un vrai cas d’instruction."]],"at":[1.29,-0.89]},
+ {"id":"var","t":"Variable","c":"var","a":{"var":"Variable","prim":"Termes primitifs","casem":"Case mémoire","nom":"Nom","valeur":"Valeur","exec":"Exécution","c1":"Désignée par un nom","c2":"Valeur modifiable pendant l’exécution","v1":"age","v2":"notes","g":"Case mémoire d’un algorithme"},"ext":["d3"],"b":[["var","d3","répond à la difficulté","Pour garder une valeur sous un nom, il faut une variable.",1],
+     ["var","g","a pour genre prochain","Une variable est une case mémoire utilisée par un algorithme."],
      ["var","prim","prim","La définition d’une variable s’appuie sur des termes primitifs : des mots admis sans être définis."],
      ["prim","casem","admet","Case mémoire : terme primitif, admis sans définition."],
      ["prim","nom","admet","Nom : terme primitif, admis sans définition."],
@@ -214,10 +225,9 @@ var MOL=[
      ["var","c1","a pour critère discriminant","Une variable est désignée par un nom."],
      ["var","c2","a pour critère discriminant","La valeur d’une variable peut changer pendant l’exécution."],
      ["var","v1","a pour vrai cas","`age` est un vrai cas de variable."],
-     ["var","v2","a pour vrai cas","`notes` est un vrai cas de variable."]]},
- {id:"type",t:"Type",c:"type",
-  a:{type:"Type",var:"Variable",prim:"Termes primitifs",cat:"Catégorie",valeur:"Valeur",mc:"Mot-clé",lang:"Langage",c1:"Désigné par un mot-clé du langage",v1:"entier",v2:"booléen"},ext:["var"],
-  b:[["type","var","a pour genre prochain : catégorie des valeurs d’une","Un type est une catégorie des valeurs d’une variable.",1],
+     ["var","v2","a pour vrai cas","`notes` est un vrai cas de variable."]],"at":[1.61,0.32]},
+ {"id":"type","t":"Type","c":"type","a":{"type":"Type","prim":"Termes primitifs","cat":"Catégorie","valeur":"Valeur","mc":"Mot-clé","lang":"Langage","c1":"Désigné par un mot-clé du langage","v1":"entier","v2":"booléen","g":"Catégorie des valeurs d’une variable"},"ext":["d4"],"b":[["type","d4","répond à la difficulté","La sorte de valeur qu'on garde, c'est le type.",1],
+     ["type","g","a pour genre prochain","Un type est une catégorie des valeurs d’une variable."],
      ["type","prim","prim","La définition d’un type s’appuie sur des termes primitifs : des mots admis sans être définis."],
      ["prim","cat","admet","Catégorie : terme primitif, admis sans définition."],
      ["prim","valeur","admet","Valeur : terme primitif, admis sans définition."],
@@ -225,10 +235,9 @@ var MOL=[
      ["prim","lang","admet","Langage : terme primitif, admis sans définition."],
      ["type","c1","a pour critère discriminant","Un type est désigné par un mot-clé du langage."],
      ["type","v1","a pour vrai cas","`entier` est un vrai cas de type."],
-     ["type","v2","a pour vrai cas","`booléen` est un vrai cas de type."]]},
- {id:"aff",t:"Affectation",c:"aff",
-  a:{aff:"Affectation",instr:"Instruction",prim:"Termes primitifs",ranger:"Ranger",valeur:"Valeur",fleche:"<-",c1:"Range une valeur dans une variable",c2:"S’écrit avec <-",v1:"x <- 5",v2:"moyenne <- somme / 3"},ext:["instr"],
-  b:[["aff","instr","a pour genre prochain","Une affectation est une instruction.",1],
+     ["type","v2","a pour vrai cas","`booléen` est un vrai cas de type."]],"at":[0.72,1.29]},
+ {"id":"aff","t":"Affectation","c":"aff","a":{"aff":"Affectation","prim":"Termes primitifs","ranger":"Ranger","valeur":"Valeur","fleche":"<-","c1":"Range une valeur dans une variable","c2":"S’écrit avec <-","v1":"x <- 5","v2":"moyenne <- somme / 3","g":"Instruction"},"ext":["d5"],"b":[["aff","d5","répond à la difficulté","Ranger une valeur dans une variable, c'est l'affectation.",1],
+     ["aff","g","a pour genre prochain","Une affectation est une instruction."],
      ["aff","prim","prim","La définition d’une affectation s’appuie sur des termes primitifs : des mots admis sans être définis."],
      ["prim","ranger","admet","Ranger : terme primitif, admis sans définition."],
      ["prim","valeur","admet","Valeur : terme primitif, admis sans définition."],
@@ -236,10 +245,9 @@ var MOL=[
      ["aff","c1","a pour critère discriminant","Une affectation range une valeur dans une variable."],
      ["aff","c2","a pour critère discriminant","Une affectation s’écrit avec `<-`."],
      ["aff","v1","a pour vrai cas","`x <- 5` est un vrai cas d’affectation."],
-     ["aff","v2","a pour vrai cas","`moyenne <- somme / 3` est un vrai cas d’affectation."]]},
- {id:"lire",t:"Lire",c:"lire",
-  a:{lire:"Lire",instr:"Instruction",prim:"Termes primitifs",attendre:"Attendre",taper:"Taper",clavier:"Clavier",ranger:"Ranger",c1:"Attend une valeur tapée au clavier",c2:"Range cette valeur dans une variable",v1:"Lire age",v2:"Lire nom"},ext:["instr"],
-  b:[["lire","instr","a pour genre prochain","Lire est une instruction.",1],
+     ["aff","v2","a pour vrai cas","`moyenne <- somme / 3` est un vrai cas d’affectation."]],"at":[-0.72,1.29]},
+ {"id":"lire","t":"Lire","c":"lire","a":{"lire":"Lire","prim":"Termes primitifs","attendre":"Attendre","taper":"Taper","clavier":"Clavier","ranger":"Ranger","c1":"Attend une valeur tapée au clavier","c2":"Range cette valeur dans une variable","v1":"Lire age","v2":"Lire nom","g":"Instruction"},"ext":["d6"],"b":[["lire","d6","répond à la difficulté","Pour recevoir ce que tu tapes, il y a l'instruction Lire.",1],
+     ["lire","g","a pour genre prochain","Lire est une instruction."],
      ["lire","prim","prim","La définition de Lire s’appuie sur des termes primitifs : des mots admis sans être définis."],
      ["prim","attendre","admet","Attendre : terme primitif, admis sans définition."],
      ["prim","taper","admet","Taper : terme primitif, admis sans définition."],
@@ -248,16 +256,15 @@ var MOL=[
      ["lire","c1","a pour critère discriminant","Lire attend une valeur tapée au clavier."],
      ["lire","c2","a pour critère discriminant","Lire range cette valeur dans une variable."],
      ["lire","v1","a pour vrai cas","`Lire age` est un vrai cas de Lire."],
-     ["lire","v2","a pour vrai cas","`Lire nom` est un vrai cas de Lire."]]},
- {id:"ecrire",t:"Écrire",c:"ecrire",
-  a:{ecrire:"Écrire",instr:"Instruction",prim:"Termes primitifs",afficher:"Afficher",ecran:"Écran",c1:"Affiche à l’écran",v1:"Écrire \"Bonjour\"",v2:"Écrire \"Moyenne : \", m"},ext:["instr"],
-  b:[["ecrire","instr","a pour genre prochain","Écrire est une instruction.",1],
+     ["lire","v2","a pour vrai cas","`Lire nom` est un vrai cas de Lire."]],"at":[-1.61,0.32]},
+ {"id":"ecrire","t":"Écrire","c":"ecrire","a":{"ecrire":"Écrire","prim":"Termes primitifs","afficher":"Afficher","ecran":"Écran","c1":"Affiche à l’écran","v1":"Écrire \"Bonjour\"","v2":"Écrire \"Moyenne : \", m","g":"Instruction"},"ext":["d7"],"b":[["ecrire","d7","répond à la difficulté","Pour montrer un résultat à l'écran, il y a l'instruction Écrire.",1],
+     ["ecrire","g","a pour genre prochain","Écrire est une instruction."],
      ["ecrire","prim","prim","La définition d’Écrire s’appuie sur des termes primitifs : des mots admis sans être définis."],
      ["prim","afficher","admet","Afficher : terme primitif, admis sans définition."],
      ["prim","ecran","admet","Écran : terme primitif, admis sans définition."],
      ["ecrire","c1","a pour critère discriminant","Écrire affiche à l’écran."],
      ["ecrire","v1","a pour vrai cas","`Écrire \"Bonjour\"` est un vrai cas d’Écrire."],
-     ["ecrire","v2","a pour vrai cas","`Écrire \"Moyenne : \", m` est un vrai cas d’Écrire."]]}
+     ["ecrire","v2","a pour vrai cas","`Écrire \"Moyenne : \", m` est un vrai cas d’Écrire."]],"at":[-1.29,-0.89]}
 ];
 var DIR=1;
 /* ---------- état sauvegardé : le nombre d'étapes faites ---------- */
@@ -308,7 +315,7 @@ function mkAtom(id,x,y,anim){var d=G[id],c=d.c,r=c?52:40;
   var g=sv("g",{"class":"atom"+(c?" center":"")+(anim?" pop":"")},gA),inn=sv("g",{"class":"in"},g);
   var orb=sv("ellipse",{"class":"orb"},inn),e1=sv("circle",{"class":"el",r:2.6},inn),core=sv("circle",{"class":"core"},inn);
   /* cartes "en définitions" : "def" en petit au-dessus du nom de chaque notion */
-  var DK=typeof DIR!=="undefined"&&DIR&&c,lines=(DK?["def"]:[]).concat(wrap(d.label,c?14:12)),ts=[],wm=0;
+  var DK=typeof DIR!=="undefined"&&DIR&&c,lines=(DK?[(MOL[d.n]&&MOL[d.n].kw)||(typeof KW!=="undefined"?KW:"def")]:[]).concat(wrap(d.label,c?14:12)),ts=[],wm=0;
   lines.forEach(function(l,i){var t=sv("text",{y:DK?(i?((i-1)-(lines.length-2)/2)*17+9:-8):(i-(lines.length-1)/2)*17+5},inn);t.textContent=l;if(DK&&!i)t.setAttribute("style","font-size:10px;font-weight:400;fill:#9a9aa4;letter-spacing:.05em");ts.push(t);wm=Math.max(wm,t.getComputedTextLength())});
   r=Math.min(r+14,Math.max(r,(wm+18)/2));
   ts.forEach(function(t){var w=t.getComputedTextLength(),mx=2*r-16;if(w>mx)t.style.fontSize=((c?16:14.5)*mx/w).toFixed(1)+"px"});
@@ -320,12 +327,26 @@ function bondLen(st,r1,r2){return st.lk&&G[st.s].n!==G[st.o].n?400:r1+r2+Math.ma
 /* cartes "en définitions" (DIR) : chaque rôle a sa direction — genres en haut, critères sur les côtés, termes primitifs en bas */
 function dirOf(st){if(typeof DIR==="undefined"||!DIR)return null;var r=st.rel;
   if(st.lk)return {ok:function(d){return d>=22&&d<=158},f:[1.6,1.9,2.2,2.5,2.9,3.3]};
+  /* situation d'ensemble : ses éléments autour d'elle ; chaque difficulté se pose sur le chemin de la notion qui y répond */
+  if(MOL[st.n]&&MOL[st.n].kw==="situation"){
+    if(r.indexOf("a pour difficulté")===0){var key=String(st.neu).split("/").pop(),ta=null;
+      MOL.forEach(function(q,k){if(ta===null&&k&&(q.ext||[]).indexOf(key)>=0&&TREE&&TREE[k])ta=(Math.atan2(TREE[k].y,TREE[k].x)*180/Math.PI+360)%360});
+      if(ta!==null)return {ok:function(d){var e=Math.abs(d-ta);return Math.min(e,360-e)<=8},f:[2,2.25,2.5],nocor:1}}
+    return {ok:function(){return true},f:[1,1.25,1.5]}}
   if(r.indexOf("a pour vrai cas")===0)return {ok:function(d){return d>=25&&d<=155},f:[1,1.2,1.4]};
   if(r.indexOf("a pour genre prochain")===0)return {ok:function(d){return d>=255&&d<=285},f:[1,1.15]};
   if(r.indexOf("a pour genre éloigné")===0)return {ok:function(d){return (d>=240&&d<=262)||(d>=278&&d<=300)},f:[2.2,2.5,2.8]};
   if(r.indexOf("a pour critère discriminant")===0)return {ok:function(d){return d<=18||d>=340||(d>=162&&d<=198)},f:[1,1.35,1.7]};
   if(r==="prim")return {ok:function(d){return d>=65&&d<=115},f:[1.6,1.8,2]};
   if(r==="admet")return {ok:function(d){return d>=0&&d<=180},f:[1,1.3,1.6]};
+  /* cartes "comment" : le contexte à gauche, les étapes à droite, le résultat et l'exemple en bas */
+  if(r.indexOf("peut avoir comme fonction de")===0)return {ok:function(d){return (d>=105&&d<=158)||(d>=202&&d<=235)},f:[2.2,2.6,3]};
+  /* le comment d'une fonction part vers l'extérieur, dans le prolongement de la fonction */
+  if(r==="comment"){var fa=V[st.s],mc=MOL[st.n],cc=mc&&V[mc.id+"/"+mc.c],oa=fa&&cc?(Math.atan2(fa.y-cc.y,fa.x-cc.x)*180/Math.PI+360)%360:140;
+    return {ok:function(d){var e=Math.abs(d-oa);return Math.min(e,360-e)<=45},f:[1,1.25,1.5]}}
+  if(r.indexOf("a pour contexte")===0)return {ok:function(d){return d>=162&&d<=198},f:[1,1.35,1.7]};
+  if(r.indexOf("a pour étape")===0){var ca=(305+((parseInt(r.slice(13))||1)-1)*22)%360;return {ok:function(d){var e=Math.abs(d-ca);return Math.min(e,360-e)<=11},f:[1.15,1.4,1.65]}}
+  if(r.indexOf("a pour résultat")===0||r.indexOf("a pour exemple")===0)return {ok:function(d){return d>=45&&d<=155},f:[1,1.2,1.4]};
   return null}
 function place(st){var Y=V[st.neu===st.s?st.o:st.s],isC=G[st.neu].c,D=bondLen(st,Y.r,isC?52:40),best=null,bs=-1e9,dr=dirOf(st);
   if(TREE&&st.lk&&isC&&V[FIRST]){var P=TREE[G[st.neu].n];if(P)return [V[FIRST].x+P.x,V[FIRST].y+P.y]}
@@ -338,7 +359,7 @@ function place(st){var Y=V[st.neu===st.s?st.o:st.s],isC=G[st.neu].c,D=bondLen(st
     /* … ni sur une liaison déjà tracée */
     if(dr)B.forEach(function(bd){var ax=bd.a.x,ay=bd.a.y,dx=bd.b.x-ax,dy=bd.b.y-ay,L2=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((x-ax)*dx+(y-ay)*dy)/L2)),q=Math.hypot(ax+t*dx-x,ay+t*dy-y)-(isC?52:40)-18;if(q<0)m=Math.min(m,q*4-200)});
     /* … et un atome ne se pose pas sur le chemin des liaisons qui mèneront aux notions suivantes */
-    if(dr&&TREE&&!st.lk&&V[FIRST]&&TREE[nn])TREE[nn].kids.forEach(function(c){var ax=V[FIRST].x+TREE[nn].x,ay=V[FIRST].y+TREE[nn].y,bx=V[FIRST].x+TREE[c].x,by=V[FIRST].y+TREE[c].y,
+    if(dr&&!dr.nocor&&TREE&&!st.lk&&V[FIRST]&&TREE[nn])TREE[nn].kids.forEach(function(c){var ax=V[FIRST].x+TREE[nn].x,ay=V[FIRST].y+TREE[nn].y,bx=V[FIRST].x+TREE[c].x,by=V[FIRST].y+TREE[c].y,
       dx=bx-ax,dy=by-ay,L2=dx*dx+dy*dy,t=Math.max(0,Math.min(1,((x-ax)*dx+(y-ay)*dy)/L2)),q=Math.hypot(ax+t*dx-x,ay+t*dy-y)-(isC?52:40)-45;if(q<0)m=Math.min(m,q*4-200)});
     var sc=Math.min(m,isC?600:260)+(isC?.5*Math.hypot(x-cx,y-cy):0)+rnd()*25-fi*40;
     /* cartes "en définitions" : une nouvelle notion se pose au plus près de son genre, là où sa molécule aura toute la place */
@@ -446,25 +467,28 @@ function lda(){if(typeof DIR==="undefined"||!DIR)return;var ol=document.getEleme
   if(!pre){pre=document.createElement("div");pre.id="lda"}
   var k=ol.querySelectorAll("li").length,by={},ord=[],low=function(w){return w.charAt(0).toLowerCase()+w.slice(1)},up=function(w){return w.charAt(0).toUpperCase()+w.slice(1)};
   for(var i=0;i<k&&i<STEPS.length;i++){var st=STEPS[i],n=st.n,m=MOL[n];
-    if(!by[n]){by[n]={pg:[],pw:[],g:[],e:[],c:[],v:[]};ord.push(n)}var d=by[n],r=st.rel;
+    if(!by[n]){by[n]={pg:[],pw:[],g:[],e:[],c:[],v:[],f:[]};ord.push(n)}var d=by[n],r=st.rel;
     var cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
     var D=cen?G[cen].label:m.t,oth=st.s===cen?st.o:st.s,O=G[oth]?G[oth].label:"";
     if(r==="prim")continue;
     if(r==="admet"){var w=G[st.o].label;if(d.pw.indexOf(w)<0)d.pw.push(w);continue}
+    /* une fonction possible, puis le comment de cette fonction, en retrait */
+    if(r.indexOf("peut avoir comme fonction de")===0){d.f.push(D+" -- "+r+" -- "+O);continue}
+    if(r==="comment"){d.f.push("     "+G[st.s].label+" -- comment -- "+G[st.o].label);continue}
     var role=r,obj=O,cut=r.indexOf(" : ");
     if(cut>=0){role=r.slice(0,cut);obj=up(r.slice(cut+3)+" "+low(O))}
     if(st.lt)obj=st.lt;
     var line=D+" -- "+role+" -- "+obj;
     if(role.indexOf("a pour genre prochain")===0||role.indexOf("a pour genre éloigné")===0){
       (role.indexOf("prochain")>=0?d.g:d.e).push(line);
-      if(cut<0&&!(G[oth]&&G[oth].c)&&d.pg.indexOf(O)<0)d.pg.push(O)}
+      if(cut<0&&!(G[oth]&&G[oth].c)&&!MOL.some(function(q){var t=q.t.toLowerCase(),o=O.toLowerCase();return o===t||o.slice(-t.length-1)===" "+t})&&d.pg.indexOf(O)<0)d.pg.push(O)}
     else if(role.indexOf("a pour critère discriminant")===0)d.c.push(line);
     else if(role.indexOf("a pour vrai cas")===0)d.v.push(line);
     else d.c.push(line)}
   var out=ord.map(function(n){var d=by[n],cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
-    var t="def "+(cen?G[cen].label:MOL[n].t),pr=d.pg.concat(d.pw).map(low);
+    var t=((MOL[n]&&MOL[n].kw)||(typeof KW!=="undefined"?KW:"def"))+" "+(cen?G[cen].label:MOL[n].t),pr=d.pg.concat(d.pw).map(low);
     if(pr.length)t+="\n     prim\n          "+pr.join(", ");
-    d.g.concat(d.e,d.c,d.v).forEach(function(l){t+="\n     "+l});return t}).join("\n\n");
+    d.g.concat(d.e,d.c,d.v,d.f).forEach(function(l){t+="\n     "+l});return t}).join("\n\n");
   out=out.replace(/\u2019/g,"'");pre.textContent="";out.split("\n").forEach(function(l){var dv=document.createElement("div"),n=l.length-l.replace(/^ +/,"").length;
     if(l){dv.style.paddingLeft=(n+2)+"ch";dv.style.textIndent=-(n+2)+"ch";l.split(" -- ").forEach(function(seg,i){if(i){var sp=document.createElement("span");sp.className="sp";sp.textContent=" --";dv.appendChild(sp);dv.appendChild(document.createTextNode(" "))}dv.appendChild(document.createTextNode(seg))})}else dv.appendChild(document.createElement("br"));pre.appendChild(dv)});pre.hidden=!out;ol.appendChild(pre)}
 /* ---------- construire la carte (en rejouant les étapes déjà faites) ---------- */
