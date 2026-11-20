@@ -195,7 +195,7 @@ MOL.forEach(function(m,k){var ext=m.ext||[];
     if(pick<0)rest.some(function(i,j){var b=m.b[i];if(kn[gid(b[0])]&&kn[gid(b[1])]){pick=j;return true}});
     if(pick<0)pick=0;
     var b=m.b[rest.splice(pick,1)[0]],s=gid(b[0]),o=gid(b[1]);
-    STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],lt:b[5]||null,neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
+    STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],lt:b[5]||null,ang:(b[6]!=null?b[6]:null),neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
 /* cartes "en définitions" : les notions forment un arbre (chaque notion pend sous celle qui porte son genre) ;
    on calcule d'avance la place de chaque notion : une rangée par génération, les enfants côte à côte sous leur parent */
 var TREE=null;
@@ -229,6 +229,8 @@ function bondLen(st,r1,r2){return st.lk&&G[st.s].n!==G[st.o].n?400:r1+r2+Math.ma
 function dirOf(st){if(typeof DIR==="undefined"||!DIR)return null;var r=st.rel;
   if(st.lk)return {ok:function(d){return d>=22&&d<=158},f:[1.6,1.9,2.2,2.5,2.9,3.3]};
   /* situation d'ensemble : ses éléments autour d'elle ; chaque difficulté se pose sur le chemin de la notion qui y répond */
+  /* une carte peut imposer la direction d'un atome (b[6], en degrés) */
+  if(st.ang!=null){var A=st.ang;return {ok:function(d){var e=Math.abs(d-A);return Math.min(e,360-e)<=10},f:[1,1.2,1.4,1.6],nocor:1}}
   if(MOL[st.n]&&MOL[st.n].kw==="situation"){
     if(r.indexOf("a pour difficulté")===0){var key=String(st.neu).split("/").pop(),ta=null;
       MOL.forEach(function(q,k){if(ta===null&&k&&(q.ext||[]).indexOf(key)>=0&&TREE&&TREE[k])ta=(Math.atan2(TREE[k].y,TREE[k].x)*180/Math.PI+360)%360});
