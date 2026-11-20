@@ -216,7 +216,7 @@ function mkAtom(id,x,y,anim){var d=G[id],c=d.c,r=c?52:40;
   var g=sv("g",{"class":"atom"+(c?" center":"")+(anim?" pop":"")},gA),inn=sv("g",{"class":"in"},g);
   var orb=sv("ellipse",{"class":"orb"},inn),e1=sv("circle",{"class":"el",r:2.6},inn),core=sv("circle",{"class":"core"},inn);
   /* cartes "en définitions" : "def" en petit au-dessus du nom de chaque notion */
-  var DK=typeof DIR!=="undefined"&&DIR&&c,lines=(DK?[(MOL[d.n]&&MOL[d.n].kw)||(typeof KW!=="undefined"?KW:"def")]:[]).concat(wrap(d.label,c?14:12)),ts=[],wm=0;
+  var DK=typeof DIR!=="undefined"&&DIR&&c,kwv=MOL[d.n]&&("kw" in MOL[d.n])?MOL[d.n].kw:(typeof KW!=="undefined"?KW:"def"),lines=(DK&&kwv?[kwv]:[]).concat(wrap(d.label,c?14:12)),ts=[],wm=0;DK=DK&&!!kwv;
   lines.forEach(function(l,i){var t=sv("text",{y:DK?(i?((i-1)-(lines.length-2)/2)*17+9:-8):(i-(lines.length-1)/2)*17+5},inn);t.textContent=l;if(DK&&!i)t.setAttribute("style","font-size:10px;font-weight:400;fill:#9a9aa4;letter-spacing:.05em");ts.push(t);wm=Math.max(wm,t.getComputedTextLength())});
   r=Math.min(r+14,Math.max(r,(wm+18)/2));
   ts.forEach(function(t){var w=t.getComputedTextLength(),mx=2*r-16;if(w>mx)t.style.fontSize=((c?16:14.5)*mx/w).toFixed(1)+"px"});
@@ -231,6 +231,8 @@ function dirOf(st){if(typeof DIR==="undefined"||!DIR)return null;var r=st.rel;
   /* situation d'ensemble : ses éléments autour d'elle ; chaque difficulté se pose sur le chemin de la notion qui y répond */
   /* une carte peut imposer la direction d'un atome (b[6], en degrés) */
   if(st.ang!=null){var A=st.ang;return {ok:function(d){var e=Math.abs(d-A);return Math.min(e,360-e)<=10},f:[1,1.2,1.4,1.6],nocor:1}}
+  /* questions du QQOQCCP posées à une notion : tout autour, sauf sur les liaisons */
+  if(/ \?$/.test(r)&&!(MOL[st.n]&&MOL[st.n].kw==="situation"))return {ok:function(){return true},f:[1,1.25,1.5]};
   if(MOL[st.n]&&MOL[st.n].kw==="situation"){
     if(r.indexOf("a pour difficulté")===0){var key=String(st.neu).split("/").pop(),ta=null;
       MOL.forEach(function(q,k){if(ta===null&&k&&(q.ext||[]).indexOf(key)>=0&&TREE&&TREE[k])ta=(Math.atan2(TREE[k].y,TREE[k].x)*180/Math.PI+360)%360});
@@ -374,6 +376,8 @@ function lda(){if(typeof DIR==="undefined"||!DIR)return;var ol=document.getEleme
     var cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
     var D=cen?G[cen].label:m.t,oth=st.s===cen?st.o:st.s,O=G[oth]?G[oth].label:"";
     if(r==="prim")continue;
+    /* une notion qui s'accroche à une réponse de la situation : la ligne se range sous cette réponse */
+    if(st.lk&&G[oth]&&MOL[G[oth].n]&&MOL[G[oth].n].kw==="situation"&&by[G[oth].n]){var sd=by[G[oth].n];sd.sub=sd.sub||{};(sd.sub[oth]=sd.sub[oth]||[]).push({s:oth,o:cen,rel:r});continue}
     if(r==="admet"){var w=G[st.o].label;if(d.pw.indexOf(w)<0)d.pw.push(w);continue}
     /* une fonction possible, puis le comment de cette fonction, en retrait */
     if(r.indexOf("peut avoir comme fonction de")===0){d.f.push(D+" -- "+r+" -- "+O);continue}
@@ -392,7 +396,7 @@ function lda(){if(typeof DIR==="undefined"||!DIR)return;var ol=document.getEleme
     else if(role.indexOf("a pour vrai cas")===0)d.v.push(line);
     else d.c.push(line)}
   var out=ord.map(function(n){var d=by[n],cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
-    var t=((MOL[n]&&MOL[n].kw)||(typeof KW!=="undefined"?KW:"def"))+" "+(cen?G[cen].label:MOL[n].t),pr=d.pg.concat(d.pw).map(low);
+    var kv=MOL[n]&&("kw" in MOL[n])?MOL[n].kw:(typeof KW!=="undefined"?KW:"def"),t=(kv?kv+" ":"")+(cen?G[cen].label:MOL[n].t),pr=d.pg.concat(d.pw).map(low);
     if(pr.length&&!(typeof NOPRIM!=="undefined"&&NOPRIM))t+="\n     prim\n          "+pr.join(", ");
     d.g.concat(d.e,d.c,d.v,d.f).forEach(function(l){t+="\n     "+l});
     if(d.top)(function walk(list,ind){list.forEach(function(it){t+="\n"+ind+it.line;
