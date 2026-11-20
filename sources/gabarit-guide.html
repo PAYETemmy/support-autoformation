@@ -235,6 +235,10 @@ function dirOf(st){if(typeof DIR==="undefined"||!DIR)return null;var r=st.rel;
   if(r==="prim")return {ok:function(d){return d>=65&&d<=115},f:[1.6,1.8,2]};
   if(r==="admet")return {ok:function(d){return d>=0&&d<=180},f:[1,1.3,1.6]};
   /* cartes "comment" : le contexte à gauche, les étapes à droite, le résultat et l'exemple en bas */
+  if(r.indexOf("peut avoir comme fonction de")===0)return {ok:function(d){return d>=120&&d<=200},f:[2.2,2.6,3]};
+  /* le comment d'une fonction part vers l'extérieur, dans le prolongement de la fonction */
+  if(r==="comment"){var fa=V[st.s],mc=MOL[st.n],cc=mc&&V[mc.id+"/"+mc.c],oa=fa&&cc?(Math.atan2(fa.y-cc.y,fa.x-cc.x)*180/Math.PI+360)%360:140;
+    return {ok:function(d){var e=Math.abs(d-oa);return Math.min(e,360-e)<=45},f:[1,1.25,1.5]}}
   if(r.indexOf("a pour contexte")===0)return {ok:function(d){return d>=162&&d<=198},f:[1,1.35,1.7]};
   if(r.indexOf("a pour étape")===0){var ca=(305+((parseInt(r.slice(13))||1)-1)*22)%360;return {ok:function(d){var e=Math.abs(d-ca);return Math.min(e,360-e)<=11},f:[1.15,1.4,1.65]}}
   if(r.indexOf("a pour résultat")===0||r.indexOf("a pour exemple")===0)return {ok:function(d){return d>=45&&d<=155},f:[1,1.2,1.4]};
@@ -358,11 +362,14 @@ function lda(){if(typeof DIR==="undefined"||!DIR)return;var ol=document.getEleme
   if(!pre){pre=document.createElement("div");pre.id="lda"}
   var k=ol.querySelectorAll("li").length,by={},ord=[],low=function(w){return w.charAt(0).toLowerCase()+w.slice(1)},up=function(w){return w.charAt(0).toUpperCase()+w.slice(1)};
   for(var i=0;i<k&&i<STEPS.length;i++){var st=STEPS[i],n=st.n,m=MOL[n];
-    if(!by[n]){by[n]={pg:[],pw:[],g:[],e:[],c:[],v:[]};ord.push(n)}var d=by[n],r=st.rel;
+    if(!by[n]){by[n]={pg:[],pw:[],g:[],e:[],c:[],v:[],f:[]};ord.push(n)}var d=by[n],r=st.rel;
     var cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
     var D=cen?G[cen].label:m.t,oth=st.s===cen?st.o:st.s,O=G[oth]?G[oth].label:"";
     if(r==="prim")continue;
     if(r==="admet"){var w=G[st.o].label;if(d.pw.indexOf(w)<0)d.pw.push(w);continue}
+    /* une fonction possible, puis le comment de cette fonction, en retrait */
+    if(r.indexOf("peut avoir comme fonction de")===0){d.f.push(D+" -- "+r+" -- "+O);continue}
+    if(r==="comment"){d.f.push("     "+G[st.s].label+" -- comment -- "+G[st.o].label);continue}
     var role=r,obj=O,cut=r.indexOf(" : ");
     if(cut>=0){role=r.slice(0,cut);obj=up(r.slice(cut+3)+" "+low(O))}
     if(st.lt)obj=st.lt;
@@ -376,7 +383,7 @@ function lda(){if(typeof DIR==="undefined"||!DIR)return;var ol=document.getEleme
   var out=ord.map(function(n){var d=by[n],cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
     var t=(typeof KW!=="undefined"?KW:"def")+" "+(cen?G[cen].label:MOL[n].t),pr=d.pg.concat(d.pw).map(low);
     if(pr.length)t+="\n     prim\n          "+pr.join(", ");
-    d.g.concat(d.e,d.c,d.v).forEach(function(l){t+="\n     "+l});return t}).join("\n\n");
+    d.g.concat(d.e,d.c,d.v,d.f).forEach(function(l){t+="\n     "+l});return t}).join("\n\n");
   out=out.replace(/\u2019/g,"'");pre.textContent="";out.split("\n").forEach(function(l){var dv=document.createElement("div"),n=l.length-l.replace(/^ +/,"").length;
     if(l){dv.style.paddingLeft=(n+2)+"ch";dv.style.textIndent=-(n+2)+"ch";l.split(" -- ").forEach(function(seg,i){if(i){var sp=document.createElement("span");sp.className="sp";sp.textContent=" --";dv.appendChild(sp);dv.appendChild(document.createTextNode(" "))}dv.appendChild(document.createTextNode(seg))})}else dv.appendChild(document.createElement("br"));pre.appendChild(dv)});pre.hidden=!out;ol.appendChild(pre)}
 /* ---------- construire la carte (en rejouant les étapes déjà faites) ---------- */
