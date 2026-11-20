@@ -17,7 +17,7 @@ var MOL=[
      ["u1","u3","pourquoi ?","Niveau 2. Pourquoi l'utilisateur s'en sert-il ? Pour avoir le résultat.",0,null,219],
      ["u3","d7","a pour difficulté","Difficulté : il doit communiquer le résultat.",0,null,219],
      ["c1","c2","quoi ?","Niveau 2 : on questionne la réponse. Décrire la solution, c'est quoi ? Une suite d'étapes, du début à la fin.",0,null,270],
-     ["c2","d1","a pour difficulté","Difficulté : il faut décrire toute la marche à suivre, du début à la fin.",0,null,270],
+     ["c2","d1","a pour difficulté","Difficulté : il faut décrire toute la marche à suivre, du début à la fin.",0,null,266],
      ["c1","c3","comment ?","Niveau 2. Comment décrit-on chaque étape ? Par une consigne.",0,null,322],
      ["c3","d2","a pour difficulté","Difficulté : chaque consigne doit provoquer une action précise.",0,null,322]]},
  {"id":"algo","t":"Algorithme","c":"algo","a":{"algo":"Algorithme","prim":"Termes primitifs","etape":"Étape","ambig":"Ambiguïté","nfini":"Nombre fini","donnees":"Données","resultat":"Résultat","marche":"Marche à suivre","methode":"Méthode","c1":"Faite d’étapes sans ambiguïté","c2":"Se termine après un nombre fini d’étapes","c3":"Transforme des données en résultat","v1":"Calcul d’une moyenne","v2":"Recherche du plus grand nombre"},"b":[["algo","d1","répond à la difficulté","Pour décrire toute la marche à suivre, on écrit un algorithme.",1],
