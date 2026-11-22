@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Connaissances">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Explorateur de connaissances</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6f9;--panel:#fff;--panel2:#f8fafc;--line:#d8e0e9;--text:#202b3c;--muted:#637083;--accent:#285ea8;--accentbg:#eaf1fb;--danger:#b42318;--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:var(--sb);-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button,.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;cursor:pointer;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;background:#fff;color:var(--text);touch-action:manipulation;-webkit-user-select:none;user-select:none;transition:background-color .15s,border-color .15s,box-shadow .15s}
+button:active:not(:disabled),.btn:active{background:#eef2f7}
+@media(hover:hover){button:hover:not(:disabled),.btn:hover{border-color:#8ea5c3;background:#f8fafc}}
+button:disabled{opacity:.48;cursor:not-allowed}
+:focus-visible{outline:3px solid rgba(40,94,168,.3);outline-offset:2px}
+.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:650}.primary:active:not(:disabled){background:#1f4d8b;border-color:#1f4d8b}@media(hover:hover){.primary:hover:not(:disabled){background:#1f4d8b;color:#fff;border-color:#1f4d8b}}.danger{color:var(--danger)}.primary.danger{background:#b42318;border-color:#b42318;color:#fff}
+header{padding:calc(20px + var(--st)) max(20px,var(--sr),calc((100% - 1240px)/2)) 18px max(20px,var(--sl),calc((100% - 1240px)/2));border-bottom:1px solid var(--line);background:#fff}
+header h1{font-size:clamp(21px,3vw,28px);letter-spacing:-.035em;margin:0;color:#172b4d;font-weight:700}header p{margin:3px 0 0;color:var(--muted);font-size:13px}
+main{max-width:1240px;margin:auto;padding:22px max(20px,var(--sr)) 42px max(20px,var(--sl))}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:0 0 18px;border-bottom:1px solid var(--line)}.tabs button{min-height:44px;border:0;border-bottom:2px solid transparent;border-radius:7px 7px 0 0;background:transparent;padding:9px 15px;color:#526174;font-size:14px;font-weight:600}@media(hover:hover){.tabs button:hover{background:#f0f4f8}}.tabs button.active{background:transparent;border-bottom-color:var(--accent);color:var(--accent)}
+.ico{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}.tabs .ico{display:none}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:18px;min-width:0;box-shadow:0 1px 2px rgba(16,24,40,.035)}
+.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.8fr);gap:18px;align-items:start}
+.panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.panelhead h2{font-size:16px;margin:0;font-weight:650;color:#24364d}
+.muted{color:var(--muted);font-size:12px}.tag{border:1px solid #d7e0eb;border-radius:6px;padding:3px 8px;background:#f8fafc;color:#5f6e82;font-size:11px;white-space:nowrap}
+.graphbox{overflow:hidden;border:1px solid #e0e6ee;border-radius:8px;background:#fbfcfe}
+#graph{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}#graph.pannable{touch-action:none;cursor:grab}
+.rel{stroke:#8b9bb0;stroke-width:1.5;fill:none}.rel.contra{stroke:#b42318;stroke-dasharray:5 4}.rel.hl{stroke:#285ea8;stroke-width:2.2}.rel.contra.hl{stroke:#b42318}.rel.pre{stroke-dasharray:2 4}.dim{opacity:.25}.elabel{font-size:10px;font-weight:650;fill:#285ea8;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#fbfcfe;stroke-width:4px;stroke-linejoin:round}.elabel.contra{fill:#b42318}.bandlabel{font-size:11px;font-weight:650;fill:#637083}.sep{stroke:#e0e6ee;stroke-width:1}
+.node{cursor:pointer;outline:none}.node circle{stroke:#fff;stroke-width:2}.node.selected circle,.node:focus-visible circle{stroke:#172b4d;stroke-width:3}
+.node text{fill:#24364d;text-anchor:middle;font-size:11px;font-weight:600;pointer-events:none;paint-order:stroke;stroke:#fbfcfe;stroke-width:3px;stroke-linejoin:round}
+.root circle{fill:#285ea8}.root text{fill:#fff;text-anchor:middle;font-size:10px;font-weight:700;pointer-events:none}
+.controls,.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:13px}.legend span{font-size:11px;color:#59677a;display:flex;align-items:center;gap:6px}.legend i,.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}.field label{font-size:12px;color:#445267;font-weight:650}
+input,select,textarea{width:100%;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:10px 12px;color:var(--text);min-width:0;font-size:16px;-webkit-appearance:none;appearance:none}
+input::placeholder,textarea::placeholder{color:#8995a6}
+input:focus,select:focus,textarea:focus{border-color:#5b82ba;outline:3px solid rgba(40,94,168,.12)}
+select{padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23637083' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:13px}
+input[type=search]::-webkit-search-decoration{-webkit-appearance:none}
+textarea{min-height:96px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.section{border-top:1px solid #e7ebf0;padding-top:13px;margin-top:14px}
+.cardtitle{font-size:19px;font-weight:700;overflow-wrap:anywhere;color:#1c2c43}.relation{display:block;width:100%;min-height:44px;padding:10px 0;border:0;border-bottom:1px solid #e8edf2;border-radius:0;background:none;text-align:left;font-size:13px;line-height:1.45;overflow-wrap:anywhere}.relation:active:not(:disabled){background:#eef2f7}@media(hover:hover){.relation:hover:not(:disabled){background:#f8fafc}}#focusToggle.on{background:var(--accentbg);border-color:var(--accent);color:var(--accent)}
+.itemrow{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #e8edf2;min-width:0}.itemrow .name{flex:1;min-width:0;overflow-wrap:anywhere}.itemrow button{padding:6px 10px;min-width:44px;min-height:44px}
+.empty{padding:24px 18px;text-align:center;color:var(--muted);font-size:13px}.notice{font-size:11px;color:var(--muted);margin:11px 0 0}
+.vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;opacity:0}
+.hint{background:var(--accentbg);border:1px solid #cddcf0;border-radius:8px;padding:10px 12px;font-size:13px;color:#24406a;margin:0 0 13px}.hint b{color:#173a67}
+.small{min-height:44px;padding:5px 12px;font-size:13px;margin-top:7px;align-self:flex-start}
+.fields{display:grid;grid-template-columns:minmax(110px,34%) 1fr;gap:6px 12px;margin:8px 0 0;font-size:13px}.fields dt{color:var(--muted);font-weight:650}.fields dd{margin:0;overflow-wrap:anywhere;white-space:pre-line}
+.issues{margin:8px 0 0;padding:10px 12px 10px 28px;border:1px solid #f1d6a6;background:#fff8eb;border-radius:8px;font-size:13px;color:#7a4a00}.issues li{margin:2px 0}.ok{color:#18794e;font-size:13px}
+.progress{height:8px;border-radius:5px;background:#e7ecf2;overflow:hidden}.progress i{display:block;height:100%;width:0;background:#2e8b57;transition:width .3s}
+.qcard{border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:4px;background:var(--panel2)}.qcard .prompt{font-size:14px;color:#3b4a5e;margin:8px 0 12px}.answer{border-top:1px solid #e1e7ee;margin-top:12px;padding-top:12px}
+.lvl{font-size:11px;border-radius:5px;padding:2px 7px;white-space:nowrap;border:1px solid}.lvl0{color:#8a6100;border-color:#f0d9a8;background:#fff8e6}.lvl1{color:#285ea8;border-color:#cddcf0;background:#eef4fc}.lvl2{color:#18794e;border-color:#bfe3cf;background:#ecf8f1}
+.section h2{font-size:16px;margin:0 0 8px;font-weight:650;color:#24364d}.itemrow .lvl{margin-left:4px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.foundrow{display:grid;grid-template-columns:minmax(130px,36%) 1fr 44px;gap:6px;margin-bottom:6px}.foundrow button{padding:0}
+.tips{margin:8px 0 0;padding:10px 12px 10px 28px;border:1px solid #d3e0f1;background:#f3f7fc;border-radius:8px;font-size:13px;color:#2a4a75}.tips li,.issues li{margin:2px 0}
+.warn{color:#b42318;font-size:12px;font-weight:600}
+.ring{fill:none;stroke:#d3dbe6;stroke-width:1.2;stroke-dasharray:4 5}
+.ringlabel{font-size:11px;font-weight:650;fill:#637083;text-anchor:middle;paint-order:stroke;stroke:#fbfcfe;stroke-width:4px;stroke-linejoin:round;pointer-events:none}
+.node.archived circle{opacity:.35}.node.archived text{fill:#8995a6;font-style:italic}
+.reltable{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}.reltable th,.reltable td{border-bottom:1px solid #e8edf2;padding:6px 4px;text-align:left;vertical-align:top}.reltable th{color:var(--muted);font-weight:650}
+#modalText{white-space:pre-line;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pathgroup{margin:12px 0 4px;font-size:12px;font-weight:700;color:#445267;text-transform:uppercase;letter-spacing:.04em}
+.memo summary{cursor:pointer;font-weight:650;color:#24364d;padding:11px 0}.memo p{font-size:13px;margin:8px 0}
+.headright{display:flex;align-items:center;gap:8px}.iconbtn{min-width:44px;padding:0;font-size:22px;line-height:1}
+.mobile-only{display:none}
+[hidden]{display:none!important}
+footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,var(--sl));color:var(--muted);font-size:11px}
+#message{position:fixed;left:50%;bottom:calc(20px + var(--sb));z-index:40;width:max-content;max-width:min(92vw,460px);margin:0;padding:10px 14px;border:1px solid #285ea8;border-radius:9px;background:#173a67;color:#fff;font-size:13px;box-shadow:0 6px 20px rgba(16,24,40,.18);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .2s,transform .2s}
+#message.show{opacity:1;transform:translate(-50%,0)}
+.modal{position:fixed;top:0;right:0;bottom:0;left:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(22,34,51,.42)}
+.sheet{display:flex;flex-direction:column;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px - var(--st) - var(--sb));width:100%;max-width:440px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:0 16px 45px rgba(16,24,40,.2)}.sheet p{margin:0 0 6px;font-size:15px}.sheet .actions{justify-content:flex-end}
+@media(max-width:760px){
+ header{padding-top:calc(14px + var(--st));padding-bottom:13px}header p{font-size:12px}
+ main{padding:15px max(13px,var(--sr)) 34px max(13px,var(--sl))}
+ body{padding-bottom:calc(78px + var(--sb))}
+ .layout{grid-template-columns:1fr;gap:13px}.panel{padding:14px;border-radius:10px}
+ .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:6px max(8px,var(--sr)) calc(6px + var(--sb)) max(8px,var(--sl));background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);border-bottom:0;box-shadow:0 -3px 12px rgba(16,24,40,.06)}
+ .tabs button{flex-direction:column;gap:2px;min-height:52px;padding:4px 2px;border:0;border-radius:7px;background:transparent;color:#66758a;font-size:11px;font-weight:600}
+ .tabs button.active{background:var(--accentbg);color:var(--accent)}.tabs .ico{display:block}
+ body.typing .tabs{display:none}
+ #message{bottom:calc(84px + var(--sb))}body.typing #message{bottom:calc(16px + var(--sb))}
+ .mobile-only{display:inline-flex}.controls button{flex:1 1 auto}
+ .modal{align-items:flex-end;padding:0 8px calc(8px + var(--sb))}.sheet .actions{flex-direction:column-reverse}.sheet .actions button{width:100%}
+}
+@media(max-width:620px){.grid3{grid-template-columns:1fr 1fr}.grid3 .field:first-child{grid-column:1/-1}}
+@media(max-width:420px){.foundrow{grid-template-columns:1fr 44px}.foundrow select{grid-column:1/-1}.itemrow button{padding:6px 8px;font-size:13px}.grid2{grid-template-columns:1fr;gap:0}.panelhead h2{font-size:15px}.tag{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.0</p></header>
+<main>
+<nav class="tabs" aria-label="Espaces de travail">
+<button class="active" data-view="explore" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="18" cy="19" r="2"/><circle cx="5" cy="18" r="2"/><path d="M6.5 6.5l3.3 3.3M17.3 7.2l-3.2 3.1M16.6 17.6l-2.5-3.5M6.6 16.6l3.2-2.8"/></svg>Graphe</button>
+<button data-view="edit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg>Constructeur</button>
+<button data-view="links"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/></svg>Relations</button>
+<button data-view="learn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
+<button data-view="library"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg>Bibliothèque</button>
+</nav>
+
+<section id="explore">
+<div class="layout">
+ <div class="panel">
+  <div class="panelhead"><h2>Graphe de connaissances</h2><span class="tag" id="graphCount">0 éléments</span></div>
+  <div class="graphbox" id="graphbox"><svg id="graph" viewBox="0 0 700 510" aria-label="Graphe des connaissances"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8b9bb0"/></marker><marker id="arrowHl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#285ea8"/></marker></defs><g id="drawing"></g></svg></div>
+  <div class="controls"><button id="zoomOut" aria-label="Dézoomer">−</button><button id="zoomIn" aria-label="Zoomer">＋</button><button id="zoomReset" title="Revenir à la vue initiale">Réinitialiser</button><button id="viewToggle">Vue réseau</button><button id="focusToggle" aria-pressed="false" disabled>Voisinage</button><button class="primary" id="addGraph">＋ Ajouter</button></div>
+  <div class="legend" id="legend"></div>
+  <p class="notice" id="graphNotice"></p>
+ </div>
+ <div class="panel" id="detailPanel">
+  <div class="panelhead"><h2>Fiche de connaissance</h2><div class="headright"><span class="tag" id="selectedType">Aucune sélection</span><button id="closeDetail" class="iconbtn" aria-label="Fermer la fiche et revenir à la vue d’ensemble" title="Fermer la fiche" hidden>×</button></div></div>
+  <div id="detail" class="empty">Sélectionne un élément du graphe ou de la bibliothèque.</div>
+  <div class="actions" id="detailActions" hidden><button class="primary" id="editSelected">Modifier</button><button id="linkSelected">Créer une relation</button><button id="reviewSelected">Réviser</button><button class="mobile-only" id="backGraph">↑ Graphe</button></div>
+ </div>
+</div>
+</section>
+
+<section id="edit" hidden>
+<div class="panel">
+ <div class="panelhead"><h2 id="editorTitle">Créer un élément</h2><span class="tag" id="editMode">Nouveau</span></div>
+ <form id="editorForm" novalidate>
+  <div class="grid3">
+   <div class="field"><label for="type">Type d'élément</label><select id="type"><option>Concept</option><option>Propriété</option><option>Règle</option><option>Procédure</option><option>Exemple</option><option>Contre-exemple</option></select></div>
+   <div class="field"><label for="status">Statut épistémique</label><select id="status"><option>À examiner</option><option>Proposé</option><option>Établi</option><option>Contesté</option><option>Réfuté</option></select></div>
+   <div class="field"><label for="life">Cycle de vie</label><select id="life"><option>Actif</option><option>Archivé</option></select></div>
+  </div>
+  <div class="field"><label for="name">Désignation</label><input id="name" required placeholder="Nom court de l'élément" autocomplete="off" enterkeyhint="next"></div>
+  <div id="templateFields"></div>
+  <div class="field"><label for="formulation">Formulation (rédigée ou composée)</label><textarea id="formulation" placeholder="Laisse vide pour composer automatiquement à partir du gabarit…"></textarea><button type="button" id="composeBtn" class="small">Composer la formulation à partir du gabarit</button></div>
+  <div class="field"><label>Fondements</label><div id="foundList"></div><button type="button" class="small" id="addFound">＋ Ajouter un fondement</button><p class="notice" style="margin-top:4px">Plusieurs fondements possibles. Des exemples ou des observations rendent un énoncé crédible ; ils ne le prouvent pas.</p></div>
+  <div class="actions"><button class="primary" type="submit" id="saveItem">Créer l'élément</button><button type="button" id="clearForm">Réinitialiser</button><button type="button" class="danger" id="deleteItem" hidden>Supprimer</button></div>
+ </form>
+ <p class="notice">Les champs du gabarit suivent le modèle de représentation. Aucun n’est bloquant : un champ vide est signalé dans le contrôle. Ce qu’un exemple illustre, ou ce qu’un contre-exemple met à l’épreuve, se déclare uniquement par une relation (onglet Relations).</p>
+</div>
+</section>
+
+<section id="links" hidden>
+<div class="panel">
+ <div class="panelhead"><h2>Construire une relation</h2><span class="tag">Relations encadrées</span></div>
+ <div class="field"><label for="source">Élément source</label><select id="source"></select></div>
+ <div class="field"><label for="relationType">Type de relation</label><select id="relationType"></select><p class="notice" id="relHelp" style="margin-top:4px"></p></div>
+ <div class="field"><label for="target">Élément cible</label><select id="target"></select></div>
+ <div class="field"><label for="relationNote">Précision facultative</label><input id="relationNote" placeholder="Précision sur le lien" autocomplete="off" enterkeyhint="done"></div>
+ <div class="actions"><button class="primary" id="addRelation">Ajouter la relation</button></div>
+ <p class="notice">Seules les relations définies par le modèle sont proposées, et seules les cibles compatibles apparaissent. « Applique » ne vise que des règles d’action ; pour une règle, « S’appuie sur » ne vise que des règles descriptives. « A pour prérequis » est une relation pédagogique, hors modèle : elle ordonne le parcours.</p>
+ <div class="section"><h2>Relations enregistrées</h2><div id="relationsList"></div></div>
+</div>
+</section>
+
+<section id="learn" hidden>
+<div class="layout">
+ <div class="panel">
+  <div class="panelhead"><h2>Entraînement par rappel</h2><span class="tag" id="learnProgress"></span></div>
+  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+  <div class="field" style="margin-top:12px"><label for="quizFilter">Réviser</label><select id="quizFilter"><option>Tous</option><option>Concept</option><option>Propriété</option><option>Règle</option><option>Procédure</option><option>Exemple</option><option>Contre-exemple</option></select></div>
+  <div id="quiz"></div>
+ </div>
+ <div class="panel">
+  <div class="panelhead"><h2>Parcours conseillé</h2><span class="tag">Du concept au contre-exemple</span></div>
+  <p class="notice" style="margin-top:0">Étudie d’abord les objets (concepts), puis les affirmations (propriétés, règles), les méthodes (procédures), et enfin ce qui les illustre et les délimite.</p>
+  <div id="pathList"></div>
+  <div class="section"><h2>Contrôle du modèle</h2><div id="qualityList"></div></div>
+ </div>
+</div>
+</section>
+
+<section id="library" hidden>
+<div class="panel">
+ <div class="panelhead"><h2>Bibliothèque</h2><span class="tag" id="libraryCount"></span></div>
+ <div class="field"><label for="search">Recherche</label><input id="search" type="search" placeholder="Nom ou formulation…" autocomplete="off" enterkeyhint="search"></div>
+ <div class="field"><label for="filter">Filtrer par type</label><select id="filter"><option>Tous</option><option>Concept</option><option>Propriété</option><option>Règle</option><option>Procédure</option><option>Exemple</option><option>Contre-exemple</option></select></div>
+ <div id="libraryList"></div>
+ <details class="section memo"><summary>Rappel du modèle de représentation</summary><div id="modelMemo"></div></details>
+ <div class="section"><h2>Sauvegarde et transfert</h2><p class="muted">Les changements sont conservés dans le stockage local du navigateur. Sur iPhone, Safari peut effacer ces données après 7 jours sans visite (sauf app ajoutée à l'écran d'accueil) : exporte régulièrement une copie JSON.</p>
+ <div class="actions"><button id="loadDemo">Charger l’exemple guidé (pseudo-code)</button></div>
+ <div class="actions"><button class="primary" id="exportData">Exporter JSON</button><label class="btn" for="fileInput" id="importData" role="button" tabindex="0">Importer JSON</label><input type="file" id="fileInput" class="vh" tabindex="-1"></div></div>
+</div>
+</section>
+</main>
+<footer>Explorateur de connaissances · Les données restent dans ce navigateur, sauf export volontaire.</footer>
+<div id="message" role="status" aria-live="polite"></div>
+<div class="modal" id="modal" hidden><div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="modalText"><p id="modalText"></p><div class="actions"><button id="modalCancel">Annuler</button><button class="primary" id="modalOk">Confirmer</button></div></div></div>
+
+<script>
+(()=> {
+"use strict";
+const $=id=>document.getElementById(id);
+const TYPES=["Concept","Propriété","Règle","Procédure","Exemple","Contre-exemple"];
+const COLORS={"Concept":"#528bd4","Propriété":"#2eaa91","Règle":"#d99a42","Procédure":"#9874d5","Exemple":"#4aa9b9","Contre-exemple":"#d66e75"};
+const PREREQ="A pour prérequis",CONTRA="Se contredit avec";
+const STATUSES=["À examiner","Proposé","Établi","Contesté","Réfuté"];
+const FOUND_TYPES=["Non précisé","Définition de référence","Démonstration ou raisonnement","Source documentaire","Observation ou expérience"];
+const ART={"Concept":"le concept","Propriété":"la propriété","Règle":"la règle","Procédure":"la procédure","Exemple":"l’exemple","Contre-exemple":"le contre-exemple"};
+/* ---------- Modèle de représentation : définitions, gabarits et champs ---------- */
+const MODEL={
+ "Concept":{
+  def:"Une chose, une catégorie, une grandeur ou une idée dont on peut préciser le sens et les caractéristiques.",
+  tpl:"[Concept] : [définition]. Caractéristiques : [caractéristiques].",
+  fields:[
+   {k:"domain",label:"Domaine",ph:"Ex. : le pseudo-code"},
+   {k:"definition",label:"Définition (sens)",ph:"Ce que désigne ce concept",area:true},
+   {k:"traits",label:"Caractéristiques principales",ph:"Ce qui le distingue des concepts voisins",area:true}]},
+ "Propriété":{
+  def:"Une caractéristique d’un concept, ou un lien entre concepts, toujours vrai à l’intérieur d’un domaine précisé.",
+  tpl:"Dans le domaine [D], [concept] [relation] [caractéristique ou autre concept].",
+  note:"Relie ensuite la propriété à son concept : « Définit » si elle fait partie de sa définition, « Caractérise » si elle est vraie sans le définir, « Met en relation » si elle lie plusieurs concepts.",
+  fields:[
+   {k:"domain",label:"Domaine [D]",ph:"Ex. : du pseudo-code indexé à partir de 0"},
+   {k:"subject",label:"Concept",ph:"Ex. : un tableau de taille N"},
+   {k:"relation",label:"Relation",ph:"Ex. : a des indices"},
+   {k:"object",label:"Caractéristique ou autre concept",ph:"Ex. : allant de 0 à N−1"}]},
+ "Règle":{
+  def:"Une relation qui dit ce qui arrive ou ce qu’il faut faire lorsque certaines conditions sont réunies.",
+  tpl:"Dans le contexte [C], si [condition], alors [conséquence ou action], sauf si [exception].",
+  note:"Descriptive : la conclusion dit ce qui se passe. D’action : la conclusion dit ce qu’il faut faire. La différence tient à la conclusion, pas à la structure. « Sauf si » est un champ à examiner, pas une obligation d’inventer une exception.",
+  fields:[
+   {k:"kind",label:"Nature de la règle",options:["À préciser","Descriptive","D’action"]},
+   {k:"context",label:"Contexte [C]",ph:"Ex. : de l’exécution d’un pseudo-code"},
+   {k:"condition",label:"Si… (condition)",ph:"Ex. : x ← e s’exécute correctement"},
+   {k:"conclusion",label:"Alors… (conséquence ou action)",ph:"Ex. : la nouvelle valeur de x remplace l’ancienne"},
+   {k:"exceptionMode",label:"Sauf si… (champ à examiner)",options:["Non examiné","Exception réelle","Aucune exception identifiée dans ce domaine","Limites encore inconnues"]},
+   {k:"exception",label:"Sauf si… (exception réelle)",ph:"Formule l’exception réelle"}]},
+ "Procédure":{
+  def:"Une structure qui ordonne des étapes et peut contenir des règles d’action, des choix, des répétitions ou des prérequis.",
+  tpl:"Dans le contexte [C], pour [but], à partir de [entrées et préconditions] : [étapes, choix ou répétitions]. Elle produit [résultat], si [conditions de réussite].",
+  note:"La procédure n’est pas une catégorie concurrente de la règle : elle peut en contenir. Elle « applique » des règles d’action et « s’appuie sur » des concepts, des propriétés et des règles descriptives.",
+  fields:[
+   {k:"context",label:"Contexte [C]",ph:"Ex. : du pseudo-code"},
+   {k:"goal",label:"Pour… (but)",ph:"Ex. : calculer la somme des éléments d’un tableau T"},
+   {k:"inputs",label:"À partir de… (entrées et préconditions)",ph:"Ex. : un tableau T de N nombres, N ≥ 0"},
+   {k:"steps",label:"Étapes, choix ou répétitions",ph:"Une étape par ligne :\n1. …\n2. Si …, alors …\n3. Répéter … tant que …",area:true},
+   {k:"result",label:"Elle produit… (résultat)",ph:"Ex. : la somme des éléments de T"},
+   {k:"success",label:"Si… (conditions de réussite)",ph:"Ex. : les indices restent entre 0 et N−1"}]},
+ "Exemple":{
+  def:"Un cas concret qui illustre un concept, une propriété, une règle ou une procédure.",
+  tpl:"[cas concret] illustre [concept, propriété, règle ou procédure] parce que [caractéristique montrée].",
+  note:"Ce que l’exemple illustre se déclare par la relation « Illustre » (onglet Relations) : la formulation se complète alors d’elle-même. Les exemples rendent un énoncé plus crédible ; ils ne le démontrent pas.",
+  fields:[
+   {k:"case",label:"Cas concret",ph:"Ex. : après x ← 5 puis x ← 8, x vaut 8",area:true},
+   {k:"shown",label:"Parce que… (caractéristique montrée)",ph:"Ex. : la seconde affectation efface la valeur 5"}]},
+ "Contre-exemple":{
+  def:"Un cas qui met un énoncé à l’épreuve.",
+  tpl:"[cas] montre que [affirmation] ne s’applique pas lorsque [condition].",
+  note:"L’énoncé mis à l’épreuve se déclare par la relation « Met à l’épreuve ». Un contre-exemple n’est pas automatiquement une exception : a) le cas est-il hors du domaine prévu ? b) sinon, faut-il préciser la condition ? c) sinon, réviser l’énoncé. Un seul contre-exemple valable suffit à réfuter un énoncé.",
+  fields:[
+   {k:"case",label:"Cas",ph:"Ex. : en Lua, un tableau de 3 éléments a pour indices 1, 2 et 3",area:true},
+   {k:"condition",label:"Ne s’applique pas lorsque…",ph:"Ex. : la convention d’indexation commence à 1"},
+   {k:"verdict",label:"Analyse (convention 2)",options:["À analyser","Hors du domaine prévu (2a) : pas de contradiction dans le domaine","Condition à préciser (2b)","Énoncé à réviser, éventuellement par une exception (2c)","Traité : énoncé révisé"]}]}
+};
+/* ---------- Relations du modèle : [nom, types cibles, filtre éventuel, motif de refus, libellé des cibles] ---------- */
+const kindOf=t=>(t.fields||{}).kind||"";
+const RULES={
+ "Concept":[],
+ "Propriété":[["Définit",["Concept"]],["Caractérise",["Concept"]],["Met en relation",["Concept"]]],
+ "Règle":[["Porte sur",["Concept"]]],
+ "Procédure":[
+  ["Applique",["Règle"],t=>kindOf(t)==="D’action","« Applique » ne vise que des règles d’action","Règle d’action"],
+  ["S’appuie sur",["Concept","Propriété","Règle"],t=>t.type!=="Règle"||kindOf(t)==="Descriptive","pour une règle, « S’appuie sur » ne vise que des règles descriptives","Concept, Propriété, Règle descriptive"],
+  ["Contient",["Procédure"]]],
+ "Exemple":[["Illustre",["Concept","Propriété","Règle","Procédure"]]],
+ "Contre-exemple":[["Met à l’épreuve",["Concept","Propriété","Règle","Procédure"],null,"","Propriété, Règle, Procédure, définition d’un Concept"]]
+};
+const AFFIRMATIONS=["Propriété","Règle"];
+const KNOWN=new Set([PREREQ,CONTRA,...Object.values(RULES).flatMap(l=>l.map(r=>r[0]))]);
+const REL_HELP={
+ "Définit":"La propriété fait partie de la définition du concept : sans elle, ce ne serait plus ce concept.",
+ "Caractérise":"La propriété est toujours vraie du concept dans le domaine, sans faire partie de sa définition.",
+ "Met en relation":"La propriété établit un lien entre concepts : relie-la à chacun des concepts concernés (au moins deux).",
+ "Porte sur":"Le concept intervient dans la condition ou dans la conclusion de la règle.",
+ "Applique":"La procédure contient cette règle d’action (un choix, un test, une décision).",
+ "S’appuie sur":"La procédure utilise ce concept, cette propriété ou cette règle descriptive, sans l’exécuter comme une action.",
+ "Contient":"La cible est une sous-procédure, c’est-à-dire une étape de la source.",
+ "Illustre":"Le cas concret montre une caractéristique de la cible.",
+ "Met à l’épreuve":"Le cas teste l’énoncé cible ; analyse-le ensuite selon la convention 2.",
+ [PREREQ]:"Relation pédagogique, hors modèle : la cible doit être apprise avant la source. Elle ordonne le parcours.",
+ [CONTRA]:"Deux affirmations incompatibles : au moins l’une doit être restreinte ou révisée."
+};
+const LEVELS=["À apprendre","En cours","Acquis"];
+const OLD_DEMO=new Set(["demo-concept","demo-propriete","demo-regle","demo-procedure","demo-exemple","demo-contre"]);
+const F=(type,text)=>({type,text});
+const D=(id,type,name,status,fields,foundations=[])=>({id,type,name,status,life:"Actif",fields,foundations,formulation:"",autoForm:true});
+const DEMO=[
+ D("pc-variable","Concept","Variable","Établi",{domain:"le pseudo-code",definition:"Emplacement nommé qui contient une valeur pouvant changer au cours de l’exécution.",traits:"Possède un nom, un type et une valeur courante."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
+ D("pc-affectation","Concept","Affectation","Établi",{domain:"le pseudo-code",definition:"Instruction x ← e qui donne à la variable x la valeur de l’expression e.",traits:"Se lit de droite à gauche : e est évaluée, puis sa valeur est rangée dans x."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
+ D("pc-tableau","Concept","Tableau","Établi",{domain:"le pseudo-code",definition:"Suite de N valeurs de même type, repérées chacune par un indice.",traits:"Taille N fixée ; accès direct à un élément par T[i]."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
+ D("pc-unique","Propriété","Valeur unique","Établi",{domain:"du pseudo-code",subject:"une variable",relation:"contient",object:"une seule valeur à un instant donné"},[F("Définition de référence","Fait partie de la définition d’une variable.")]),
+ D("pc-indices","Propriété","Indices 0 à N−1","Établi",{domain:"du pseudo-code indexé à partir de 0",subject:"un tableau de taille N",relation:"a des indices",object:"allant de 0 à N−1"},[F("Source documentaire","Convention d’indexation adoptée par le cours.")]),
+ D("pc-remplacement","Règle","Valeur remplacée","Établi",{kind:"Descriptive",context:"de l’exécution d’un pseudo-code",condition:"x ← e s’exécute correctement",conclusion:"la nouvelle valeur de x remplace l’ancienne",exceptionMode:"Aucune exception identifiée dans ce domaine"},[F("Démonstration ou raisonnement","Découle de la propriété « Valeur unique » : x ne peut pas conserver deux valeurs.")]),
+ D("pc-avant-lecture","Règle","Affecter d’abord","Proposé",{kind:"D’action",context:"de l’écriture d’un pseudo-code",condition:"une variable va être lue",conclusion:"lui affecter une valeur avant cette lecture",exceptionMode:"Exception réelle",exception:"elle est un paramètre d’entrée (sa valeur est fournie à l’appel)"},[F("Démonstration ou raisonnement","Une variable lue sans valeur donne un résultat indéterminé.")]),
+ D("pc-somme","Procédure","Somme d’un tableau","Établi",{context:"du pseudo-code",goal:"calculer la somme des éléments d’un tableau T",inputs:"un tableau T de N nombres, N ≥ 0",steps:"1. somme ← 0\n2. Pour i allant de 0 à N−1 : somme ← somme + T[i]\n3. Renvoyer somme",result:"la somme des éléments de T",success:"les indices utilisés restent entre 0 et N−1"},[F("Démonstration ou raisonnement","Invariant : après le passage i, somme vaut T[0] + … + T[i].")]),
+ D("pc-ex-affectation","Exemple","x ← 5 puis x ← 8","Établi",{case:"Après x ← 5 puis x ← 8, x vaut 8",shown:"la seconde affectation efface la valeur 5"}),
+ D("pc-ex-indices","Exemple","T = [7, 2, 9]","Établi",{case:"Le tableau T = [7, 2, 9] a pour indices 0, 1 et 2",shown:"N = 3 et le dernier indice vaut 2, soit N − 1"}),
+ D("pc-ex-somme","Exemple","Somme de [3, 4, 5]","Établi",{case:"La procédure appliquée à T = [3, 4, 5] renvoie 12",shown:"la somme passe par 0, 3, 7 puis 12 : chaque passage ajoute un élément"}),
+ D("pc-cx-lua","Contre-exemple","Indexation dès 1","Établi",{case:"En Lua, un tableau de 3 éléments a pour indices 1, 2 et 3",condition:"la convention d’indexation commence à 1",verdict:"Hors du domaine prévu (2a) : pas de contradiction dans le domaine"}),
+ D("pc-cx-parametre","Contre-exemple","Paramètre lu","Établi",{case:"Dans « Fonction carré(n) : renvoyer n × n », n est lue sans affectation dans la fonction",condition:"la variable est un paramètre d’entrée",verdict:"Traité : énoncé révisé"})
+];
+const DL=(s,t,type)=>({id:"l-"+s+"-"+t,source:s,target:t,type,note:""});
+const DEMO_LINKS=[
+ DL("pc-affectation","pc-variable",PREREQ),DL("pc-tableau","pc-variable",PREREQ),
+ DL("pc-unique","pc-variable","Définit"),DL("pc-indices","pc-tableau","Caractérise"),
+ DL("pc-remplacement","pc-affectation","Porte sur"),DL("pc-remplacement","pc-variable","Porte sur"),DL("pc-avant-lecture","pc-variable","Porte sur"),
+ DL("pc-somme","pc-avant-lecture","Applique"),DL("pc-somme","pc-remplacement","S’appuie sur"),DL("pc-somme","pc-tableau","S’appuie sur"),DL("pc-somme","pc-indices","S’appuie sur"),
+ DL("pc-ex-affectation","pc-remplacement","Illustre"),DL("pc-ex-affectation","pc-unique","Illustre"),DL("pc-ex-affectation","pc-affectation","Illustre"),
+ DL("pc-ex-indices","pc-indices","Illustre"),DL("pc-ex-indices","pc-tableau","Illustre"),DL("pc-ex-somme","pc-somme","Illustre"),
+ DL("pc-cx-lua","pc-indices","Met à l’épreuve"),DL("pc-cx-parametre","pc-avant-lecture","Met à l’épreuve")
+];
+const STORE="knowledge-explorer-v7-html";
+const ZMIN=.7,ZMAX=3,ROOT_R=40,NODE_R=22;
+const mqNarrow=matchMedia("(max-width:760px)"),mqReduce=matchMedia("(prefers-reduced-motion: reduce)"),mqTouch=matchMedia("(pointer:coarse)");
+let db={items:[],links:[]},selected=null,editing=null,zoom=1,pan={x:0,y:0},geo={W:700,H:510,BH:510,zmax:3},lastW=0,focusMode=false,layoutCache={key:"",val:null};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=> "k"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const behavior=()=>mqReduce.matches?"auto":"smooth";
+const item=id=>db.items.find(x=>x.id===id);
+const itemName=id=>item(id)?.name||"Élément inconnu";
+const EMPTY_DETAIL="Sélectionne un élément du graphe ou de la bibliothèque.";
+
+/* ---------- Retour utilisateur : toast + confirmation (remplace confirm(), bloqué dans certaines vues web iOS) ---------- */
+let toastTimer=0;
+function say(s){const m=$("message");m.textContent=s;m.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>m.classList.remove("show"),3500)}
+function ask(text,okLabel="Confirmer",danger=false){return new Promise(resolve=>{
+ const m=$("modal"),ok=$("modalOk"),cancel=$("modalCancel"),prev=document.activeElement;
+ $("modalText").textContent=text;ok.textContent=okLabel;ok.classList.toggle("danger",danger);m.hidden=false;ok.focus();
+ const onKey=e=>{if(e.key==="Escape")done(false)};
+ const done=v=>{m.hidden=true;ok.onclick=cancel.onclick=m.onclick=null;document.removeEventListener("keydown",onKey);if(prev&&prev.tagName==="BUTTON")prev.focus();resolve(v)};
+ ok.onclick=()=>done(true);cancel.onclick=()=>done(false);m.onclick=e=>{if(e.target===m)done(false)};document.addEventListener("keydown",onKey);
+})}
+
+/* ---------- Données ---------- */
+function normalize(p){
+ if(!p||!Array.isArray(p.items)||!Array.isArray(p.links))return null;
+ const items=p.items.filter(x=>x&&typeof x==="object").map(x=>{const y={...x,id:String(x.id??uid()),type:TYPES.includes(x.type)?x.type:"Concept",status:STATUSES.includes(x.status)?x.status:"À examiner",life:x.life==="Archivé"||x.status==="Abandonné"?"Archivé":"Actif",name:String(x.name||"Sans nom"),formulation:String(x.formulation||""),foundations:cleanFoundations(x),fields:cleanFields(x.fields),level:clamp(parseInt(x.level,10)||0,0,2),seen:+x.seen||0};delete y.foundation;return y});
+ const ids=new Set(items.map(x=>x.id));
+ const links=p.links.filter(r=>r&&ids.has(String(r.source))&&ids.has(String(r.target))).map(r=>({...r,id:String(r.id??uid()),source:String(r.source),target:String(r.target),type:String(r.type||""),note:String(r.note||"")}));
+ const byId=new Map(items.map(x=>[x.id,x])),seenL=new Set(),out=[];
+ links.map(r=>migrateLink(r,byId)).forEach(r=>{const k=(r.type===CONTRA?[r.source,r.target].sort().join("|"):r.source+"|"+r.target)+"|"+r.type;if(!seenL.has(k)){seenL.add(k);out.push(r)}});
+ /* Anciennes mentions textuelles (v8) supprimées dès que la relation correspondante existe : la relation est la source de vérité */
+ items.forEach(x=>{const f=x.fields;if(x.type==="Exemple"&&f.target&&out.some(r=>r.source===x.id&&r.type==="Illustre"))delete f.target;if(x.type==="Contre-exemple"&&f.claim&&out.some(r=>r.source===x.id&&r.type==="Met à l’épreuve"))delete f.claim});
+ return {items,links:out};
+}
+function cleanFields(f){const o={};if(f&&typeof f==="object")Object.keys(f).forEach(k=>{const v=String(f[k]??"").trim();if(v)o[k]=v});return o}
+function cleanFoundations(x){if(Array.isArray(x.foundations))return x.foundations.filter(f=>f&&String(f.text??"").trim()).map(f=>({type:FOUND_TYPES.includes(f.type)?f.type:"Non précisé",text:String(f.text).trim()}));const t=String(x.foundation??"").trim();return t?[{type:"Non précisé",text:t}]:[]}
+/* Anciennes relations (v7, v8) → relations du modèle (v9) */
+function migrateLink(r,byId){const s=byId.get(r.source),t=byId.get(r.target);if(!s||!t)return r;const rev=type=>({...r,source:r.target,target:r.source,type});
+ if(r.type==="Est défini par"&&s.type==="Concept"&&t.type==="Propriété")return rev("Définit");
+ if(r.type==="Porte sur"&&AFFIRMATIONS.includes(s.type)&&t.type==="Exemple")return rev("Illustre");
+ if(r.type==="Porte sur"&&s.type==="Propriété")return {...r,type:"Caractérise"};
+ if(r.type==="S’applique à")return {...r,type:"Porte sur"};
+ if(r.type==="Contient l’étape")return {...r,type:"Contient"};
+ if(s.type==="Procédure"&&(r.type==="Mobilise"||r.type==="Applique")){if(t.type==="Procédure")return {...r,type:"Contient"};if(t.type==="Règle")return {...r,type:kindOf(t)==="Descriptive"?"S’appuie sur":"Applique"};return {...r,type:"S’appuie sur"}}
+ return r}
+function demoData(){const items=DEMO.map(x=>({...x,fields:{...x.fields},foundations:x.foundations.map(f=>({...f})),level:0,seen:0}));items.forEach(x=>{x.formulation=compose(x.type,x.name,x.fields,x.id,DEMO_LINKS,items)});return {items,links:DEMO_LINKS.map(x=>({...x}))}}
+function persist(){db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}});try{localStorage.setItem(STORE,JSON.stringify(db))}catch(e){say("Stockage local indisponible : pense à exporter ta base JSON.")}}
+function load(){try{const raw=localStorage.getItem(STORE);if(raw){const p=normalize(JSON.parse(raw));if(p&&!(p.items.length===6&&p.items.every(x=>OLD_DEMO.has(x.id)))){db=p;return}}}catch(e){}db=demoData()}
+
+/* ---------- Navigation ---------- */
+function setView(v){
+ ["explore","edit","links","learn","library"].forEach(k=>$(k).hidden=k!==v);
+ document.querySelectorAll("[data-view]").forEach(b=>{const on=b.dataset.view===v;b.classList.toggle("active",on);on?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current")});
+ window.scrollTo(0,0);
+ if(v==="explore")draw();if(v==="links")renderLinks();if(v==="library")renderLibrary();if(v==="learn")renderLearn();
+}
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
+
+/* ---------- Graphe : géométrie adaptée à la largeur réelle (1 unité = 1 px) ---------- */
+/* Ellipse échantillonnée : placement à longueur d'arc égale (évite l'entassement en haut/bas) */
+function ellipse(a,b){const N=240,p=[],cum=[0];for(let i=0;i<=N;i++){const t=-Math.PI/2+2*Math.PI*i/N;p.push([Math.cos(t)*a,Math.sin(t)*b]);if(i)cum.push(cum[i-1]+Math.hypot(p[i][0]-p[i-1][0],p[i][1]-p[i-1][1]))}
+ return {len:cum[N],at(s){let j=1;while(j<N&&cum[j]<s)j++;const f=(s-cum[j-1])/((cum[j]-cum[j-1])||1);return[p[j-1][0]+(p[j][0]-p[j-1][0])*f,p[j-1][1]+(p[j][1]-p[j-1][1])*f]}}}
+/* Anneaux concentriques espacés ; si trop d'éléments, l'espace virtuel s'agrandit (échelle S) et le zoom permet d'y entrer */
+function layout(n,bw,bh){
+ const narrow=bw<520,gap=narrow?88:118,step=74,minR=ROOT_R+NODE_R+14;let best=null;
+ for(let S=1;S<=6.01;S+=.1){
+  const W=bw*S,H=bh*S,rx=W/2-(narrow?50:72),ry=H/2-(narrow?44:52),rings=[];
+  for(let k=0;k<12;k++){const a=rx-k*step,b=ry-k*step;if(Math.min(a,b)<minR){if(!k)rings.push(ellipse(Math.max(a,minR),Math.max(b,minR)));break}rings.push(ellipse(a,b))}
+  rings.forEach(r=>r.cap=Math.max(1,Math.floor(r.len/gap)));
+  best={S,W,H,rings};if(rings.reduce((s,r)=>s+r.cap,0)>=n)break;
+ }
+ const {W,H,rings}=best,cx=W/2,cy=H/2,counts=[];let left=n;
+ rings.forEach(r=>{const c=Math.min(r.cap,left);counts.push(c);left-=c});counts[0]+=left;
+ const pts=[];
+ rings.forEach((r,k)=>{const c=counts[k];for(let i=0;i<c;i++){const [x,y]=r.at(r.len*(i+(k%2?.5:0))/c);pts.push({x:+(cx+x).toFixed(1),y:+(cy+y).toFixed(1)})}});
+ return {S:best.S,W,H,pts};
+}
+const lc=t=>t.charAt(0).toLowerCase()+t.slice(1);
+function neighborsOf(id){const n=new Set();db.links.forEach(r=>{if(r.source===id)n.add(r.target);else if(r.target===id)n.add(r.source)});n.delete(id);return n}
+/* Disposition par forces (Fruchterman-Reingold), déterministe : les éléments reliés se rapprochent, les autres se repoussent */
+function force(ids,W,H,mx,AX){
+ const n=ids.length,ix=new Map(ids.map((id,i)=>[id,i])),E=[],AY=62,top=34,bot=46;
+ db.links.forEach(r=>{const a=ix.get(r.source),b=ix.get(r.target);if(a!=null&&b!=null&&a!==b)E.push([a,b])});
+ if(n===1)return[{x:W/2,y:H/2}];
+ const bw=W-2*mx,bh=H-top-bot,k=Math.sqrt(bw*bh/n)*.85,k2=k*k,cut2=9*k2,D=ids.map(()=>({x:0,y:0}));
+ const P=ids.map((_,i)=>{const a=i*2.399963,q=Math.sqrt((i+.5)/n);return{x:Math.cos(a)*q*bw/2,y:Math.sin(a)*q*bh/2}});
+ let t=Math.max(bw,bh)/5;
+ /* Simulation libre : répulsion locale (rayon 3k), attraction le long des relations, gravité elliptique vers le centre */
+ for(let it=0;it<400;it++){
+  for(const d of D){d.x=0;d.y=0}
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){let dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,d2=dx*dx+dy*dy;if(d2>cut2)continue;if(d2<1){dx=(i%2?1:-1);dy=(j%2?1:-1);d2=2}const f=k2/d2;D[i].x+=dx*f;D[i].y+=dy*f;D[j].x-=dx*f;D[j].y-=dy*f}
+  for(const [a,b] of E){const dx=P[a].x-P[b].x,dy=P[a].y-P[b].y,f=Math.hypot(dx,dy)/k;D[a].x-=dx*f;D[a].y-=dy*f;D[b].x+=dx*f;D[b].y+=dy*f}
+  for(let i=0;i<n;i++){D[i].x-=P[i].x/(bw/2)*k*.5;D[i].y-=P[i].y/(bh/2)*k*.5;const dl=Math.hypot(D[i].x,D[i].y);if(dl>0){const m=Math.min(dl,t)/dl;P[i].x+=D[i].x*m;P[i].y+=D[i].y*m}}
+  t=Math.max(t*.985,.5);
+ }
+ /* Ajustement au cadre (déformation limitée à 1,6×) */
+ let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;P.forEach(p=>{x0=Math.min(x0,p.x);x1=Math.max(x1,p.x);y0=Math.min(y0,p.y);y1=Math.max(y1,p.y)});
+ const sx=x1-x0>1?bw/(x1-x0):1,sy=y1-y0>1?bh/(y1-y0):1,sm=Math.min(sx,sy),fx=Math.min(sx,sm*1.6),fy=Math.min(sy,sm*1.6);
+ P.forEach(p=>{p.x=mx+(bw-(x1-x0)*fx)/2+(p.x-x0)*fx;p.y=top+(bh-(y1-y0)*fy)/2+(p.y-y0)*fy});
+ /* Écartement final : aucune étiquette ne se chevauche (ellipse AX × AY) */
+ for(let pass=0;pass<80;pass++){let any=false;
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){let ex=P[j].x-P[i].x,ey=P[j].y-P[i].y,q=Math.sqrt((ex/AX)**2+(ey/AY)**2);if(q>=1)continue;any=true;
+   if(q<1e-3){ex=AX*.5*((i+j)%2?1:-1);ey=AY*.3;q=Math.sqrt((ex/AX)**2+(ey/AY)**2)}
+   const f=(1/q-1)/2;P[i].x=clamp(P[i].x-ex*f,mx,W-mx);P[i].y=clamp(P[i].y-ey*f,top,H-bot);P[j].x=clamp(P[j].x+ex*f,mx,W-mx);P[j].y=clamp(P[j].y+ey*f,top,H-bot)}
+  if(!any)break}
+ return P.map(p=>({x:+p.x.toFixed(1),y:+p.y.toFixed(1)}));
+}
+function computeOverview(BW){
+ const narrow=BW<520,mx=narrow?48:64,AX=narrow?86:104,cell=AX*66*1.7;
+ const linked=new Set();db.links.forEach(r=>{if(item(r.source)&&item(r.target)&&r.source!==r.target){linked.add(r.source);linked.add(r.target)}});
+ const conn=db.items.filter(x=>linked.has(x.id)),iso=db.items.filter(x=>!linked.has(x.id));
+ const BH0=narrow?clamp(BW*1.05,300,560):clamp(BW*.62,320,520),Hmax=narrow?BW*2.2:BW*1.15;
+ let S=1,Hm=0;
+ if(conn.length){Hm=Math.max(BH0,conn.length*cell/BW);if(Hm>Hmax){S=Math.sqrt(Hm/Hmax);Hm=Hmax*S}}
+ const W=BW*S,pos={};let H=Hm,band=null;
+ if(conn.length){const P=force(conn.map(x=>x.id),W,Hm,mx,AX);conn.forEach((x,i)=>pos[x.id]=P[i])}
+ if(iso.length){const cw=narrow?96:116,rh=78,cols=Math.max(1,Math.floor((W-24)/cw)),used=Math.min(cols,iso.length),x0=(W-used*cw)/2+cw/2,y0=Hm+(conn.length?8:0),first=y0+56;
+  band={y:y0,label:`Sans relation (${iso.length})`,sep:conn.length>0};
+  iso.forEach((x,i)=>pos[x.id]={x:+(x0+(i%cols)*cw).toFixed(1),y:+(first+Math.floor(i/cols)*rh).toFixed(1)});
+  H=first+(Math.ceil(iso.length/cols)-1)*rh+48}
+ return {S,W,H:Math.max(H,120),pos,band};
+}
+function computeFocus(BW,id){
+ const narrow=BW<520,nb=[...neighborsOf(id)].filter(item),BH0=narrow?clamp(BW*1.1,320,560):clamp(BW*.66,340,520);
+ const L=layout(nb.length,BW,BH0),pos={[id]:{x:L.W/2,y:L.H/2}};nb.forEach((n,i)=>pos[n]=L.pts[i]);
+ return {S:L.S,W:L.W,H:L.H,pos,band:null};
+}
+function draw(){
+ const bw=Math.round($("graphbox").clientWidth);if(bw>0)lastW=bw;
+ const BW=lastW||700;
+ if(focusMode&&!(selected&&item(selected)))focusMode=false;
+ const key=[BW,viewMode,focusMode?selected:"",db.items.map(x=>x.id+":"+x.type).join("|"),db.links.map(r=>r.source+">"+r.target).join("|")].join("#");
+ if(layoutCache.key!==key)layoutCache={key,val:focusMode?computeFocus(BW,selected):viewMode==="roles"?computeRoles(BW):computeOverview(BW)};
+ const L=layoutCache.val,pos=L.pos,max=BW<520?13:18,R=NODE_R;
+ geo={W:L.W,H:L.H,BH:Math.round(L.H/L.S),zmax:Math.max(ZMAX,L.S*2.5)};
+ const sel=selected&&item(selected)?selected:null,nb=sel?neighborsOf(sel):null,dimOn=!!nb&&!focusMode,crowd=!focusMode&&!!nb&&nb.size>5;
+ let out="",labels="";
+ (L.bands||(L.band?[L.band]:[])).forEach(b=>{if(b.sep)out+=`<line class="sep" x1="12" y1="${b.y+6}" x2="${L.W-12}" y2="${b.y+6}"/>`;out+=`<text class="bandlabel" x="16" y="${b.y+30}">${esc(b.label)}</text>`});
+ if(L.rings)L.rings.forEach(g=>{out+=`<circle class="ring" cx="${g.cx}" cy="${g.cy}" r="${g.r.toFixed(1)}"/>`});
+ const groups={};db.links.forEach(r=>{if(pos[r.source]&&pos[r.target]&&r.source!==r.target){const k=[r.source,r.target].sort().join("\u0001");(groups[k]=groups[k]||[]).push(r)}});
+ Object.values(groups).forEach(g=>g.forEach((r,k)=>{
+  const c=r.type===CONTRA,hl=!!sel&&(r.source===sel||r.target===sel),A=pos[r.source],B=pos[r.target],[p,q]=[r.source,r.target].sort(),P=pos[p],Q=pos[q];
+  const d=Math.hypot(B.x-A.x,B.y-A.y)||1,ux=(B.x-A.x)/d,uy=(B.y-A.y)/d,nx=-(Q.y-P.y)/d,ny=(Q.x-P.x)/d,o=(k-(g.length-1)/2);
+  const ra=(r.source===sel?R+4:R)+3,rb=(r.target===sel?R+4:R)+(c?3:6);if(d<ra+rb+6)return;
+  const x1=A.x+ux*ra+nx*o*9,y1=A.y+uy*ra+ny*o*9,x2=B.x-ux*rb+nx*o*9,y2=B.y-uy*rb+ny*o*9;
+  out+=`<line class="rel${c?" contra":""}${r.type===PREREQ?" pre":""}${hl?" hl":""}${dimOn&&!hl?" dim":""}" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"${c?"":` marker-end="url(#${hl?"arrowHl":"arrow"})"`}/>`;
+  const fr=focusMode?.5:(r.source===sel?.64:.36); /* étiquette décalée vers le voisin : moins d'entassement autour d'un élément très relié */
+  if(hl&&!crowd)labels+=`<text class="elabel${c?" contra":""}" x="${(x1+(x2-x1)*fr+nx*o*14).toFixed(1)}" y="${(y1+(y2-y1)*fr+ny*o*14+3).toFixed(1)}">${esc(lc(r.type))}</text>`;
+ }));
+ if(L.rings)L.rings.forEach(g=>{if(g.label)out+=`<text class="ringlabel" x="${g.lx}" y="${g.ly}">${esc(g.label)}</text>`});
+ db.items.forEach(x=>{const p=pos[x.id];if(!p)return;const on=sel===x.id,label=x.name.length>max?x.name.slice(0,max-1)+"…":x.name,dim=dimOn&&!on&&!nb.has(x.id);
+  out+=`<g class="node${on?" selected":""}${dim?" dim":""}${x.life==="Archivé"?" archived":""}" data-node="${esc(x.id)}" role="button" tabindex="0" aria-label="${esc(x.name+", "+x.type)}"><circle cx="${p.x}" cy="${p.y}" r="${on?R+4:R}" fill="${COLORS[x.type]||COLORS.Concept}"/><text x="${p.x}" y="${p.y+R+(on?17:13)}">${esc(label)}</text></g>`});
+ $("drawing").innerHTML=out+labels;$("graph").style.height=geo.BH+"px";if(zoom>geo.zmax)zoom=geo.zmax;applyView();
+ const shownN=focusMode?Object.keys(pos).length:db.items.length;
+ $("graphCount").textContent=focusMode?`Voisinage : ${shownN} élément(s)`:shownN+" élément(s)";
+ $("graphNotice").textContent=crowd?`« ${item(sel).name} » a ${nb.size} voisins : touche « Voisinage » pour lire les verbes des relations.`:focusMode?`Seuls « ${item(sel).name} » et ses voisins directs sont affichés. Touche un voisin pour te déplacer de proche en proche.`:!db.links.length?"Aucune relation enregistrée : la structure apparaîtra dès que tu relieras des éléments (onglet Relations).":viewMode==="roles"?(BW<520?"Vue par rôles, en bandes : concepts, puis propriétés et règles, procédures, exemples et contre-exemples. Touche un élément pour lire ses relations.":"Vue par rôles : au centre les concepts, puis les propriétés et les règles, les procédures, et à l’extérieur les exemples et contre-exemples. Touche un élément pour lire ses relations."):"Vue réseau : les éléments reliés se rapprochent. Touche un élément : ses relations s'affichent avec leur verbe. « Voisinage » n'affiche que lui et ses voisins.";
+ if(sel)$("graphNotice").textContent+=focusMode?" Touche une zone vide pour quitter le voisinage.":" Touche une zone vide du graphe (ou × sur la fiche) pour revenir à la vue d’ensemble.";
+ const fb=$("focusToggle");fb.disabled=!sel;fb.classList.toggle("on",focusMode);fb.setAttribute("aria-pressed",String(focusMode));fb.textContent=focusMode?"Tout afficher":"Voisinage";const vt=$("viewToggle");vt.textContent=viewMode==="roles"?"Vue réseau":"Vue par rôles";vt.disabled=focusMode;
+ $("legend").innerHTML=TYPES.map(t=>`<span><i style="background:${COLORS[t]}"></i>${t}</span>`).join("")+'<span><svg width="26" height="10" aria-hidden="true"><line x1="1" y1="5" x2="19" y2="5" stroke="#8b9bb0" stroke-width="1.5"/><path d="M18 1.5L25 5L18 8.5z" fill="#8b9bb0"/></svg>Relation (source → cible)</span><span><svg width="26" height="10" aria-hidden="true"><line x1="1" y1="5" x2="25" y2="5" stroke="#b42318" stroke-width="1.5" stroke-dasharray="4 3"/></svg>Contradiction</span><span><svg width="26" height="10" aria-hidden="true"><line x1="1" y1="5" x2="19" y2="5" stroke="#8b9bb0" stroke-width="1.5" stroke-dasharray="2 3"/><path d="M18 1.5L25 5L18 8.5z" fill="#8b9bb0"/></svg>Prérequis</span>';
+}
+/* Zoom/pan via viewBox (net, sans rognage) */
+function applyView(){
+ const {W,H}=geo,w=W/zoom,h=H/zoom,g=$("graph");let x=(W-w)/2+pan.x,y=(H-h)/2+pan.y;
+ if(zoom>1){x=clamp(x,0,W-w);y=clamp(y,0,H-h);pan.x=x-(W-w)/2;pan.y=y-(H-h)/2}else{x=(W-w)/2;y=(H-h)/2;pan.x=pan.y=0}
+ g.setAttribute("viewBox",`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
+ g.classList.toggle("pannable",zoom>1);$("zoomIn").disabled=zoom>=geo.zmax;$("zoomOut").disabled=zoom<=ZMIN;
+}
+function setZoom(z){zoom=clamp(Math.round(z*100)/100,ZMIN,geo.zmax);applyView()}
+$("zoomIn").addEventListener("click",()=>setZoom(zoom*1.25));
+$("zoomOut").addEventListener("click",()=>setZoom(zoom/1.25));
+/* Retour à la vue initiale : désélection, sortie du voisinage, zoom 1:1 */
+function resetView(){selected=null;pan={x:0,y:0};zoom=1;clearDetail();draw()}
+/* Un niveau en arrière : voisinage → vue d’ensemble avec sélection → vue d’ensemble sans sélection */
+function stepBack(){if(focusMode){focusMode=false;pan={x:0,y:0};zoom=1;draw();return true}if(selected){selected=null;clearDetail();draw();return true}return false}
+$("zoomReset").addEventListener("click",resetView);
+$("closeDetail").addEventListener("click",()=>{resetView();if(mqNarrow.matches)window.scrollTo({top:0,behavior:behavior()})});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("modal").hidden&&!isText(document.activeElement)&&!$("explore").hidden)stepBack()});
+$("focusToggle").addEventListener("click",()=>{if(!selected)return;focusMode=!focusMode;pan={x:0,y:0};zoom=1;draw()});
+
+const svg=$("graph");let drag=null,suppressClick=false,pinchStart=1;
+svg.addEventListener("pointerdown",e=>{suppressClick=false;if(zoom<=1||(e.pointerType==="mouse"&&e.button!==0)||drag)return;drag={id:e.pointerId,x:e.clientX,y:e.clientY,px:pan.x,py:pan.y,moved:false}});
+svg.addEventListener("pointermove",e=>{if(!drag||e.pointerId!==drag.id)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+ if(!drag.moved){if(Math.hypot(dx,dy)<6)return;drag.moved=true;try{svg.setPointerCapture(e.pointerId)}catch(_){}}
+ const k=(geo.W/zoom)/(svg.clientWidth||geo.W);pan.x=drag.px-dx*k;pan.y=drag.py-dy*k;applyView()});
+const endDrag=e=>{if(drag&&e.pointerId===drag.id){suppressClick=drag.moved;drag=null}};
+svg.addEventListener("pointerup",endDrag);svg.addEventListener("pointercancel",endDrag);
+/* Pincement natif Safari iOS / trackpad macOS */
+svg.addEventListener("gesturestart",e=>{e.preventDefault();drag=null;pinchStart=zoom},{passive:false});
+svg.addEventListener("gesturechange",e=>{e.preventDefault();setZoom(pinchStart*e.scale)},{passive:false});
+svg.addEventListener("gestureend",e=>e.preventDefault(),{passive:false});
+/* Pincement trackpad Chrome/Edge */
+svg.addEventListener("wheel",e=>{if(!e.ctrlKey)return;e.preventDefault();setZoom(zoom*(1-e.deltaY*.01))},{passive:false});
+svg.addEventListener("click",e=>{if(suppressClick){suppressClick=false;return}const g=e.target.closest&&e.target.closest("[data-node]");if(g)select(g.getAttribute("data-node"),true);else stepBack()});
+svg.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const g=e.target.closest&&e.target.closest("[data-node]");if(g){e.preventDefault();select(g.getAttribute("data-node"),true)}});
+const onResize=()=>{const w=Math.round($("graphbox").clientWidth);if(w>0&&w!==lastW)draw()};
+if("ResizeObserver" in window)new ResizeObserver(()=>requestAnimationFrame(onResize)).observe($("graphbox"));else addEventListener("resize",onResize);
+
+/* ---------- Fiche ---------- */
+function clearDetail(){focusMode=false;$("closeDetail").hidden=true;$("detail").className="empty";$("detail").textContent=EMPTY_DETAIL;$("detailActions").hidden=true;$("selectedType").textContent="Aucune sélection"}
+function select(id,reveal){
+ selected=id;const x=item(id);if(!x)return;
+ $("selectedType").textContent=x.type;
+ const rs=db.links.filter(r=>r.source===id||r.target===id);
+ $("detail").className="";
+ $("detail").innerHTML=detailHTML(x,rs);
+ $("detail").querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.goto,false)));
+ $("detailActions").hidden=false;$("closeDetail").hidden=false;draw();
+ if(reveal&&!focusMode&&mqNarrow.matches)$("detailPanel").scrollIntoView({behavior:behavior(),block:"start"});
+}
+$("backGraph").addEventListener("click",()=>window.scrollTo({top:0,behavior:behavior()}));
+
+/* ---------- Constructeur ---------- */
+function resetForm(){editing=null;draft={};$("editorForm").reset();renderTemplate($("type").value,draft);$("status").value="À examiner";$("life").value="Actif";renderFoundations([]);$("editorTitle").textContent="Créer un élément";$("editMode").textContent="Nouveau";$("saveItem").textContent="Créer l'élément";$("deleteItem").hidden=true}
+function editItem(id){const x=item(id);if(!x)return;editing=id;draft={...(x.fields||{})};$("type").value=x.type;renderTemplate(x.type,draft);$("status").value=x.status;$("name").value=x.name;$("formulation").value=x.formulation||"";$("status").value=STATUSES.includes(x.status)?x.status:"À examiner";$("life").value=x.life||"Actif";renderFoundations(x.foundations||[]);$("editorTitle").textContent="Modifier un élément";$("editMode").textContent="Modification";$("saveItem").textContent="Enregistrer";$("deleteItem").hidden=false;setView("edit")}
+$("editorForm").addEventListener("submit",async e=>{e.preventDefault();const nm=$("name").value.trim();if(!nm){say("La désignation est obligatoire.");$("name").focus();return}
+ if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+ const prev=editing?item(editing):null,id=editing||uid(),type=$("type").value,fields=readFields(),typed=$("formulation").value.trim(),auto=!typed||typed===compose(type,nm,fields,id)||!!(prev&&prev.autoForm&&typed===prev.formulation);
+ const x={...(prev||{}),id,type,status:$("status").value,name:nm,fields,formulation:auto?compose(type,nm,fields,id):typed,autoForm:auto,foundations:readFoundations(),life:$("life").value,level:prev?prev.level||0:0,seen:prev?prev.seen||0:0};
+ if(editing){const get=id=>id===x.id?x:item(id),bad=db.links.filter(r=>(r.source===x.id||r.target===x.id)&&!relCheck(r)&&relCheck(r,get));
+  if(bad.length){if(!await ask(`Ce changement rend ${bad.length} relation(s) incompatible(s) avec le modèle :\n${bad.map(r=>"• "+get(r.source).name+" — "+r.type+" → "+get(r.target).name+" : "+relCheck(r,get)).join("\n")}\n\nLes supprimer et enregistrer ?`,"Supprimer et enregistrer",true))return;const del=new Set(bad.map(r=>r.id));db.links=db.links.filter(r=>!del.has(r.id))}}
+ if(editing){const i=db.items.findIndex(y=>y.id===editing);if(i>=0)db.items[i]=x;say("Élément modifié.")}else{db.items.push(x);say("Élément créé.")}
+ selected=x.id;persist();resetForm();refreshSelects();setView("explore");select(x.id);renderLibrary()});
+$("clearForm").addEventListener("click",resetForm);
+/* iOS : la touche « suivant » envoie Entrée, ce qui soumettait le formulaire. Entrée passe au champ suivant ; on enregistre avec le bouton. */
+$("editorForm").addEventListener("keydown",e=>{if(e.key!=="Enter"||e.isComposing||e.target.tagName!=="INPUT")return;e.preventDefault();const f=[...$("editorForm").querySelectorAll("input,select,textarea")].filter(el=>!el.disabled&&!el.closest("[hidden]")&&el.offsetParent!==null),i=f.indexOf(e.target);if(i>=0&&i<f.length-1)f[i+1].focus();else e.target.blur()});
+$("deleteItem").addEventListener("click",async()=>{if(!editing)return;const id=editing;if(!await ask("Supprimer cet élément et ses relations ?","Supprimer",true))return;db.items=db.items.filter(x=>x.id!==id);db.links=db.links.filter(r=>r.source!==id&&r.target!==id);selected=null;persist();resetForm();refreshSelects();clearDetail();setView("explore");say("Élément supprimé.")});
+$("addGraph").addEventListener("click",()=>{resetForm();setView("edit")});
+$("editSelected").addEventListener("click",()=>editItem(selected));
+$("linkSelected").addEventListener("click",()=>{setView("links");if(selected)$("source").value=selected;refreshRelationTypes()});
+
+/* ---------- Relations ---------- */
+function refreshSelects(){const opts=db.items.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.type)}</option>`).join("");const oldS=$("source").value,oldT=$("target").value;$("source").innerHTML=opts||'<option value="">Aucun élément</option>';$("target").innerHTML=opts||'<option value="">Aucun élément</option>';if(item(oldS))$("source").value=oldS;else if(selected&&item(selected))$("source").value=selected;if(item(oldT))$("target").value=oldT;refreshRelationTypes()}
+function relOptions(src){if(!src)return {model:[],peda:[]};const m=(RULES[src.type]||[]).map(r=>r[0]);if(AFFIRMATIONS.includes(src.type))m.push(CONTRA);return {model:m,peda:[PREREQ]}}
+function validTargets(src,rel){if(!src||!rel)return[];const get=id=>id===src.id?src:item(id);return db.items.filter(x=>x.id!==src.id&&x.life!=="Archivé"&&!relCheck({source:src.id,target:x.id,type:rel},get))}
+function refreshRelationTypes(){const s=item($("source").value),o=relOptions(s),opt=v=>`<option value="${esc(v)}">${esc(v)}</option>`;
+ $("relationType").innerHTML=s?(o.model.length?`<optgroup label="Relations du modèle">${o.model.map(opt).join("")}</optgroup>`:"")+`<optgroup label="Relation pédagogique (hors modèle)">${o.peda.map(opt).join("")}</optgroup>`:'<option value="">Aucune relation disponible</option>';refreshTargets()}
+function refreshTargets(){const s=item($("source").value),rel=$("relationType").value,valid=validTargets(s,rel);
+ $("target").innerHTML=valid.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.type)}${x.type==="Règle"&&kindOf(x)?" ("+esc(kindOf(x).toLowerCase())+")":""}</option>`).join("")||'<option value="">Aucune cible compatible</option>';$("addRelation").disabled=!valid.length;
+ const nk=db.items.filter(x=>x.type==="Règle"&&!kindOf(x)&&x.life!=="Archivé").length;
+ $("relHelp").textContent=(REL_HELP[rel]||"")+((rel==="Applique"||rel==="S’appuie sur")&&nk?` ${nk} règle(s) sans nature précisée (descriptive ou d’action) ne sont pas proposées.`:"")}
+$("source").addEventListener("change",refreshRelationTypes);$("relationType").addEventListener("change",refreshTargets);
+$("addRelation").addEventListener("click",()=>{const s=item($("source").value),t=item($("target").value),type=$("relationType").value;if(!s||!t||!type){say("Choisis une source, une relation et une cible compatibles.");return}if(db.links.some(r=>r.source===s.id&&r.target===t.id&&r.type===type)||(type==="Se contredit avec"&&db.links.some(r=>r.source===t.id&&r.target===s.id&&r.type===type))){say("Cette relation existe déjà.");return}if(!validTargets(s,type).some(x=>x.id===t.id)){say("Cette relation n’est pas compatible avec les types choisis.");return}if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();db.links.push({id:uid(),source:s.id,target:t.id,type,note:$("relationNote").value.trim()});$("relationNote").value="";persist();renderLinks();draw();if(selected)select(selected);say("Relation ajoutée ; le graphe est actualisé.")});
+$("relationNote").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.target.blur()}});
+function renderLinks(){refreshSelects();$("relationsList").innerHTML=db.links.length?db.links.map(r=>`<div class="itemrow"><span class="name">${esc(itemName(r.source))} <b>— ${esc(r.type)} →</b> ${esc(itemName(r.target))}${r.note?' <span class="muted">('+esc(r.note)+')</span>':""}${relCheck(r)?' <span class="warn">⚠ '+esc(relCheck(r))+'</span>':""}</span><button data-remove-link="${esc(r.id)}" aria-label="Supprimer la relation">×</button></div>`).join(""):'<div class="empty">Aucune relation enregistrée.</div>';$("relationsList").querySelectorAll("[data-remove-link]").forEach(b=>b.addEventListener("click",()=>{db.links=db.links.filter(r=>r.id!==b.dataset.removeLink);persist();renderLinks();draw();if(selected)select(selected);say("Relation supprimée.")}))}
+
+/* ---------- Bibliothèque ---------- */
+function renderLibrary(){const q=$("search").value.toLowerCase(),f=$("filter").value;const rows=db.items.filter(x=>(f==="Tous"||x.type===f)&&(`${x.name} ${x.formulation||""} ${Object.values(x.fields||{}).join(" ")} ${(x.foundations||[]).map(f=>f.text).join(" ")}`).toLowerCase().includes(q));$("libraryCount").textContent=db.items.length+" éléments";$("libraryList").innerHTML=rows.length?rows.map(x=>`<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${esc(x.type)} · ${esc(x.status)}${x.life==="Archivé"?" · archivé":""} · ${conformity(x).length?conformity(x).length+" écart(s) au modèle":"conforme"} ${badge(x)}</div></span><button data-open="${esc(x.id)}">Voir</button><button data-edit="${esc(x.id)}">Modifier</button></div>`).join(""):'<div class="empty">Aucun résultat.</div>';$("libraryList").querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>{setView("explore");select(b.dataset.open,true)}));$("libraryList").querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)))}
+$("search").addEventListener("input",renderLibrary);$("filter").addEventListener("change",renderLibrary);
+$("search").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.target.blur()}});
+
+/* ---------- Export : feuille de partage iOS (→ Enregistrer dans Fichiers), sinon téléchargement ---------- */
+function download(json,name){const url=URL.createObjectURL(new Blob([json],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download=name;a.rel="noopener";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);say("Export JSON généré.")}
+$("exportData").addEventListener("click",async()=>{
+ const name="explorateur-connaissances-v9.json",json=JSON.stringify({format:"modele-representation-connaissance",version:9,items:db.items,links:db.links},null,2);
+ if(mqTouch.matches&&navigator.share&&navigator.canShare&&typeof File==="function"){
+  const file=new File([json],name,{type:"application/json"});let ok=false;try{ok=navigator.canShare({files:[file]})}catch(_){}
+  if(ok){try{await navigator.share({files:[file],title:"Explorateur de connaissances"});say("Export JSON partagé.");return}catch(e){if(e&&e.name==="AbortError")return}}
+ }
+ download(json,name);
+});
+/* ---------- Import : <label> natif (fiable sur iOS), pas de filtre accept (évite les .json grisés dans Fichiers) ---------- */
+const readText=f=>typeof f.text==="function"?f.text():new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsText(f)});
+$("importData").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("fileInput").click()}});
+$("fileInput").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;try{const p=normalize(JSON.parse(await readText(f)));if(!p)throw Error("format");const g=id=>p.items.find(x=>x.id===id),nb=p.links.filter(r=>relCheck(r,g)).length;if(!await ask(`Remplacer les données actuelles par ce fichier (${p.items.length} éléments, ${p.links.length} relations) ?${nb?`\n\n${nb} relation(s) ne respectent pas le modèle : elles seront conservées et signalées dans le contrôle.`:""}`,"Remplacer",true))return;db=p;selected=null;persist();draw();renderLibrary();renderLinks();clearDetail();say(nb?`Import terminé : ${nb} relation(s) à vérifier.`:"Import terminé.")}catch(err){say("Fichier JSON invalide ou incompatible.")}finally{$("fileInput").value=""}});
+
+/* ---------- Clavier iOS : masque la barre d'onglets pendant la saisie ---------- */
+const isText=el=>el&&el.matches&&el.matches("input:not([type=file]),textarea");
+document.addEventListener("focusin",e=>{if(isText(e.target))document.body.classList.add("typing")});
+document.addEventListener("focusout",()=>setTimeout(()=>{if(!isText(document.activeElement))document.body.classList.remove("typing")},60));
+
+/* ---------- Gabarits : saisie guidée et composition de la formulation ---------- */
+let draft={};
+function renderTemplate(type,vals){const m=MODEL[type];if(!m){$("templateFields").innerHTML="";return}
+ $("templateFields").innerHTML=`<div class="hint"><b>${esc(type)}</b> — ${esc(m.def)}<br>Gabarit : « ${esc(m.tpl)} »${m.note?`<br>${esc(m.note)}`:""}</div>`+m.fields.map(f=>{const id="f_"+f.k,val=vals[f.k]||"";let ctl;
+  if(f.options)ctl=`<select id="${id}" data-f="${f.k}">${f.options.map((o,i)=>`<option value="${i?esc(o):""}"${(i?o:"")===val?" selected":""}>${esc(o)}</option>`).join("")}</select>`;
+  else if(f.area)ctl=`<textarea id="${id}" data-f="${f.k}" placeholder="${esc(f.ph||"")}">${esc(val)}</textarea>`;
+  else ctl=`<input id="${id}" data-f="${f.k}" value="${esc(val)}" placeholder="${esc(f.ph||"")}" autocomplete="off" enterkeyhint="next">`;
+  return `<div class="field"><label for="${id}">${esc(f.label)}</label>${ctl}</div>`}).join("");
+ const em=$("f_exceptionMode"),ex=$("f_exception");if(em&&ex){const sync=()=>{ex.closest(".field").hidden=em.value!=="Exception réelle"};em.addEventListener("change",sync);sync()}}
+function readFields(){const o={};$("templateFields").querySelectorAll("[data-f]").forEach(el=>{const v=el.value.trim();if(v&&!el.closest("[hidden]"))o[el.dataset.f]=v});return o}
+const dot=t=>/[.!?…»]$/.test(t)?t:t+".";
+function linkedDesc(id,type,links=db.links,items=db.items){const n=links.filter(r=>r.source===id&&r.type===type).map(r=>items.find(x=>x.id===r.target)).filter(Boolean).map(t=>`${ART[t.type]||""} « ${t.name} »`.trim());return n.length<2?n.join(""):n.slice(0,-1).join(", ")+" et "+n[n.length-1]}
+function compose(type,name,f,id,links,items){f=f||{};if(!Object.keys(f).some(k=>f[k]))return"";const v=(k,ph)=>(f[k]||"").trim()||ph;
+ switch(type){
+  case "Concept":return dot(`${name} : ${v("definition","[définition]")}`)+(f.traits?" Caractéristiques : "+dot(f.traits):"");
+  case "Propriété":return dot(`Dans le domaine ${v("domain","[D]")}, ${v("subject","[concept]")} ${v("relation","[relation]")} ${v("object","[caractéristique ou autre concept]")}`);
+  case "Règle":{const m=f.exceptionMode,exc=m==="Exception réelle"?`, sauf si ${v("exception","[exception]")}`:m==="Aucune exception identifiée dans ce domaine"?" (aucune exception identifiée dans ce domaine)":m==="Limites encore inconnues"?" (limites encore inconnues)":", sauf si [exception à examiner]";
+   return dot(`Dans le contexte ${v("context","[C]")}, si ${v("condition","[condition]")}, alors ${v("conclusion","[conséquence ou action]")}${exc}`)}
+  case "Procédure":return `Dans le contexte ${v("context","[C]")}, pour ${v("goal","[but]")}, à partir de ${v("inputs","[entrées et préconditions]")} :\n${v("steps","[étapes, choix ou répétitions]")}\nElle produit ${v("result","[résultat]")}, si ${dot(v("success","[conditions de réussite]"))}`;
+  case "Exemple":return dot(`« ${v("case","[cas concret]")} » illustre ${linkedDesc(id,"Illustre",links,items)||"[élément illustré]"} parce que ${v("shown","[caractéristique montrée]")}`);
+  case "Contre-exemple":return dot(`« ${v("case","[cas]")} » montre que ${linkedDesc(id,"Met à l’épreuve",links,items)||f.claim||"[affirmation]"} ne s’applique pas lorsque ${v("condition","[condition]")}`);
+ }return""}
+$("type").addEventListener("change",()=>{draft={...draft,...readFields()};renderTemplate($("type").value,draft)});
+$("composeBtn").addEventListener("click",()=>{const t=compose($("type").value,$("name").value.trim()||"[désignation]",readFields(),editing);if(!t){say("Remplis d’abord au moins un champ du gabarit.");return}$("formulation").value=t;say("Formulation composée à partir du gabarit.")});
+
+/* ---------- Fondements structurés ---------- */
+function foundRow(f={}){return `<div class="foundrow"><select data-ft aria-label="Type de fondement">${FOUND_TYPES.map(t=>`<option${t===(f.type||"Non précisé")?" selected":""}>${esc(t)}</option>`).join("")}</select><input data-fx value="${esc(f.text||"")}" placeholder="Ex. : manuel, démonstration, expérience…" autocomplete="off" aria-label="Contenu du fondement"><button type="button" data-rm aria-label="Retirer ce fondement">×</button></div>`}
+function wireFound(){$("foundList").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{b.closest(".foundrow").remove();if(!$("foundList").children.length)renderFoundations([])})}
+function renderFoundations(list){$("foundList").innerHTML=(list.length?list:[{}]).map(foundRow).join("");wireFound()}
+function readFoundations(){return [...$("foundList").querySelectorAll(".foundrow")].map(r=>({type:r.querySelector("[data-ft]").value,text:r.querySelector("[data-fx]").value.trim()})).filter(f=>f.text)}
+$("addFound").addEventListener("click",()=>{$("foundList").insertAdjacentHTML("beforeend",foundRow());wireFound();$("foundList").lastElementChild.querySelector("input").focus()});
+
+/* ---------- Validité sémantique d'une relation (source de vérité : le tableau RULES) ---------- */
+function relCheck(r,get=item){const s=get(r.source),t=get(r.target);
+ if(!s||!t)return "élément manquant";if(r.source===r.target)return "un élément ne peut pas être relié à lui-même";
+ if(!KNOWN.has(r.type))return "type de relation inconnu du modèle";
+ if(r.type===PREREQ)return "";
+ if(r.type===CONTRA)return AFFIRMATIONS.includes(s.type)&&AFFIRMATIONS.includes(t.type)?"":"« Se contredit avec » ne relie que des propriétés et des règles";
+ const rule=(RULES[s.type]||[]).find(x=>x[0]===r.type);
+ if(!rule)return `un élément de type « ${s.type} » ne peut pas être source de « ${r.type} »`;
+ if(!rule[1].includes(t.type))return `« ${r.type} » ne peut pas viser un élément de type « ${t.type} »`;
+ if(rule[2]&&!rule[2](t))return rule[3];
+ return ""}
+
+/* ---------- Contrôle en deux niveaux : conformité au modèle / pistes d'enrichissement ---------- */
+const outRel=(x,...types)=>db.links.filter(r=>r.source===x.id&&types.includes(r.type));
+const inRel=(x,...types)=>db.links.filter(r=>r.target===x.id&&types.includes(r.type));
+const isOpen=c=>{const v=(c.fields||{}).verdict||"";return !v||v.startsWith("Condition")||v.startsWith("Énoncé à réviser")};
+function conformity(x){const f=x.fields||{},out=[],need=(k,msg)=>{if(!f[k])out.push(msg)};
+ switch(x.type){
+  case "Concept":need("definition","Définition (sens) non précisée.");need("traits","Caractéristiques non précisées.");break;
+  case "Propriété":need("domain","Domaine non précisé : une propriété n’est vraie qu’à l’intérieur d’un domaine.");need("subject","Concept concerné non renseigné.");need("relation","Relation non renseignée.");need("object","Caractéristique ou concept lié non renseigné.");
+   if(!outRel(x,"Définit","Caractérise","Met en relation").length)out.push("Propriété reliée à aucun concept (« Définit », « Caractérise » ou « Met en relation »).");
+   if(outRel(x,"Met en relation").length===1)out.push("« Met en relation » lie des concepts entre eux : relie la propriété à au moins deux concepts.");
+   {const d=new Set(outRel(x,"Définit").map(r=>r.target));if(outRel(x,"Caractérise").some(r=>d.has(r.target)))out.push("La propriété « définit » et « caractérise » le même concept : choisis l’une des deux relations.")}
+   break;
+  case "Règle":need("kind","Nature non précisée : règle descriptive ou d’action ?");need("context","Contexte non précisé.");need("condition","Condition (si…) absente.");need("conclusion","Conclusion (alors…) absente.");
+   if(!f.exceptionMode)out.push("Champ « sauf si » non examiné (convention 1).");else if(f.exceptionMode==="Exception réelle"&&!f.exception)out.push("Exception réelle annoncée mais non formulée.");
+   if(!outRel(x,"Porte sur").length)out.push("Règle reliée à aucun concept (« Porte sur ») : une règle est une affirmation sur des concepts.");break;
+  case "Procédure":need("goal","But non précisé.");need("inputs","Entrées et préconditions non précisées.");need("steps","Étapes absentes.");need("result","Résultat non précisé.");need("success","Conditions de réussite non précisées.");break;
+  case "Exemple":need("case","Cas concret non décrit.");need("shown","« Parce que… » absent : quelle caractéristique ce cas montre-t-il ?");
+   if(!outRel(x,"Illustre").length)out.push("Un exemple illustre un concept, une propriété, une règle ou une procédure : ajoute la relation « Illustre »."+(f.target?` Ancienne mention à convertir : « ${f.target} ».`:""));break;
+  case "Contre-exemple":need("case","Cas non décrit.");need("condition","Condition (« lorsque… ») non précisée.");
+   if(!outRel(x,"Met à l’épreuve").length)out.push("Un contre-exemple met un énoncé à l’épreuve : ajoute la relation « Met à l’épreuve »."+(f.claim?` Ancienne mention à convertir : ${f.claim}.`:""));
+   if(!f.verdict)out.push("Analyse à faire (convention 2) : hors domaine, condition à préciser ou énoncé à réviser ?");break;
+ }
+ db.links.filter(r=>r.source===x.id).forEach(r=>{const m=relCheck(r);if(m)out.push(`Relation « ${r.type} » vers « ${itemName(r.target)} » non conforme : ${m}.`)});
+ const open=inRel(x,"Met à l’épreuve").map(r=>item(r.source)).filter(c=>c&&c.life!=="Archivé"&&isOpen(c));
+ if(open.length&&x.status==="Établi")out.push(`Statut « Établi » alors qu’un contre-exemple n’est pas résolu (${open.map(c=>"« "+c.name+" »").join(", ")}) : un seul contre-exemple valable suffit à réfuter (convention 3). Analyse-le ou passe le statut à « Contesté ».`);
+ if(!x.formulation)out.push("Formulation absente (bouton « Composer »).");
+ return out}
+function enrichment(x){const out=[],fs=x.foundations||[];
+ if(["Concept","Propriété","Règle","Procédure"].includes(x.type)&&!inRel(x,"Illustre").length)out.push("Aucun exemple ne l’illustre.");
+ if(AFFIRMATIONS.includes(x.type)&&!inRel(x,"Met à l’épreuve").length)out.push("Pas encore mise à l’épreuve : un contre-exemple aiderait à délimiter son domaine.");
+ if(x.status==="Établi"&&!["Exemple","Contre-exemple"].includes(x.type)){if(!fs.length)out.push("Statut « Établi » sans fondement.");else if(fs.every(f=>f.type==="Observation ou expérience"))out.push("Fondée uniquement sur des observations : elles rendent l’énoncé crédible sans le prouver (convention 3).")}
+ if(fs.some(f=>f.type==="Non précisé"))out.push("Type de fondement non précisé.");
+ return out}
+const badge=x=>`<span class="lvl lvl${x.level||0}">${LEVELS[x.level||0]}</span>`;
+function detailHTML(x,rs){const f=x.fields||{},m=MODEL[x.type],c=conformity(x),e=enrichment(x),fs=x.foundations||[];
+ const rows=m?m.fields.filter(d=>f[d.k]&&!(d.k==="exceptionMode"&&f.exceptionMode==="Exception réelle"&&f.exception)).map(d=>`<dt>${esc(d.label)}</dt><dd>${esc(f[d.k])}</dd>`).join(""):"";
+ return `<div class="cardtitle">${esc(x.name)}</div><div class="muted">${esc(x.type)} · ${esc(x.status)}${x.life==="Archivé"?" · archivé":""} · ${badge(x)}</div>`+
+  `<div class="section"><b>Formulation</b><p style="white-space:pre-line">${esc(x.formulation)||'<span class="muted">Non renseignée</span>'}</p></div>`+
+  (rows?`<div class="section"><b>Selon le gabarit</b><dl class="fields">${rows}</dl></div>`:"")+
+  `<div class="section"><b>Fondements (${fs.length})</b>${fs.length?`<dl class="fields">${fs.map(g=>`<dt>${esc(g.type)}</dt><dd>${esc(g.text)}</dd>`).join("")}</dl>`:'<p class="muted">Aucun fondement renseigné.</p>'}</div>`+
+  `<div class="section"><b>Conformité au modèle</b>${c.length?`<ul class="issues">${c.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:'<p class="ok">Conforme au modèle de représentation.</p>'}</div>`+
+  (e.length?`<div class="section"><b>Pistes d’enrichissement</b> <span class="muted">(facultatif)</span><ul class="tips">${e.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`:"")+
+  `<div class="section"><b>Relations (${rs.length})</b>${rs.length?rs.map(r=>{const w=relCheck(r);return `<button class="relation" data-goto="${esc(r.source===x.id?r.target:r.source)}">${esc(itemName(r.source))} — <b>${esc(r.type)}</b> → ${esc(itemName(r.target))}${r.note?" · "+esc(r.note):""}${w?` <span class="warn">⚠ ${esc(w)}</span>`:""}</button>`}).join(""):'<p class="muted">Aucune relation enregistrée.</p>'}</div>`}
+
+/* ---------- Apprendre : rappel actif, parcours et contrôle ---------- */
+let quizId=null,revealed=false;
+const prereqs=x=>outRel(x,PREREQ).map(r=>item(r.target)).filter(Boolean);
+const excText=f=>f.exceptionMode==="Exception réelle"?f.exception:f.exceptionMode;
+function question(x){const f=x.fields||{};
+ switch(x.type){
+  case "Concept":if(f.definition)return {q:`Que désigne le concept « ${x.name} » ? Quelles sont ses caractéristiques ?`,a:[["Définition",f.definition],["Caractéristiques",f.traits]]};break;
+  case "Propriété":if(f.subject&&f.relation)return {q:`Dans le domaine ${f.domain||"[non précisé]"}, complète : « ${f.subject} ${f.relation} … »`,a:[["Réponse",f.object],["Énoncé complet",x.formulation]]};break;
+  case "Règle":if(f.condition)return {q:`${f.context?"Dans le contexte "+f.context+", s":"S"}i ${f.condition}, alors… ? Y a-t-il une exception ? Est-ce une règle descriptive ou d’action ?`,a:[["Alors",f.conclusion],["Sauf si",excText(f)],["Nature",f.kind]]};break;
+  case "Procédure":if(f.goal)return {q:`Pour ${f.goal}${f.inputs?", à partir de "+f.inputs:""} : quelles sont les étapes, et à quelles conditions la procédure réussit-elle ?`,a:[["Étapes",f.steps],["Résultat",f.result],["Conditions de réussite",f.success]]};break;
+  case "Exemple":if(f.case)return {q:`« ${f.case} » : qu’est-ce que ce cas illustre, et pourquoi ?`,a:[["Illustre",linkedDesc(x.id,"Illustre")],["Parce que",f.shown]]};break;
+  case "Contre-exemple":if(f.case)return {q:`« ${f.case} » : quel énoncé ce cas met-il à l’épreuve, et qu’en conclure ?`,a:[["Énoncé mis à l’épreuve",linkedDesc(x.id,"Met à l’épreuve")||f.claim],["Ne s’applique pas lorsque",f.condition],["Analyse",f.verdict]]};break;
+ }
+ return {q:`Énonce « ${x.name} » (${x.type.toLowerCase()}) avec tes propres mots.`,a:[["Formulation",x.formulation||"Non renseignée"]]}}
+const active=()=>db.items.filter(x=>x.life!=="Archivé");
+const pool=()=>{const f=$("quizFilter").value;return active().filter(x=>f==="Tous"||x.type===f)};
+function nextCard(skip){const P=[...pool()].sort((a,b)=>(a.level||0)-(b.level||0)||(a.seen||0)-(b.seen||0));quizId=P.length?(P.find(x=>x.id!==skip)||P[0]).id:null;revealed=false}
+function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();const x=item(quizId);
+ if(!x){$("quiz").innerHTML='<div class="empty">Aucun élément à réviser pour ce filtre.</div>';return}
+ const q=question(x),pre=prereqs(x).filter(p=>(p.level||0)<2),fs=x.foundations||[];
+ $("quiz").innerHTML=`<div class="qcard"><div class="panelhead" style="margin-bottom:6px"><span class="tag">${esc(x.type)}</span>${badge(x)}</div><div class="cardtitle">${esc(x.name)}</div><p class="prompt">${esc(q.q)}</p>`+
+  (pre.length?`<p class="notice">Prérequis pas encore acquis : ${pre.map(p=>"« "+esc(p.name)+" »").join(", ")}.</p>`:"")+
+  (revealed?`<div class="answer"><dl class="fields">${q.a.filter(a=>a[1]).map(a=>`<dt>${esc(a[0])}</dt><dd>${esc(a[1])}</dd>`).join("")}${fs.length?`<dt>Fondements</dt><dd>${esc(fs.map(g=>g.type+" : "+g.text).join("\n"))}</dd>`:""}</dl></div><p class="notice">Compare honnêtement avec ta réponse, puis évalue-toi.</p><div class="actions"><button data-rate="0">À revoir</button><button data-rate="1">Presque</button><button class="primary" data-rate="2">Acquis</button></div>`
+   :`<p class="notice">Réponds de mémoire, à voix haute ou par écrit, avant d’afficher la réponse.</p><div class="actions"><button class="primary" id="revealBtn">Afficher la réponse</button><button id="skipBtn">Passer</button></div>`)+`</div>`;
+ const rb=$("revealBtn");if(rb)rb.addEventListener("click",()=>{revealed=true;renderQuiz()});
+ const sb=$("skipBtn");if(sb)sb.addEventListener("click",()=>{nextCard(x.id);renderQuiz()});
+ $("quiz").querySelectorAll("[data-rate]").forEach(b=>b.addEventListener("click",()=>{x.level=+b.dataset.rate;x.seen=Date.now();persist();say(`« ${x.name} » : ${LEVELS[x.level].toLowerCase()}.`);nextCard(x.id);renderLearn()}))}
+const PATH=[["1. Les objets : concepts",["Concept"]],["2. Les affirmations : propriétés et règles",["Propriété","Règle"]],["3. Les méthodes : procédures",["Procédure"]],["4. Illustrer et délimiter : exemples et contre-exemples",["Exemple","Contre-exemple"]]];
+function depth(x,seen=new Set()){if(seen.has(x.id))return 0;seen.add(x.id);const p=prereqs(x);return p.length?1+Math.max(...p.map(y=>depth(y,seen))):0}
+function row(x,extra){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${extra} ${badge(x)}</div></span><button data-review="${esc(x.id)}">Réviser</button><button data-open="${esc(x.id)}">Voir</button></div>`}
+function qrow(x,is,word){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${is.length} ${word}${is.length>1?"s":""} : ${esc(is[0])}</div></span><button data-edit="${esc(x.id)}">Compléter</button><button data-open="${esc(x.id)}">Voir</button></div>`}
+function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventListener("click",()=>review(b.dataset.review)));el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>{setView("explore");select(b.dataset.open,true)}));el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)))}
+function renderLearn(){const act=active(),n=act.length,ok=act.filter(x=>(x.level||0)===2).length;
+ $("learnProgress").textContent=`${ok} / ${n} acquis`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";renderQuiz();
+ $("pathList").innerHTML=PATH.map(([title,types])=>{const xs=act.filter(x=>types.includes(x.type)).sort((a,b)=>depth(a)-depth(b)||a.name.localeCompare(b.name,"fr"));
+  return `<div class="pathgroup">${esc(title)}</div>`+(xs.length?xs.map(x=>{const p=prereqs(x);return row(x,esc(x.type)+(p.length?" · après "+p.map(y=>esc(y.name)).join(", "):""))}).join(""):'<p class="muted">Aucun élément.</p>')}).join("");wire($("pathList"));
+ const bad=act.map(x=>[x,conformity(x)]).filter(e=>e[1].length).sort((a,b)=>b[1].length-a[1].length),tips=act.map(x=>[x,enrichment(x)]).filter(e=>e[1].length);
+ $("qualityList").innerHTML=`<div class="pathgroup">Conformité au modèle</div><p class="muted">${n-bad.length} élément(s) conforme(s) sur ${n}.</p>`+(bad.length?bad.map(([x,is])=>qrow(x,is,"écart")).join(""):'<p class="ok">Tous les éléments respectent le modèle.</p>')+
+  `<div class="pathgroup">Pistes d’enrichissement (facultatif)</div>`+(tips.length?tips.map(([x,is])=>qrow(x,is,"piste")).join(""):'<p class="muted">Aucune piste.</p>');wire($("qualityList"))}
+function review(id){$("quizFilter").value="Tous";quizId=id;revealed=false;setView("learn")}
+$("quizFilter").addEventListener("change",()=>{nextCard();renderQuiz()});
+$("reviewSelected").addEventListener("click",()=>{if(selected)review(selected)});
+$("loadDemo").addEventListener("click",async()=>{if(!await ask("Remplacer les données actuelles par l’exemple guidé (pseudo-code) ? Exporte d’abord tes données si tu veux les conserver.","Remplacer",true))return;db=demoData();selected=null;persist();refreshSelects();clearDetail();draw();renderLibrary();say("Exemple guidé chargé.")});
+
+/* ---------- Rappel du modèle (généré à partir des mêmes définitions que l'application) ---------- */
+function relTable(){const rows=[];Object.entries(RULES).forEach(([src,l])=>l.forEach(r=>rows.push([src,r[0],r[4]||r[1].join(", ")])));rows.push(["Propriété ou Règle",CONTRA,"Propriété ou Règle"]);
+ return `<table class="reltable"><thead><tr><th>Source</th><th>Relation</th><th>Cible</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td><b>${esc(r[1])}</b></td><td>${esc(r[2])}</td></tr>`).join("")}</tbody></table><p class="muted">« ${PREREQ} » est une relation pédagogique, hors modèle : elle ordonne le parcours d’apprentissage.</p>`}
+$("modelMemo").innerHTML=Object.entries(MODEL).map(([t,m])=>`<p><b>${esc(t)}</b> : ${esc(m.def)}<br><span class="muted">« ${esc(m.tpl)} »</span></p>`).join("")+
+ `<p><b>Relations</b></p>${relTable()}`+
+ `<p><b>Conventions</b><br>1. « Sauf si… » est un champ à examiner : exception réelle, « aucune exception identifiée dans ce domaine » ou « limites encore inconnues ».<br>2. Un contre-exemple n’est pas automatiquement une exception : a) hors du domaine prévu ? il ne contredit pas l’énoncé dans son domaine, sans le prouver ; b) sinon, préciser la condition ; c) sinon, réviser l’énoncé, éventuellement en ajoutant une exception.<br>3. Un seul contre-exemple valable suffit à réfuter un énoncé ; aucun nombre d’exemples ne suffit à le prouver.</p>`+
+ `<p><b>Rôles</b><br>Concepts : les objets de connaissance. Propriétés et règles : les affirmations sur ces objets. Procédures : les méthodes composées d’étapes et de règles d’action. Exemples et contre-exemples : ils illustrent, testent et délimitent les éléments précédents.</p>`+
+ `<p><b>Statut et cycle de vie</b><br>Statut épistémique : ${STATUSES.join(", ")}. Cycle de vie : actif ou archivé ; un élément archivé reste consultable mais sort du parcours et du contrôle.</p>`+
+ `<p><b>Fondements</b><br>${FOUND_TYPES.slice(1).join(", ")}. Un élément peut en avoir plusieurs.</p>`;
+
+/* ---------- Vue par rôles : anneaux concentriques (grand écran) ou bandes (petit écran) ---------- */
+let viewMode=(()=>{try{return localStorage.getItem(STORE+"-vue")==="reseau"?"reseau":"roles"}catch(_){return "roles"}})();
+$("viewToggle").addEventListener("click",()=>{viewMode=viewMode==="roles"?"reseau":"roles";try{localStorage.setItem(STORE+"-vue",viewMode)}catch(_){}pan={x:0,y:0};zoom=1;draw()});
+const ROLE_GROUPS=[["Concepts",["Concept"]],["Propriétés et règles",["Propriété","Règle"]],["Procédures",["Procédure"]],["Exemples et contre-exemples",["Exemple","Contre-exemple"]]];
+/* Ordonne un groupe selon la position moyenne de ses voisins déjà placés (réduit les croisements) */
+function roleOrder(xs,ref,mean){const want=new Map();xs.forEach(x=>{const v=[...neighborsOf(x.id)].map(id=>ref.get(id)).filter(v=>v!=null);if(v.length)want.set(x.id,mean(v))});
+ const a=xs.filter(x=>want.has(x.id)).sort((p,q)=>want.get(p.id)-want.get(q.id)),b=xs.filter(x=>!want.has(x.id)).sort((p,q)=>p.name.localeCompare(q.name,"fr"));return {list:[...a,...b],want}}
+function computeRoles(BW){
+ const groups=ROLE_GROUPS.map(([label,types])=>({label,xs:db.items.filter(x=>types.includes(x.type))})).filter(g=>g.xs.length),pos={},ref=new Map();
+ if(BW<520){const cw=92,rh=76,mx=8,bands=[];let y=0;
+  groups.forEach((g,k)=>{const {list}=roleOrder(g.xs,ref,v=>v.reduce((s,a)=>s+a,0)/v.length),cols=Math.max(1,Math.floor((BW-2*mx)/cw)),first=y+62;
+   bands.push({y,label:`${g.label} (${g.xs.length})`,sep:k>0});
+   list.forEach((x,i)=>{const r=Math.floor(i/cols),inRow=Math.min(cols,list.length-r*cols),x0=(BW-inRow*cw)/2+cw/2;pos[x.id]={x:+(x0+(i%cols)*cw).toFixed(1),y:+(first+r*rh).toFixed(1)};ref.set(x.id,pos[x.id].x)});
+   y=first+(Math.ceil(list.length/cols)-1)*rh+44});
+  return {S:1,W:BW,H:Math.max(y,120),pos,bands}}
+ const gap=112,step=94,mx=66,top=40,bot=52,radii=[];let r=0;
+ groups.forEach((g,k)=>{const n=g.xs.length,need=n>1?gap/(2*Math.sin(Math.PI/n)):0;r=k===0?(n>1?Math.max(need,48):0):Math.max(r+step,need);radii.push(r)});
+ const Rm=radii.length?radii[radii.length-1]:0,W=Math.max(BW,2*(Rm+mx)),H0=2*Rm+top+bot,H=Math.max(H0,240),cx=W/2,cy=top+Rm+(H-H0)/2,rings=[];
+ const cmean=v=>Math.atan2(v.reduce((s,a)=>s+Math.sin(a),0),v.reduce((s,a)=>s+Math.cos(a),0));
+ groups.forEach((g,k)=>{const rr=radii[k],{list,want}=roleOrder(g.xs,ref,cmean),n=list.length;
+  if(rr===0){pos[list[0].id]={x:+cx.toFixed(1),y:+cy.toFixed(1)};return}
+  rings.push({cx:+cx.toFixed(1),cy:+cy.toFixed(1),r:rr,label:g.label});
+  const slot=2*Math.PI/n,d=list.map((x,i)=>want.has(x.id)?want.get(x.id)-i*slot:null).filter(v=>v!=null),off=d.length?cmean(d):-Math.PI/2+(k%2?slot/2:0);
+  list.forEach((x,i)=>{const a=off+i*slot;pos[x.id]={x:+(cx+Math.cos(a)*rr).toFixed(1),y:+(cy+Math.sin(a)*rr).toFixed(1)};ref.set(x.id,a)})});
+ /* Libellé de chaque anneau : point du cercle le plus éloigné des nœuds et de leurs noms (légère préférence pour le haut) */
+ const P=Object.values(pos),segD=(p,x0,x1,y)=>{const qx=Math.max(x0,Math.min(x1,p.x));return Math.min(Math.hypot(p.x-qx,p.y-y),Math.hypot(p.x-qx,p.y+NODE_R+10-y))};
+ rings.forEach(g=>{const hw=g.label.length*3.2+6;let best=null,bs=-1e9;
+  for(let s=0;s<72;s++){const a=-Math.PI+s*Math.PI/36,x=g.cx+Math.cos(a)*g.r,y=g.cy+Math.sin(a)*g.r+4;
+   if(x-hw<4||x+hw>W-4||y<12||y>H-6)continue;
+   const sc=Math.min(...P.map(p=>segD(p,x-hw,x+hw,y)))-(Math.sin(a)>0.2?8:0);if(sc>bs){bs=sc;best={x,y}}}
+  if(best){g.lx=+best.x.toFixed(1);g.ly=+best.y.toFixed(1)}else g.label=""});
+ return {S:W/BW,W,H,pos,rings}}
+
+load();resetForm();draw();renderLibrary();refreshSelects();
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(_){}
+})();
+</script>
+</body>
+</html>
