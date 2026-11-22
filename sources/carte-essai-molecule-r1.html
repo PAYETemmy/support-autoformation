@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e0e10">
+<title>Molécules — Essai : une molécule</title>
+<style>
+:root{--bg:#0e0e10;--fg:#e8e8ea;--m:#7c7c84;--l:#26262c;--up:#8ab4ff;--ok:#7ee0a1;--no:#ff7b72}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+.w{max-width:980px;margin:0 auto;padding:22px 20px 60px;
+  /* iPhone : rester sous la Dynamic Island et hors des bords arrondis */
+  padding-top:max(22px,calc(env(safe-area-inset-top) + 10px));padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right));padding-bottom:max(60px,calc(env(safe-area-inset-bottom) + 30px))}
+.sj{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--m)}
+h1{font-size:26px;font-weight:600;margin:4px 0 2px}
+.sub{color:var(--m);font-size:13px;margin:0 0 16px}
+.nv{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 10px;font-size:13.5px}
+.nv span{padding:3px 0;color:#4a4a52;border-bottom:2px solid transparent}
+.nv span.on{color:var(--fg);border-bottom-color:var(--up)}
+.nv span.dn{color:#a9a9b2}
+.nv span.dn:after{content:" ✓";color:var(--ok)}
+.st{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--m);margin:4px 0 6px}
+.st b{color:var(--fg);font-weight:600}
+.st .sp{margin:0 10px}
+#lab{position:relative;width:100%;height:620px;border-top:1px solid var(--l);border-bottom:1px solid var(--l);overflow:hidden;
+  background:radial-gradient(ellipse at center,#15151a 0%,var(--bg) 70%);touch-action:none;user-select:none;-webkit-user-select:none}
+svg{position:absolute;inset:0;width:100%;height:100%}
+/* pas de ligatures : "<-" doit rester écrit comme on le tape */
+body,svg text,code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+/* la phrase de l'étape en cours */
+.cap{margin:12px 0 0;min-height:44px;text-align:center;font-size:14px;color:#a9a9b2;transition:opacity .35s,color .35s}
+.cap.lk{color:#93a9d0}
+.cap.ok{color:var(--ok)}
+.cap.out{opacity:0}
+.cap.fin{color:var(--fg)}
+/* atomes */
+.atom{transition:opacity .5s}
+.atom.far{opacity:.4}
+.atom .in{animation:none}
+.atom.pop .in{animation:pop .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.atom circle.core{fill:#1b1b21;stroke:#4a4a52;stroke-width:1.5;transition:stroke .2s,fill .2s}
+.atom.center circle.core{fill:#1a2233;stroke:var(--up);stroke-width:2}
+.atom.bound circle.core{stroke:#8a8a94}
+.atom.center.bound circle.core{stroke:var(--up)}
+.atom.next circle.core{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{stroke:#fff;stroke-width:2.6}}
+.atom.hot circle.core{stroke:var(--fg);stroke-width:2.6}
+.atom text{fill:#d6d6dc;font-size:14.5px;text-anchor:middle;pointer-events:none}
+.atom.center text{fill:#fff;font-weight:600;font-size:16px}
+.atom .orb{fill:none;stroke:#2c2c34;stroke-width:1}
+.atom .el{fill:#5a5a62}
+.atom.center .el{fill:var(--up)}
+.atom.glow circle.core{animation:glow .8s ease-in-out 2 alternate}
+@keyframes glow{to{filter:drop-shadow(0 0 7px rgba(138,180,255,.7))}}
+/* liaisons */
+.bond{stroke:#8a8a94;stroke-width:2;fill:none;transition:opacity .5s}
+.bond.lk{stroke:var(--up);stroke-dasharray:6 5}
+.bond.new{animation:grow .6s ease-out}
+@keyframes grow{from{stroke-dashoffset:var(--len);stroke-dasharray:var(--len)}to{stroke-dashoffset:0}}
+.bl{transition:opacity .5s}
+.bl text{font-size:12.5px;fill:#a9a9b2;text-anchor:middle;pointer-events:none}
+.bl.lk text{fill:#b9cff7}
+.bl rect{fill:var(--bg);opacity:.85}
+.far{opacity:.4}
+/* le trait à tracer */
+.gd{stroke:#26262c;stroke-width:2;stroke-dasharray:2 8;stroke-linecap:round;fill:none;animation:march 1s linear infinite}
+.gd.lk{stroke:#23314c}
+@keyframes march{to{stroke-dashoffset:-20}}
+.gl{pointer-events:none}
+.gl text{font-size:17px;font-weight:600;fill:#f0f0f3;text-anchor:middle;pointer-events:none}
+.gl.lk text{fill:#cfe0ff}
+.gl rect{fill:#18181e}
+.gl.lk rect{fill:#141b29}
+.dr{stroke:var(--fg);stroke-width:2;fill:none;pointer-events:none}
+.ring{fill:none;stroke-width:2;pointer-events:none;animation:ring .7s ease-out forwards}
+@keyframes ring{from{opacity:.9}to{opacity:0;r:70}}
+.spark{pointer-events:none;animation:spk .8s ease-out forwards}
+@keyframes spk{to{opacity:0;transform:translate(var(--dx),var(--dy))}}
+/* texte sous la carte */
+.ax{margin:18px 0 0}
+#ol{margin:6px 0 0}
+#ol[hidden]{display:none}
+.ax h3{font-size:13px;font-weight:600;color:#a9a9b2;margin:12px 0 4px}
+.ax ol{margin:0;padding:0 0 0 20px;color:#c4c4cc;font-size:14px}
+.ax li{margin:3px 0;animation:fin .5s ease-out}
+.ax li.lk{color:#b9cff7}
+#lda{margin:16px 0 0;padding:12px 0 0;border-top:1px solid var(--l);font:12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#c4c4cc;white-space:pre-wrap;overflow-wrap:break-word;-webkit-user-select:text;user-select:text}
+#lda div{min-height:1.6em}
+#lda .sp{white-space:nowrap}
+@keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+code{font:12.5px ui-monospace,Menlo,Consolas,monospace;background:#1c1c21;padding:1px 4px;border-radius:4px}
+.cap code{font-size:12.5px}
+/* au doigt (iPhone) : tout tient dans l'écran, sans faire défiler */
+@media (pointer:coarse){
+  .w{padding-bottom:max(14px,calc(env(safe-area-inset-bottom) + 6px))}
+  .ax{margin-top:10px}
+  .nx{height:112px}
+}
+/* notes ouvertes sur ordinateur : tout tient dans l'écran */
+@media (pointer:fine){.w{padding-bottom:16px}}
+/* notes ouvertes : les boutons passent sur une ligne, sous le champ, qui prend la place libérée */
+/* boutons toujours sur une ligne, sous la phrase (ou sous les notes) ; html.btcol = mesure temporaire en colonne */
+html:not(.btcol) .bt{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin-top:10px}
+html:not(.btcol) .bt .ax,html:not(.btcol) .bt .help{display:contents}
+html:not(.btcol) .ax .rz{margin:0}
+html:not(.btcol) #ol{order:9;flex-basis:100%}
+@media (pointer:coarse){html:not(.btcol) .bt{justify-content:space-between;gap:6px 8px}html:not(.btcol) .bt .rz{white-space:nowrap}}
+/* bouton "Indenter" : seulement avec les notes ouvertes ; jamais compté dans la mesure de la carte */
+#ib[hidden],html.btcol #ib{display:none}
+#ib .ia{font-size:1.1em;line-height:1}
+/* iPhone : pas de "Réinitialiser" (gardé seulement pour la mesure de la carte), "⇥ Indenter" en entier */
+@media (pointer:coarse){html:not(.btcol) #rz{display:none}}
+/* page verrouillée : elle ne glisse plus (liste des axiomes fermée) */
+html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
+/* iPhone, clavier ouvert : la page est un bloc fixe, calé sur la zone visible au-dessus du clavier (iOS ne peut plus la faire glisser) */
+html.kb .w{position:fixed;left:0;right:0;top:0;overflow:hidden;box-sizing:border-box;will-change:transform}
+@media (pointer:coarse){html.kb .nx{height:96px}}
+/* clavier ouvert : seul "⇥ Indenter" reste, juste sous les notes, au-dessus du clavier (zone de toucher un peu plus grande) */
+html.kb #bk,html.kb #nb,html.kb #axb,html.kb #rz,html.kb #ol{display:none!important}
+html.kb .bt{margin-top:4px;justify-content:flex-end}
+html.kb #ib{padding:6px 0 6px 18px}
+.help{color:var(--m);font-size:12.5px;margin:10px 0 0}
+.rz{background:none;border:0;color:var(--m);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
+.rz.sure{color:var(--no)}
+.rz:disabled{opacity:.35;cursor:default}
+.ax .rz{display:block;line-height:1.5;margin:0 0 8px}
+.ax + .help{margin-top:6px}
+/* notes globales : champ encadré, tout en bas */
+.nw{position:relative;margin:6px 0 0;background:var(--bg)}
+.nw[hidden]{display:none}
+/* ouverture / fermeture des notes : la carte et le champ glissent ensemble */
+html.anim #lab{transition:height .42s cubic-bezier(.4,0,.2,1)}
+html.anim .nw{transition:height .42s cubic-bezier(.4,0,.2,1),margin-top .42s cubic-bezier(.4,0,.2,1),opacity .32s ease}
+html.anim .nw .nx{transition:transform .42s cubic-bezier(.4,0,.2,1)}
+.nx{position:relative;z-index:1;display:block;width:100%;height:140px;margin:0;resize:none;overflow-y:auto;overscroll-behavior:contain;font:inherit;font-size:14px;line-height:1.45;color:transparent;-webkit-text-fill-color:transparent;caret-color:var(--fg);
+  background:transparent;border:1px solid var(--l);border-radius:0;padding:8px;-webkit-appearance:none;appearance:none}
+.nx:focus{outline:none;border-color:var(--up)}
+/* repères d'indentation : une barre verticale par niveau de 5 espaces, dessinée derrière le texte des notes */
+.nx,.ng{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0;tab-size:5}
+.ng{position:absolute;top:1px;left:1px;z-index:0;overflow:hidden;pointer-events:none;box-sizing:border-box;padding:8px;
+  font:inherit;font-size:14px;line-height:1.45;color:var(--fg);white-space:pre-wrap;overflow-wrap:break-word;word-break:normal}
+.ng .ngl{position:relative}
+.ng .ngl b{position:absolute;top:0;bottom:0;width:1px;opacity:.4}
+.nx::placeholder{color:#5a5a62;-webkit-text-fill-color:#5a5a62}
+.nx::selection{background:rgba(138,180,255,.28)}
+/* couleurs des notes : une couleur par niveau, de la moins claire (nom de la notion, sans retrait) au plus clair (niveau le plus en retrait) */
+.ng{color:var(--fg)}
+.ng .ngl b{background:var(--fg)}
+.ng .ngl>span{position:relative;z-index:1}
+/* rappel tout petit, en bas à droite du cadre des notes */
+.nw .lvm{position:absolute;right:7px;bottom:4px;z-index:2;font-size:9.5px;line-height:1;color:#4a4a52;pointer-events:none;letter-spacing:.02em}
+.nx[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="w">
+  <h1 id="ti"></h1>
+  <div class="st"><span></span><span id="cnt"></span></div>
+  <div id="lab"><svg id="svg"></svg></div>
+  <div class="cap" id="cap"></div>
+  <div class="nw" id="gw" hidden><div class="ng" id="ng" aria-hidden="true"></div><textarea class="nx" id="gn" aria-label="Mes notes globales" hidden></textarea><span class="lvm" aria-hidden="true">9 levels max</span></div>
+  <div class="bt"><div class="ax"><button class="rz bk" id="bk">← Retour</button><button class="rz bk" id="nb">Afficher mes notes</button><button class="rz" id="ib" title="Ajouter 5 espaces" aria-label="Indenter : ajouter 5 espaces" hidden><span class="ia">⇥</span><span class="il"> Indenter</span></button><button class="rz" id="axb">Axiomes formés</button><div id="ol" hidden></div></div>
+  <p class="help"><button class="rz" id="rz">Réinitialiser</button></p></div>
+</div>
+<script>
+/* ---------- les molécules : atomes (idées) et liaisons (axiomes) ----------
+   b = [atome, atome, ce qui les relie, axiome complet, liaison entre notions ?] */
+var MOL=[
+ {id:"r1",t:"R1 Affectation",c:"r1",kw:"règle",
+  a:{r1:"R1 Affectation",r1_ctx:"Exécution d'un pseudo-code",r1_si:"x ← e s'exécute",r1_alors:"e est calculée, puis remplace la valeur de x",r1_sauf:"Aucune exception identifiée",r1_e1:"x ← 5 : x vaut 5",r1_e2:"x vaut 3 ; x ← x + 1 : x vaut 4"},
+  b:[["r1","r1_ctx","contexte","Contexte : l'exécution d'un pseudo-code.",0,null,180],
+     ["r1","r1_si","si","Si x ← e s'exécute…",0,null,240],
+     ["r1","r1_alors","alors","… alors e est calculée avec les valeurs actuelles, puis x prend ce résultat ; l'ancienne valeur de x est perdue.",0,null,300],
+     ["r1","r1_sauf","sauf si","Sauf si : aucune exception identifiée dans ce domaine.",0,null,0],
+     ["r1","r1_e1","exemple","Exemple : x ← 5. Après, x vaut 5, quelle que soit sa valeur avant.",0,null,60],
+     ["r1","r1_e2","exemple","Exemple : x vaut 3, puis x ← x + 1. x vaut 4, car x + 1 est calculé avec l'ancienne valeur.",0,null,120]]}
+];
+var DIR=1;var NOPRIM=1;
+/* ---------- état sauvegardé : le nombre d'étapes faites ---------- */
+var KEY="molecules-guide-Essai-:-une-molécule",S={p:0};
+try{var s0=JSON.parse(localStorage.getItem(KEY)||"null");if(s0&&typeof s0.p==="number")S=s0}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+/* ---------- outils ---------- */
+var NS="http://www.w3.org/2000/svg",svg=document.getElementById("svg"),lab=document.getElementById("lab"),CAP=document.getElementById("cap"),TAU=Math.PI*2;
+function sv(t,at,p){var e=document.createElementNS(NS,t);for(var k in at)e.setAttribute(k,at[k]);if(p)p.appendChild(e);return e}
+function txt(e,s){e.innerHTML="";s.split("`").forEach(function(p,i){if(i%2){var c=document.createElement("code");c.textContent=p;e.appendChild(c)}else if(p)e.appendChild(document.createTextNode(p))})}
+function wrap(s,n){var w=s.split(" "),L=[],cur="";w.forEach(function(x){if((cur+" "+x).trim().length>n&&cur){L.push(cur);cur=x}else cur=(cur+" "+x).trim()});if(cur)L.push(cur);return L}
+function label(p,s,n,cls,pad,lh,vp,rx){lh=lh||16;vp=vp||2;var g=sv("g",{"class":cls},p),bg=sv("rect",{},g),L=wrap(s,n),w=0;
+  L.forEach(function(l,j){var t=sv("text",{y:((j-(L.length-1)/2)*lh+lh*.3).toFixed(1)},g);t.textContent=l;w=Math.max(w,t.getComputedTextLength())});
+  var h=L.length*lh;bg.setAttribute("x",-w/2-pad);bg.setAttribute("y",-h/2-vp);bg.setAttribute("width",w+pad*2);bg.setAttribute("height",h+vp*2);bg.setAttribute("rx",rx||4);
+  return {g:g,w:w,h:h}}
+var seed=7;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
+/* ---------- la carte : tous les atomes, et l'ordre des étapes (une nouvelle idée à la fois) ---------- */
+var G={},STEPS=[],FIRST,NB=[];
+MOL.forEach(function(m,k){var ext=m.ext||[];
+  function gid(key){if(ext.indexOf(key)>=0)for(var j=k-1;j>=0;j--){var q=MOL[j];if(q.a[key]&&(q.ext||[]).indexOf(key)<0)return q.id+"/"+key}return m.id+"/"+key}
+  for(var key in m.a){var g=gid(key);if(!G[g])G[g]={label:m.a[key],c:key===m.c,n:k}}
+  var kn={};ext.forEach(function(e){kn[gid(e)]=1});if(k===0){FIRST=gid(m.c);kn[FIRST]=1}
+  var rest=m.b.map(function(b,i){return i});NB[k]=rest.length;
+  while(rest.length){var pick=-1;
+    /* d'abord la liaison avec la notion précédente, puis chaque idée qui touche ce qui est déjà tracé */
+    [1,0].some(function(lf){rest.some(function(i,j){var b=m.b[i],x=kn[gid(b[0])]?1:0,y=kn[gid(b[1])]?1:0;if(x+y===1&&(!lf||b[4])){pick=j;return true}});return pick>=0});
+    if(pick<0)rest.some(function(i,j){var b=m.b[i];if(kn[gid(b[0])]&&kn[gid(b[1])]){pick=j;return true}});
+    if(pick<0)pick=0;
+    var b=m.b[rest.splice(pick,1)[0]],s=gid(b[0]),o=gid(b[1]);
+    STEPS.push({n:k,s:s,o:o,rel:b[2],ax:b[3],lk:!!b[4],lt:b[5]||null,ang:(b[6]!=null?b[6]:null),neu:!kn[s]?s:(!kn[o]?o:null)});kn[s]=kn[o]=1}});
+/* cartes "en définitions" : les notions forment un arbre (chaque notion pend sous celle qui porte son genre) ;
+   on calcule d'avance la place de chaque notion : une rangée par génération, les enfants côte à côte sous leur parent */
+var TREE=null;
+if(typeof DIR!=="undefined"&&DIR){TREE={};var PAR=[],KIDS=MOL.map(function(){return []});
+  MOL.forEach(function(m,k){PAR[k]=-1;if(!k)return;var ext=m.ext||[];
+    m.b.some(function(b){if(!b[4])return false;[b[0],b[1]].some(function(key){if(ext.indexOf(key)<0)return false;
+      for(var j=k-1;j>=0;j--){var q=MOL[j];if(q.a[key]&&(q.ext||[]).indexOf(key)<0){PAR[k]=j;return true}}return false});return true});
+    if(PAR[k]<0)PAR[k]=0;KIDS[PAR[k]].push(k)});
+  var slot=0,DX=1000,DY=1150,X=[],Y=[];
+  (function lay(k,d){Y[k]=d*DY;if(!KIDS[k].length){X[k]=slot++*DX;return}KIDS[k].forEach(function(c){lay(c,d+1)});
+    X[k]=(X[KIDS[k][0]]+X[KIDS[k][KIDS[k].length-1]])/2})(0,0);
+  /* une carte peut aussi fixer elle-même la place de chaque notion (at:[colonne,rangée]) */
+  MOL.forEach(function(m,k){TREE[k]=m.at?{x:m.at[0]*DX,y:m.at[1]*DY,kids:KIDS[k]}:{x:X[k]-X[0],y:Y[k],kids:KIDS[k]}})}
+/* ---------- état de la carte affichée ---------- */
+var V={},B=[],W=0,H=0,gW,gB,gG,gA,gFx,meter,meterG,cam={x:0,y:0,s:1},drag=null,raf=0,guide=null,busy=false;
+function textW(s,m,n){m=m||meter;var L=wrap(s,n||26),w=0;L.forEach(function(l){m.firstChild.textContent=l;w=Math.max(w,m.firstChild.getComputedTextLength())});return w}
+function mkAtom(id,x,y,anim){var d=G[id],c=d.c,r=c?52:40;
+  var g=sv("g",{"class":"atom"+(c?" center":"")+(anim?" pop":"")},gA),inn=sv("g",{"class":"in"},g);
+  var orb=sv("ellipse",{"class":"orb"},inn),e1=sv("circle",{"class":"el",r:2.6},inn),core=sv("circle",{"class":"core"},inn);
+  /* cartes "en définitions" : "def" en petit au-dessus du nom de chaque notion */
+  var DK=typeof DIR!=="undefined"&&DIR&&c,kwv=MOL[d.n]&&("kw" in MOL[d.n])?MOL[d.n].kw:(typeof KW!=="undefined"?KW:"def"),lines=(DK&&kwv?[kwv]:[]).concat(wrap(d.label,c?14:12)),ts=[],wm=0;DK=DK&&!!kwv;
+  lines.forEach(function(l,i){var t=sv("text",{y:DK?(i?((i-1)-(lines.length-2)/2)*17+9:-8):(i-(lines.length-1)/2)*17+5},inn);t.textContent=l;if(DK&&!i)t.setAttribute("style","font-size:10px;font-weight:400;fill:#9a9aa4;letter-spacing:.05em");ts.push(t);wm=Math.max(wm,t.getComputedTextLength())});
+  r=Math.min(r+14,Math.max(r,(wm+18)/2));
+  ts.forEach(function(t){var w=t.getComputedTextLength(),mx=2*r-16;if(w>mx)t.style.fontSize=((c?16:14.5)*mx/w).toFixed(1)+"px"});
+  orb.setAttribute("rx",r+11);orb.setAttribute("ry",(r+11)*.38);core.setAttribute("r",r);
+  var a={id:id,c:c,n:d.n,r:r,x:x,y:y,hx:x,hy:y,vx:0,vy:0,ph:rnd()*TAU,g:g,e:e1};V[id]=a;
+  if(anim)setTimeout(function(){g.classList.remove("pop")},800);return a}
+function bondLen(st,r1,r2){return st.lk&&G[st.s].n!==G[st.o].n?400:r1+r2+Math.max(130,textW(st.rel)+40,textW(st.rel,meterG,22)+64)}
+/* la nouvelle idée se pose à un endroit libre, à chaque fois nouveau */
+/* cartes "en définitions" (DIR) : chaque rôle a sa direction — genres en haut, critères sur les côtés, termes primitifs en bas */
+function dirOf(st){if(typeof DIR==="undefined"||!DIR)return null;var r=st.rel;
+  if(st.lk)return {ok:function(d){return d>=22&&d<=158},f:[1.6,1.9,2.2,2.5,2.9,3.3]};
+  /* situation d'ensemble : ses éléments autour d'elle ; chaque difficulté se pose sur le chemin de la notion qui y répond */
+  /* une carte peut imposer la direction d'un atome (b[6], en degrés) */
+  if(st.ang!=null){var A=st.ang;return {ok:function(d){var e=Math.abs(d-A);return Math.min(e,360-e)<=10},f:[1,1.2,1.4,1.6],nocor:1}}
+  if(r==="exemple")return {ok:function(d){return d>=25&&d<=155},f:[1,1.2,1.4]};
+  /* questions du QQOQCCP posées à une notion : tout autour, sauf sur les liaisons */
+  if(/ \?$/.test(r)&&!(MOL[st.n]&&MOL[st.n].kw==="situation"))return {ok:function(){return true},f:[1,1.25,1.5]};
+  if(MOL[st.n]&&MOL[st.n].kw==="situation"){
+    if(r.indexOf("a pour difficulté")===0){var key=String(st.neu).split("/").pop(),ta=null;
+      MOL.forEach(function(q,k){if(ta===null&&k&&(q.ext||[]).indexOf(key)>=0&&TREE&&TREE[k])ta=(Math.atan2(TREE[k].y,TREE[k].x)*180/Math.PI+360)%360});
+      if(ta!==null)return {ok:function(d){var e=Math.abs(d-ta);return Math.min(e,360-e)<=8},f:[2,2.25,2.5],nocor:1}}
+    return {ok:function(){return true},f:[1,1.25,1.5]}}
+  if(r.indexOf("a pour vrai cas")===0)return {ok:function(d){return d>=25&&d<=155},f:[1,1.2,1.4]};
+  if(r.indexOf("a pour genre prochain")===0)return {ok:function(d){return d>=255&&d<=285},f:[1,1.15]};
+  if(r.indexOf("a pour genre éloigné")===0)return {ok:function(d){return (d>=240&&d<=262)||(d>=278&&d<=300)},f:[2.2,2.5,2.8]};
+  if(r.indexOf("a pour critère discriminant")===0)return {ok:function(d){return d<=18||d>=340||(d>=162&&d<=198)},f:[1,1.35,1.7]};
+  if(r==="prim")return {ok:function(d){return d>=65&&d<=115},f:[1.6,1.8,2]};
+  if(r==="admet")return {ok:function(d){return d>=0&&d<=180},f:[1,1.3,1.6]};
+  /* cartes "comment" : le contexte à gauche, les étapes à droite, le résultat et l'exemple en bas */
+  if(r.indexOf("peut avoir comme fonction de")===0)return {ok:function(d){return (d>=105&&d<=158)||(d>=202&&d<=235)},f:[2.2,2.6,3]};
+  /* le comment d'une fonction part vers l'extérieur, dans le prolongement de la fonction */
+  if(r==="comment"){var fa=V[st.s],mc=MOL[st.n],cc=mc&&V[mc.id+"/"+mc.c],oa=fa&&cc?(Math.atan2(fa.y-cc.y,fa.x-cc.x)*180/Math.PI+360)%360:140;
+    return {ok:function(d){var e=Math.abs(d-oa);return Math.min(e,360-e)<=45},f:[1,1.25,1.5]}}
+  if(r.indexOf("a pour contexte")===0)return {ok:function(d){return d>=162&&d<=198},f:[1,1.35,1.7]};
+  if(r.indexOf("a pour étape")===0){var ca=(305+((parseInt(r.slice(13))||1)-1)*22)%360;return {ok:function(d){var e=Math.abs(d-ca);return Math.min(e,360-e)<=11},f:[1.15,1.4,1.65]}}
+  if(r.indexOf("a pour résultat")===0||r.indexOf("a pour exemple")===0)return {ok:function(d){return d>=45&&d<=155},f:[1,1.2,1.4]};
+  return null}
+function place(st){var Y=V[st.neu===st.s?st.o:st.s],isC=G[st.neu].c,D=bondLen(st,Y.r,isC?52:40),best=null,bs=-1e9,dr=dirOf(st);
+  if(TREE&&st.lk&&isC&&V[FIRST]){var P=TREE[G[st.neu].n];if(P)return [V[FIRST].x+P.x,V[FIRST].y+P.y]}
+  var all=Object.keys(V).map(function(k){return V[k]}),cx=0,cy=0;all.forEach(function(a){cx+=a.x;cy+=a.y});cx/=all.length;cy/=all.length;
+  var nn=G[st.neu].n;
+  (dr?dr.f:(isC?[1,1.25,1.5,1.7]:[1,1.35])).forEach(function(f,fi){for(var k=0;k<48;k++){if(dr&&!dr.ok(k*7.5))continue;var an=k/48*TAU,x=Y.x+Math.cos(an)*D*f,y=Y.y+Math.sin(an)*D*f,m=1e9;
+    all.forEach(function(Z){if(Z!==Y)m=Math.min(m,Math.hypot(x-Z.x,y-Z.y)-Z.r-(Z.n!==nn?140:0)-(isC&&Z.c?260:0))});
+    /* cartes "en définitions" : la nouvelle liaison ne doit passer sur aucun atome */
+    if(dr)all.forEach(function(Z){if(Z===Y)return;var dx=x-Y.x,dy=y-Y.y,L2=dx*dx+dy*dy,t=Math.max(0,Math.min(1,((Z.x-Y.x)*dx+(Z.y-Y.y)*dy)/L2)),q=Math.hypot(Y.x+t*dx-Z.x,Y.y+t*dy-Z.y)-Z.r-24;if(q<0)m=Math.min(m,q*4-200)});
+    /* … ni sur une liaison déjà tracée */
+    if(dr)B.forEach(function(bd){var ax=bd.a.x,ay=bd.a.y,dx=bd.b.x-ax,dy=bd.b.y-ay,L2=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((x-ax)*dx+(y-ay)*dy)/L2)),q=Math.hypot(ax+t*dx-x,ay+t*dy-y)-(isC?52:40)-18;if(q<0)m=Math.min(m,q*4-200)});
+    /* … et un atome ne se pose pas sur le chemin des liaisons qui mèneront aux notions suivantes */
+    if(dr&&!dr.nocor&&TREE&&!st.lk&&V[FIRST]&&TREE[nn])TREE[nn].kids.forEach(function(c){var ax=V[FIRST].x+TREE[nn].x,ay=V[FIRST].y+TREE[nn].y,bx=V[FIRST].x+TREE[c].x,by=V[FIRST].y+TREE[c].y,
+      dx=bx-ax,dy=by-ay,L2=dx*dx+dy*dy,t=Math.max(0,Math.min(1,((x-ax)*dx+(y-ay)*dy)/L2)),q=Math.hypot(ax+t*dx-x,ay+t*dy-y)-(isC?52:40)-45;if(q<0)m=Math.min(m,q*4-200)});
+    var sc=Math.min(m,isC?600:260)+(isC?.5*Math.hypot(x-cx,y-cy):0)+rnd()*25-fi*40;
+    /* cartes "en définitions" : une nouvelle notion se pose au plus près de son genre, là où sa molécule aura toute la place */
+    if(dr&&isC)sc=m>=300?3000-fi*100+rnd()*10:m+rnd()*25-fi*40;
+    if(sc>bs){bs=sc;best=[x,y]}}});
+  return best}
+function addBond(st,anim){var a1=V[st.s],a2=V[st.o];
+  var p=sv("line",{"class":"bond"+(st.lk?" lk":"")+(anim?" new":"")},gB),lb=label(gB,st.rel,26,"bl"+(st.lk?" lk":""),5);
+  var mx=(a1.x+a2.x)/2,my=(a1.y+a2.y)/2;B.push({st:st,a:a1,b:a2,p:p,lb:lb,L:st.lk&&a1.n!==a2.n?Math.max(300,Math.hypot(a2.x-a1.x,a2.y-a1.y)):(typeof DIR!=="undefined"&&DIR?Math.max(bondLen(st,a1.r,a2.r),Math.hypot(a2.x-a1.x,a2.y-a1.y)):bondLen(st,a1.r,a2.r)),lx:mx,ly:my});
+  a1.g.classList.add("bound");a2.g.classList.add("bound")}
+/* petite physique : les atomes se repoussent, les liaisons les retiennent, chacun reste près de sa place */
+function tick(jit){var L=Object.keys(V).map(function(k){return V[k]});
+  var HK=typeof DIR!=="undefined"&&DIR?.03:.004;L.forEach(function(a){a.vx+=(a.hx-a.x)*HK;a.vy+=(a.hy-a.y)*HK;if(jit){a.vx+=(Math.random()-.5)*.1;a.vy+=(Math.random()-.5)*.1}});
+  for(var p=0;p<L.length;p++)for(var q=p+1;q<L.length;q++){var a=L[p],b=L[q],dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy+.01;if(d2>360000)continue;
+    var d=Math.sqrt(d2),f=Math.min(4,5200/d2),mn=a.r+b.r+30;if(d<mn)f+=(mn-d)*.08;a.vx-=dx/d*f;a.vy-=dy/d*f;b.vx+=dx/d*f;b.vy+=dy/d*f}
+  B.forEach(function(b){var dx=b.b.x-b.a.x,dy=b.b.y-b.a.y,d=Math.hypot(dx,dy)||1,f=(d-b.L)*.012;b.a.vx+=dx/d*f;b.a.vy+=dy/d*f;b.b.vx-=dx/d*f;b.b.vy-=dy/d*f});
+  L.forEach(function(a){a.vx*=.86;a.vy*=.86;a.x+=a.vx;a.y+=a.vy})}
+function seg(a,b){var dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1;return [a.x+dx/d*a.r,a.y+dy/d*a.r,b.x-dx/d*b.r,b.y-dy/d*b.r,d]}
+function render(){var t=performance.now()/1000;
+  gW.setAttribute("transform","translate("+(W/2).toFixed(1)+","+(H/2).toFixed(1)+") scale("+cam.s.toFixed(4)+") translate("+(-cam.x).toFixed(1)+","+(-cam.y).toFixed(1)+")");
+  for(var id in V){var a=V[id];a.g.setAttribute("transform","translate("+a.x.toFixed(1)+","+a.y.toFixed(1)+")");
+    var ph=a.ph+t*(a.c?1.4:1.9);a.e.setAttribute("cx",(Math.cos(ph)*(a.r+11)).toFixed(1));a.e.setAttribute("cy",(Math.sin(ph)*(a.r+11)*.38).toFixed(1))}
+  B.forEach(function(b){var s=seg(b.a,b.b);b.p.setAttribute("x1",s[0]);b.p.setAttribute("y1",s[1]);b.p.setAttribute("x2",s[2]);b.p.setAttribute("y2",s[3]);
+    b.p.style.setProperty("--len",Math.max(1,s[4]-b.a.r-b.b.r));var mx=(s[0]+s[2])/2,my=(s[1]+s[3])/2;b.lx+=(mx-b.lx)*.25;b.ly+=(my-b.ly)*.25;
+    b.lb.g.setAttribute("transform","translate("+b.lx.toFixed(1)+","+b.ly.toFixed(1)+")")});
+  if(guide){var s=seg(V[guide.st.s],V[guide.st.o]);guide.line.setAttribute("x1",s[0]);guide.line.setAttribute("y1",s[1]);guide.line.setAttribute("x2",s[2]);guide.line.setAttribute("y2",s[3]);
+    /* au-dessus du curseur à la souris ; plus haut au doigt, pour qu'il ne le cache pas */
+    if(drag)guide.lb.g.setAttribute("transform","translate("+drag.x.toFixed(1)+","+(drag.y-(drag.touch?64:18)/cam.s-guide.lb.h/2-7).toFixed(1)+")");
+    /* sinon, la relation reste affichée au milieu du trait à tracer */
+    else guide.lb.g.setAttribute("transform","translate("+((s[0]+s[2])/2).toFixed(1)+","+((s[1]+s[3])/2).toFixed(1)+")")}
+  if(drag){var f=drag.from,dx=drag.x-f.x,dy=drag.y-f.y,d=Math.hypot(dx,dy)||1;drag.l.setAttribute("x1",f.x+dx/d*f.r);drag.l.setAttribute("y1",f.y+dy/d*f.r);drag.l.setAttribute("x2",drag.x);drag.l.setAttribute("y2",drag.y)}
+}
+/* la vue suit la molécule en cours */
+function camTarget(){var ids=[],fin=S.p>=STEPS.length;
+  var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  /* écran étroit (iPhone) : cadrer seulement les deux atomes à relier, pour que les textes restent lisibles */
+  if(fin)ids=Object.keys(V);else if(W<600){var st=STEPS[S.p];ids=[st.s,st.o]}else{var st=STEPS[S.p];for(var id in V)if(V[id].n===st.n){ids.push(id);
+    if(V[id].c&&!(st.lk&&st.neu)){x0=V[id].x-230;x1=V[id].x+230;y0=V[id].y-230;y1=V[id].y+230}}ids.push(st.s,st.o)}/* écran étroit : un peu plus de marge autour des deux atomes, et un zoom plafonné plus bas */
+  var nar=W<600&&!fin,pad=nar?60:30;
+  ids.forEach(function(id){var a=V[id];if(!a)return;x0=Math.min(x0,a.x-a.r-pad);x1=Math.max(x1,a.x+a.r+pad);y0=Math.min(y0,a.y-a.r-pad);y1=Math.max(y1,a.y+a.r+pad)});
+  var s=Math.min((W-60)/(x1-x0),(H-60)/(y1-y0),nar?.78:1);s=Math.max(s,fin?.06:(typeof DIR!=="undefined"&&DIR&&!fin&&STEPS[S.p]&&STEPS[S.p].lk?(W<600?.12:.18):.36));
+  return {x:(x0+x1)/2,y:(y0+y1)/2,s:s}}
+function step(){if(ANI){W=lab.clientWidth;H=lab.clientHeight}tick(true);var T=camTarget();cam.x+=(T.x-cam.x)*.05;cam.y+=(T.y-cam.y)*.05;cam.s+=(T.s-cam.s)*.05;render();raf=requestAnimationFrame(step)}
+/* ---------- l'étape en cours ---------- */
+function dim(n){for(var id in V){var a=V[id],st=STEPS[S.p];a.g.classList.toggle("far",n!=null&&a.n!==n&&!(st&&(id===st.s||id===st.o)))}
+  B.forEach(function(b){var f=n!=null&&b.st.n!==n;b.p.classList.toggle("far",f);b.lb.g.classList.toggle("far",f)})}
+function showStep(anim){if(guide){guide.line.remove();guide.lb.g.remove();guide=null}
+  for(var id in V)V[id].g.classList.remove("next");
+  head();
+  if(S.p>=STEPS.length){CAP.className="cap fin";CAP.textContent="Carte complète : "+MOL.length+" notions, "+STEPS.length+" axiomes.";dim(null);
+    for(var i in V){(function(a){a.g.classList.add("glow");setTimeout(function(){a.g.classList.remove("glow")},1700)})(V[i])}return}
+  var st=STEPS[S.p];
+  if(st.neu&&!V[st.neu]){var P=place(st),a=mkAtom(st.neu,P[0],P[1],anim);
+    if(anim){var c=sv("circle",{"class":"ring",cx:a.x,cy:a.y,r:a.r,stroke:st.lk?"#8ab4ff":"#d6d6dc"},gFx);setTimeout(function(){c.remove()},750)}}
+  var l=sv("line",{"class":"gd"+(st.lk?" lk":"")},gG),lb=label(gG,st.rel,22,"gl"+(st.lk?" lk":""),12,21,7,9);guide={st:st,line:l,lb:lb};
+  (st.neu?[V[st.neu]]:[V[st.s],V[st.o]]).forEach(function(a){a.g.classList.add("next")});
+  CAP.className="cap"+(st.lk?" lk":"");txt(CAP,st.ax);dim(st.n)}
+function link(){var st=STEPS[S.p];busy=true;guide.line.remove();guide.lb.g.remove();guide=null;
+  for(var id in V)V[id].g.classList.remove("next");
+  addBond(st,true);burst(V[st.s],V[st.o],st.lk);addLine(st);S.p++;save();CAP.classList.add("ok");head();
+  var endN=S.p>=STEPS.length||STEPS[S.p].n!==st.n;
+  if(endN)for(var id in V)if(V[id].n===st.n){(function(a){a.g.classList.add("glow");setTimeout(function(){a.g.classList.remove("glow")},1700)})(V[id])}
+  setTimeout(function(){CAP.classList.add("out")},endN?1100:650);
+  setTimeout(function(){busy=false;showStep(true)},endN?1500:950)}
+function back(){if(busy||S.p===0)return;
+  var cur=STEPS[S.p];if(cur&&cur.neu&&V[cur.neu]){V[cur.neu].g.remove();delete V[cur.neu]}
+  var b=B.pop();b.p.remove();b.lb.g.remove();S.p--;save();
+  [b.a,b.b].forEach(function(a){a.g.classList.toggle("bound",B.some(function(x){return x.a===a||x.b===a}))});
+  removeLine();showStep(false)}
+function burst(a,b,lk){var col=lk?"#8ab4ff":"#7ee0a1";
+  [a,b].forEach(function(x){var c=sv("circle",{"class":"ring",cx:x.x,cy:x.y,r:x.r,stroke:col},gFx);setTimeout(function(){c.remove()},750)});
+  var mx=(a.x+b.x)/2,my=(a.y+b.y)/2;for(var k=0;k<12;k++){var an=Math.random()*TAU,dd=20+Math.random()*40;
+    var s=sv("circle",{"class":"spark",cx:mx,cy:my,r:1.8,fill:col},gFx);s.style.setProperty("--dx",(Math.cos(an)*dd)+"px");s.style.setProperty("--dy",(Math.sin(an)*dd)+"px");
+    (function(s){setTimeout(function(){s.remove()},820)})(s)}}
+/* ---------- tracer : d'un des deux atomes jusqu'à l'autre ---------- */
+function world(e){var r=lab.getBoundingClientRect();return {x:(e.clientX-r.left-W/2)/cam.s+cam.x,y:(e.clientY-r.top-H/2)/cam.s+cam.y}}
+function near(a,p,m){return Math.hypot(a.x-p.x,a.y-p.y)<=a.r+m/cam.s}
+/* marge autour des atomes, en pixels d'écran : plus large au doigt */
+function zoneDep(e){return e.pointerType==="touch"?30:10}
+function zoneArr(e){return e.pointerType==="touch"?40:24}
+lab.addEventListener("pointerdown",function(e){if(!guide||busy)return;var p=world(e),A1=V[guide.st.s],A2=V[guide.st.o],f=null;
+  var z=zoneDep(e);if(near(A1,p,z))f=A1;else if(near(A2,p,z))f=A2;else return;
+  drag={from:f,to:f===A1?A2:A1,x:p.x,y:p.y,touch:e.pointerType==="touch",l:sv("line",{"class":"dr"},gFx)};f.g.classList.add("hot");render();guide.lb.g.classList.add("on");lab.setPointerCapture(e.pointerId);e.preventDefault()});
+lab.addEventListener("pointermove",function(e){if(!drag)return;var p=world(e);drag.x=p.x;drag.y=p.y;drag.to.g.classList.toggle("hot",near(drag.to,p,zoneArr(e)))});
+function endDrag(){var d=drag;drag=null;if(guide)guide.lb.g.classList.remove("on");d.l.remove();d.from.g.classList.remove("hot");d.to.g.classList.remove("hot");return d}
+lab.addEventListener("pointerup",function(e){if(!drag)return;var p=world(e),d=endDrag();if(near(d.to,p,zoneArr(e)))link()});
+lab.addEventListener("pointercancel",function(){if(drag)endDrag()});
+document.addEventListener("keydown",function(e){var t=e.target;if(t&&(t.tagName==="TEXTAREA"||t.tagName==="INPUT"))return;if(e.key==="ArrowLeft"){e.preventDefault();back()}});
+document.getElementById("bk").onclick=function(){back()};
+var SW=null;
+document.addEventListener("touchstart",function(e){var t=e.touches[0];SW=e.touches.length===1&&!drag&&!(e.target&&e.target.tagName==="TEXTAREA")?{x:t.clientX,y:t.clientY}:null},{passive:true});
+document.addEventListener("touchend",function(e){if(!SW)return;var t=e.changedTouches[0],dx=t.clientX-SW.x,dy=t.clientY-SW.y;SW=null;
+  if(dx<-60&&Math.abs(dy)<Math.abs(dx)*.6)back()},{passive:true});
+/* ---------- texte : en-tête, axiomes formés ---------- */
+function head(){document.getElementById("bk").disabled=S.p===0;var st=STEPS[Math.min(S.p,STEPS.length-1)],n=S.p>=STEPS.length?MOL.length-1:st.n,done=0;
+  for(var i=0;i<S.p;i++)if(STEPS[i].n===n)done++;
+  document.getElementById("ti").textContent=S.p>=STEPS.length?"Carte complète":MOL[n].t;
+  document.getElementById("cnt").innerHTML=S.p>=STEPS.length?STEPS.length+" axiomes.":(n+1)+" / "+MOL.length+" notion<span class=\"sp\">·</span>"+done+" / "+NB[n]+" liaisons."}
+function addLine(st){var ol=document.getElementById("ol"),sec=ol.querySelector('[data-n="'+st.n+'"]');
+  if(!sec){sec=document.createElement("div");sec.dataset.n=st.n;var h=document.createElement("h3");h.textContent=MOL[st.n].t;sec.appendChild(h);sec.appendChild(document.createElement("ol"));ol.appendChild(sec)}
+  var li=document.createElement("li");if(st.lk)li.className="lk";txt(li,st.ax);sec.querySelector("ol").appendChild(li);lda()}
+function removeLine(){var ol=document.getElementById("ol"),sec=ol.querySelector("[data-n]:last-of-type");if(!sec)return;var o=sec.querySelector("ol");o.lastElementChild.remove();if(!o.children.length)sec.remove();lda()}
+/* cartes "en définitions" : les axiomes formés, réécrits automatiquement dans le langage de déclaration d'axiomes */
+function lda(){if(typeof DIR==="undefined"||!DIR)return;var ol=document.getElementById("ol"),pre=document.getElementById("lda");
+  if(!pre){pre=document.createElement("div");pre.id="lda"}
+  var k=ol.querySelectorAll("li").length,by={},ord=[],low=function(w){return w.charAt(0).toLowerCase()+w.slice(1)},up=function(w){return w.charAt(0).toUpperCase()+w.slice(1)};
+  for(var i=0;i<k&&i<STEPS.length;i++){var st=STEPS[i],n=st.n,m=MOL[n];
+    if(!by[n]){by[n]={pg:[],pw:[],g:[],e:[],c:[],v:[],f:[]};ord.push(n)}var d=by[n],r=st.rel;
+    var cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
+    var D=cen?G[cen].label:m.t,oth=st.s===cen?st.o:st.s,O=G[oth]?G[oth].label:"";
+    if(r==="prim")continue;
+    /* une notion qui s'accroche à une réponse de la situation : la ligne se range sous cette réponse */
+    if(st.lk&&G[oth]&&MOL[G[oth].n]&&MOL[G[oth].n].kw==="situation"&&by[G[oth].n]){var sd=by[G[oth].n];sd.sub=sd.sub||{};(sd.sub[oth]=sd.sub[oth]||[]).push({s:oth,o:cen,rel:r});continue}
+    if(r==="admet"){var w=G[st.o].label;if(d.pw.indexOf(w)<0)d.pw.push(w);continue}
+    /* une fonction possible, puis le comment de cette fonction, en retrait */
+    if(r.indexOf("peut avoir comme fonction de")===0){d.f.push(D+" -- "+r+" -- "+O);continue}
+    if(r==="comment"){d.f.push("     "+G[st.s].label+" -- comment -- "+G[st.o].label);continue}
+    /* situation : une question posée à une réponse (et non à la situation) se range sous cette réponse, en retrait */
+    if(MOL[n]&&MOL[n].kw==="situation"&&cen&&st.s!==cen&&st.o!==cen){d.sub=d.sub||{};(d.sub[st.s]=d.sub[st.s]||[]).push(st);continue}
+    var role=r,obj=O,cut=r.indexOf(" : ");
+    if(cut>=0){role=r.slice(0,cut);obj=up(r.slice(cut+3)+" "+low(O))}
+    if(st.lt)obj=st.lt;
+    var line=D+" -- "+role+" -- "+obj;
+    if(MOL[n]&&MOL[n].kw==="situation"){(d.top=d.top||[]).push({o:oth,line:line});continue}
+    if(role.indexOf("a pour genre prochain")===0||role.indexOf("a pour genre éloigné")===0){
+      (role.indexOf("prochain")>=0?d.g:d.e).push(line);
+      if(cut<0&&!(G[oth]&&G[oth].c)&&!MOL.some(function(q){var t=q.t.toLowerCase(),o=O.toLowerCase();return o===t||o.slice(-t.length-1)===" "+t})&&d.pg.indexOf(O)<0)d.pg.push(O)}
+    else if(role.indexOf("a pour critère discriminant")===0)d.c.push(line);
+    else if(role.indexOf("a pour vrai cas")===0)d.v.push(line);
+    else d.c.push(line)}
+  var out=ord.map(function(n){var d=by[n],cen=null;for(var g in G)if(G[g].c&&G[g].n===n){cen=g;break}
+    var kv=MOL[n]&&("kw" in MOL[n])?MOL[n].kw:(typeof KW!=="undefined"?KW:"def"),t=(kv?kv+" ":"")+(cen?G[cen].label:MOL[n].t),pr=d.pg.concat(d.pw).map(low);
+    if(pr.length&&!(typeof NOPRIM!=="undefined"&&NOPRIM))t+="\n     prim\n          "+pr.join(", ");
+    d.g.concat(d.e,d.c,d.v,d.f).forEach(function(l){t+="\n     "+l});
+    if(d.top)(function walk(list,ind){list.forEach(function(it){t+="\n"+ind+it.line;
+      walk(((d.sub||{})[it.o]||[]).map(function(x){return {o:x.o,line:G[x.s].label+" -- "+x.rel+" -- "+G[x.o].label}}),ind+"     ")})})(d.top,"     ");
+    return t}).join("\n\n");
+  out=out.replace(/\u2019/g,"'");pre.textContent="";out.split("\n").forEach(function(l){var dv=document.createElement("div"),n=l.length-l.replace(/^ +/,"").length;
+    if(l){dv.style.paddingLeft=(n+2)+"ch";dv.style.textIndent=-(n+2)+"ch";l.split(" -- ").forEach(function(seg,i){if(i){var sp=document.createElement("span");sp.className="sp";sp.textContent=" --";dv.appendChild(sp);dv.appendChild(document.createTextNode(" "))}dv.appendChild(document.createTextNode(seg))})}else dv.appendChild(document.createElement("br"));pre.appendChild(dv)});pre.hidden=!out;ol.appendChild(pre)}
+/* ---------- construire la carte (en rejouant les étapes déjà faites) ---------- */
+function go(){cancelAnimationFrame(raf);drag=null;guide=null;busy=false;seed=7;svg.innerHTML="";V={};B=[];document.getElementById("ol").innerHTML="";
+  W=lab.clientWidth;H=lab.clientHeight;
+  gW=sv("g",{},svg);gB=sv("g",{},gW);gA=sv("g",{},gW);gG=sv("g",{},gW);gFx=sv("g",{},gW);
+  meter=sv("g",{"class":"bl",style:"visibility:hidden"},gW);sv("text",{},meter);meterG=sv("g",{"class":"gl",style:"visibility:hidden"},gW);sv("text",{},meterG);
+  mkAtom(FIRST,0,0,S.p===0);
+  for(var i=0;i<S.p;i++){var st=STEPS[i];if(st.neu&&!V[st.neu]){var P=place(st);mkAtom(st.neu,P[0],P[1],false)}addBond(st,false);addLine(st);for(var k=0;k<80;k++)tick(false)}
+  for(var id in V){V[id].hx=V[id].x;V[id].hy=V[id].y}
+  showStep(S.p>0);var T=camTarget();cam={x:T.x,y:T.y,s:T.s};render();raf=requestAnimationFrame(step)}
+var rzT=0,RZ=document.getElementById("rz");
+RZ.onclick=function(){if(!RZ.classList.contains("sure")){RZ.classList.add("sure");RZ.textContent="Confirmer ?";clearTimeout(rzT);
+  rzT=setTimeout(function(){RZ.classList.remove("sure");RZ.textContent="Réinitialiser"},3000);return}
+  RZ.classList.remove("sure");RZ.textContent="Réinitialiser";S={p:0};save();go()};
+window.addEventListener("resize",function(){if(ANI)return;fit();W=lab.clientWidth;H=lab.clientHeight});
+/* "Axiomes formés" : un bouton qui affiche ou masque la liste */
+var OL=document.getElementById("ol");
+var MOB=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches);
+/* "Afficher mes notes" : les notes globales du sujet deviennent un élément principal, juste sous la phrase de l'étape.
+   La carte se réduit pour que tout tienne dans l'écran : on suit le guide en notant, sans que la page bouge. */
+var SUJ=KEY.replace("molecules-guide-",""),GKEY="notes-globales-"+SUJ,GN=document.getElementById("gn"),NBT=document.getElementById("nb");
+GN.placeholder="Mes notes sur "+(document.title.split("— ")[1]||SUJ)+"…";try{GN.value=localStorage.getItem(GKEY)||""}catch(e){}
+function saveNotes(){try{localStorage.setItem(GKEY,GN.value)}catch(e){}}
+function nbLabel(){NBT.textContent=GN.hidden?"Afficher mes notes":"Masquer mes notes"}
+var gtm=0;GN.oninput=function(){guides();clearTimeout(gtm);gtm=setTimeout(saveNotes,300)};
+/* repères d'indentation : la copie du texte, invisible, derrière le champ ; chaque groupe de 5 espaces en début de ligne porte une barre */
+var NG=document.getElementById("ng"),GW=document.getElementById("gw"),IB=document.getElementById("ib"),IND=5,
+    IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+if(IOS)NG.style.padding="8px 11px";   /* iOS décale le texte d'un champ de 3 px */
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function guides(){var L=GN.value.split("\n"),lv=L.map(function(l){return l.trim()?Math.floor(l.match(/^ */)[0].length/IND):-1});
+  /* une ligne vide garde les barres qui l'entourent */
+  lv=lv.map(function(v,i){if(v>=0)return v;var p=0,n=0,j;for(j=i-1;j>=0;j--)if(lv[j]>=0){p=lv[j];break}for(j=i+1;j<lv.length;j++)if(lv[j]>=0){n=lv[j];break}return Math.min(p,n)});
+  /* largeur de 5 espaces dans la police des notes */
+  NG.innerHTML='<span style="white-space:pre">'+" ".repeat(IND)+'</span>';var w=NG.firstChild.getBoundingClientRect().width;
+  /* une ligne = un bloc ; ses barres descendent sur toute sa hauteur, même quand elle passe à la ligne */
+  /* couleur d'un niveau : 12 couleurs différentes (niveaux 1 à 12) ; au-delà, les 5 dernières tournent */
+  function col(n){return "c"+(n<12?n:7+((n-7)%5))}
+  NG.innerHTML=L.map(function(l,i){var s="",n=l.trim()?Math.floor(l.match(/^ */)[0].length/IND):lv[i];
+    /* la barre k accompagne les lignes du niveau k+1 : même couleur qu'elles */
+    for(var k=0;k<lv[i];k++)s+='<b class="'+col(k+1)+'" style="left:'+(k*w+1).toFixed(2)+'px"></b>';
+    /* ce qui est entre guillemets droits ressort, comme du texte dans un programme */
+    var t=esc(l).replace(/"[^"]*"?/g,function(q){return '<span class="q">'+q+'</span>'});
+    return '<div class="ngl"><span class="'+col(n)+'">'+(t||" ")+"</span>"+s+"</div>"}).join("");
+  NG.style.width=GN.clientWidth+"px";NG.style.height=GN.clientHeight+"px";NG.scrollTop=GN.scrollTop}
+GN.addEventListener("scroll",function(){NG.scrollTop=GN.scrollTop});
+/* sauvegarde aussi quand on quitte ou ferme l'app, même juste après avoir tapé */
+window.addEventListener("pagehide",function(){saveNotes()});document.addEventListener("visibilitychange",function(){if(document.hidden)saveNotes()});
+GN.onblur=function(){saveNotes();if(MOB&&KB){KB=false;document.documentElement.classList.remove("kb");WRP.style.height=WRP.style.transform="";window.scrollTo(0,0)}setTimeout(refit,100)};
+GN.onfocus=function(){if(MOB&&window.visualViewport){KB=true;document.documentElement.classList.add("kb");kbSync();[60,200,400,700,1000].forEach(function(t){setTimeout(kbSync,t)})}else{setTimeout(refit,100);setTimeout(refit,400)}};
+try{GN.hidden=localStorage.getItem("molecules-voir-notes")!=="1"}catch(e){}
+function notesMode(){document.documentElement.classList.toggle("nt",!GN.hidden);GW.hidden=GN.hidden;IB.hidden=GN.hidden;if(!GN.hidden)guides()}
+/* "Indenter" : 5 espaces à l'endroit du curseur dans les notes ; le bouton ne prend pas le focus (le clavier de l'iPhone reste ouvert) */
+function indent(){var s=GN.selectionStart,e=GN.selectionEnd;GN.setRangeText(" ".repeat(IND),s,e,"end");
+  if(document.activeElement!==GN)GN.focus({preventScroll:true});GN.dispatchEvent(new Event("input"))}
+/* PC : la touche Tab dans les notes ajoute 5 espaces au lieu de quitter le champ (Ctrl+Z l'annule) */
+GN.addEventListener("keydown",function(e){if(e.key!=="Tab"||e.shiftKey||e.ctrlKey||e.altKey||e.metaKey)return;e.preventDefault();
+  if(!(document.execCommand&&document.execCommand("insertText",false," ".repeat(IND))))indent()});
+var IBT=0;
+IB.addEventListener("mousedown",function(e){e.preventDefault()});
+IB.addEventListener("touchstart",function(e){e.preventDefault()},{passive:false});
+IB.addEventListener("touchend",function(e){e.preventDefault();IBT=Date.now();indent()},{passive:false});
+IB.addEventListener("click",function(){if(Date.now()-IBT>600)indent()});
+NBT.onclick=function(){if(ANI)return;var show=GN.hidden;try{localStorage.setItem("molecules-voir-notes",show?"1":"0")}catch(e){}animNotes(show)};
+/* animation : on calcule la disposition d'arrivée, on revient à celle de départ, puis on glisse de l'une à l'autre */
+var ANI=false;
+function animNotes(show){ANI=true;var R=document.documentElement,E="cubic-bezier(.4,0,.2,1)",
+    l0=lab.getBoundingClientRect().height,g0=show?0:GW.getBoundingClientRect().height;
+  GN.hidden=!show;nbLabel();notesMode();fit();
+  var lT=lab.getBoundingClientRect().height,gT=show?GW.getBoundingClientRect().height:0;
+  GW.hidden=false;GW.style.overflow="hidden";GW.style.height=g0+"px";GW.style.marginTop=show?"0px":"6px";GW.style.opacity=show?0:1;
+  GN.style.transform=show?"translateY(-14px)":"none";lab.style.height=l0+"px";
+  void GW.offsetHeight;R.classList.add("anim");
+  lab.style.height=lT+"px";GW.style.height=gT+"px";GW.style.marginTop=show?"6px":"0px";GW.style.opacity=show?1:0;GN.style.transform=show?"none":"translateY(-14px)";
+  setTimeout(function(){R.classList.remove("anim");GW.style.height=GW.style.marginTop=GW.style.opacity=GW.style.overflow=GN.style.transform="";
+    if(!show)GW.hidden=true;ANI=false;W=lab.clientWidth;H=lab.clientHeight;lock();if(show&&!MOB)GN.focus({preventScroll:true})},460)}
+nbLabel();notesMode();
+/* hauteur de l'écran ; en web app, l'iPhone règle ses marges (île, barre du bas) juste après l'ouverture, d'où les nouvelles mesures plus bas */
+function viewH(){return window.innerHeight}
+/* clavier de l'iPhone ouvert sur les notes */
+var KB=false,WRP=document.querySelector(".w");
+function kbOpen(){return MOB&&KB&&!!window.visualViewport}
+/* clavier ouvert : la page suit la zone visible (hauteur et décalage donnés par visualViewport), puis la carte se règle */
+var kbRaf=0;
+function kbSync(){if(!kbOpen())return;var vv=visualViewport;WRP.style.height=vv.height+"px";WRP.style.transform="translateY("+vv.offsetTop+"px)";refit()}
+function kbLater(){cancelAnimationFrame(kbRaf);kbRaf=requestAnimationFrame(kbSync)}
+function fit(){
+  /* la phrase garde la hauteur de la plus longue, pour que rien ne bouge d'une étape à l'autre */
+  var m=CAP.cloneNode(false);m.removeAttribute("id");m.style.cssText="position:absolute;visibility:hidden;min-height:0;width:"+CAP.clientWidth+"px";CAP.parentNode.appendChild(m);
+  var mx=0;STEPS.forEach(function(s){txt(m,s.ax);mx=Math.max(mx,m.offsetHeight)});m.remove();CAP.style.minHeight=mx+"px";
+  var kb=kbOpen(),avail=kb?visualViewport.height:viewH(),sy=window.scrollY,R=document.documentElement,WR=document.querySelector(".w"),notes=!GN.hidden;
+  /* clavier ouvert : mesures depuis le haut du bloc fixe ; sinon depuis le haut de la page */
+  function end(){return kb?(notes?IB:GN).getBoundingClientRect().bottom-WR.getBoundingClientRect().top+6:WR.getBoundingClientRect().bottom+sy-(OL.hidden?0:OL.getBoundingClientRect().height+6)}
+  /* la carte prend la hauteur qui reste (mesurée avec le champ à sa taille de base et les boutons en colonne) ;
+     clavier ouvert : tout jusqu'aux notes tient au-dessus du clavier */
+  GN.style.height="";R.classList.toggle("btcol",notes&&!kb);
+  var labH=lab.getBoundingClientRect().height;
+  lab.style.height=Math.max(kb?110:(MOB?240:300),Math.floor(avail-(end()-labH)))+"px";
+  /* notes ouvertes : boutons sur une ligne, et le champ s'agrandit jusqu'en bas de l'écran (ou jusqu'au clavier) */
+  if(notes){R.classList.remove("btcol");var base=GN.getBoundingClientRect().height;GN.style.height=Math.max(80,Math.floor(base+avail-end()))+"px";guides()}
+}
+/* remesurer : ouverture de la web app, clavier, notes ouvertes ou fermées */
+function refit(){if(ANI)return;var h0=lab.clientHeight;fit();if(lab.clientHeight!==h0){W=lab.clientWidth;H=lab.clientHeight}}
+["load","pageshow","orientationchange"].forEach(function(ev){window.addEventListener(ev,function(){setTimeout(refit,60)})});
+if(window.visualViewport){visualViewport.addEventListener("resize",function(){if(KB)kbLater();else refit()});visualViewport.addEventListener("scroll",function(){if(KB)kbLater()})}
+window.addEventListener("scroll",function(){if(KB)kbLater()},{passive:true});
+setTimeout(refit,400);setTimeout(refit,1200);setTimeout(refit,2500);
+try{OL.hidden=localStorage.getItem("molecules-voir-axiomes")!=="1"}catch(e){}
+document.getElementById("axb").onclick=function(){OL.hidden=!OL.hidden;try{localStorage.setItem("molecules-voir-axiomes",OL.hidden?"0":"1")}catch(e){}lock()};
+/* au doigt, la page ne bouge pas (notes comprises) ; liste des axiomes ouverte, on peut descendre */
+function lock(){if(!MOB)return;var on=OL.hidden;document.documentElement.classList.toggle("lock",on);if(on)window.scrollTo(0,0)}
+/* page verrouillée : seul le texte des notes peut défiler, à l'intérieur de son cadre */
+document.addEventListener("touchmove",function(e){if(document.documentElement.classList.contains("lock")&&e.target!==GN)e.preventDefault()},{passive:false});
+lock();
+go();{fit();W=lab.clientWidth;H=lab.clientHeight;var T0=camTarget();cam={x:T0.x,y:T0.y,s:T0.s}}
+</script>
+</body>
+</html>
