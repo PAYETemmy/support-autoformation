@@ -75,13 +75,13 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
 @media(max-width:760px){
  header{padding-top:calc(14px + var(--st));padding-bottom:13px}header p{font-size:12px}
  main{padding:15px max(13px,var(--sr)) 34px max(13px,var(--sl))}
- body{padding-bottom:calc(78px + var(--sb))}
+ body{--tb:max(4px,calc(var(--sb) - 18px));padding-bottom:calc(66px + var(--tb))}
  .layout{grid-template-columns:1fr;gap:13px}.panel{padding:14px;border-radius:10px}
- .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:6px max(8px,var(--sr)) calc(6px + var(--sb)) max(8px,var(--sl));background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);border-bottom:0;box-shadow:0 -3px 12px rgba(16,24,40,.06)}
- .tabs button{flex-direction:column;gap:2px;min-height:52px;padding:4px 2px;border:0;border-radius:7px;background:transparent;color:#66758a;font-size:11px;font-weight:600}
+ .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:5px max(8px,var(--sr)) var(--tb) max(8px,var(--sl));background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);border-bottom:0;box-shadow:0 -3px 12px rgba(16,24,40,.06)}
+ .tabs button{flex-direction:column;gap:2px;min-height:48px;padding:4px 2px;border:0;border-radius:7px;background:transparent;color:#66758a;font-size:11px;font-weight:600}
  .tabs button.active{background:var(--accentbg);color:var(--accent)}.tabs .ico{display:block}
  body.typing .tabs{display:none}
- #message{bottom:calc(84px + var(--sb))}body.typing #message{bottom:calc(16px + var(--sb))}
+ #message{bottom:calc(70px + var(--tb))}body.typing #message{bottom:calc(16px + var(--sb))}
  .modal{align-items:flex-end;padding:0 8px calc(8px + var(--sb))}.sheet .actions{flex-direction:column-reverse}.sheet .actions button{width:100%}.fiche .actions{flex-direction:row}.fiche .actions button{width:auto;flex:1 1 auto}
 }
 @media(max-width:620px){.grid3{grid-template-columns:1fr 1fr}.grid3 .field:first-child{grid-column:1/-1}}
