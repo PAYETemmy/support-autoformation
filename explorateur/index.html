@@ -104,7 +104,7 @@ p.warn{margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.3</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.4</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -161,14 +161,11 @@ p.warn{margin:8px 0 0}
   <div class="panelhead"><h2>Contrôle du modèle</h2></div>
   <div id="qualityList"></div>
   <details class="section memo"><summary>Rappel du modèle de représentation</summary><div id="modelMemo"></div></details>
-  <div class="section"><h2>Sauvegarde et transfert</h2><p class="muted">Les changements sont conservés dans le stockage local du navigateur. Sur iPhone, Safari peut effacer ces données après 7 jours sans visite (sauf app ajoutée à l'écran d'accueil) : exporte régulièrement une copie JSON.</p>
-  <div class="actions"><button id="loadDemo">Charger l’exemple guidé (pseudo-code)</button><button id="restoreBackup" hidden>Restaurer les données d’avant la mise à jour</button></div>
-  <div class="actions"><button class="primary" id="exportData">Exporter JSON</button><label class="btn" for="fileInput" id="importData" role="button" tabindex="0">Importer JSON</label><input type="file" id="fileInput" class="vh" tabindex="-1"></div></div>
  </div>
 </div>
 </section>
 </main>
-<footer>Explorateur de connaissances · Les données restent dans ce navigateur, sauf export volontaire.</footer>
+<footer>Explorateur de connaissances · Données : fichier donnees.json du même dossier, sinon ce navigateur.</footer>
 <div id="message" role="status" aria-live="polite"></div>
 <div class="modal" id="ficheModal" hidden><div class="sheet fiche" role="dialog" aria-modal="true" aria-labelledby="ficheTitle">
  <div class="panelhead"><h2 id="ficheTitle">Fiche de connaissance</h2><div class="headright"><span class="tag" id="selectedType"></span><button id="closeFiche" class="iconbtn" aria-label="Fermer la fiche" title="Fermer la fiche">×</button></div></div>
@@ -332,7 +329,7 @@ const DEMO_LINKS=[
  DL("pc-cx-lua","pc-indices","Met à l’épreuve"),DL("pc-cx-parametre","pc-avant-lecture","Met à l’épreuve")
 ];
 const STORE="knowledge-explorer-v7-html";
-const mqNarrow=matchMedia("(max-width:760px)"),mqReduce=matchMedia("(prefers-reduced-motion: reduce)"),mqTouch=matchMedia("(pointer:coarse)");
+const mqNarrow=matchMedia("(max-width:760px)"),mqReduce=matchMedia("(prefers-reduced-motion: reduce)");
 let db={items:[],links:[]},selected=null,editing=null;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uid=()=> "k"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -379,19 +376,17 @@ function migrateLink(r,byId){const s=byId.get(r.source),t=byId.get(r.target);if(
  if(s.type==="Procédure"&&(r.type==="Mobilise"||r.type==="Applique")){if(t.type==="Procédure")return {...r,type:"Contient"};if(t.type==="Règle")return {...r,type:kindOf(t)==="Descriptive"?"S’appuie sur":"Applique"};return {...r,type:"S’appuie sur"}}
  return r}
 function demoData(){const items=DEMO.map(x=>({...x,fields:{...x.fields},foundations:x.foundations.map(f=>({...f})),level:0,seen:0}));items.forEach(x=>{x.formulation=compose(x.type,x.name,x.fields,x.id,DEMO_LINKS,items)});return {items,links:DEMO_LINKS.map(x=>({...x}))}}
-function persist(){db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}});try{localStorage.setItem(STORE,JSON.stringify(db))}catch(e){say("Stockage local indisponible : pense à exporter ta base JSON.")}}
-const BACKUP=STORE+"-avant-migration";
+function persist(content=true){db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}});try{localStorage.setItem(STORE,JSON.stringify(db));if(content)localStorage.setItem(DIRTY_KEY,"1")}catch(e){say("Stockage local indisponible : les modifications ne seront pas conservées.")}}
 /* Démo v9.1 restée intacte (mêmes éléments, champs, statuts, fondements et relations) : remplacée par la démo v9.2, progression conservée */
 const DEMO91_SIG="4714-heitnz";let upgraded=false;
 function demoSig(p){const s=JSON.stringify([p.items.map(x=>[x.id,x.type,x.name,x.status,x.life||"Actif",Object.keys(x.fields||{}).sort().map(k=>[k,x.fields[k]]),(x.foundations||[]).map(f=>[f.type,f.text])]).sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:0),p.links.map(r=>[r.source,r.target,r.type,r.note||""].join("|")).sort()]);let h=5381;for(let i=0;i<s.length;i++)h=(Math.imul(h,33)+s.charCodeAt(i))>>>0;return s.length+"-"+h.toString(36)}
 /* Vrai seulement si les données sont l’ancienne démonstration jamais modifiée (noms, formulations, statut, fondement, liens de démo). Dans le doute : on garde les données. */
 function untouchedOldDemo(p){return p.items.length===6&&p.items.every(x=>{const o=OLD_DEMO[x.id];return o&&x.name===o[0]&&x.formulation===o[1]&&x.status==="Établi"&&x.life!=="Archivé"&&!Object.keys(x.fields||{}).length&&(x.foundations||[]).every(f=>f.text===OLD_FOUND)})&&p.links.every(r=>/^demo-l\d+$/.test(r.id))}
-const hasBackup=()=>{try{return !!localStorage.getItem(BACKUP)}catch(_){return false}};
-function load(){let raw=null;try{raw=localStorage.getItem(STORE)}catch(e){}
+let hadLocal=false;
+function load(){let raw=null;try{raw=localStorage.getItem(STORE)}catch(e){}hadLocal=!!raw;
  if(raw){let p=null;try{p=normalize(JSON.parse(raw))}catch(e){}
   if(p&&!untouchedOldDemo(p)){if(demoSig(p)===DEMO91_SIG){const old=new Map(p.items.map(x=>[x.id,x]));db=demoData();db.items.forEach(x=>{const o=old.get(x.id);if(o){x.level=o.level||0;x.seen=o.seen||0}});upgraded=true;return}db=p;return}
-  /* Remplacement par l’exemple guidé : une copie exacte des anciennes données est conservée (bouton « Restaurer », section Sauvegarde d’Apprendre) */
-  try{if(!localStorage.getItem(BACKUP))localStorage.setItem(BACKUP,raw)}catch(e){}}
+ }
  db=demoData()}
 
 /* ---------- Navigation ---------- */
@@ -448,20 +443,23 @@ $("addRelation").addEventListener("click",()=>{const s=item($("source").value),t
 $("relationNote").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.target.blur()}});
 function renderLinks(){refreshSelects();$("relationsList").innerHTML=db.links.length?db.links.map(r=>`<div class="itemrow"><span class="name">${esc(itemName(r.source))} <b>— ${esc(r.type)} →</b> ${esc(itemName(r.target))}${r.note?' <span class="muted">('+esc(r.note)+')</span>':""}${relCheck(r)?' <span class="warn">⚠ '+esc(relCheck(r))+'</span>':""}</span><button data-remove-link="${esc(r.id)}" aria-label="Supprimer la relation">×</button></div>`).join(""):'<div class="empty">Aucune relation enregistrée.</div>';$("relationsList").querySelectorAll("[data-remove-link]").forEach(b=>b.addEventListener("click",()=>{db.links=db.links.filter(r=>r.id!==b.dataset.removeLink);persist();renderLinks();say("Relation supprimée.")}))}
 
-/* ---------- Export : feuille de partage iOS (→ Enregistrer dans Fichiers), sinon téléchargement ---------- */
-function download(json,name){const url=URL.createObjectURL(new Blob([json],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download=name;a.rel="noopener";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);say("Export JSON généré.")}
-$("exportData").addEventListener("click",async()=>{
- const name="explorateur-connaissances-v9-2.json",json=JSON.stringify({format:"modele-representation-connaissance",version:9.2,items:db.items,links:db.links},null,2);
- if(mqTouch.matches&&navigator.share&&navigator.canShare&&typeof File==="function"){
-  const file=new File([json],name,{type:"application/json"});let ok=false;try{ok=navigator.canShare({files:[file]})}catch(_){}
-  if(ok){try{await navigator.share({files:[file],title:"Explorateur de connaissances"});say("Export JSON partagé.");return}catch(e){if(e&&e.name==="AbortError")return}}
- }
- download(json,name);
-});
-/* ---------- Import : <label> natif (fiable sur iOS), pas de filtre accept (évite les .json grisés dans Fichiers) ---------- */
-const readText=f=>typeof f.text==="function"?f.text():new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsText(f)});
-$("importData").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("fileInput").click()}});
-$("fileInput").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;try{const p=normalize(JSON.parse(await readText(f)));if(!p)throw Error("format");const g=id=>p.items.find(x=>x.id===id),nb=p.links.filter(r=>relCheck(r,g,p.links)).length;if(!await ask(`Remplacer les données actuelles par ce fichier (${p.items.length} éléments, ${p.links.length} relations) ?${nb?`\n\n${nb} relation(s) ne respectent pas le modèle : elles seront conservées et signalées dans le contrôle.`:""}`,"Remplacer",true))return;db=p;closeFiche();persist();renderLinks();renderLearn();say(nb?`Import terminé : ${nb} relation(s) à vérifier.`:"Import terminé.")}catch(err){say("Fichier JSON invalide ou incompatible.")}finally{$("fileInput").value=""}});
+/* ---------- Données : fichier donnees.json placé dans le même dossier que la page ----------
+   Au démarrage, s’il existe et qu’il a changé depuis le dernier chargement, il remplace les données (la progression est conservée).
+   Si des modifications ont été faites dans l’app depuis, une confirmation est demandée. Absent ou illisible : données locales. */
+const DATA_FILE="donnees.json",FILE_KEY=STORE+"-fichier",DIRTY_KEY=STORE+"-modifie";
+const getK=k=>{try{return localStorage.getItem(k)}catch(_){return null}},setK=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(_){}};
+const hashStr=t=>{let h=5381;for(let i=0;i<t.length;i++)h=(Math.imul(h,33)+t.charCodeAt(i))>>>0;return t.length+"-"+h.toString(36)};
+async function loadFile(){let txt;try{const r=await fetch(DATA_FILE,{cache:"no-cache"});if(!r.ok)return;txt=await r.text()}catch(_){return}
+ const h=hashStr(txt);if(h===getK(FILE_KEY))return;
+ let p=null;try{p=normalize(JSON.parse(txt))}catch(_){}
+ if(!p){say(`${DATA_FILE} est illisible : les données actuelles sont conservées.`);return}
+ const dirty=getK(DIRTY_KEY)==="1"||(getK(FILE_KEY)==null&&hadLocal);
+ if(dirty&&!await ask(`Le fichier ${DATA_FILE} (${p.items.length} éléments, ${p.links.length} relations) est différent des données de l’app.\nLe charger remplace les modifications faites dans l’app ; ta progression est conservée.`,"Charger le fichier",true)){setK(FILE_KEY,h);return}
+ const old=new Map(db.items.map(x=>[x.id,x]));p.items.forEach(x=>{const o=old.get(x.id);if(o){x.level=o.level||0;x.seen=o.seen||0}});
+ db=p;persist(false);setK(FILE_KEY,h);setK(DIRTY_KEY,null);
+ closeFiche();refreshSelects();resetForm();renderLinks();renderLearn();
+ const nb=p.links.filter(r=>relCheck(r,id=>p.items.find(x=>x.id===id),p.links)).length;
+ say(`${DATA_FILE} chargé : ${p.items.length} éléments, ${p.links.length} relations${nb?` (${nb} relation(s) à vérifier)`:""}.`)}
 
 /* ---------- Clavier iOS : masque la barre d'onglets pendant la saisie ---------- */
 const isText=el=>el&&el.matches&&el.matches("input:not([type=file]),textarea");
@@ -528,7 +526,7 @@ function relCheck(r,get=item,links=db.links){const s=get(r.source),t=get(r.targe
  if(r.type===DEFREL){if(isPrim(s))return "un terme primitif n’est pas défini : il ne peut pas « se définir à partir » d’autres concepts";const others=links.filter(l=>l!==r&&!(r.id&&l.id===r.id));if(prereqReach(r.target,r.source,others,DEFREL))return `définition circulaire : « ${t.name} » se définit déjà, directement ou non, à partir de « ${s.name} »`}
  return ""}
 
-/* ---------- Contrôle en deux niveaux : conformité au modèle / pistes d'enrichissement ---------- */
+/* ---------- Contrôle : conformité au modèle ---------- */
 const outRel=(x,...types)=>db.links.filter(r=>r.source===x.id&&types.includes(r.type));
 const inRel=(x,...types)=>db.links.filter(r=>r.target===x.id&&types.includes(r.type));
 const isOpen=c=>{const v=(c.fields||{}).verdict||"";return !v||v==="À analyser"||v.startsWith("Condition")||v.startsWith("Énoncé à réviser")};
@@ -557,13 +555,8 @@ function conformity(x){const f=x.fields||{},out=[],need=(k,msg)=>{if(!f[k])out.p
   out.push("Statut « Réfuté » sans contre-exemple valable : relie un contre-exemple (« Met à l’épreuve ») dont l’analyse conclut à une condition à préciser (2b) ou à un énoncé à réviser (2c). Un cas hors du domaine (2a) ne réfute pas l’énoncé (convention 3).");
  if(!x.formulation)out.push("Formulation absente (bouton « Composer »).");
  return out}
-function enrichment(x){const out=[],fs=x.foundations||[];
- if(AFFIRMATIONS.includes(x.type)&&!inRel(x,"Met à l’épreuve").length)out.push("Pas encore mise à l’épreuve : un contre-exemple aiderait à délimiter son domaine.");
- if(x.status==="Établi"&&!["Exemple","Contre-exemple"].includes(x.type)){if(!fs.length)out.push("Statut « Établi » sans fondement.");else if(fs.every(f=>f.type==="Observation ou expérience"))out.push("Fondée uniquement sur des observations : elles rendent l’énoncé crédible sans le prouver (convention 3).")}
- if(fs.some(f=>f.type==="Non précisé"))out.push("Type de fondement non précisé.");
- return out}
 const badge=x=>`<span class="lvl lvl${x.level||0}">${LEVELS[x.level||0]}</span>`;
-function detailHTML(x,rs){const f=x.fields||{},m=MODEL[x.type],c=conformity(x),nd=learningNeeds(x),e=enrichment(x),fs=x.foundations||[];
+function detailHTML(x,rs){const f=x.fields||{},m=MODEL[x.type],c=conformity(x),nd=learningNeeds(x),fs=x.foundations||[];
  const rows=m?m.fields.filter(d=>f[d.k]&&!(d.k==="exceptionMode"&&f.exceptionMode==="Exception réelle"&&f.exception)).map(d=>`<dt>${esc(d.label)}</dt><dd>${esc(f[d.k])}</dd>`).join(""):"";
  return `<div class="cardtitle">${esc(x.name)}</div><div class="muted">${esc(typeLabel(x))} · ${esc(x.status)}${x.life==="Archivé"?" · archivé":""} · ${badge(x)}</div>`+
   `<div class="section"><b>Formulation</b><p style="white-space:pre-line">${esc(x.formulation)||'<span class="muted">Non renseignée</span>'}</p></div>`+
@@ -571,7 +564,7 @@ function detailHTML(x,rs){const f=x.fields||{},m=MODEL[x.type],c=conformity(x),n
   `<div class="section"><b>Fondements (${fs.length})</b>${fs.length?`<dl class="fields">${fs.map(g=>`<dt>${esc(g.type)}</dt><dd>${esc(g.text)}</dd>`).join("")}</dl>`:'<p class="muted">Aucun fondement renseigné.</p>'}</div>`+
   `<div class="section"><b>Conformité au modèle</b>${c.length?`<ul class="issues">${c.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:'<p class="ok">Conforme au modèle de représentation.</p>'}</div>`+
   (CORE.includes(x.type)?`<div class="section"><b>Exigences d’apprentissage</b>${nd.length?`<ul class="issues">${nd.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:'<p class="ok">Définitions nécessaires, termes primitifs et au moins 3 exemples : complet.</p>'}</div>`:"")+
-  (e.length?`<div class="section"><b>Pistes d’enrichissement</b> <span class="muted">(facultatif)</span><ul class="tips">${e.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`:"")+
+
   `<div class="section"><b>Relations (${rs.length})</b>${rs.length?rs.map(r=>{const w=relCheck(r);return `<button class="relation" data-goto="${esc(r.source===x.id?r.target:r.source)}">${esc(itemName(r.source))} — <b>${esc(r.type)}</b> → ${esc(itemName(r.target))}${r.note?" · "+esc(r.note):""}${w?` <span class="warn">⚠ ${esc(w)}</span>`:""}</button>`}).join(""):'<p class="muted">Aucune relation enregistrée.</p>'}</div>`}
 
 /* ---------- Définitions et termes primitifs : ce dont chaque élément a besoin pour être compris ---------- */
@@ -661,7 +654,7 @@ function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();cons
  const hb=$("hintBtn");if(hb)hb.addEventListener("click",()=>{hinted=true;renderQuiz()});
  const sb=$("skipBtn");if(sb)sb.addEventListener("click",()=>{nextCard(x.id);renderQuiz()});
  wire($("quiz"));
- $("quiz").querySelectorAll("[data-rate]").forEach(b=>b.addEventListener("click",()=>{x.level=+b.dataset.rate;x.seen=Date.now();persist();say(`« ${x.name} » : ${LEVELS[x.level].toLowerCase()}.`);nextCard(x.id);renderLearn()}))}
+ $("quiz").querySelectorAll("[data-rate]").forEach(b=>b.addEventListener("click",()=>{x.level=+b.dataset.rate;x.seen=Date.now();persist(false);say(`« ${x.name} » : ${LEVELS[x.level].toLowerCase()}.`);nextCard(x.id);renderLearn()}))}
 const PATH=[["1. Les objets : concepts (termes primitifs d’abord)",["Concept"]],["2. Les affirmations : propriétés et règles",["Propriété","Règle"]],["3. Les méthodes : procédures",["Procédure"]],["4. Illustrer et délimiter : exemples et contre-exemples",["Exemple","Contre-exemple"]]];
 function depth(x,seen=new Set()){if(seen.has(x.id))return 0;seen.add(x.id);const p=prereqs(x);return p.length?1+Math.max(...p.map(y=>depth(y,seen))):0}
 function row(x,extra){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${extra} ${badge(x)}</div></span><button data-review="${esc(x.id)}">Réviser</button><button data-open="${esc(x.id)}">Voir</button></div>`}
@@ -671,22 +664,16 @@ function nrow(x,is){const nodef=x.type==="Concept"&&!isPrim(x)&&!defsOf(x).lengt
 function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventListener("click",()=>review(b.dataset.review)));el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openFiche(b.dataset.open)));el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)));
  el.querySelectorAll("[data-addex]").forEach(b=>b.addEventListener("click",()=>addExample(b.dataset.addex)));
  el.querySelectorAll("[data-deflink]").forEach(b=>b.addEventListener("click",()=>{setView("links");$("source").value=b.dataset.deflink;refreshRelationTypes();$("relationType").value=DEFREL;refreshTargets()}))}
-function renderLearn(){$("restoreBackup").hidden=!hasBackup();const act=active(),n=act.length,ok=act.filter(x=>(x.level||0)===2).length,dd=new Map();
+function renderLearn(){const act=active(),n=act.length,ok=act.filter(x=>(x.level||0)===2).length,dd=new Map();
  $("learnProgress").textContent=`${ok} / ${n} acquis`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";renderQuiz();
  $("pathList").innerHTML=(()=>{const L=db.links.filter(r=>r.type===PREREQ&&relCheck(r));return L.length?`<ul class="issues">${L.map(r=>`<li>Boucle de prérequis : « ${esc(itemName(r.source))} » → « ${esc(itemName(r.target))} ». Supprime l’un des liens de la boucle (onglet Relations) pour que le parcours puisse être ordonné.</li>`).join("")}</ul>`:""})()+PATH.map(([title,types])=>{const xs=act.filter(x=>types.includes(x.type)).sort((a,b)=>defDepth(a,dd)-defDepth(b,dd)||depth(a)-depth(b)||a.name.localeCompare(b.name,"fr"));
   return `<div class="pathgroup">${esc(title)}</div>`+(xs.length?xs.map(x=>{const p=prereqs(x),d=defsOf(x);return row(x,esc(typeLabel(x))+(d.length?" · à partir de "+d.map(y=>esc(y.name)).join(", "):"")+(p.length?" · après "+p.map(y=>esc(y.name)).join(", "):""))}).join(""):'<p class="muted">Aucun élément.</p>')}).join("");wire($("pathList"));
- const bad=act.map(x=>[x,conformity(x)]).filter(e=>e[1].length).sort((a,b)=>b[1].length-a[1].length),needs=act.map(x=>[x,learningNeeds(x)]).filter(e=>e[1].length),tips=act.map(x=>[x,enrichment(x)]).filter(e=>e[1].length);
+ const bad=act.map(x=>[x,conformity(x)]).filter(e=>e[1].length).sort((a,b)=>b[1].length-a[1].length),needs=act.map(x=>[x,learningNeeds(x)]).filter(e=>e[1].length);
  $("qualityList").innerHTML=`<div class="pathgroup">Conformité au modèle</div><p class="muted">${n-bad.length} élément(s) conforme(s) sur ${n}.</p>`+(bad.length?bad.map(([x,is])=>qrow(x,is,"écart")).join(""):'<p class="ok">Tous les éléments respectent le modèle.</p>')+
-  `<div class="pathgroup">Exigences d’apprentissage</div><p class="muted">Chaque concept, propriété, règle et procédure est présenté avec ses termes primitifs et ses définitions nécessaires, et illustré par au moins ${MIN_EX} exemples.</p>`+(needs.length?needs.map(([x,is])=>nrow(x,is)).join(""):'<p class="ok">Toutes les exigences d’apprentissage sont remplies.</p>')+
-  `<div class="pathgroup">Pistes d’enrichissement (facultatif)</div>`+(tips.length?tips.map(([x,is])=>qrow(x,is,"piste")).join(""):'<p class="muted">Aucune piste.</p>');wire($("qualityList"))}
+  `<div class="pathgroup">Exigences d’apprentissage</div><p class="muted">Chaque concept, propriété, règle et procédure est présenté avec ses termes primitifs et ses définitions nécessaires, et illustré par au moins ${MIN_EX} exemples.</p>`+(needs.length?needs.map(([x,is])=>nrow(x,is)).join(""):'<p class="ok">Toutes les exigences d’apprentissage sont remplies.</p>');wire($("qualityList"))}
 function review(id){$("quizFilter").value="Tous";quizId=id;revealed=false;hinted=false;if($("learn").hidden)setView("learn");else renderLearn();if(mqNarrow.matches)$("quizPanel").scrollIntoView({behavior:behavior(),block:"start"});else $("quizPanel").scrollTop=0}
 $("quizFilter").addEventListener("change",()=>{nextCard();renderQuiz()});
 $("reviewSelected").addEventListener("click",()=>{const id=selected;closeFiche();if(id)review(id)});
-$("restoreBackup").addEventListener("click",async()=>{let p=null;try{p=normalize(JSON.parse(localStorage.getItem(BACKUP)))}catch(_){}
- if(!p){say("La copie de sécurité est illisible.");return}
- if(!await ask(`Restaurer les données d’avant la mise à jour (${p.items.length} éléments, ${p.links.length} relations) ? Elles remplaceront les données actuelles.`,"Restaurer",true))return;
- db=p;selected=null;persist();try{localStorage.removeItem(BACKUP)}catch(_){}refreshSelects();closeFiche();renderLearn();say("Données restaurées.")});
-$("loadDemo").addEventListener("click",async()=>{if(!await ask("Remplacer les données actuelles par l’exemple guidé (pseudo-code) ? Exporte d’abord tes données si tu veux les conserver.","Remplacer",true))return;db=demoData();closeFiche();persist();refreshSelects();renderLearn();say("Exemple guidé chargé.")});
 
 /* ---------- Rappel du modèle (généré à partir des mêmes définitions que l'application) ---------- */
 function relTable(){const rows=[];Object.entries(RULES).forEach(([src,l])=>l.forEach(r=>rows.push([src,r[0],r[4]||r[1].join(", ")])));rows.push(["Propriété ou Règle",CONTRA,"Propriété ou Règle"]);
@@ -701,8 +688,8 @@ $("modelMemo").innerHTML=Object.entries(MODEL).map(([t,m])=>`<p><b>${esc(t)}</b>
  `<p><b>Fondements</b><br>${FOUND_TYPES.slice(1).join(", ")}. Un élément peut en avoir plusieurs.</p>`;
 
 load();db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}}); /* formulations à jour après migration */
-resetForm();refreshSelects();setView("learn");
-if(upgraded){persist();say("Exemple guidé mis à jour : termes primitifs, définitions nécessaires et au moins 3 exemples par élément. Ta progression est conservée.")}
+resetForm();refreshSelects();setView("learn");loadFile();
+if(upgraded){persist(false);say("Exemple guidé mis à jour : termes primitifs, définitions nécessaires et au moins 3 exemples par élément. Ta progression est conservée.")}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(_){}
 })();
 </script>
