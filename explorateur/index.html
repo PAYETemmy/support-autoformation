@@ -99,7 +99,7 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.0</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.1</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="explore" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="18" cy="19" r="2"/><circle cx="5" cy="18" r="2"/><path d="M6.5 6.5l3.3 3.3M17.3 7.2l-3.2 3.1M16.6 17.6l-2.5-3.5M6.6 16.6l3.2-2.8"/></svg>Graphe</button>
@@ -183,7 +183,7 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
  <div id="libraryList"></div>
  <details class="section memo"><summary>Rappel du modèle de représentation</summary><div id="modelMemo"></div></details>
  <div class="section"><h2>Sauvegarde et transfert</h2><p class="muted">Les changements sont conservés dans le stockage local du navigateur. Sur iPhone, Safari peut effacer ces données après 7 jours sans visite (sauf app ajoutée à l'écran d'accueil) : exporte régulièrement une copie JSON.</p>
- <div class="actions"><button id="loadDemo">Charger l’exemple guidé (pseudo-code)</button></div>
+ <div class="actions"><button id="loadDemo">Charger l’exemple guidé (pseudo-code)</button><button id="restoreBackup" hidden>Restaurer les données d’avant la mise à jour</button></div>
  <div class="actions"><button class="primary" id="exportData">Exporter JSON</button><label class="btn" for="fileInput" id="importData" role="button" tabindex="0">Importer JSON</label><input type="file" id="fileInput" class="vh" tabindex="-1"></div></div>
 </div>
 </section>
@@ -213,11 +213,11 @@ const MODEL={
    {k:"traits",label:"Caractéristiques principales",ph:"Ce qui le distingue des concepts voisins",area:true}]},
  "Propriété":{
   def:"Une caractéristique d’un concept, ou un lien entre concepts, toujours vrai à l’intérieur d’un domaine précisé.",
-  tpl:"Dans le domaine [D], [concept] [relation] [caractéristique ou autre concept].",
-  note:"Relie ensuite la propriété à son concept : « Définit » si elle fait partie de sa définition, « Caractérise » si elle est vraie sans le définir, « Met en relation » si elle lie plusieurs concepts.",
+  tpl:"Dans le domaine [D], [concept relié] [précision] [relation] [caractéristique ou autre concept].",
+  note:"Le concept n’est pas saisi en texte : il vient de la relation, et la formulation se complète d’elle-même. Le champ « Précision » sert seulement à le qualifier. Relie la propriété à son concept : « Définit » si elle fait partie de sa définition, « Caractérise » si elle est vraie sans le définir, « Met en relation » si elle lie plusieurs concepts.",
   fields:[
    {k:"domain",label:"Domaine [D]",ph:"Ex. : du pseudo-code indexé à partir de 0"},
-   {k:"subject",label:"Concept",ph:"Ex. : un tableau de taille N"},
+   {k:"qualifier",label:"Précision sur le concept (facultatif)",ph:"Ex. : de taille N"},
    {k:"relation",label:"Relation",ph:"Ex. : a des indices"},
    {k:"object",label:"Caractéristique ou autre concept",ph:"Ex. : allant de 0 à N−1"}]},
  "Règle":{
@@ -283,19 +283,21 @@ const REL_HELP={
  "Contient":"La cible est une sous-procédure, c’est-à-dire une étape de la source.",
  "Illustre":"Le cas concret montre une caractéristique de la cible.",
  "Met à l’épreuve":"Le cas teste l’énoncé cible ; analyse-le ensuite selon la convention 2.",
- [PREREQ]:"Relation pédagogique, hors modèle : la cible doit être apprise avant la source. Elle ordonne le parcours.",
+ [PREREQ]:"Relation pédagogique, hors modèle : la cible doit être apprise avant la source. Elle ordonne le parcours. Les cibles qui créeraient une boucle ne sont pas proposées.",
  [CONTRA]:"Deux affirmations incompatibles : au moins l’une doit être restreinte ou révisée."
 };
 const LEVELS=["À apprendre","En cours","Acquis"];
-const OLD_DEMO=new Set(["demo-concept","demo-propriete","demo-regle","demo-procedure","demo-exemple","demo-contre"]);
+/* Ancienne démonstration (v7) : noms et formulations d’origine. Elle n’est remplacée que si elle est restée intacte. */
+const OLD_DEMO={"demo-concept":["Concept","Unité de connaissance qui représente une chose, une catégorie, une grandeur, une relation ou une idée."],"demo-propriete":["Propriété","Caractéristique associée à un concept ou à un cas particulier."],"demo-regle":["Règle","Énoncé qui établit une contrainte, une régularité ou une relation applicable."],"demo-procedure":["Procédure","Enchaînement organisé d’opérations mobilisant des connaissances."],"demo-exemple":["Exemple","Cas qui illustre un concept, une propriété, une règle ou une procédure."],"demo-contre":["Contre-exemple","Cas qui met à l’épreuve une définition, une propriété, une règle ou une garantie de procédure."]};
+const OLD_FOUND="Élément du modèle de représentation des connaissances.";
 const F=(type,text)=>({type,text});
 const D=(id,type,name,status,fields,foundations=[])=>({id,type,name,status,life:"Actif",fields,foundations,formulation:"",autoForm:true});
 const DEMO=[
  D("pc-variable","Concept","Variable","Établi",{domain:"le pseudo-code",definition:"Emplacement nommé qui contient une valeur pouvant changer au cours de l’exécution.",traits:"Possède un nom, un type et une valeur courante."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
  D("pc-affectation","Concept","Affectation","Établi",{domain:"le pseudo-code",definition:"Instruction x ← e qui donne à la variable x la valeur de l’expression e.",traits:"Se lit de droite à gauche : e est évaluée, puis sa valeur est rangée dans x."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
  D("pc-tableau","Concept","Tableau","Établi",{domain:"le pseudo-code",definition:"Suite de N valeurs de même type, repérées chacune par un indice.",traits:"Taille N fixée ; accès direct à un élément par T[i]."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
- D("pc-unique","Propriété","Valeur unique","Établi",{domain:"du pseudo-code",subject:"une variable",relation:"contient",object:"une seule valeur à un instant donné"},[F("Définition de référence","Fait partie de la définition d’une variable.")]),
- D("pc-indices","Propriété","Indices 0 à N−1","Établi",{domain:"du pseudo-code indexé à partir de 0",subject:"un tableau de taille N",relation:"a des indices",object:"allant de 0 à N−1"},[F("Source documentaire","Convention d’indexation adoptée par le cours.")]),
+ D("pc-unique","Propriété","Valeur unique","Établi",{domain:"du pseudo-code",relation:"contient",object:"une seule valeur à un instant donné"},[F("Définition de référence","Fait partie de la définition d’une variable.")]),
+ D("pc-indices","Propriété","Indices 0 à N−1","Établi",{domain:"du pseudo-code indexé à partir de 0",qualifier:"de taille N",relation:"a des indices",object:"allant de 0 à N−1"},[F("Source documentaire","Convention d’indexation adoptée par le cours.")]),
  D("pc-remplacement","Règle","Valeur remplacée","Établi",{kind:"Descriptive",context:"de l’exécution d’un pseudo-code",condition:"x ← e s’exécute correctement",conclusion:"la nouvelle valeur de x remplace l’ancienne",exceptionMode:"Aucune exception identifiée dans ce domaine"},[F("Démonstration ou raisonnement","Découle de la propriété « Valeur unique » : x ne peut pas conserver deux valeurs.")]),
  D("pc-avant-lecture","Règle","Affecter d’abord","Proposé",{kind:"D’action",context:"de l’écriture d’un pseudo-code",condition:"une variable va être lue",conclusion:"lui affecter une valeur avant cette lecture",exceptionMode:"Exception réelle",exception:"elle est un paramètre d’entrée (sa valeur est fournie à l’appel)"},[F("Démonstration ou raisonnement","Une variable lue sans valeur donne un résultat indéterminé.")]),
  D("pc-somme","Procédure","Somme d’un tableau","Établi",{context:"du pseudo-code",goal:"calculer la somme des éléments d’un tableau T",inputs:"un tableau T de N nombres, N ≥ 0",steps:"1. somme ← 0\n2. Pour i allant de 0 à N−1 : somme ← somme + T[i]\n3. Renvoyer somme",result:"la somme des éléments de T",success:"les indices utilisés restent entre 0 et N−1"},[F("Démonstration ou raisonnement","Invariant : après le passage i, somme vaut T[0] + … + T[i].")]),
@@ -341,12 +343,15 @@ function ask(text,okLabel="Confirmer",danger=false){return new Promise(resolve=>
 /* ---------- Données ---------- */
 function normalize(p){
  if(!p||!Array.isArray(p.items)||!Array.isArray(p.links))return null;
- const items=p.items.filter(x=>x&&typeof x==="object").map(x=>{const y={...x,id:String(x.id??uid()),type:TYPES.includes(x.type)?x.type:"Concept",status:STATUSES.includes(x.status)?x.status:"À examiner",life:x.life==="Archivé"||x.status==="Abandonné"?"Archivé":"Actif",name:String(x.name||"Sans nom"),formulation:String(x.formulation||""),foundations:cleanFoundations(x),fields:cleanFields(x.fields),level:clamp(parseInt(x.level,10)||0,0,2),seen:+x.seen||0};delete y.foundation;return y});
+ const items=p.items.filter(x=>x&&typeof x==="object").map(x=>{const y={...x,id:String(x.id??uid()),type:TYPES.includes(x.type)?x.type:"Concept",status:STATUSES.includes(x.status)?x.status:"À examiner",life:x.life==="Archivé"||x.status==="Abandonné"?"Archivé":"Actif",name:String(x.name||"Sans nom"),formulation:String(x.formulation||""),foundations:cleanFoundations(x),fields:cleanFields(x.fields),level:clamp(parseInt(x.level,10)||0,0,2),seen:+x.seen||0};delete y.foundation;const md=MODEL[y.type];if(md)md.fields.forEach(d=>{if(d.options&&y.fields[d.k]===d.options[0])delete y.fields[d.k]});return y});
  const ids=new Set(items.map(x=>x.id));
  const links=p.links.filter(r=>r&&ids.has(String(r.source))&&ids.has(String(r.target))).map(r=>({...r,id:String(r.id??uid()),source:String(r.source),target:String(r.target),type:String(r.type||""),note:String(r.note||"")}));
  const byId=new Map(items.map(x=>[x.id,x])),seenL=new Set(),out=[];
  links.map(r=>migrateLink(r,byId)).forEach(r=>{const k=(r.type===CONTRA?[r.source,r.target].sort().join("|"):r.source+"|"+r.target)+"|"+r.type;if(!seenL.has(k)){seenL.add(k);out.push(r)}});
  /* Anciennes mentions textuelles (v8) supprimées dès que la relation correspondante existe : la relation est la source de vérité */
+ /* Propriété (v9.0 → v9.1) : l’ancien champ « Concept » devient une précision quand le concept relié y est nommé ; sinon il reste signalé à convertir */
+ items.forEach(x=>{const f=x.fields;if(x.type!=="Propriété"||!f.subject)return;
+  for(const t of out.filter(r=>r.source===x.id&&PROP_RELS.includes(r.type)).map(r=>byId.get(r.target)).filter(Boolean)){const rest=afterName(f.subject,t.name);if(rest===null)continue;if(rest&&f.qualifier)break;if(rest)f.qualifier=rest;delete f.subject;break}});
  items.forEach(x=>{const f=x.fields;if(x.type==="Exemple"&&f.target&&out.some(r=>r.source===x.id&&r.type==="Illustre"))delete f.target;if(x.type==="Contre-exemple"&&f.claim&&out.some(r=>r.source===x.id&&r.type==="Met à l’épreuve"))delete f.claim});
  return {items,links:out};
 }
@@ -363,7 +368,16 @@ function migrateLink(r,byId){const s=byId.get(r.source),t=byId.get(r.target);if(
  return r}
 function demoData(){const items=DEMO.map(x=>({...x,fields:{...x.fields},foundations:x.foundations.map(f=>({...f})),level:0,seen:0}));items.forEach(x=>{x.formulation=compose(x.type,x.name,x.fields,x.id,DEMO_LINKS,items)});return {items,links:DEMO_LINKS.map(x=>({...x}))}}
 function persist(){db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}});try{localStorage.setItem(STORE,JSON.stringify(db))}catch(e){say("Stockage local indisponible : pense à exporter ta base JSON.")}}
-function load(){try{const raw=localStorage.getItem(STORE);if(raw){const p=normalize(JSON.parse(raw));if(p&&!(p.items.length===6&&p.items.every(x=>OLD_DEMO.has(x.id)))){db=p;return}}}catch(e){}db=demoData()}
+const BACKUP=STORE+"-avant-migration";
+/* Vrai seulement si les données sont l’ancienne démonstration jamais modifiée (noms, formulations, statut, fondement, liens de démo). Dans le doute : on garde les données. */
+function untouchedOldDemo(p){return p.items.length===6&&p.items.every(x=>{const o=OLD_DEMO[x.id];return o&&x.name===o[0]&&x.formulation===o[1]&&x.status==="Établi"&&x.life!=="Archivé"&&!Object.keys(x.fields||{}).length&&(x.foundations||[]).every(f=>f.text===OLD_FOUND)})&&p.links.every(r=>/^demo-l\d+$/.test(r.id))}
+const hasBackup=()=>{try{return !!localStorage.getItem(BACKUP)}catch(_){return false}};
+function load(){let raw=null;try{raw=localStorage.getItem(STORE)}catch(e){}
+ if(raw){let p=null;try{p=normalize(JSON.parse(raw))}catch(e){}
+  if(p&&!untouchedOldDemo(p)){db=p;return}
+  /* Remplacement par l’exemple guidé : une copie exacte des anciennes données est conservée (bouton « Restaurer » dans la Bibliothèque) */
+  try{if(!localStorage.getItem(BACKUP))localStorage.setItem(BACKUP,raw)}catch(e){}}
+ db=demoData()}
 
 /* ---------- Navigation ---------- */
 function setView(v){
@@ -562,7 +576,7 @@ $("relationNote").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDe
 function renderLinks(){refreshSelects();$("relationsList").innerHTML=db.links.length?db.links.map(r=>`<div class="itemrow"><span class="name">${esc(itemName(r.source))} <b>— ${esc(r.type)} →</b> ${esc(itemName(r.target))}${r.note?' <span class="muted">('+esc(r.note)+')</span>':""}${relCheck(r)?' <span class="warn">⚠ '+esc(relCheck(r))+'</span>':""}</span><button data-remove-link="${esc(r.id)}" aria-label="Supprimer la relation">×</button></div>`).join(""):'<div class="empty">Aucune relation enregistrée.</div>';$("relationsList").querySelectorAll("[data-remove-link]").forEach(b=>b.addEventListener("click",()=>{db.links=db.links.filter(r=>r.id!==b.dataset.removeLink);persist();renderLinks();draw();if(selected)select(selected);say("Relation supprimée.")}))}
 
 /* ---------- Bibliothèque ---------- */
-function renderLibrary(){const q=$("search").value.toLowerCase(),f=$("filter").value;const rows=db.items.filter(x=>(f==="Tous"||x.type===f)&&(`${x.name} ${x.formulation||""} ${Object.values(x.fields||{}).join(" ")} ${(x.foundations||[]).map(f=>f.text).join(" ")}`).toLowerCase().includes(q));$("libraryCount").textContent=db.items.length+" éléments";$("libraryList").innerHTML=rows.length?rows.map(x=>`<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${esc(x.type)} · ${esc(x.status)}${x.life==="Archivé"?" · archivé":""} · ${conformity(x).length?conformity(x).length+" écart(s) au modèle":"conforme"} ${badge(x)}</div></span><button data-open="${esc(x.id)}">Voir</button><button data-edit="${esc(x.id)}">Modifier</button></div>`).join(""):'<div class="empty">Aucun résultat.</div>';$("libraryList").querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>{setView("explore");select(b.dataset.open,true)}));$("libraryList").querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)))}
+function renderLibrary(){$("restoreBackup").hidden=!hasBackup();const q=$("search").value.toLowerCase(),f=$("filter").value;const rows=db.items.filter(x=>(f==="Tous"||x.type===f)&&(`${x.name} ${x.formulation||""} ${Object.values(x.fields||{}).join(" ")} ${(x.foundations||[]).map(f=>f.text).join(" ")}`).toLowerCase().includes(q));$("libraryCount").textContent=db.items.length+" éléments";$("libraryList").innerHTML=rows.length?rows.map(x=>`<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${esc(x.type)} · ${esc(x.status)}${x.life==="Archivé"?" · archivé":""} · ${conformity(x).length?conformity(x).length+" écart(s) au modèle":"conforme"} ${badge(x)}</div></span><button data-open="${esc(x.id)}">Voir</button><button data-edit="${esc(x.id)}">Modifier</button></div>`).join(""):'<div class="empty">Aucun résultat.</div>';$("libraryList").querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>{setView("explore");select(b.dataset.open,true)}));$("libraryList").querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)))}
 $("search").addEventListener("input",renderLibrary);$("filter").addEventListener("change",renderLibrary);
 $("search").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.target.blur()}});
 
@@ -579,7 +593,7 @@ $("exportData").addEventListener("click",async()=>{
 /* ---------- Import : <label> natif (fiable sur iOS), pas de filtre accept (évite les .json grisés dans Fichiers) ---------- */
 const readText=f=>typeof f.text==="function"?f.text():new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsText(f)});
 $("importData").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("fileInput").click()}});
-$("fileInput").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;try{const p=normalize(JSON.parse(await readText(f)));if(!p)throw Error("format");const g=id=>p.items.find(x=>x.id===id),nb=p.links.filter(r=>relCheck(r,g)).length;if(!await ask(`Remplacer les données actuelles par ce fichier (${p.items.length} éléments, ${p.links.length} relations) ?${nb?`\n\n${nb} relation(s) ne respectent pas le modèle : elles seront conservées et signalées dans le contrôle.`:""}`,"Remplacer",true))return;db=p;selected=null;persist();draw();renderLibrary();renderLinks();clearDetail();say(nb?`Import terminé : ${nb} relation(s) à vérifier.`:"Import terminé.")}catch(err){say("Fichier JSON invalide ou incompatible.")}finally{$("fileInput").value=""}});
+$("fileInput").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;try{const p=normalize(JSON.parse(await readText(f)));if(!p)throw Error("format");const g=id=>p.items.find(x=>x.id===id),nb=p.links.filter(r=>relCheck(r,g,p.links)).length;if(!await ask(`Remplacer les données actuelles par ce fichier (${p.items.length} éléments, ${p.links.length} relations) ?${nb?`\n\n${nb} relation(s) ne respectent pas le modèle : elles seront conservées et signalées dans le contrôle.`:""}`,"Remplacer",true))return;db=p;selected=null;persist();draw();renderLibrary();renderLinks();clearDetail();say(nb?`Import terminé : ${nb} relation(s) à vérifier.`:"Import terminé.")}catch(err){say("Fichier JSON invalide ou incompatible.")}finally{$("fileInput").value=""}});
 
 /* ---------- Clavier iOS : masque la barre d'onglets pendant la saisie ---------- */
 const isText=el=>el&&el.matches&&el.matches("input:not([type=file]),textarea");
@@ -594,14 +608,23 @@ function renderTemplate(type,vals){const m=MODEL[type];if(!m){$("templateFields"
   else if(f.area)ctl=`<textarea id="${id}" data-f="${f.k}" placeholder="${esc(f.ph||"")}">${esc(val)}</textarea>`;
   else ctl=`<input id="${id}" data-f="${f.k}" value="${esc(val)}" placeholder="${esc(f.ph||"")}" autocomplete="off" enterkeyhint="next">`;
   return `<div class="field"><label for="${id}">${esc(f.label)}</label>${ctl}</div>`}).join("");
+ if(type==="Propriété"){const c=editing?propConcepts(editing):"";
+  $("templateFields").insertAdjacentHTML("afterbegin",`<p class="notice" style="margin:0 0 10px">${c?`Concept(s) relié(s) : ${esc(c)} — modifiable dans l’onglet Relations.`:"Aucun concept relié : après l’enregistrement, relie la propriété à son concept (onglet Relations)."}</p>`);
+  if(vals.subject)$("templateFields").insertAdjacentHTML("beforeend",`<div class="field"><label for="f_subject">Ancien champ « Concept » (à convertir)</label><input id="f_subject" data-f="subject" value="${esc(vals.subject)}" autocomplete="off" enterkeyhint="next"><p class="notice" style="margin-top:4px">Le concept vient maintenant de la relation. Reporte la précision éventuelle dans le champ « Précision », puis vide celui-ci.</p></div>`)}
  const em=$("f_exceptionMode"),ex=$("f_exception");if(em&&ex){const sync=()=>{ex.closest(".field").hidden=em.value!=="Exception réelle"};em.addEventListener("change",sync);sync()}}
 function readFields(){const o={};$("templateFields").querySelectorAll("[data-f]").forEach(el=>{const v=el.value.trim();if(v&&!el.closest("[hidden]"))o[el.dataset.f]=v});return o}
 const dot=t=>/[.!?…»]$/.test(t)?t:t+".";
+const PROP_RELS=["Définit","Caractérise","Met en relation"];
+function propConcepts(id,links=db.links,items=db.items){const n=[...new Set(links.filter(r=>r.source===id&&PROP_RELS.includes(r.type)).map(r=>r.target))].map(t=>items.find(x=>x.id===t)).filter(Boolean).map(t=>`« ${t.name} »`);return n.length<2?n.join(""):n.slice(0,-1).join(", ")+" et "+n[n.length-1]}
+/* Texte qui suit le nom du concept dans l’ancien champ (« un tableau de taille N » + « Tableau » → « de taille N ») ; null si le nom n’y figure pas */
+function afterName(text,name){const fc=c=>c.normalize("NFD").charAt(0).toLowerCase(),A=[...String(text)],B=[...String(name).trim()],a=A.map(fc).join(""),b=B.map(fc).join("");if(!b)return null;
+ const m=new RegExp("(^|[^a-z0-9])("+b.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")(s|x)?(?![a-z0-9])").exec(a);if(!m)return null;
+ return A.slice(m.index+m[1].length+m[2].length+(m[3]||"").length).join("").replace(/^[\s,;:–—-]+/,"").trim()}
 function linkedDesc(id,type,links=db.links,items=db.items){const n=links.filter(r=>r.source===id&&r.type===type).map(r=>items.find(x=>x.id===r.target)).filter(Boolean).map(t=>`${ART[t.type]||""} « ${t.name} »`.trim());return n.length<2?n.join(""):n.slice(0,-1).join(", ")+" et "+n[n.length-1]}
 function compose(type,name,f,id,links,items){f=f||{};if(!Object.keys(f).some(k=>f[k]))return"";const v=(k,ph)=>(f[k]||"").trim()||ph;
  switch(type){
   case "Concept":return dot(`${name} : ${v("definition","[définition]")}`)+(f.traits?" Caractéristiques : "+dot(f.traits):"");
-  case "Propriété":return dot(`Dans le domaine ${v("domain","[D]")}, ${v("subject","[concept]")} ${v("relation","[relation]")} ${v("object","[caractéristique ou autre concept]")}`);
+  case "Propriété":{const subj=f.subject||propConcepts(id,links,items)||"[concept relié]";return dot(`Dans le domaine ${v("domain","[D]")}, ${subj}${f.qualifier?" "+f.qualifier:""} ${v("relation","[relation]")} ${v("object","[caractéristique ou autre concept]")}`)}
   case "Règle":{const m=f.exceptionMode,exc=m==="Exception réelle"?`, sauf si ${v("exception","[exception]")}`:m==="Aucune exception identifiée dans ce domaine"?" (aucune exception identifiée dans ce domaine)":m==="Limites encore inconnues"?" (limites encore inconnues)":", sauf si [exception à examiner]";
    return dot(`Dans le contexte ${v("context","[C]")}, si ${v("condition","[condition]")}, alors ${v("conclusion","[conséquence ou action]")}${exc}`)}
   case "Procédure":return `Dans le contexte ${v("context","[C]")}, pour ${v("goal","[but]")}, à partir de ${v("inputs","[entrées et préconditions]")} :\n${v("steps","[étapes, choix ou répétitions]")}\nElle produit ${v("result","[résultat]")}, si ${dot(v("success","[conditions de réussite]"))}`;
@@ -619,10 +642,12 @@ function readFoundations(){return [...$("foundList").querySelectorAll(".foundrow
 $("addFound").addEventListener("click",()=>{$("foundList").insertAdjacentHTML("beforeend",foundRow());wireFound();$("foundList").lastElementChild.querySelector("input").focus()});
 
 /* ---------- Validité sémantique d'une relation (source de vérité : le tableau RULES) ---------- */
-function relCheck(r,get=item){const s=get(r.source),t=get(r.target);
+/* Un parcours ne peut être ordonné que si les prérequis ne forment aucune boucle (graphe orienté acyclique, tri topologique) */
+function prereqReach(from,to,links){const seen=new Set([from]),stack=[from];while(stack.length){const c=stack.pop();if(c===to)return true;links.forEach(l=>{if(l.type===PREREQ&&l.source===c&&!seen.has(l.target)){seen.add(l.target);stack.push(l.target)}})}return false}
+function relCheck(r,get=item,links=db.links){const s=get(r.source),t=get(r.target);
  if(!s||!t)return "élément manquant";if(r.source===r.target)return "un élément ne peut pas être relié à lui-même";
  if(!KNOWN.has(r.type))return "type de relation inconnu du modèle";
- if(r.type===PREREQ)return "";
+ if(r.type===PREREQ){const others=links.filter(l=>l!==r&&!(r.id&&l.id===r.id));return prereqReach(r.target,r.source,others)?`boucle de prérequis : « ${t.name} » dépend déjà, directement ou non, de « ${s.name} »`:""}
  if(r.type===CONTRA)return AFFIRMATIONS.includes(s.type)&&AFFIRMATIONS.includes(t.type)?"":"« Se contredit avec » ne relie que des propriétés et des règles";
  const rule=(RULES[s.type]||[]).find(x=>x[0]===r.type);
  if(!rule)return `un élément de type « ${s.type} » ne peut pas être source de « ${r.type} »`;
@@ -633,11 +658,11 @@ function relCheck(r,get=item){const s=get(r.source),t=get(r.target);
 /* ---------- Contrôle en deux niveaux : conformité au modèle / pistes d'enrichissement ---------- */
 const outRel=(x,...types)=>db.links.filter(r=>r.source===x.id&&types.includes(r.type));
 const inRel=(x,...types)=>db.links.filter(r=>r.target===x.id&&types.includes(r.type));
-const isOpen=c=>{const v=(c.fields||{}).verdict||"";return !v||v.startsWith("Condition")||v.startsWith("Énoncé à réviser")};
+const isOpen=c=>{const v=(c.fields||{}).verdict||"";return !v||v==="À analyser"||v.startsWith("Condition")||v.startsWith("Énoncé à réviser")};
 function conformity(x){const f=x.fields||{},out=[],need=(k,msg)=>{if(!f[k])out.push(msg)};
  switch(x.type){
   case "Concept":need("definition","Définition (sens) non précisée.");need("traits","Caractéristiques non précisées.");break;
-  case "Propriété":need("domain","Domaine non précisé : une propriété n’est vraie qu’à l’intérieur d’un domaine.");need("subject","Concept concerné non renseigné.");need("relation","Relation non renseignée.");need("object","Caractéristique ou concept lié non renseigné.");
+  case "Propriété":need("domain","Domaine non précisé : une propriété n’est vraie qu’à l’intérieur d’un domaine.");if(f.subject)out.push(`Ancien champ « Concept » à convertir (« ${f.subject} ») : le concept vient désormais de la relation ; garde seulement la précision (ex. : « de taille N »).`);need("relation","Relation non renseignée.");need("object","Caractéristique ou concept lié non renseigné.");
    if(!outRel(x,"Définit","Caractérise","Met en relation").length)out.push("Propriété reliée à aucun concept (« Définit », « Caractérise » ou « Met en relation »).");
    if(outRel(x,"Met en relation").length===1)out.push("« Met en relation » lie des concepts entre eux : relie la propriété à au moins deux concepts.");
    {const d=new Set(outRel(x,"Définit").map(r=>r.target));if(outRel(x,"Caractérise").some(r=>d.has(r.target)))out.push("La propriété « définit » et « caractérise » le même concept : choisis l’une des deux relations.")}
@@ -652,9 +677,11 @@ function conformity(x){const f=x.fields||{},out=[],need=(k,msg)=>{if(!f[k])out.p
    if(!outRel(x,"Met à l’épreuve").length)out.push("Un contre-exemple met un énoncé à l’épreuve : ajoute la relation « Met à l’épreuve »."+(f.claim?` Ancienne mention à convertir : ${f.claim}.`:""));
    if(!f.verdict)out.push("Analyse à faire (convention 2) : hors domaine, condition à préciser ou énoncé à réviser ?");break;
  }
- db.links.filter(r=>r.source===x.id).forEach(r=>{const m=relCheck(r);if(m)out.push(`Relation « ${r.type} » vers « ${itemName(r.target)} » non conforme : ${m}.`)});
+ db.links.filter(r=>r.source===x.id&&r.type!==PREREQ).forEach(r=>{const m=relCheck(r);if(m)out.push(`Relation « ${r.type} » vers « ${itemName(r.target)} » non conforme : ${m}.`)});
  const open=inRel(x,"Met à l’épreuve").map(r=>item(r.source)).filter(c=>c&&c.life!=="Archivé"&&isOpen(c));
  if(open.length&&x.status==="Établi")out.push(`Statut « Établi » alors qu’un contre-exemple n’est pas résolu (${open.map(c=>"« "+c.name+" »").join(", ")}) : un seul contre-exemple valable suffit à réfuter (convention 3). Analyse-le ou passe le statut à « Contesté ».`);
+ if(x.status==="Réfuté"&&!["Exemple","Contre-exemple"].includes(x.type)&&!inRel(x,"Met à l’épreuve").map(r=>item(r.source)).some(c=>c&&c.life!=="Archivé"&&/^(Condition|Énoncé à réviser)/.test((c.fields||{}).verdict||"")))
+  out.push("Statut « Réfuté » sans contre-exemple valable : relie un contre-exemple (« Met à l’épreuve ») dont l’analyse conclut à une condition à préciser (2b) ou à un énoncé à réviser (2c). Un cas hors du domaine (2a) ne réfute pas l’énoncé (convention 3).");
  if(!x.formulation)out.push("Formulation absente (bouton « Composer »).");
  return out}
 function enrichment(x){const out=[],fs=x.foundations||[];
@@ -681,7 +708,7 @@ const excText=f=>f.exceptionMode==="Exception réelle"?f.exception:f.exceptionMo
 function question(x){const f=x.fields||{};
  switch(x.type){
   case "Concept":if(f.definition)return {q:`Que désigne le concept « ${x.name} » ? Quelles sont ses caractéristiques ?`,a:[["Définition",f.definition],["Caractéristiques",f.traits]]};break;
-  case "Propriété":if(f.subject&&f.relation)return {q:`Dans le domaine ${f.domain||"[non précisé]"}, complète : « ${f.subject} ${f.relation} … »`,a:[["Réponse",f.object],["Énoncé complet",x.formulation]]};break;
+  case "Propriété":{const subj=f.subject||[propConcepts(x.id),f.qualifier].filter(Boolean).join(" ");if(subj&&f.relation)return {q:`Dans le domaine ${f.domain||"[non précisé]"}, complète : « ${subj} ${f.relation} … »`,a:[["Réponse",f.object],["Énoncé complet",x.formulation]]};break}
   case "Règle":if(f.condition)return {q:`${f.context?"Dans le contexte "+f.context+", s":"S"}i ${f.condition}, alors… ? Y a-t-il une exception ? Est-ce une règle descriptive ou d’action ?`,a:[["Alors",f.conclusion],["Sauf si",excText(f)],["Nature",f.kind]]};break;
   case "Procédure":if(f.goal)return {q:`Pour ${f.goal}${f.inputs?", à partir de "+f.inputs:""} : quelles sont les étapes, et à quelles conditions la procédure réussit-elle ?`,a:[["Étapes",f.steps],["Résultat",f.result],["Conditions de réussite",f.success]]};break;
   case "Exemple":if(f.case)return {q:`« ${f.case} » : qu’est-ce que ce cas illustre, et pourquoi ?`,a:[["Illustre",linkedDesc(x.id,"Illustre")],["Parce que",f.shown]]};break;
@@ -708,7 +735,7 @@ function qrow(x,is,word){return `<div class="itemrow"><i class="dot" style="back
 function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventListener("click",()=>review(b.dataset.review)));el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>{setView("explore");select(b.dataset.open,true)}));el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)))}
 function renderLearn(){const act=active(),n=act.length,ok=act.filter(x=>(x.level||0)===2).length;
  $("learnProgress").textContent=`${ok} / ${n} acquis`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";renderQuiz();
- $("pathList").innerHTML=PATH.map(([title,types])=>{const xs=act.filter(x=>types.includes(x.type)).sort((a,b)=>depth(a)-depth(b)||a.name.localeCompare(b.name,"fr"));
+ $("pathList").innerHTML=(()=>{const L=db.links.filter(r=>r.type===PREREQ&&relCheck(r));return L.length?`<ul class="issues">${L.map(r=>`<li>Boucle de prérequis : « ${esc(itemName(r.source))} » → « ${esc(itemName(r.target))} ». Supprime l’un des liens de la boucle (onglet Relations) pour que le parcours puisse être ordonné.</li>`).join("")}</ul>`:""})()+PATH.map(([title,types])=>{const xs=act.filter(x=>types.includes(x.type)).sort((a,b)=>depth(a)-depth(b)||a.name.localeCompare(b.name,"fr"));
   return `<div class="pathgroup">${esc(title)}</div>`+(xs.length?xs.map(x=>{const p=prereqs(x);return row(x,esc(x.type)+(p.length?" · après "+p.map(y=>esc(y.name)).join(", "):""))}).join(""):'<p class="muted">Aucun élément.</p>')}).join("");wire($("pathList"));
  const bad=act.map(x=>[x,conformity(x)]).filter(e=>e[1].length).sort((a,b)=>b[1].length-a[1].length),tips=act.map(x=>[x,enrichment(x)]).filter(e=>e[1].length);
  $("qualityList").innerHTML=`<div class="pathgroup">Conformité au modèle</div><p class="muted">${n-bad.length} élément(s) conforme(s) sur ${n}.</p>`+(bad.length?bad.map(([x,is])=>qrow(x,is,"écart")).join(""):'<p class="ok">Tous les éléments respectent le modèle.</p>')+
@@ -716,6 +743,10 @@ function renderLearn(){const act=active(),n=act.length,ok=act.filter(x=>(x.level
 function review(id){$("quizFilter").value="Tous";quizId=id;revealed=false;setView("learn")}
 $("quizFilter").addEventListener("change",()=>{nextCard();renderQuiz()});
 $("reviewSelected").addEventListener("click",()=>{if(selected)review(selected)});
+$("restoreBackup").addEventListener("click",async()=>{let p=null;try{p=normalize(JSON.parse(localStorage.getItem(BACKUP)))}catch(_){}
+ if(!p){say("La copie de sécurité est illisible.");return}
+ if(!await ask(`Restaurer les données d’avant la mise à jour (${p.items.length} éléments, ${p.links.length} relations) ? Elles remplaceront les données actuelles.`,"Restaurer",true))return;
+ db=p;selected=null;persist();try{localStorage.removeItem(BACKUP)}catch(_){}refreshSelects();clearDetail();draw();renderLibrary();say("Données restaurées.")});
 $("loadDemo").addEventListener("click",async()=>{if(!await ask("Remplacer les données actuelles par l’exemple guidé (pseudo-code) ? Exporte d’abord tes données si tu veux les conserver.","Remplacer",true))return;db=demoData();selected=null;persist();refreshSelects();clearDetail();draw();renderLibrary();say("Exemple guidé chargé.")});
 
 /* ---------- Rappel du modèle (généré à partir des mêmes définitions que l'application) ---------- */
@@ -761,7 +792,8 @@ function computeRoles(BW){
   if(best){g.lx=+best.x.toFixed(1);g.ly=+best.y.toFixed(1)}else g.label=""});
  return {S:W/BW,W,H,pos,rings}}
 
-load();resetForm();draw();renderLibrary();refreshSelects();
+load();db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}}); /* formulations à jour après migration */
+resetForm();draw();renderLibrary();refreshSelects();
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(_){}
 })();
 </script>
