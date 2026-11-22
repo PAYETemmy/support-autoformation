@@ -99,7 +99,7 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.1</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.2</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="explore" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="18" cy="19" r="2"/><circle cx="5" cy="18" r="2"/><path d="M6.5 6.5l3.3 3.3M17.3 7.2l-3.2 3.1M16.6 17.6l-2.5-3.5M6.6 16.6l3.2-2.8"/></svg>Graphe</button>
@@ -207,9 +207,11 @@ const MODEL={
  "Concept":{
   def:"Une chose, une catégorie, une grandeur ou une idée dont on peut préciser le sens et les caractéristiques.",
   tpl:"[Concept] : [définition]. Caractéristiques : [caractéristiques].",
+  note:"Termes primitifs : les mots sur lesquels la définition s’appuie et que l’on admet sans les définir, dont son genre s’il n’est pas lui-même défini. Sépare-les par des virgules. Vise au moins 3 exemples qui illustrent le concept (relation « Illustre »).",
   fields:[
    {k:"domain",label:"Domaine",ph:"Ex. : le pseudo-code"},
    {k:"definition",label:"Définition (sens)",ph:"Ce que désigne ce concept",area:true},
+   {k:"primitives",label:"Termes primitifs (admis sans définition)",ph:"Ex. : emplacement, nom, valeur"},
    {k:"traits",label:"Caractéristiques principales",ph:"Ce qui le distingue des concepts voisins",area:true}]},
  "Propriété":{
   def:"Une caractéristique d’un concept, ou un lien entre concepts, toujours vrai à l’intérieur d’un domaine précisé.",
@@ -293,9 +295,9 @@ const OLD_FOUND="Élément du modèle de représentation des connaissances.";
 const F=(type,text)=>({type,text});
 const D=(id,type,name,status,fields,foundations=[])=>({id,type,name,status,life:"Actif",fields,foundations,formulation:"",autoForm:true});
 const DEMO=[
- D("pc-variable","Concept","Variable","Établi",{domain:"le pseudo-code",definition:"Emplacement nommé qui contient une valeur pouvant changer au cours de l’exécution.",traits:"Possède un nom, un type et une valeur courante."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
- D("pc-affectation","Concept","Affectation","Établi",{domain:"le pseudo-code",definition:"Instruction x ← e qui donne à la variable x la valeur de l’expression e.",traits:"Se lit de droite à gauche : e est évaluée, puis sa valeur est rangée dans x."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
- D("pc-tableau","Concept","Tableau","Établi",{domain:"le pseudo-code",definition:"Suite de N valeurs de même type, repérées chacune par un indice.",traits:"Taille N fixée ; accès direct à un élément par T[i]."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
+ D("pc-variable","Concept","Variable","Établi",{domain:"le pseudo-code",definition:"Emplacement nommé qui contient une valeur pouvant changer au cours de l’exécution.",primitives:"emplacement, nom, valeur, exécution",traits:"Possède un nom, un type et une valeur courante."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
+ D("pc-affectation","Concept","Affectation","Établi",{domain:"le pseudo-code",definition:"Instruction x ← e qui donne à la variable x la valeur de l’expression e.",primitives:"instruction, valeur, expression",traits:"Se lit de droite à gauche : e est évaluée, puis sa valeur est rangée dans x."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
+ D("pc-tableau","Concept","Tableau","Établi",{domain:"le pseudo-code",definition:"Suite de N valeurs de même type, repérées chacune par un indice.",primitives:"suite, valeur, type, indice",traits:"Taille N fixée ; accès direct à un élément par T[i]."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
  D("pc-unique","Propriété","Valeur unique","Établi",{domain:"du pseudo-code",relation:"contient",object:"une seule valeur à un instant donné"},[F("Définition de référence","Fait partie de la définition d’une variable.")]),
  D("pc-indices","Propriété","Indices 0 à N−1","Établi",{domain:"du pseudo-code indexé à partir de 0",qualifier:"de taille N",relation:"a des indices",object:"allant de 0 à N−1"},[F("Source documentaire","Convention d’indexation adoptée par le cours.")]),
  D("pc-remplacement","Règle","Valeur remplacée","Établi",{kind:"Descriptive",context:"de l’exécution d’un pseudo-code",condition:"x ← e s’exécute correctement",conclusion:"la nouvelle valeur de x remplace l’ancienne",exceptionMode:"Aucune exception identifiée dans ce domaine"},[F("Démonstration ou raisonnement","Découle de la propriété « Valeur unique » : x ne peut pas conserver deux valeurs.")]),
@@ -656,12 +658,16 @@ function relCheck(r,get=item,links=db.links){const s=get(r.source),t=get(r.targe
  return ""}
 
 /* ---------- Contrôle en deux niveaux : conformité au modèle / pistes d'enrichissement ---------- */
+const foldTxt=t=>String(t).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+const primList=x=>String((x.fields||{}).primitives||"").split(/[,;\n]+/).map(t=>t.trim()).filter(Boolean);
+const examplesOf=x=>db.links.filter(r=>r.target===x.id&&r.type==="Illustre").map(r=>item(r.source)).filter(e=>e&&e.type==="Exemple"&&e.life!=="Archivé");
+const ILLUSTRABLE=["Concept","Propriété","Règle","Procédure"];
 const outRel=(x,...types)=>db.links.filter(r=>r.source===x.id&&types.includes(r.type));
 const inRel=(x,...types)=>db.links.filter(r=>r.target===x.id&&types.includes(r.type));
 const isOpen=c=>{const v=(c.fields||{}).verdict||"";return !v||v==="À analyser"||v.startsWith("Condition")||v.startsWith("Énoncé à réviser")};
 function conformity(x){const f=x.fields||{},out=[],need=(k,msg)=>{if(!f[k])out.push(msg)};
  switch(x.type){
-  case "Concept":need("definition","Définition (sens) non précisée.");need("traits","Caractéristiques non précisées.");break;
+  case "Concept":need("definition","Définition (sens) non précisée.");need("primitives","Termes primitifs non précisés : sur quels mots, admis sans définition, la définition s’appuie-t-elle ?");need("traits","Caractéristiques non précisées.");break;
   case "Propriété":need("domain","Domaine non précisé : une propriété n’est vraie qu’à l’intérieur d’un domaine.");if(f.subject)out.push(`Ancien champ « Concept » à convertir (« ${f.subject} ») : le concept vient désormais de la relation ; garde seulement la précision (ex. : « de taille N »).`);need("relation","Relation non renseignée.");need("object","Caractéristique ou concept lié non renseigné.");
    if(!outRel(x,"Définit","Caractérise","Met en relation").length)out.push("Propriété reliée à aucun concept (« Définit », « Caractérise » ou « Met en relation »).");
    if(outRel(x,"Met en relation").length===1)out.push("« Met en relation » lie des concepts entre eux : relie la propriété à au moins deux concepts.");
@@ -685,7 +691,8 @@ function conformity(x){const f=x.fields||{},out=[],need=(k,msg)=>{if(!f[k])out.p
  if(!x.formulation)out.push("Formulation absente (bouton « Composer »).");
  return out}
 function enrichment(x){const out=[],fs=x.foundations||[];
- if(["Concept","Propriété","Règle","Procédure"].includes(x.type)&&!inRel(x,"Illustre").length)out.push("Aucun exemple ne l’illustre.");
+ if(ILLUSTRABLE.includes(x.type)){const n=examplesOf(x).length;if(n<3)out.push(n?`Seulement ${n} exemple${n>1?"s":""} : vise au moins 3 pour bien cerner l’élément.`:"Aucun exemple ne l’illustre : vise au moins 3.")}
+ if(x.type==="Concept"){const d=primList(x).filter(t=>db.items.some(y=>y.type==="Concept"&&y.id!==x.id&&foldTxt(y.name)===foldTxt(t)));if(d.length)out.push(`${d.map(t=>"« "+t+" »").join(", ")} figure${d.length>1?"nt":""} parmi les termes primitifs mais ${d.length>1?"sont définis":"est défini"} comme concept dans la base : un terme primitif est admis sans définition.`)}
  if(AFFIRMATIONS.includes(x.type)&&!inRel(x,"Met à l’épreuve").length)out.push("Pas encore mise à l’épreuve : un contre-exemple aiderait à délimiter son domaine.");
  if(x.status==="Établi"&&!["Exemple","Contre-exemple"].includes(x.type)){if(!fs.length)out.push("Statut « Établi » sans fondement.");else if(fs.every(f=>f.type==="Observation ou expérience"))out.push("Fondée uniquement sur des observations : elles rendent l’énoncé crédible sans le prouver (convention 3).")}
  if(fs.some(f=>f.type==="Non précisé"))out.push("Type de fondement non précisé.");
@@ -705,9 +712,9 @@ function detailHTML(x,rs){const f=x.fields||{},m=MODEL[x.type],c=conformity(x),e
 let quizId=null,revealed=false;
 const prereqs=x=>outRel(x,PREREQ).map(r=>item(r.target)).filter(Boolean);
 const excText=f=>f.exceptionMode==="Exception réelle"?f.exception:f.exceptionMode;
-function question(x){const f=x.fields||{};
+function questionBase(x){const f=x.fields||{};
  switch(x.type){
-  case "Concept":if(f.definition)return {q:`Que désigne le concept « ${x.name} » ? Quelles sont ses caractéristiques ?`,a:[["Définition",f.definition],["Caractéristiques",f.traits]]};break;
+  case "Concept":if(f.definition)return {q:`Que désigne le concept « ${x.name} » ? Sur quels termes primitifs sa définition s’appuie-t-elle ? Quelles sont ses caractéristiques ?`,a:[["Définition",f.definition],["Termes primitifs",primList(x).join(", ")||"Non précisés : à compléter dans le Constructeur."],["Caractéristiques",f.traits]]};break;
   case "Propriété":{const subj=f.subject||[propConcepts(x.id),f.qualifier].filter(Boolean).join(" ");if(subj&&f.relation)return {q:`Dans le domaine ${f.domain||"[non précisé]"}, complète : « ${subj} ${f.relation} … »`,a:[["Réponse",f.object],["Énoncé complet",x.formulation]]};break}
   case "Règle":if(f.condition)return {q:`${f.context?"Dans le contexte "+f.context+", s":"S"}i ${f.condition}, alors… ? Y a-t-il une exception ? Est-ce une règle descriptive ou d’action ?`,a:[["Alors",f.conclusion],["Sauf si",excText(f)],["Nature",f.kind]]};break;
   case "Procédure":if(f.goal)return {q:`Pour ${f.goal}${f.inputs?", à partir de "+f.inputs:""} : quelles sont les étapes, et à quelles conditions la procédure réussit-elle ?`,a:[["Étapes",f.steps],["Résultat",f.result],["Conditions de réussite",f.success]]};break;
@@ -715,6 +722,11 @@ function question(x){const f=x.fields||{};
   case "Contre-exemple":if(f.case)return {q:`« ${f.case} » : quel énoncé ce cas met-il à l’épreuve, et qu’en conclure ?`,a:[["Énoncé mis à l’épreuve",linkedDesc(x.id,"Met à l’épreuve")||f.claim],["Ne s’applique pas lorsque",f.condition],["Analyse",f.verdict]]};break;
  }
  return {q:`Énonce « ${x.name} » (${x.type.toLowerCase()}) avec tes propres mots.`,a:[["Formulation",x.formulation||"Non renseignée"]]}}
+/* Exemples reliés par « Illustre », affichés dans la réponse ; objectif : au moins 3 */
+function exampleAnswer(x){const ex=examplesOf(x),n=ex.length,lines=ex.map(e=>{const f=e.fields||{};return "• "+(f.case?`« ${f.case} »${f.shown?" : "+f.shown:""}`:e.name)});
+ if(!n)return ["Exemples (0)","Aucun exemple relié : ajoutes-en au moins 3 (Constructeur, puis relation « Illustre »)."];
+ return [`Exemples (${n})`,lines.join("\n")+(n<3?`\n(Vise au moins 3 exemples : il en manque ${3-n}.)`:"")]}
+function question(x){const r=questionBase(x);if(ILLUSTRABLE.includes(x.type)){r.q+=" Donne au moins 3 exemples.";r.a=[...r.a,exampleAnswer(x)]}return r}
 const active=()=>db.items.filter(x=>x.life!=="Archivé");
 const pool=()=>{const f=$("quizFilter").value;return active().filter(x=>f==="Tous"||x.type===f)};
 function nextCard(skip){const P=[...pool()].sort((a,b)=>(a.level||0)-(b.level||0)||(a.seen||0)-(b.seen||0));quizId=P.length?(P.find(x=>x.id!==skip)||P[0]).id:null;revealed=false}
