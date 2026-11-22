@@ -104,7 +104,7 @@ p.warn{margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.4</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.5</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -275,59 +275,6 @@ const REL_HELP={
  [CONTRA]:"Deux affirmations incompatibles : au moins l’une doit être restreinte ou révisée."
 };
 const LEVELS=["À apprendre","En cours","Acquis"];
-/* Ancienne démonstration (v7) : noms et formulations d’origine. Elle n’est remplacée que si elle est restée intacte. */
-const OLD_DEMO={"demo-concept":["Concept","Unité de connaissance qui représente une chose, une catégorie, une grandeur, une relation ou une idée."],"demo-propriete":["Propriété","Caractéristique associée à un concept ou à un cas particulier."],"demo-regle":["Règle","Énoncé qui établit une contrainte, une régularité ou une relation applicable."],"demo-procedure":["Procédure","Enchaînement organisé d’opérations mobilisant des connaissances."],"demo-exemple":["Exemple","Cas qui illustre un concept, une propriété, une règle ou une procédure."],"demo-contre":["Contre-exemple","Cas qui met à l’épreuve une définition, une propriété, une règle ou une garantie de procédure."]};
-const OLD_FOUND="Élément du modèle de représentation des connaissances.";
-const F=(type,text)=>({type,text});
-const D=(id,type,name,status,fields,foundations=[])=>({id,type,name,status,life:"Actif",fields,foundations,formulation:"",autoForm:true});
-const PRIM_FOUND=[F("Source documentaire","Terme primitif retenu par le cours : il n’est pas défini ; on le présente par son sens intuitif et par des exemples.")];
-const DEMO=[
- D("pc-valeur","Concept","Valeur","Établi",{domain:"le pseudo-code",nature:PRIM,intuition:"Ce que l’on calcule, compare ou range dans une variable : un nombre, un texte, VRAI ou FAUX.",traits:"Une valeur a un type (entier, réel, chaîne, booléen). Elle ne change pas : c’est le contenu d’une variable qui change."},PRIM_FOUND),
- D("pc-instruction","Concept","Instruction","Établi",{domain:"le pseudo-code",nature:PRIM,intuition:"Un ordre élémentaire que l’exécutant effectue en une seule étape : lire, afficher, affecter…",traits:"Les instructions s’exécutent l’une après l’autre, dans l’ordre où elles sont écrites, sauf choix ou répétition."},PRIM_FOUND),
- D("pc-variable","Concept","Variable","Établi",{domain:"le pseudo-code",definition:"Emplacement nommé qui contient une valeur pouvant changer au cours de l’exécution.",traits:"Possède un nom, un type et une valeur courante."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
- D("pc-expression","Concept","Expression","Établi",{domain:"le pseudo-code",definition:"Combinaison de valeurs, de variables et d’opérateurs qui, une fois évaluée, donne une valeur.",traits:"Une expression ne modifie rien : elle se calcule, avec la valeur courante de chaque variable."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
- D("pc-affectation","Concept","Affectation","Établi",{domain:"le pseudo-code",definition:"Instruction x ← e qui donne à la variable x la valeur de l’expression e.",traits:"Se lit de droite à gauche : e est évaluée, puis sa valeur est rangée dans x."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
- D("pc-tableau","Concept","Tableau","Établi",{domain:"le pseudo-code",definition:"Suite de N valeurs de même type, repérées chacune par un indice.",traits:"Taille N fixée ; accès direct à un élément par T[i]."},[F("Définition de référence","Définition usuelle en algorithmique.")]),
- D("pc-unique","Propriété","Valeur unique","Établi",{domain:"du pseudo-code",relation:"contient",object:"une seule valeur à un instant donné"},[F("Définition de référence","Fait partie de la définition d’une variable.")]),
- D("pc-indices","Propriété","Indices 0 à N−1","Établi",{domain:"du pseudo-code indexé à partir de 0",qualifier:"de taille N",relation:"a des indices",object:"allant de 0 à N−1"},[F("Source documentaire","Convention d’indexation adoptée par le cours.")]),
- D("pc-remplacement","Règle","Valeur remplacée","Établi",{kind:"Descriptive",context:"de l’exécution d’un pseudo-code",condition:"x ← e s’exécute correctement",conclusion:"la nouvelle valeur de x remplace l’ancienne",exceptionMode:"Aucune exception identifiée dans ce domaine"},[F("Démonstration ou raisonnement","Découle de la propriété « Valeur unique » : x ne peut pas conserver deux valeurs.")]),
- D("pc-avant-lecture","Règle","Affecter d’abord","Proposé",{kind:"D’action",context:"de l’écriture d’un pseudo-code",condition:"une variable va être lue",conclusion:"lui affecter une valeur avant cette lecture",exceptionMode:"Exception réelle",exception:"elle est un paramètre d’entrée (sa valeur est fournie à l’appel)"},[F("Démonstration ou raisonnement","Une variable lue sans valeur donne un résultat indéterminé.")]),
- D("pc-somme","Procédure","Somme d’un tableau","Établi",{context:"du pseudo-code",goal:"calculer la somme des éléments d’un tableau T",inputs:"un tableau T de N nombres, N ≥ 0",steps:"1. somme ← 0\n2. Pour i allant de 0 à N−1 : somme ← somme + T[i]\n3. Renvoyer somme",result:"la somme des éléments de T",success:"les indices utilisés restent entre 0 et N−1"},[F("Démonstration ou raisonnement","Invariant : après le passage i, somme vaut T[0] + … + T[i].")]),
- D("pc-ex-affectation","Exemple","x ← 5 puis x ← 8","Établi",{case:"Après x ← 5 puis x ← 8, x vaut 8",shown:"la seconde affectation efface la valeur 5"}),
- D("pc-ex-indices","Exemple","T = [7, 2, 9]","Établi",{case:"Le tableau T = [7, 2, 9] a pour indices 0, 1 et 2",shown:"N = 3 et le dernier indice vaut 2, soit N − 1"}),
- D("pc-ex-somme","Exemple","Somme de [3, 4, 5]","Établi",{case:"La procédure appliquée à T = [3, 4, 5] renvoie 12",shown:"la somme passe par 0, 3, 7 puis 12 : chaque passage ajoute un élément"}),
- D("pc-ex-nombres","Exemple","42, 3,14 et −7","Établi",{case:"42, 3,14 et −7 sont des valeurs numériques",shown:"on peut les calculer, les comparer ou les ranger dans une variable"}),
- D("pc-ex-types","Exemple","“Bonjour” et VRAI","Établi",{case:"“Bonjour” est une valeur de type chaîne, VRAI une valeur de type booléen",shown:"une valeur n’est pas forcément un nombre : chaque valeur a un type"}),
- D("pc-ex-test","Exemple","n > 0 avec n = 3","Établi",{case:"Avec n = 3, l’expression n > 0 vaut VRAI",shown:"une expression peut donner une valeur booléenne, utilisée ensuite dans un test"}),
- D("pc-ex-moyenne","Exemple","(a + b) / 2","Établi",{case:"Avec a = 4 et b = 10, l’expression (a + b) / 2 vaut 7",shown:"une expression combine valeurs, variables et opérateurs, et s’évalue en une valeur"}),
- D("pc-ex-compteur","Exemple","compteur ← compteur + 1","Établi",{case:"Si compteur vaut 4, compteur ← compteur + 1 lui donne la valeur 5",shown:"l’expression compteur + 1 est d’abord évaluée avec l’ancienne valeur (4), puis 5 remplace 4"}),
- D("pc-ex-age","Exemple","age ← 18","Établi",{case:"La variable age vaut 17 ; après age ← 18, elle vaut 18",shown:"un même nom désigne, à chaque instant, une seule valeur, qui peut changer"}),
- D("pc-ex-echange","Exemple","Échange de a et b","Établi",{case:"Pour échanger a = 1 et b = 2 : temp ← a, puis a ← b, puis b ← temp",shown:"sans temp, a ← b effacerait la valeur 1 : une variable ne garde qu’une valeur"}),
- D("pc-ex-ordres","Exemple","Lire, afficher, affecter","Établi",{case:"Lire(n), Afficher(n) et n ← n × 2 sont trois instructions",shown:"chacune est un ordre élémentaire que l’exécutant effectue en une étape"}),
- D("pc-ex-sequence","Exemple","x ← 2 ; x ← x + 3 ; Afficher(x)","Établi",{case:"La suite x ← 2 ; x ← x + 3 ; Afficher(x) affiche 5",shown:"les instructions s’exécutent dans l’ordre écrit, et x reçoit une valeur avant d’être lue"}),
- D("pc-ex-lire","Exemple","Lire(n) avant n × 2","Établi",{case:"Dans Lire(n) ; Afficher(n × 2), la saisie donne une valeur à n avant le calcul",shown:"Lire(n) range une valeur dans n avant que n soit lue"}),
- D("pc-ex-init","Exemple","somme ← 0 avant la boucle","Établi",{case:"Dans la procédure de somme, somme ← 0 précède la première lecture de somme",shown:"la variable reçoit une valeur avant d’être lue, et la somme d’un tableau vide vaut bien 0"}),
- D("pc-ex-notes","Exemple","notes = [12, 15, 9, 18]","Établi",{case:"Le tableau notes = [12, 15, 9, 18] regroupe 4 notes : notes[1] vaut 15 et le dernier indice est 3",shown:"un seul nom pour N valeurs de même type, chacune repérée par un indice allant de 0 à N − 1"}),
- D("pc-ex-vide","Exemple","Tableau vide","Établi",{case:"Un tableau T vide (N = 0) n’a aucun indice valide ; la procédure de somme renvoie alors 0",shown:"l’intervalle de 0 à N − 1 = −1 est vide : la boucle ne s’exécute pas et somme garde sa valeur initiale 0"}),
- D("pc-cx-lua","Contre-exemple","Indexation dès 1","Établi",{case:"En Lua, un tableau de 3 éléments a pour indices 1, 2 et 3",condition:"la convention d’indexation commence à 1",verdict:"Hors du domaine prévu (2a) : pas de contradiction dans le domaine"}),
- D("pc-cx-parametre","Contre-exemple","Paramètre lu","Établi",{case:"Dans « Fonction carré(n) : renvoyer n × n », n est lue sans affectation dans la fonction",condition:"la variable est un paramètre d’entrée",verdict:"Traité : énoncé révisé"})
-];
-const DL=(s,t,type)=>({id:"l-"+s+"-"+t,source:s,target:t,type,note:""});
-const IL=(e,...ts)=>ts.map(t=>DL(e,t,"Illustre"));
-const DEMO_LINKS=[
- DL("pc-variable","pc-valeur",DEFREL),DL("pc-expression","pc-valeur",DEFREL),DL("pc-expression","pc-variable",DEFREL),
- DL("pc-affectation","pc-instruction",DEFREL),DL("pc-affectation","pc-variable",DEFREL),DL("pc-affectation","pc-expression",DEFREL),DL("pc-tableau","pc-valeur",DEFREL),
- DL("pc-tableau","pc-variable",PREREQ),
- DL("pc-unique","pc-variable","Définit"),DL("pc-indices","pc-tableau","Caractérise"),
- DL("pc-remplacement","pc-affectation","Porte sur"),DL("pc-remplacement","pc-variable","Porte sur"),DL("pc-avant-lecture","pc-variable","Porte sur"),
- DL("pc-somme","pc-avant-lecture","Applique"),DL("pc-somme","pc-remplacement","S’appuie sur"),DL("pc-somme","pc-tableau","S’appuie sur"),DL("pc-somme","pc-indices","S’appuie sur"),
- ...IL("pc-ex-affectation","pc-remplacement","pc-unique","pc-affectation","pc-variable"),...IL("pc-ex-indices","pc-indices","pc-tableau"),...IL("pc-ex-somme","pc-somme"),
- ...IL("pc-ex-nombres","pc-valeur"),...IL("pc-ex-types","pc-valeur"),...IL("pc-ex-test","pc-expression","pc-valeur"),...IL("pc-ex-moyenne","pc-expression"),
- ...IL("pc-ex-compteur","pc-affectation","pc-expression","pc-remplacement"),...IL("pc-ex-age","pc-variable","pc-unique"),...IL("pc-ex-echange","pc-unique","pc-remplacement","pc-variable","pc-affectation"),
- ...IL("pc-ex-ordres","pc-instruction"),...IL("pc-ex-sequence","pc-instruction","pc-avant-lecture"),...IL("pc-ex-lire","pc-avant-lecture","pc-instruction"),
- ...IL("pc-ex-init","pc-avant-lecture","pc-somme"),...IL("pc-ex-notes","pc-tableau","pc-indices"),...IL("pc-ex-vide","pc-indices","pc-somme","pc-tableau"),
- DL("pc-cx-lua","pc-indices","Met à l’épreuve"),DL("pc-cx-parametre","pc-avant-lecture","Met à l’épreuve")
-];
 const STORE="knowledge-explorer-v7-html";
 const mqNarrow=matchMedia("(max-width:760px)"),mqReduce=matchMedia("(prefers-reduced-motion: reduce)");
 let db={items:[],links:[]},selected=null,editing=null;
@@ -375,19 +322,11 @@ function migrateLink(r,byId){const s=byId.get(r.source),t=byId.get(r.target);if(
  if(r.type==="Contient l’étape")return {...r,type:"Contient"};
  if(s.type==="Procédure"&&(r.type==="Mobilise"||r.type==="Applique")){if(t.type==="Procédure")return {...r,type:"Contient"};if(t.type==="Règle")return {...r,type:kindOf(t)==="Descriptive"?"S’appuie sur":"Applique"};return {...r,type:"S’appuie sur"}}
  return r}
-function demoData(){const items=DEMO.map(x=>({...x,fields:{...x.fields},foundations:x.foundations.map(f=>({...f})),level:0,seen:0}));items.forEach(x=>{x.formulation=compose(x.type,x.name,x.fields,x.id,DEMO_LINKS,items)});return {items,links:DEMO_LINKS.map(x=>({...x}))}}
 function persist(content=true){db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}});try{localStorage.setItem(STORE,JSON.stringify(db));if(content)localStorage.setItem(DIRTY_KEY,"1")}catch(e){say("Stockage local indisponible : les modifications ne seront pas conservées.")}}
-/* Démo v9.1 restée intacte (mêmes éléments, champs, statuts, fondements et relations) : remplacée par la démo v9.2, progression conservée */
-const DEMO91_SIG="4714-heitnz";let upgraded=false;
-function demoSig(p){const s=JSON.stringify([p.items.map(x=>[x.id,x.type,x.name,x.status,x.life||"Actif",Object.keys(x.fields||{}).sort().map(k=>[k,x.fields[k]]),(x.foundations||[]).map(f=>[f.type,f.text])]).sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:0),p.links.map(r=>[r.source,r.target,r.type,r.note||""].join("|")).sort()]);let h=5381;for(let i=0;i<s.length;i++)h=(Math.imul(h,33)+s.charCodeAt(i))>>>0;return s.length+"-"+h.toString(36)}
-/* Vrai seulement si les données sont l’ancienne démonstration jamais modifiée (noms, formulations, statut, fondement, liens de démo). Dans le doute : on garde les données. */
-function untouchedOldDemo(p){return p.items.length===6&&p.items.every(x=>{const o=OLD_DEMO[x.id];return o&&x.name===o[0]&&x.formulation===o[1]&&x.status==="Établi"&&x.life!=="Archivé"&&!Object.keys(x.fields||{}).length&&(x.foundations||[]).every(f=>f.text===OLD_FOUND)})&&p.links.every(r=>/^demo-l\d+$/.test(r.id))}
 let hadLocal=false;
-function load(){let raw=null;try{raw=localStorage.getItem(STORE)}catch(e){}hadLocal=!!raw;
- if(raw){let p=null;try{p=normalize(JSON.parse(raw))}catch(e){}
-  if(p&&!untouchedOldDemo(p)){if(demoSig(p)===DEMO91_SIG){const old=new Map(p.items.map(x=>[x.id,x]));db=demoData();db.items.forEach(x=>{const o=old.get(x.id);if(o){x.level=o.level||0;x.seen=o.seen||0}});upgraded=true;return}db=p;return}
- }
- db=demoData()}
+/* Copie de travail du navigateur (contenu chargé depuis donnees.json, éventuellement modifié dans l’app) ; aucun contenu n’est intégré à la page */
+function load(){let raw=null;try{raw=localStorage.getItem(STORE)}catch(e){}hadLocal=!!raw;db={items:[],links:[]};
+ if(raw){try{const p=normalize(JSON.parse(raw));if(p)db=p}catch(e){}}}
 
 /* ---------- Navigation ---------- */
 function setView(v){
@@ -448,13 +387,19 @@ function renderLinks(){refreshSelects();$("relationsList").innerHTML=db.links.le
    Si des modifications ont été faites dans l’app depuis, une confirmation est demandée. Absent ou illisible : données locales. */
 const DATA_FILE="donnees.json",FILE_KEY=STORE+"-fichier",DIRTY_KEY=STORE+"-modifie";
 const getK=k=>{try{return localStorage.getItem(k)}catch(_){return null}},setK=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(_){}};
+let fileState="chargement";
+/* Signature du contenu seul (sans la progression ni les formulations composées automatiquement) */
+const contentSig=p=>hashStr(JSON.stringify([[...p.items].sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0).map(x=>[x.id,x.type,x.name,x.status,x.life||"Actif",Object.keys(x.fields||{}).sort().map(k=>[k,x.fields[k]]),(x.foundations||[]).map(f=>[f.type,f.text]),x.autoForm?"":x.formulation||""]),p.links.map(r=>[r.source,r.target,r.type,r.note||""].join("|")).sort()]));
 const hashStr=t=>{let h=5381;for(let i=0;i<t.length;i++)h=(Math.imul(h,33)+t.charCodeAt(i))>>>0;return t.length+"-"+h.toString(36)};
-async function loadFile(){let txt;try{const r=await fetch(DATA_FILE,{cache:"no-cache"});if(!r.ok)return;txt=await r.text()}catch(_){return}
- const h=hashStr(txt);if(h===getK(FILE_KEY))return;
+async function loadFile(){let txt;
+ try{const r=await fetch(DATA_FILE,{cache:"no-cache"});if(!r.ok){fileState="absent";renderLearn();return}txt=await r.text()}catch(_){fileState="bloque";renderLearn();return}
+ const h=hashStr(txt);if(h===getK(FILE_KEY)){fileState="ok";renderLearn();return}
  let p=null;try{p=normalize(JSON.parse(txt))}catch(_){}
- if(!p){say(`${DATA_FILE} est illisible : les données actuelles sont conservées.`);return}
- const dirty=getK(DIRTY_KEY)==="1"||(getK(FILE_KEY)==null&&hadLocal);
- if(dirty&&!await ask(`Le fichier ${DATA_FILE} (${p.items.length} éléments, ${p.links.length} relations) est différent des données de l’app.\nLe charger remplace les modifications faites dans l’app ; ta progression est conservée.`,"Charger le fichier",true)){setK(FILE_KEY,h);return}
+ if(!p){fileState="illisible";renderLearn();if(db.items.length)say(`${DATA_FILE} est illisible : les données actuelles sont conservées.`);return}
+ fileState="ok";
+ if(db.items.length&&contentSig(p)===contentSig(db)){setK(FILE_KEY,h);setK(DIRTY_KEY,null);renderLearn();return}
+ const dirty=db.items.length>0&&(getK(DIRTY_KEY)==="1"||(getK(FILE_KEY)==null&&hadLocal));
+ if(dirty&&!await ask(`Le fichier ${DATA_FILE} (${p.items.length} éléments, ${p.links.length} relations) est différent des données de l’app.\nLe charger remplace les modifications faites dans l’app ; ta progression est conservée.`,"Charger le fichier",true)){setK(FILE_KEY,h);renderLearn();return}
  const old=new Map(db.items.map(x=>[x.id,x]));p.items.forEach(x=>{const o=old.get(x.id);if(o){x.level=o.level||0;x.seen=o.seen||0}});
  db=p;persist(false);setK(FILE_KEY,h);setK(DIRTY_KEY,null);
  closeFiche();refreshSelects();resetForm();renderLinks();renderLearn();
@@ -666,7 +611,7 @@ function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventList
  el.querySelectorAll("[data-deflink]").forEach(b=>b.addEventListener("click",()=>{setView("links");$("source").value=b.dataset.deflink;refreshRelationTypes();$("relationType").value=DEFREL;refreshTargets()}))}
 function renderLearn(){const act=active(),n=act.length,ok=act.filter(x=>(x.level||0)===2).length,dd=new Map();
  $("learnProgress").textContent=`${ok} / ${n} acquis`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";renderQuiz();
- $("pathList").innerHTML=(()=>{const L=db.links.filter(r=>r.type===PREREQ&&relCheck(r));return L.length?`<ul class="issues">${L.map(r=>`<li>Boucle de prérequis : « ${esc(itemName(r.source))} » → « ${esc(itemName(r.target))} ». Supprime l’un des liens de la boucle (onglet Relations) pour que le parcours puisse être ordonné.</li>`).join("")}</ul>`:""})()+PATH.map(([title,types])=>{const xs=act.filter(x=>types.includes(x.type)).sort((a,b)=>defDepth(a,dd)-defDepth(b,dd)||depth(a)-depth(b)||a.name.localeCompare(b.name,"fr"));
+ $("pathList").innerHTML=(db.items.length?"":`<ul class="issues"><li>${esc({chargement:`Chargement du contenu (${DATA_FILE})…`,absent:`Aucun contenu : le fichier ${DATA_FILE} est introuvable dans le dossier de la page.`,bloque:`Le navigateur n’a pas pu lire ${DATA_FILE}. Ouvre la page depuis son adresse en ligne : ouverte comme fichier local, la lecture du JSON est bloquée.`,illisible:`Le fichier ${DATA_FILE} est illisible (JSON invalide).`,ok:`Le fichier ${DATA_FILE} ne contient aucun élément.`}[fileState])}</li></ul>`)+(()=>{const L=db.links.filter(r=>r.type===PREREQ&&relCheck(r));return L.length?`<ul class="issues">${L.map(r=>`<li>Boucle de prérequis : « ${esc(itemName(r.source))} » → « ${esc(itemName(r.target))} ». Supprime l’un des liens de la boucle (onglet Relations) pour que le parcours puisse être ordonné.</li>`).join("")}</ul>`:""})()+PATH.map(([title,types])=>{const xs=act.filter(x=>types.includes(x.type)).sort((a,b)=>defDepth(a,dd)-defDepth(b,dd)||depth(a)-depth(b)||a.name.localeCompare(b.name,"fr"));
   return `<div class="pathgroup">${esc(title)}</div>`+(xs.length?xs.map(x=>{const p=prereqs(x),d=defsOf(x);return row(x,esc(typeLabel(x))+(d.length?" · à partir de "+d.map(y=>esc(y.name)).join(", "):"")+(p.length?" · après "+p.map(y=>esc(y.name)).join(", "):""))}).join(""):'<p class="muted">Aucun élément.</p>')}).join("");wire($("pathList"));
  const bad=act.map(x=>[x,conformity(x)]).filter(e=>e[1].length).sort((a,b)=>b[1].length-a[1].length),needs=act.map(x=>[x,learningNeeds(x)]).filter(e=>e[1].length);
  $("qualityList").innerHTML=`<div class="pathgroup">Conformité au modèle</div><p class="muted">${n-bad.length} élément(s) conforme(s) sur ${n}.</p>`+(bad.length?bad.map(([x,is])=>qrow(x,is,"écart")).join(""):'<p class="ok">Tous les éléments respectent le modèle.</p>')+
@@ -689,7 +634,6 @@ $("modelMemo").innerHTML=Object.entries(MODEL).map(([t,m])=>`<p><b>${esc(t)}</b>
 
 load();db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}}); /* formulations à jour après migration */
 resetForm();refreshSelects();setView("learn");loadFile();
-if(upgraded){persist(false);say("Exemple guidé mis à jour : termes primitifs, définitions nécessaires et au moins 3 exemples par élément. Ta progression est conservée.")}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(_){}
 })();
 </script>

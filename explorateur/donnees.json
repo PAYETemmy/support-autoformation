@@ -1,0 +1,858 @@
+{
+  "format": "modele-representation-connaissance",
+  "version": 9.5,
+  "titre": "Exemple guidé : pseudo-code",
+  "items": [
+    {
+      "id": "pc-valeur",
+      "type": "Concept",
+      "name": "Valeur",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "domain": "le pseudo-code",
+        "nature": "Terme primitif (non défini)",
+        "intuition": "Ce que l’on calcule, compare ou range dans une variable : un nombre, un texte, VRAI ou FAUX.",
+        "traits": "Une valeur a un type (entier, réel, chaîne, booléen). Elle ne change pas : c’est le contenu d’une variable qui change."
+      },
+      "foundations": [
+        {
+          "type": "Source documentaire",
+          "text": "Terme primitif retenu par le cours : il n’est pas défini ; on le présente par son sens intuitif et par des exemples."
+        }
+      ],
+      "formulation": "Valeur : terme primitif, non défini. Sens intuitif : Ce que l’on calcule, compare ou range dans une variable : un nombre, un texte, VRAI ou FAUX. Caractéristiques : Une valeur a un type (entier, réel, chaîne, booléen). Elle ne change pas : c’est le contenu d’une variable qui change.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-instruction",
+      "type": "Concept",
+      "name": "Instruction",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "domain": "le pseudo-code",
+        "nature": "Terme primitif (non défini)",
+        "intuition": "Un ordre élémentaire que l’exécutant effectue en une seule étape : lire, afficher, affecter…",
+        "traits": "Les instructions s’exécutent l’une après l’autre, dans l’ordre où elles sont écrites, sauf choix ou répétition."
+      },
+      "foundations": [
+        {
+          "type": "Source documentaire",
+          "text": "Terme primitif retenu par le cours : il n’est pas défini ; on le présente par son sens intuitif et par des exemples."
+        }
+      ],
+      "formulation": "Instruction : terme primitif, non défini. Sens intuitif : Un ordre élémentaire que l’exécutant effectue en une seule étape : lire, afficher, affecter… Caractéristiques : Les instructions s’exécutent l’une après l’autre, dans l’ordre où elles sont écrites, sauf choix ou répétition.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-variable",
+      "type": "Concept",
+      "name": "Variable",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "domain": "le pseudo-code",
+        "definition": "Emplacement nommé qui contient une valeur pouvant changer au cours de l’exécution.",
+        "traits": "Possède un nom, un type et une valeur courante."
+      },
+      "foundations": [
+        {
+          "type": "Définition de référence",
+          "text": "Définition usuelle en algorithmique."
+        }
+      ],
+      "formulation": "Variable : Emplacement nommé qui contient une valeur pouvant changer au cours de l’exécution. Caractéristiques : Possède un nom, un type et une valeur courante.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-expression",
+      "type": "Concept",
+      "name": "Expression",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "domain": "le pseudo-code",
+        "definition": "Combinaison de valeurs, de variables et d’opérateurs qui, une fois évaluée, donne une valeur.",
+        "traits": "Une expression ne modifie rien : elle se calcule, avec la valeur courante de chaque variable."
+      },
+      "foundations": [
+        {
+          "type": "Définition de référence",
+          "text": "Définition usuelle en algorithmique."
+        }
+      ],
+      "formulation": "Expression : Combinaison de valeurs, de variables et d’opérateurs qui, une fois évaluée, donne une valeur. Caractéristiques : Une expression ne modifie rien : elle se calcule, avec la valeur courante de chaque variable.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-affectation",
+      "type": "Concept",
+      "name": "Affectation",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "domain": "le pseudo-code",
+        "definition": "Instruction x ← e qui donne à la variable x la valeur de l’expression e.",
+        "traits": "Se lit de droite à gauche : e est évaluée, puis sa valeur est rangée dans x."
+      },
+      "foundations": [
+        {
+          "type": "Définition de référence",
+          "text": "Définition usuelle en algorithmique."
+        }
+      ],
+      "formulation": "Affectation : Instruction x ← e qui donne à la variable x la valeur de l’expression e. Caractéristiques : Se lit de droite à gauche : e est évaluée, puis sa valeur est rangée dans x.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-tableau",
+      "type": "Concept",
+      "name": "Tableau",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "domain": "le pseudo-code",
+        "definition": "Suite de N valeurs de même type, repérées chacune par un indice.",
+        "traits": "Taille N fixée ; accès direct à un élément par T[i]."
+      },
+      "foundations": [
+        {
+          "type": "Définition de référence",
+          "text": "Définition usuelle en algorithmique."
+        }
+      ],
+      "formulation": "Tableau : Suite de N valeurs de même type, repérées chacune par un indice. Caractéristiques : Taille N fixée ; accès direct à un élément par T[i].",
+      "autoForm": true
+    },
+    {
+      "id": "pc-unique",
+      "type": "Propriété",
+      "name": "Valeur unique",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "domain": "du pseudo-code",
+        "relation": "contient",
+        "object": "une seule valeur à un instant donné"
+      },
+      "foundations": [
+        {
+          "type": "Définition de référence",
+          "text": "Fait partie de la définition d’une variable."
+        }
+      ],
+      "formulation": "Dans le domaine du pseudo-code, « Variable » contient une seule valeur à un instant donné.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-indices",
+      "type": "Propriété",
+      "name": "Indices 0 à N−1",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "domain": "du pseudo-code indexé à partir de 0",
+        "qualifier": "de taille N",
+        "relation": "a des indices",
+        "object": "allant de 0 à N−1"
+      },
+      "foundations": [
+        {
+          "type": "Source documentaire",
+          "text": "Convention d’indexation adoptée par le cours."
+        }
+      ],
+      "formulation": "Dans le domaine du pseudo-code indexé à partir de 0, « Tableau » de taille N a des indices allant de 0 à N−1.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-remplacement",
+      "type": "Règle",
+      "name": "Valeur remplacée",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "kind": "Descriptive",
+        "context": "de l’exécution d’un pseudo-code",
+        "condition": "x ← e s’exécute correctement",
+        "conclusion": "la nouvelle valeur de x remplace l’ancienne",
+        "exceptionMode": "Aucune exception identifiée dans ce domaine"
+      },
+      "foundations": [
+        {
+          "type": "Démonstration ou raisonnement",
+          "text": "Découle de la propriété « Valeur unique » : x ne peut pas conserver deux valeurs."
+        }
+      ],
+      "formulation": "Dans le contexte de l’exécution d’un pseudo-code, si x ← e s’exécute correctement, alors la nouvelle valeur de x remplace l’ancienne (aucune exception identifiée dans ce domaine).",
+      "autoForm": true
+    },
+    {
+      "id": "pc-avant-lecture",
+      "type": "Règle",
+      "name": "Affecter d’abord",
+      "status": "Proposé",
+      "life": "Actif",
+      "fields": {
+        "kind": "D’action",
+        "context": "de l’écriture d’un pseudo-code",
+        "condition": "une variable va être lue",
+        "conclusion": "lui affecter une valeur avant cette lecture",
+        "exceptionMode": "Exception réelle",
+        "exception": "elle est un paramètre d’entrée (sa valeur est fournie à l’appel)"
+      },
+      "foundations": [
+        {
+          "type": "Démonstration ou raisonnement",
+          "text": "Une variable lue sans valeur donne un résultat indéterminé."
+        }
+      ],
+      "formulation": "Dans le contexte de l’écriture d’un pseudo-code, si une variable va être lue, alors lui affecter une valeur avant cette lecture, sauf si elle est un paramètre d’entrée (sa valeur est fournie à l’appel).",
+      "autoForm": true
+    },
+    {
+      "id": "pc-somme",
+      "type": "Procédure",
+      "name": "Somme d’un tableau",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "context": "du pseudo-code",
+        "goal": "calculer la somme des éléments d’un tableau T",
+        "inputs": "un tableau T de N nombres, N ≥ 0",
+        "steps": "1. somme ← 0\n2. Pour i allant de 0 à N−1 : somme ← somme + T[i]\n3. Renvoyer somme",
+        "result": "la somme des éléments de T",
+        "success": "les indices utilisés restent entre 0 et N−1"
+      },
+      "foundations": [
+        {
+          "type": "Démonstration ou raisonnement",
+          "text": "Invariant : après le passage i, somme vaut T[0] + … + T[i]."
+        }
+      ],
+      "formulation": "Dans le contexte du pseudo-code, pour calculer la somme des éléments d’un tableau T, à partir de un tableau T de N nombres, N ≥ 0 :\n1. somme ← 0\n2. Pour i allant de 0 à N−1 : somme ← somme + T[i]\n3. Renvoyer somme\nElle produit la somme des éléments de T, si les indices utilisés restent entre 0 et N−1.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-affectation",
+      "type": "Exemple",
+      "name": "x ← 5 puis x ← 8",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Après x ← 5 puis x ← 8, x vaut 8",
+        "shown": "la seconde affectation efface la valeur 5"
+      },
+      "foundations": [],
+      "formulation": "« Après x ← 5 puis x ← 8, x vaut 8 » illustre la règle « Valeur remplacée », la propriété « Valeur unique », le concept « Affectation » et le concept « Variable » parce que la seconde affectation efface la valeur 5.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-indices",
+      "type": "Exemple",
+      "name": "T = [7, 2, 9]",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Le tableau T = [7, 2, 9] a pour indices 0, 1 et 2",
+        "shown": "N = 3 et le dernier indice vaut 2, soit N − 1"
+      },
+      "foundations": [],
+      "formulation": "« Le tableau T = [7, 2, 9] a pour indices 0, 1 et 2 » illustre la propriété « Indices 0 à N−1 » et le concept « Tableau » parce que N = 3 et le dernier indice vaut 2, soit N − 1.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-somme",
+      "type": "Exemple",
+      "name": "Somme de [3, 4, 5]",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "La procédure appliquée à T = [3, 4, 5] renvoie 12",
+        "shown": "la somme passe par 0, 3, 7 puis 12 : chaque passage ajoute un élément"
+      },
+      "foundations": [],
+      "formulation": "« La procédure appliquée à T = [3, 4, 5] renvoie 12 » illustre la procédure « Somme d’un tableau » parce que la somme passe par 0, 3, 7 puis 12 : chaque passage ajoute un élément.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-nombres",
+      "type": "Exemple",
+      "name": "42, 3,14 et −7",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "42, 3,14 et −7 sont des valeurs numériques",
+        "shown": "on peut les calculer, les comparer ou les ranger dans une variable"
+      },
+      "foundations": [],
+      "formulation": "« 42, 3,14 et −7 sont des valeurs numériques » illustre le concept « Valeur » parce qu’on peut les calculer, les comparer ou les ranger dans une variable.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-types",
+      "type": "Exemple",
+      "name": "“Bonjour” et VRAI",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "“Bonjour” est une valeur de type chaîne, VRAI une valeur de type booléen",
+        "shown": "une valeur n’est pas forcément un nombre : chaque valeur a un type"
+      },
+      "foundations": [],
+      "formulation": "« “Bonjour” est une valeur de type chaîne, VRAI une valeur de type booléen » illustre le concept « Valeur » parce qu’une valeur n’est pas forcément un nombre : chaque valeur a un type.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-test",
+      "type": "Exemple",
+      "name": "n > 0 avec n = 3",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Avec n = 3, l’expression n > 0 vaut VRAI",
+        "shown": "une expression peut donner une valeur booléenne, utilisée ensuite dans un test"
+      },
+      "foundations": [],
+      "formulation": "« Avec n = 3, l’expression n > 0 vaut VRAI » illustre le concept « Expression » et le concept « Valeur » parce qu’une expression peut donner une valeur booléenne, utilisée ensuite dans un test.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-moyenne",
+      "type": "Exemple",
+      "name": "(a + b) / 2",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Avec a = 4 et b = 10, l’expression (a + b) / 2 vaut 7",
+        "shown": "une expression combine valeurs, variables et opérateurs, et s’évalue en une valeur"
+      },
+      "foundations": [],
+      "formulation": "« Avec a = 4 et b = 10, l’expression (a + b) / 2 vaut 7 » illustre le concept « Expression » parce qu’une expression combine valeurs, variables et opérateurs, et s’évalue en une valeur.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-compteur",
+      "type": "Exemple",
+      "name": "compteur ← compteur + 1",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Si compteur vaut 4, compteur ← compteur + 1 lui donne la valeur 5",
+        "shown": "l’expression compteur + 1 est d’abord évaluée avec l’ancienne valeur (4), puis 5 remplace 4"
+      },
+      "foundations": [],
+      "formulation": "« Si compteur vaut 4, compteur ← compteur + 1 lui donne la valeur 5 » illustre le concept « Affectation », le concept « Expression » et la règle « Valeur remplacée » parce que l’expression compteur + 1 est d’abord évaluée avec l’ancienne valeur (4), puis 5 remplace 4.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-age",
+      "type": "Exemple",
+      "name": "age ← 18",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "La variable age vaut 17 ; après age ← 18, elle vaut 18",
+        "shown": "un même nom désigne, à chaque instant, une seule valeur, qui peut changer"
+      },
+      "foundations": [],
+      "formulation": "« La variable age vaut 17 ; après age ← 18, elle vaut 18 » illustre le concept « Variable » et la propriété « Valeur unique » parce qu’un même nom désigne, à chaque instant, une seule valeur, qui peut changer.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-echange",
+      "type": "Exemple",
+      "name": "Échange de a et b",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Pour échanger a = 1 et b = 2 : temp ← a, puis a ← b, puis b ← temp",
+        "shown": "sans temp, a ← b effacerait la valeur 1 : une variable ne garde qu’une valeur"
+      },
+      "foundations": [],
+      "formulation": "« Pour échanger a = 1 et b = 2 : temp ← a, puis a ← b, puis b ← temp » illustre la propriété « Valeur unique », la règle « Valeur remplacée », le concept « Variable » et le concept « Affectation » parce que sans temp, a ← b effacerait la valeur 1 : une variable ne garde qu’une valeur.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-ordres",
+      "type": "Exemple",
+      "name": "Lire, afficher, affecter",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Lire(n), Afficher(n) et n ← n × 2 sont trois instructions",
+        "shown": "chacune est un ordre élémentaire que l’exécutant effectue en une étape"
+      },
+      "foundations": [],
+      "formulation": "« Lire(n), Afficher(n) et n ← n × 2 sont trois instructions » illustre le concept « Instruction » parce que chacune est un ordre élémentaire que l’exécutant effectue en une étape.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-sequence",
+      "type": "Exemple",
+      "name": "x ← 2 ; x ← x + 3 ; Afficher(x)",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "La suite x ← 2 ; x ← x + 3 ; Afficher(x) affiche 5",
+        "shown": "les instructions s’exécutent dans l’ordre écrit, et x reçoit une valeur avant d’être lue"
+      },
+      "foundations": [],
+      "formulation": "« La suite x ← 2 ; x ← x + 3 ; Afficher(x) affiche 5 » illustre le concept « Instruction » et la règle « Affecter d’abord » parce que les instructions s’exécutent dans l’ordre écrit, et x reçoit une valeur avant d’être lue.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-lire",
+      "type": "Exemple",
+      "name": "Lire(n) avant n × 2",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Dans Lire(n) ; Afficher(n × 2), la saisie donne une valeur à n avant le calcul",
+        "shown": "Lire(n) range une valeur dans n avant que n soit lue"
+      },
+      "foundations": [],
+      "formulation": "« Dans Lire(n) ; Afficher(n × 2), la saisie donne une valeur à n avant le calcul » illustre la règle « Affecter d’abord » et le concept « Instruction » parce que Lire(n) range une valeur dans n avant que n soit lue.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-init",
+      "type": "Exemple",
+      "name": "somme ← 0 avant la boucle",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Dans la procédure de somme, somme ← 0 précède la première lecture de somme",
+        "shown": "la variable reçoit une valeur avant d’être lue, et la somme d’un tableau vide vaut bien 0"
+      },
+      "foundations": [],
+      "formulation": "« Dans la procédure de somme, somme ← 0 précède la première lecture de somme » illustre la règle « Affecter d’abord » et la procédure « Somme d’un tableau » parce que la variable reçoit une valeur avant d’être lue, et la somme d’un tableau vide vaut bien 0.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-notes",
+      "type": "Exemple",
+      "name": "notes = [12, 15, 9, 18]",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Le tableau notes = [12, 15, 9, 18] regroupe 4 notes : notes[1] vaut 15 et le dernier indice est 3",
+        "shown": "un seul nom pour N valeurs de même type, chacune repérée par un indice allant de 0 à N − 1"
+      },
+      "foundations": [],
+      "formulation": "« Le tableau notes = [12, 15, 9, 18] regroupe 4 notes : notes[1] vaut 15 et le dernier indice est 3 » illustre le concept « Tableau » et la propriété « Indices 0 à N−1 » parce qu’un seul nom pour N valeurs de même type, chacune repérée par un indice allant de 0 à N − 1.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-ex-vide",
+      "type": "Exemple",
+      "name": "Tableau vide",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Un tableau T vide (N = 0) n’a aucun indice valide ; la procédure de somme renvoie alors 0",
+        "shown": "l’intervalle de 0 à N − 1 = −1 est vide : la boucle ne s’exécute pas et somme garde sa valeur initiale 0"
+      },
+      "foundations": [],
+      "formulation": "« Un tableau T vide (N = 0) n’a aucun indice valide ; la procédure de somme renvoie alors 0 » illustre la propriété « Indices 0 à N−1 », la procédure « Somme d’un tableau » et le concept « Tableau » parce que l’intervalle de 0 à N − 1 = −1 est vide : la boucle ne s’exécute pas et somme garde sa valeur initiale 0.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-cx-lua",
+      "type": "Contre-exemple",
+      "name": "Indexation dès 1",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "En Lua, un tableau de 3 éléments a pour indices 1, 2 et 3",
+        "condition": "la convention d’indexation commence à 1",
+        "verdict": "Hors du domaine prévu (2a) : pas de contradiction dans le domaine"
+      },
+      "foundations": [],
+      "formulation": "« En Lua, un tableau de 3 éléments a pour indices 1, 2 et 3 » montre que la propriété « Indices 0 à N−1 » ne s’applique pas lorsque la convention d’indexation commence à 1.",
+      "autoForm": true
+    },
+    {
+      "id": "pc-cx-parametre",
+      "type": "Contre-exemple",
+      "name": "Paramètre lu",
+      "status": "Établi",
+      "life": "Actif",
+      "fields": {
+        "case": "Dans « Fonction carré(n) : renvoyer n × n », n est lue sans affectation dans la fonction",
+        "condition": "la variable est un paramètre d’entrée",
+        "verdict": "Traité : énoncé révisé"
+      },
+      "foundations": [],
+      "formulation": "« Dans « Fonction carré(n) : renvoyer n × n », n est lue sans affectation dans la fonction » montre que la règle « Affecter d’abord » ne s’applique pas lorsque la variable est un paramètre d’entrée.",
+      "autoForm": true
+    }
+  ],
+  "links": [
+    {
+      "id": "l-pc-variable-pc-valeur",
+      "source": "pc-variable",
+      "target": "pc-valeur",
+      "type": "Se définit à partir de",
+      "note": ""
+    },
+    {
+      "id": "l-pc-expression-pc-valeur",
+      "source": "pc-expression",
+      "target": "pc-valeur",
+      "type": "Se définit à partir de",
+      "note": ""
+    },
+    {
+      "id": "l-pc-expression-pc-variable",
+      "source": "pc-expression",
+      "target": "pc-variable",
+      "type": "Se définit à partir de",
+      "note": ""
+    },
+    {
+      "id": "l-pc-affectation-pc-instruction",
+      "source": "pc-affectation",
+      "target": "pc-instruction",
+      "type": "Se définit à partir de",
+      "note": ""
+    },
+    {
+      "id": "l-pc-affectation-pc-variable",
+      "source": "pc-affectation",
+      "target": "pc-variable",
+      "type": "Se définit à partir de",
+      "note": ""
+    },
+    {
+      "id": "l-pc-affectation-pc-expression",
+      "source": "pc-affectation",
+      "target": "pc-expression",
+      "type": "Se définit à partir de",
+      "note": ""
+    },
+    {
+      "id": "l-pc-tableau-pc-valeur",
+      "source": "pc-tableau",
+      "target": "pc-valeur",
+      "type": "Se définit à partir de",
+      "note": ""
+    },
+    {
+      "id": "l-pc-tableau-pc-variable",
+      "source": "pc-tableau",
+      "target": "pc-variable",
+      "type": "A pour prérequis",
+      "note": ""
+    },
+    {
+      "id": "l-pc-unique-pc-variable",
+      "source": "pc-unique",
+      "target": "pc-variable",
+      "type": "Définit",
+      "note": ""
+    },
+    {
+      "id": "l-pc-indices-pc-tableau",
+      "source": "pc-indices",
+      "target": "pc-tableau",
+      "type": "Caractérise",
+      "note": ""
+    },
+    {
+      "id": "l-pc-remplacement-pc-affectation",
+      "source": "pc-remplacement",
+      "target": "pc-affectation",
+      "type": "Porte sur",
+      "note": ""
+    },
+    {
+      "id": "l-pc-remplacement-pc-variable",
+      "source": "pc-remplacement",
+      "target": "pc-variable",
+      "type": "Porte sur",
+      "note": ""
+    },
+    {
+      "id": "l-pc-avant-lecture-pc-variable",
+      "source": "pc-avant-lecture",
+      "target": "pc-variable",
+      "type": "Porte sur",
+      "note": ""
+    },
+    {
+      "id": "l-pc-somme-pc-avant-lecture",
+      "source": "pc-somme",
+      "target": "pc-avant-lecture",
+      "type": "Applique",
+      "note": ""
+    },
+    {
+      "id": "l-pc-somme-pc-remplacement",
+      "source": "pc-somme",
+      "target": "pc-remplacement",
+      "type": "S’appuie sur",
+      "note": ""
+    },
+    {
+      "id": "l-pc-somme-pc-tableau",
+      "source": "pc-somme",
+      "target": "pc-tableau",
+      "type": "S’appuie sur",
+      "note": ""
+    },
+    {
+      "id": "l-pc-somme-pc-indices",
+      "source": "pc-somme",
+      "target": "pc-indices",
+      "type": "S’appuie sur",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-affectation-pc-remplacement",
+      "source": "pc-ex-affectation",
+      "target": "pc-remplacement",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-affectation-pc-unique",
+      "source": "pc-ex-affectation",
+      "target": "pc-unique",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-affectation-pc-affectation",
+      "source": "pc-ex-affectation",
+      "target": "pc-affectation",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-affectation-pc-variable",
+      "source": "pc-ex-affectation",
+      "target": "pc-variable",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-indices-pc-indices",
+      "source": "pc-ex-indices",
+      "target": "pc-indices",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-indices-pc-tableau",
+      "source": "pc-ex-indices",
+      "target": "pc-tableau",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-somme-pc-somme",
+      "source": "pc-ex-somme",
+      "target": "pc-somme",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-nombres-pc-valeur",
+      "source": "pc-ex-nombres",
+      "target": "pc-valeur",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-types-pc-valeur",
+      "source": "pc-ex-types",
+      "target": "pc-valeur",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-test-pc-expression",
+      "source": "pc-ex-test",
+      "target": "pc-expression",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-test-pc-valeur",
+      "source": "pc-ex-test",
+      "target": "pc-valeur",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-moyenne-pc-expression",
+      "source": "pc-ex-moyenne",
+      "target": "pc-expression",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-compteur-pc-affectation",
+      "source": "pc-ex-compteur",
+      "target": "pc-affectation",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-compteur-pc-expression",
+      "source": "pc-ex-compteur",
+      "target": "pc-expression",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-compteur-pc-remplacement",
+      "source": "pc-ex-compteur",
+      "target": "pc-remplacement",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-age-pc-variable",
+      "source": "pc-ex-age",
+      "target": "pc-variable",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-age-pc-unique",
+      "source": "pc-ex-age",
+      "target": "pc-unique",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-echange-pc-unique",
+      "source": "pc-ex-echange",
+      "target": "pc-unique",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-echange-pc-remplacement",
+      "source": "pc-ex-echange",
+      "target": "pc-remplacement",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-echange-pc-variable",
+      "source": "pc-ex-echange",
+      "target": "pc-variable",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-echange-pc-affectation",
+      "source": "pc-ex-echange",
+      "target": "pc-affectation",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-ordres-pc-instruction",
+      "source": "pc-ex-ordres",
+      "target": "pc-instruction",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-sequence-pc-instruction",
+      "source": "pc-ex-sequence",
+      "target": "pc-instruction",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-sequence-pc-avant-lecture",
+      "source": "pc-ex-sequence",
+      "target": "pc-avant-lecture",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-lire-pc-avant-lecture",
+      "source": "pc-ex-lire",
+      "target": "pc-avant-lecture",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-lire-pc-instruction",
+      "source": "pc-ex-lire",
+      "target": "pc-instruction",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-init-pc-avant-lecture",
+      "source": "pc-ex-init",
+      "target": "pc-avant-lecture",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-init-pc-somme",
+      "source": "pc-ex-init",
+      "target": "pc-somme",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-notes-pc-tableau",
+      "source": "pc-ex-notes",
+      "target": "pc-tableau",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-notes-pc-indices",
+      "source": "pc-ex-notes",
+      "target": "pc-indices",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-vide-pc-indices",
+      "source": "pc-ex-vide",
+      "target": "pc-indices",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-vide-pc-somme",
+      "source": "pc-ex-vide",
+      "target": "pc-somme",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-ex-vide-pc-tableau",
+      "source": "pc-ex-vide",
+      "target": "pc-tableau",
+      "type": "Illustre",
+      "note": ""
+    },
+    {
+      "id": "l-pc-cx-lua-pc-indices",
+      "source": "pc-cx-lua",
+      "target": "pc-indices",
+      "type": "Met à l’épreuve",
+      "note": ""
+    },
+    {
+      "id": "l-pc-cx-parametre-pc-avant-lecture",
+      "source": "pc-cx-parametre",
+      "target": "pc-avant-lecture",
+      "type": "Met à l’épreuve",
+      "note": ""
+    }
+  ]
+}
