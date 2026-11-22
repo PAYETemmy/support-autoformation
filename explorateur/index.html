@@ -31,15 +31,12 @@ main{max-width:1240px;margin:auto;padding:22px max(20px,var(--sr)) 42px max(20px
 .ico{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}.tabs .ico{display:none}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:18px;min-width:0;box-shadow:0 1px 2px rgba(16,24,40,.035)}
 .layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.8fr);gap:18px;align-items:start}
+.learnlayout{grid-template-columns:minmax(280px,.85fr) minmax(0,1.3fr)}.wide{grid-column:1/-1}
+@media(min-width:761px){#quizPanel{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto}}
+.sheet.fiche{max-width:640px}#detail{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.panelhead h2{font-size:16px;margin:0;font-weight:650;color:#24364d}
 .muted{color:var(--muted);font-size:12px}.tag{border:1px solid #d7e0eb;border-radius:6px;padding:3px 8px;background:#f8fafc;color:#5f6e82;font-size:11px;white-space:nowrap}
-.graphbox{overflow:hidden;border:1px solid #e0e6ee;border-radius:8px;background:#fbfcfe}
-#graph{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}#graph.pannable{touch-action:none;cursor:grab}
-.rel{stroke:#8b9bb0;stroke-width:1.5;fill:none}.rel.contra{stroke:#b42318;stroke-dasharray:5 4}.rel.hl{stroke:#285ea8;stroke-width:2.2}.rel.contra.hl{stroke:#b42318}.rel.pre{stroke-dasharray:2 4}.dim{opacity:.25}.elabel{font-size:10px;font-weight:650;fill:#285ea8;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#fbfcfe;stroke-width:4px;stroke-linejoin:round}.elabel.contra{fill:#b42318}.bandlabel{font-size:11px;font-weight:650;fill:#637083}.sep{stroke:#e0e6ee;stroke-width:1}
-.node{cursor:pointer;outline:none}.node circle{stroke:#fff;stroke-width:2}.node.selected circle,.node:focus-visible circle{stroke:#172b4d;stroke-width:3}
-.node text{fill:#24364d;text-anchor:middle;font-size:11px;font-weight:600;pointer-events:none;paint-order:stroke;stroke:#fbfcfe;stroke-width:3px;stroke-linejoin:round}
-.root circle{fill:#285ea8}.root text{fill:#fff;text-anchor:middle;font-size:10px;font-weight:700;pointer-events:none}
-.controls,.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:13px}.legend span{font-size:11px;color:#59677a;display:flex;align-items:center;gap:6px}.legend i,.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}.field label{font-size:12px;color:#445267;font-weight:650}
 input,select,textarea{width:100%;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:10px 12px;color:var(--text);min-width:0;font-size:16px;-webkit-appearance:none;appearance:none}
 input::placeholder,textarea::placeholder{color:#8995a6}
@@ -48,7 +45,7 @@ select{padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 input[type=search]::-webkit-search-decoration{-webkit-appearance:none}
 textarea{min-height:96px;resize:vertical}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.section{border-top:1px solid #e7ebf0;padding-top:13px;margin-top:14px}
-.cardtitle{font-size:19px;font-weight:700;overflow-wrap:anywhere;color:#1c2c43}.relation{display:block;width:100%;min-height:44px;padding:10px 0;border:0;border-bottom:1px solid #e8edf2;border-radius:0;background:none;text-align:left;font-size:13px;line-height:1.45;overflow-wrap:anywhere}.relation:active:not(:disabled){background:#eef2f7}@media(hover:hover){.relation:hover:not(:disabled){background:#f8fafc}}#focusToggle.on{background:var(--accentbg);border-color:var(--accent);color:var(--accent)}
+.cardtitle{font-size:19px;font-weight:700;overflow-wrap:anywhere;color:#1c2c43}.relation{display:block;width:100%;min-height:44px;padding:10px 0;border:0;border-bottom:1px solid #e8edf2;border-radius:0;background:none;text-align:left;font-size:13px;line-height:1.45;overflow-wrap:anywhere}.relation:active:not(:disabled){background:#eef2f7}@media(hover:hover){.relation:hover:not(:disabled){background:#f8fafc}}
 .itemrow{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #e8edf2;min-width:0}.itemrow .name{flex:1;min-width:0;overflow-wrap:anywhere}.itemrow button{padding:6px 10px;min-width:44px;min-height:44px}
 .empty{padding:24px 18px;text-align:center;color:var(--muted);font-size:13px}.notice{font-size:11px;color:var(--muted);margin:11px 0 0}
 .vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;opacity:0}
@@ -64,15 +61,11 @@ textarea{min-height:96px;resize:vertical}
 .foundrow{display:grid;grid-template-columns:minmax(130px,36%) 1fr 44px;gap:6px;margin-bottom:6px}.foundrow button{padding:0}
 .tips{margin:8px 0 0;padding:10px 12px 10px 28px;border:1px solid #d3e0f1;background:#f3f7fc;border-radius:8px;font-size:13px;color:#2a4a75}.tips li,.issues li{margin:2px 0}
 .warn{color:#b42318;font-size:12px;font-weight:600}
-.ring{fill:none;stroke:#d3dbe6;stroke-width:1.2;stroke-dasharray:4 5}
-.ringlabel{font-size:11px;font-weight:650;fill:#637083;text-anchor:middle;paint-order:stroke;stroke:#fbfcfe;stroke-width:4px;stroke-linejoin:round;pointer-events:none}
-.node.archived circle{opacity:.35}.node.archived text{fill:#8995a6;font-style:italic}
 .reltable{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}.reltable th,.reltable td{border-bottom:1px solid #e8edf2;padding:6px 4px;text-align:left;vertical-align:top}.reltable th{color:var(--muted);font-weight:650}
 #modalText{white-space:pre-line;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .pathgroup{margin:12px 0 4px;font-size:12px;font-weight:700;color:#445267;text-transform:uppercase;letter-spacing:.04em}
 .memo summary{cursor:pointer;font-weight:650;color:#24364d;padding:11px 0}.memo p{font-size:13px;margin:8px 0}
 .headright{display:flex;align-items:center;gap:8px}.iconbtn{min-width:44px;padding:0;font-size:22px;line-height:1}
-.mobile-only{display:none}
 [hidden]{display:none!important}
 footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,var(--sl));color:var(--muted);font-size:11px}
 #message{position:fixed;left:50%;bottom:calc(20px + var(--sb));z-index:40;width:max-content;max-width:min(92vw,460px);margin:0;padding:10px 14px;border:1px solid #285ea8;border-radius:9px;background:#173a67;color:#fff;font-size:13px;box-shadow:0 6px 20px rgba(16,24,40,.18);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .2s,transform .2s}
@@ -84,13 +77,12 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
  main{padding:15px max(13px,var(--sr)) 34px max(13px,var(--sl))}
  body{padding-bottom:calc(78px + var(--sb))}
  .layout{grid-template-columns:1fr;gap:13px}.panel{padding:14px;border-radius:10px}
- .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:6px max(8px,var(--sr)) calc(6px + var(--sb)) max(8px,var(--sl));background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);border-bottom:0;box-shadow:0 -3px 12px rgba(16,24,40,.06)}
+ .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:6px max(8px,var(--sr)) calc(6px + var(--sb)) max(8px,var(--sl));background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);border-bottom:0;box-shadow:0 -3px 12px rgba(16,24,40,.06)}
  .tabs button{flex-direction:column;gap:2px;min-height:52px;padding:4px 2px;border:0;border-radius:7px;background:transparent;color:#66758a;font-size:11px;font-weight:600}
  .tabs button.active{background:var(--accentbg);color:var(--accent)}.tabs .ico{display:block}
  body.typing .tabs{display:none}
  #message{bottom:calc(84px + var(--sb))}body.typing #message{bottom:calc(16px + var(--sb))}
- .mobile-only{display:inline-flex}.controls button{flex:1 1 auto}
- .modal{align-items:flex-end;padding:0 8px calc(8px + var(--sb))}.sheet .actions{flex-direction:column-reverse}.sheet .actions button{width:100%}
+ .modal{align-items:flex-end;padding:0 8px calc(8px + var(--sb))}.sheet .actions{flex-direction:column-reverse}.sheet .actions button{width:100%}.fiche .actions{flex-direction:row}.fiche .actions button{width:auto;flex:1 1 auto}
 }
 @media(max-width:620px){.grid3{grid-template-columns:1fr 1fr}.grid3 .field:first-child{grid-column:1/-1}}
 @media(max-width:420px){.foundrow{grid-template-columns:1fr 44px}.foundrow select{grid-column:1/-1}.itemrow button{padding:6px 8px;font-size:13px}.grid2{grid-template-columns:1fr;gap:0}.panelhead h2{font-size:15px}.tag{font-size:10px}}
@@ -112,32 +104,13 @@ p.warn{margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.2</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.3</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
-<button class="active" data-view="explore" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="18" cy="19" r="2"/><circle cx="5" cy="18" r="2"/><path d="M6.5 6.5l3.3 3.3M17.3 7.2l-3.2 3.1M16.6 17.6l-2.5-3.5M6.6 16.6l3.2-2.8"/></svg>Graphe</button>
+<button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
 <button data-view="edit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg>Constructeur</button>
 <button data-view="links"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/></svg>Relations</button>
-<button data-view="learn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
-<button data-view="library"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg>Bibliothèque</button>
 </nav>
-
-<section id="explore">
-<div class="layout">
- <div class="panel">
-  <div class="panelhead"><h2>Graphe de connaissances</h2><span class="tag" id="graphCount">0 éléments</span></div>
-  <div class="graphbox" id="graphbox"><svg id="graph" viewBox="0 0 700 510" aria-label="Graphe des connaissances"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8b9bb0"/></marker><marker id="arrowHl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#285ea8"/></marker></defs><g id="drawing"></g></svg></div>
-  <div class="controls"><button id="zoomOut" aria-label="Dézoomer">−</button><button id="zoomIn" aria-label="Zoomer">＋</button><button id="zoomReset" title="Revenir à la vue initiale">Réinitialiser</button><button id="viewToggle">Vue réseau</button><button id="focusToggle" aria-pressed="false" disabled>Voisinage</button><button class="primary" id="addGraph">＋ Ajouter</button></div>
-  <div class="legend" id="legend"></div>
-  <p class="notice" id="graphNotice"></p>
- </div>
- <div class="panel" id="detailPanel">
-  <div class="panelhead"><h2>Fiche de connaissance</h2><div class="headright"><span class="tag" id="selectedType">Aucune sélection</span><button id="closeDetail" class="iconbtn" aria-label="Fermer la fiche et revenir à la vue d’ensemble" title="Fermer la fiche" hidden>×</button></div></div>
-  <div id="detail" class="empty">Sélectionne un élément du graphe ou de la bibliothèque.</div>
-  <div class="actions" id="detailActions" hidden><button class="primary" id="editSelected">Modifier</button><button id="linkSelected">Créer une relation</button><button id="reviewSelected">Réviser</button><button class="mobile-only" id="backGraph">↑ Graphe</button></div>
- </div>
-</div>
-</section>
 
 <section id="edit" hidden>
 <div class="panel">
@@ -171,38 +144,37 @@ p.warn{margin:8px 0 0}
 </div>
 </section>
 
-<section id="learn" hidden>
-<div class="layout">
- <div class="panel">
+<section id="learn">
+<div class="layout learnlayout">
+ <div class="panel" id="pathPanel">
+  <div class="panelhead"><h2>Parcours conseillé</h2><span class="tag">Du concept au contre-exemple</span></div>
+  <p class="notice" style="margin-top:0">Étudie d’abord les objets (concepts), en commençant par les termes primitifs, puis les affirmations (propriétés, règles), les méthodes (procédures), et enfin ce qui les illustre et les délimite. Chaque carte rappelle les termes primitifs et les définitions nécessaires, et propose au moins 3 exemples.</p>
+  <div id="pathList"></div>
+ </div>
+ <div class="panel" id="quizPanel">
   <div class="panelhead"><h2>Entraînement par rappel</h2><span class="tag" id="learnProgress"></span></div>
   <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
   <div class="field" style="margin-top:12px"><label for="quizFilter">Réviser</label><select id="quizFilter"><option>Tous</option><option>Concept</option><option>Propriété</option><option>Règle</option><option>Procédure</option><option>Exemple</option><option>Contre-exemple</option></select></div>
   <div id="quiz"></div>
  </div>
- <div class="panel">
-  <div class="panelhead"><h2>Parcours conseillé</h2><span class="tag">Du concept au contre-exemple</span></div>
-  <p class="notice" style="margin-top:0">Étudie d’abord les objets (concepts), en commençant par les termes primitifs, puis les affirmations (propriétés, règles), les méthodes (procédures), et enfin ce qui les illustre et les délimite. Chaque carte rappelle les termes primitifs et les définitions nécessaires, et propose au moins 3 exemples.</p>
-  <div id="pathList"></div>
-  <div class="section"><h2>Contrôle du modèle</h2><div id="qualityList"></div></div>
+ <div class="panel wide">
+  <div class="panelhead"><h2>Contrôle du modèle</h2></div>
+  <div id="qualityList"></div>
+  <details class="section memo"><summary>Rappel du modèle de représentation</summary><div id="modelMemo"></div></details>
+  <div class="section"><h2>Sauvegarde et transfert</h2><p class="muted">Les changements sont conservés dans le stockage local du navigateur. Sur iPhone, Safari peut effacer ces données après 7 jours sans visite (sauf app ajoutée à l'écran d'accueil) : exporte régulièrement une copie JSON.</p>
+  <div class="actions"><button id="loadDemo">Charger l’exemple guidé (pseudo-code)</button><button id="restoreBackup" hidden>Restaurer les données d’avant la mise à jour</button></div>
+  <div class="actions"><button class="primary" id="exportData">Exporter JSON</button><label class="btn" for="fileInput" id="importData" role="button" tabindex="0">Importer JSON</label><input type="file" id="fileInput" class="vh" tabindex="-1"></div></div>
  </div>
-</div>
-</section>
-
-<section id="library" hidden>
-<div class="panel">
- <div class="panelhead"><h2>Bibliothèque</h2><span class="tag" id="libraryCount"></span></div>
- <div class="field"><label for="search">Recherche</label><input id="search" type="search" placeholder="Nom ou formulation…" autocomplete="off" enterkeyhint="search"></div>
- <div class="field"><label for="filter">Filtrer par type</label><select id="filter"><option>Tous</option><option>Concept</option><option>Propriété</option><option>Règle</option><option>Procédure</option><option>Exemple</option><option>Contre-exemple</option></select></div>
- <div id="libraryList"></div>
- <details class="section memo"><summary>Rappel du modèle de représentation</summary><div id="modelMemo"></div></details>
- <div class="section"><h2>Sauvegarde et transfert</h2><p class="muted">Les changements sont conservés dans le stockage local du navigateur. Sur iPhone, Safari peut effacer ces données après 7 jours sans visite (sauf app ajoutée à l'écran d'accueil) : exporte régulièrement une copie JSON.</p>
- <div class="actions"><button id="loadDemo">Charger l’exemple guidé (pseudo-code)</button><button id="restoreBackup" hidden>Restaurer les données d’avant la mise à jour</button></div>
- <div class="actions"><button class="primary" id="exportData">Exporter JSON</button><label class="btn" for="fileInput" id="importData" role="button" tabindex="0">Importer JSON</label><input type="file" id="fileInput" class="vh" tabindex="-1"></div></div>
 </div>
 </section>
 </main>
 <footer>Explorateur de connaissances · Les données restent dans ce navigateur, sauf export volontaire.</footer>
 <div id="message" role="status" aria-live="polite"></div>
+<div class="modal" id="ficheModal" hidden><div class="sheet fiche" role="dialog" aria-modal="true" aria-labelledby="ficheTitle">
+ <div class="panelhead"><h2 id="ficheTitle">Fiche de connaissance</h2><div class="headright"><span class="tag" id="selectedType"></span><button id="closeFiche" class="iconbtn" aria-label="Fermer la fiche" title="Fermer la fiche">×</button></div></div>
+ <div id="detail"></div>
+ <div class="actions" id="detailActions"><button class="primary" id="editSelected">Modifier</button><button id="linkSelected">Créer une relation</button><button id="reviewSelected">Réviser</button></div>
+</div></div>
 <div class="modal" id="modal" hidden><div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="modalText"><p id="modalText"></p><div class="actions"><button id="modalCancel">Annuler</button><button class="primary" id="modalOk">Confirmer</button></div></div></div>
 
 <script>
@@ -360,16 +332,14 @@ const DEMO_LINKS=[
  DL("pc-cx-lua","pc-indices","Met à l’épreuve"),DL("pc-cx-parametre","pc-avant-lecture","Met à l’épreuve")
 ];
 const STORE="knowledge-explorer-v7-html";
-const ZMIN=.7,ZMAX=3,ROOT_R=40,NODE_R=22;
 const mqNarrow=matchMedia("(max-width:760px)"),mqReduce=matchMedia("(prefers-reduced-motion: reduce)"),mqTouch=matchMedia("(pointer:coarse)");
-let db={items:[],links:[]},selected=null,editing=null,zoom=1,pan={x:0,y:0},geo={W:700,H:510,BH:510,zmax:3},lastW=0,focusMode=false,layoutCache={key:"",val:null};
+let db={items:[],links:[]},selected=null,editing=null;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uid=()=> "k"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const behavior=()=>mqReduce.matches?"auto":"smooth";
 const item=id=>db.items.find(x=>x.id===id);
 const itemName=id=>item(id)?.name||"Élément inconnu";
-const EMPTY_DETAIL="Sélectionne un élément du graphe ou de la bibliothèque.";
 
 /* ---------- Retour utilisateur : toast + confirmation (remplace confirm(), bloqué dans certaines vues web iOS) ---------- */
 let toastTimer=0;
@@ -420,171 +390,29 @@ const hasBackup=()=>{try{return !!localStorage.getItem(BACKUP)}catch(_){return f
 function load(){let raw=null;try{raw=localStorage.getItem(STORE)}catch(e){}
  if(raw){let p=null;try{p=normalize(JSON.parse(raw))}catch(e){}
   if(p&&!untouchedOldDemo(p)){if(demoSig(p)===DEMO91_SIG){const old=new Map(p.items.map(x=>[x.id,x]));db=demoData();db.items.forEach(x=>{const o=old.get(x.id);if(o){x.level=o.level||0;x.seen=o.seen||0}});upgraded=true;return}db=p;return}
-  /* Remplacement par l’exemple guidé : une copie exacte des anciennes données est conservée (bouton « Restaurer » dans la Bibliothèque) */
+  /* Remplacement par l’exemple guidé : une copie exacte des anciennes données est conservée (bouton « Restaurer », section Sauvegarde d’Apprendre) */
   try{if(!localStorage.getItem(BACKUP))localStorage.setItem(BACKUP,raw)}catch(e){}}
  db=demoData()}
 
 /* ---------- Navigation ---------- */
 function setView(v){
- ["explore","edit","links","learn","library"].forEach(k=>$(k).hidden=k!==v);
+ ["learn","edit","links"].forEach(k=>$(k).hidden=k!==v);
  document.querySelectorAll("[data-view]").forEach(b=>{const on=b.dataset.view===v;b.classList.toggle("active",on);on?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current")});
  window.scrollTo(0,0);
- if(v==="explore")draw();if(v==="links")renderLinks();if(v==="library")renderLibrary();if(v==="learn")renderLearn();
+ if(v==="links")renderLinks();if(v==="learn")renderLearn();
 }
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
 
-/* ---------- Graphe : géométrie adaptée à la largeur réelle (1 unité = 1 px) ---------- */
-/* Ellipse échantillonnée : placement à longueur d'arc égale (évite l'entassement en haut/bas) */
-function ellipse(a,b){const N=240,p=[],cum=[0];for(let i=0;i<=N;i++){const t=-Math.PI/2+2*Math.PI*i/N;p.push([Math.cos(t)*a,Math.sin(t)*b]);if(i)cum.push(cum[i-1]+Math.hypot(p[i][0]-p[i-1][0],p[i][1]-p[i-1][1]))}
- return {len:cum[N],at(s){let j=1;while(j<N&&cum[j]<s)j++;const f=(s-cum[j-1])/((cum[j]-cum[j-1])||1);return[p[j-1][0]+(p[j][0]-p[j-1][0])*f,p[j-1][1]+(p[j][1]-p[j-1][1])*f]}}}
-/* Anneaux concentriques espacés ; si trop d'éléments, l'espace virtuel s'agrandit (échelle S) et le zoom permet d'y entrer */
-function layout(n,bw,bh){
- const narrow=bw<520,gap=narrow?88:118,step=74,minR=ROOT_R+NODE_R+14;let best=null;
- for(let S=1;S<=6.01;S+=.1){
-  const W=bw*S,H=bh*S,rx=W/2-(narrow?50:72),ry=H/2-(narrow?44:52),rings=[];
-  for(let k=0;k<12;k++){const a=rx-k*step,b=ry-k*step;if(Math.min(a,b)<minR){if(!k)rings.push(ellipse(Math.max(a,minR),Math.max(b,minR)));break}rings.push(ellipse(a,b))}
-  rings.forEach(r=>r.cap=Math.max(1,Math.floor(r.len/gap)));
-  best={S,W,H,rings};if(rings.reduce((s,r)=>s+r.cap,0)>=n)break;
- }
- const {W,H,rings}=best,cx=W/2,cy=H/2,counts=[];let left=n;
- rings.forEach(r=>{const c=Math.min(r.cap,left);counts.push(c);left-=c});counts[0]+=left;
- const pts=[];
- rings.forEach((r,k)=>{const c=counts[k];for(let i=0;i<c;i++){const [x,y]=r.at(r.len*(i+(k%2?.5:0))/c);pts.push({x:+(cx+x).toFixed(1),y:+(cy+y).toFixed(1)})}});
- return {S:best.S,W,H,pts};
-}
-const lc=t=>t.charAt(0).toLowerCase()+t.slice(1);
-function neighborsOf(id){const n=new Set();db.links.forEach(r=>{if(r.source===id)n.add(r.target);else if(r.target===id)n.add(r.source)});n.delete(id);return n}
-/* Disposition par forces (Fruchterman-Reingold), déterministe : les éléments reliés se rapprochent, les autres se repoussent */
-function force(ids,W,H,mx,AX){
- const n=ids.length,ix=new Map(ids.map((id,i)=>[id,i])),E=[],AY=62,top=34,bot=46;
- db.links.forEach(r=>{const a=ix.get(r.source),b=ix.get(r.target);if(a!=null&&b!=null&&a!==b)E.push([a,b])});
- if(n===1)return[{x:W/2,y:H/2}];
- const bw=W-2*mx,bh=H-top-bot,k=Math.sqrt(bw*bh/n)*.85,k2=k*k,cut2=9*k2,D=ids.map(()=>({x:0,y:0}));
- const P=ids.map((_,i)=>{const a=i*2.399963,q=Math.sqrt((i+.5)/n);return{x:Math.cos(a)*q*bw/2,y:Math.sin(a)*q*bh/2}});
- let t=Math.max(bw,bh)/5;
- /* Simulation libre : répulsion locale (rayon 3k), attraction le long des relations, gravité elliptique vers le centre */
- for(let it=0;it<400;it++){
-  for(const d of D){d.x=0;d.y=0}
-  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){let dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,d2=dx*dx+dy*dy;if(d2>cut2)continue;if(d2<1){dx=(i%2?1:-1);dy=(j%2?1:-1);d2=2}const f=k2/d2;D[i].x+=dx*f;D[i].y+=dy*f;D[j].x-=dx*f;D[j].y-=dy*f}
-  for(const [a,b] of E){const dx=P[a].x-P[b].x,dy=P[a].y-P[b].y,f=Math.hypot(dx,dy)/k;D[a].x-=dx*f;D[a].y-=dy*f;D[b].x+=dx*f;D[b].y+=dy*f}
-  for(let i=0;i<n;i++){D[i].x-=P[i].x/(bw/2)*k*.5;D[i].y-=P[i].y/(bh/2)*k*.5;const dl=Math.hypot(D[i].x,D[i].y);if(dl>0){const m=Math.min(dl,t)/dl;P[i].x+=D[i].x*m;P[i].y+=D[i].y*m}}
-  t=Math.max(t*.985,.5);
- }
- /* Ajustement au cadre (déformation limitée à 1,6×) */
- let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;P.forEach(p=>{x0=Math.min(x0,p.x);x1=Math.max(x1,p.x);y0=Math.min(y0,p.y);y1=Math.max(y1,p.y)});
- const sx=x1-x0>1?bw/(x1-x0):1,sy=y1-y0>1?bh/(y1-y0):1,sm=Math.min(sx,sy),fx=Math.min(sx,sm*1.6),fy=Math.min(sy,sm*1.6);
- P.forEach(p=>{p.x=mx+(bw-(x1-x0)*fx)/2+(p.x-x0)*fx;p.y=top+(bh-(y1-y0)*fy)/2+(p.y-y0)*fy});
- /* Écartement final : aucune étiquette ne se chevauche (ellipse AX × AY) */
- for(let pass=0;pass<80;pass++){let any=false;
-  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){let ex=P[j].x-P[i].x,ey=P[j].y-P[i].y,q=Math.sqrt((ex/AX)**2+(ey/AY)**2);if(q>=1)continue;any=true;
-   if(q<1e-3){ex=AX*.5*((i+j)%2?1:-1);ey=AY*.3;q=Math.sqrt((ex/AX)**2+(ey/AY)**2)}
-   const f=(1/q-1)/2;P[i].x=clamp(P[i].x-ex*f,mx,W-mx);P[i].y=clamp(P[i].y-ey*f,top,H-bot);P[j].x=clamp(P[j].x+ex*f,mx,W-mx);P[j].y=clamp(P[j].y+ey*f,top,H-bot)}
-  if(!any)break}
- return P.map(p=>({x:+p.x.toFixed(1),y:+p.y.toFixed(1)}));
-}
-function computeOverview(BW){
- const narrow=BW<520,mx=narrow?48:64,AX=narrow?86:104,cell=AX*66*1.7;
- const linked=new Set();db.links.forEach(r=>{if(item(r.source)&&item(r.target)&&r.source!==r.target){linked.add(r.source);linked.add(r.target)}});
- const conn=db.items.filter(x=>linked.has(x.id)),iso=db.items.filter(x=>!linked.has(x.id));
- const BH0=narrow?clamp(BW*1.05,300,560):clamp(BW*.62,320,520),Hmax=narrow?BW*2.2:BW*1.15;
- let S=1,Hm=0;
- if(conn.length){Hm=Math.max(BH0,conn.length*cell/BW);if(Hm>Hmax){S=Math.sqrt(Hm/Hmax);Hm=Hmax*S}}
- const W=BW*S,pos={};let H=Hm,band=null;
- if(conn.length){const P=force(conn.map(x=>x.id),W,Hm,mx,AX);conn.forEach((x,i)=>pos[x.id]=P[i])}
- if(iso.length){const cw=narrow?96:116,rh=78,cols=Math.max(1,Math.floor((W-24)/cw)),used=Math.min(cols,iso.length),x0=(W-used*cw)/2+cw/2,y0=Hm+(conn.length?8:0),first=y0+56;
-  band={y:y0,label:`Sans relation (${iso.length})`,sep:conn.length>0};
-  iso.forEach((x,i)=>pos[x.id]={x:+(x0+(i%cols)*cw).toFixed(1),y:+(first+Math.floor(i/cols)*rh).toFixed(1)});
-  H=first+(Math.ceil(iso.length/cols)-1)*rh+48}
- return {S,W,H:Math.max(H,120),pos,band};
-}
-function computeFocus(BW,id){
- const narrow=BW<520,nb=[...neighborsOf(id)].filter(item),BH0=narrow?clamp(BW*1.1,320,560):clamp(BW*.66,340,520);
- const L=layout(nb.length,BW,BH0),pos={[id]:{x:L.W/2,y:L.H/2}};nb.forEach((n,i)=>pos[n]=L.pts[i]);
- return {S:L.S,W:L.W,H:L.H,pos,band:null};
-}
-function draw(){
- const bw=Math.round($("graphbox").clientWidth);if(bw>0)lastW=bw;
- const BW=lastW||700;
- if(focusMode&&!(selected&&item(selected)))focusMode=false;
- const key=[BW,viewMode,focusMode?selected:"",db.items.map(x=>x.id+":"+x.type).join("|"),db.links.map(r=>r.source+">"+r.target).join("|")].join("#");
- if(layoutCache.key!==key)layoutCache={key,val:focusMode?computeFocus(BW,selected):viewMode==="roles"?computeRoles(BW):computeOverview(BW)};
- const L=layoutCache.val,pos=L.pos,max=BW<520?13:18,R=NODE_R;
- geo={W:L.W,H:L.H,BH:Math.round(L.H/L.S),zmax:Math.max(ZMAX,L.S*2.5)};
- const sel=selected&&item(selected)?selected:null,nb=sel?neighborsOf(sel):null,dimOn=!!nb&&!focusMode,crowd=!focusMode&&!!nb&&nb.size>5;
- let out="",labels="";
- (L.bands||(L.band?[L.band]:[])).forEach(b=>{if(b.sep)out+=`<line class="sep" x1="12" y1="${b.y+6}" x2="${L.W-12}" y2="${b.y+6}"/>`;out+=`<text class="bandlabel" x="16" y="${b.y+30}">${esc(b.label)}</text>`});
- if(L.rings)L.rings.forEach(g=>{out+=`<circle class="ring" cx="${g.cx}" cy="${g.cy}" r="${g.r.toFixed(1)}"/>`});
- const groups={};db.links.forEach(r=>{if(pos[r.source]&&pos[r.target]&&r.source!==r.target){const k=[r.source,r.target].sort().join("\u0001");(groups[k]=groups[k]||[]).push(r)}});
- Object.values(groups).forEach(g=>g.forEach((r,k)=>{
-  const c=r.type===CONTRA,hl=!!sel&&(r.source===sel||r.target===sel),A=pos[r.source],B=pos[r.target],[p,q]=[r.source,r.target].sort(),P=pos[p],Q=pos[q];
-  const d=Math.hypot(B.x-A.x,B.y-A.y)||1,ux=(B.x-A.x)/d,uy=(B.y-A.y)/d,nx=-(Q.y-P.y)/d,ny=(Q.x-P.x)/d,o=(k-(g.length-1)/2);
-  const ra=(r.source===sel?R+4:R)+3,rb=(r.target===sel?R+4:R)+(c?3:6);if(d<ra+rb+6)return;
-  const x1=A.x+ux*ra+nx*o*9,y1=A.y+uy*ra+ny*o*9,x2=B.x-ux*rb+nx*o*9,y2=B.y-uy*rb+ny*o*9;
-  out+=`<line class="rel${c?" contra":""}${r.type===PREREQ?" pre":""}${hl?" hl":""}${dimOn&&!hl?" dim":""}" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"${c?"":` marker-end="url(#${hl?"arrowHl":"arrow"})"`}/>`;
-  const fr=focusMode?.5:(r.source===sel?.64:.36); /* étiquette décalée vers le voisin : moins d'entassement autour d'un élément très relié */
-  if(hl&&!crowd)labels+=`<text class="elabel${c?" contra":""}" x="${(x1+(x2-x1)*fr+nx*o*14).toFixed(1)}" y="${(y1+(y2-y1)*fr+ny*o*14+3).toFixed(1)}">${esc(lc(r.type))}</text>`;
- }));
- if(L.rings)L.rings.forEach(g=>{if(g.label)out+=`<text class="ringlabel" x="${g.lx}" y="${g.ly}">${esc(g.label)}</text>`});
- db.items.forEach(x=>{const p=pos[x.id];if(!p)return;const on=sel===x.id,label=x.name.length>max?x.name.slice(0,max-1)+"…":x.name,dim=dimOn&&!on&&!nb.has(x.id);
-  out+=`<g class="node${on?" selected":""}${dim?" dim":""}${x.life==="Archivé"?" archived":""}" data-node="${esc(x.id)}" role="button" tabindex="0" aria-label="${esc(x.name+", "+x.type)}"><circle cx="${p.x}" cy="${p.y}" r="${on?R+4:R}" fill="${COLORS[x.type]||COLORS.Concept}"/><text x="${p.x}" y="${p.y+R+(on?17:13)}">${esc(label)}</text></g>`});
- $("drawing").innerHTML=out+labels;$("graph").style.height=geo.BH+"px";if(zoom>geo.zmax)zoom=geo.zmax;applyView();
- const shownN=focusMode?Object.keys(pos).length:db.items.length;
- $("graphCount").textContent=focusMode?`Voisinage : ${shownN} élément(s)`:shownN+" élément(s)";
- $("graphNotice").textContent=crowd?`« ${item(sel).name} » a ${nb.size} voisins : touche « Voisinage » pour lire les verbes des relations.`:focusMode?`Seuls « ${item(sel).name} » et ses voisins directs sont affichés. Touche un voisin pour te déplacer de proche en proche.`:!db.links.length?"Aucune relation enregistrée : la structure apparaîtra dès que tu relieras des éléments (onglet Relations).":viewMode==="roles"?(BW<520?"Vue par rôles, en bandes : concepts, puis propriétés et règles, procédures, exemples et contre-exemples. Touche un élément pour lire ses relations.":"Vue par rôles : au centre les concepts, puis les propriétés et les règles, les procédures, et à l’extérieur les exemples et contre-exemples. Touche un élément pour lire ses relations."):"Vue réseau : les éléments reliés se rapprochent. Touche un élément : ses relations s'affichent avec leur verbe. « Voisinage » n'affiche que lui et ses voisins.";
- if(sel)$("graphNotice").textContent+=focusMode?" Touche une zone vide pour quitter le voisinage.":" Touche une zone vide du graphe (ou × sur la fiche) pour revenir à la vue d’ensemble.";
- const fb=$("focusToggle");fb.disabled=!sel;fb.classList.toggle("on",focusMode);fb.setAttribute("aria-pressed",String(focusMode));fb.textContent=focusMode?"Tout afficher":"Voisinage";const vt=$("viewToggle");vt.textContent=viewMode==="roles"?"Vue réseau":"Vue par rôles";vt.disabled=focusMode;
- $("legend").innerHTML=TYPES.map(t=>`<span><i style="background:${COLORS[t]}"></i>${t}</span>`).join("")+'<span><svg width="26" height="10" aria-hidden="true"><line x1="1" y1="5" x2="19" y2="5" stroke="#8b9bb0" stroke-width="1.5"/><path d="M18 1.5L25 5L18 8.5z" fill="#8b9bb0"/></svg>Relation (source → cible)</span><span><svg width="26" height="10" aria-hidden="true"><line x1="1" y1="5" x2="25" y2="5" stroke="#b42318" stroke-width="1.5" stroke-dasharray="4 3"/></svg>Contradiction</span><span><svg width="26" height="10" aria-hidden="true"><line x1="1" y1="5" x2="19" y2="5" stroke="#8b9bb0" stroke-width="1.5" stroke-dasharray="2 3"/><path d="M18 1.5L25 5L18 8.5z" fill="#8b9bb0"/></svg>Prérequis</span>';
-}
-/* Zoom/pan via viewBox (net, sans rognage) */
-function applyView(){
- const {W,H}=geo,w=W/zoom,h=H/zoom,g=$("graph");let x=(W-w)/2+pan.x,y=(H-h)/2+pan.y;
- if(zoom>1){x=clamp(x,0,W-w);y=clamp(y,0,H-h);pan.x=x-(W-w)/2;pan.y=y-(H-h)/2}else{x=(W-w)/2;y=(H-h)/2;pan.x=pan.y=0}
- g.setAttribute("viewBox",`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
- g.classList.toggle("pannable",zoom>1);$("zoomIn").disabled=zoom>=geo.zmax;$("zoomOut").disabled=zoom<=ZMIN;
-}
-function setZoom(z){zoom=clamp(Math.round(z*100)/100,ZMIN,geo.zmax);applyView()}
-$("zoomIn").addEventListener("click",()=>setZoom(zoom*1.25));
-$("zoomOut").addEventListener("click",()=>setZoom(zoom/1.25));
-/* Retour à la vue initiale : désélection, sortie du voisinage, zoom 1:1 */
-function resetView(){selected=null;pan={x:0,y:0};zoom=1;clearDetail();draw()}
-/* Un niveau en arrière : voisinage → vue d’ensemble avec sélection → vue d’ensemble sans sélection */
-function stepBack(){if(focusMode){focusMode=false;pan={x:0,y:0};zoom=1;draw();return true}if(selected){selected=null;clearDetail();draw();return true}return false}
-$("zoomReset").addEventListener("click",resetView);
-$("closeDetail").addEventListener("click",()=>{resetView();if(mqNarrow.matches)window.scrollTo({top:0,behavior:behavior()})});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("modal").hidden&&!isText(document.activeElement)&&!$("explore").hidden)stepBack()});
-$("focusToggle").addEventListener("click",()=>{if(!selected)return;focusMode=!focusMode;pan={x:0,y:0};zoom=1;draw()});
-
-const svg=$("graph");let drag=null,suppressClick=false,pinchStart=1;
-svg.addEventListener("pointerdown",e=>{suppressClick=false;if(zoom<=1||(e.pointerType==="mouse"&&e.button!==0)||drag)return;drag={id:e.pointerId,x:e.clientX,y:e.clientY,px:pan.x,py:pan.y,moved:false}});
-svg.addEventListener("pointermove",e=>{if(!drag||e.pointerId!==drag.id)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
- if(!drag.moved){if(Math.hypot(dx,dy)<6)return;drag.moved=true;try{svg.setPointerCapture(e.pointerId)}catch(_){}}
- const k=(geo.W/zoom)/(svg.clientWidth||geo.W);pan.x=drag.px-dx*k;pan.y=drag.py-dy*k;applyView()});
-const endDrag=e=>{if(drag&&e.pointerId===drag.id){suppressClick=drag.moved;drag=null}};
-svg.addEventListener("pointerup",endDrag);svg.addEventListener("pointercancel",endDrag);
-/* Pincement natif Safari iOS / trackpad macOS */
-svg.addEventListener("gesturestart",e=>{e.preventDefault();drag=null;pinchStart=zoom},{passive:false});
-svg.addEventListener("gesturechange",e=>{e.preventDefault();setZoom(pinchStart*e.scale)},{passive:false});
-svg.addEventListener("gestureend",e=>e.preventDefault(),{passive:false});
-/* Pincement trackpad Chrome/Edge */
-svg.addEventListener("wheel",e=>{if(!e.ctrlKey)return;e.preventDefault();setZoom(zoom*(1-e.deltaY*.01))},{passive:false});
-svg.addEventListener("click",e=>{if(suppressClick){suppressClick=false;return}const g=e.target.closest&&e.target.closest("[data-node]");if(g)select(g.getAttribute("data-node"),true);else stepBack()});
-svg.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const g=e.target.closest&&e.target.closest("[data-node]");if(g){e.preventDefault();select(g.getAttribute("data-node"),true)}});
-const onResize=()=>{const w=Math.round($("graphbox").clientWidth);if(w>0&&w!==lastW)draw()};
-if("ResizeObserver" in window)new ResizeObserver(()=>requestAnimationFrame(onResize)).observe($("graphbox"));else addEventListener("resize",onResize);
-
-/* ---------- Fiche ---------- */
-function clearDetail(){focusMode=false;$("closeDetail").hidden=true;$("detail").className="empty";$("detail").textContent=EMPTY_DETAIL;$("detailActions").hidden=true;$("selectedType").textContent="Aucune sélection"}
-function select(id,reveal){
- selected=id;const x=item(id);if(!x)return;
- $("selectedType").textContent=x.type;
- const rs=db.links.filter(r=>r.source===id||r.target===id);
- $("detail").className="";
- $("detail").innerHTML=detailHTML(x,rs);
- $("detail").querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.goto,false)));
- $("detailActions").hidden=false;$("closeDetail").hidden=false;draw();
- if(reveal&&!focusMode&&mqNarrow.matches)$("detailPanel").scrollIntoView({behavior:behavior(),block:"start"});
-}
-$("backGraph").addEventListener("click",()=>window.scrollTo({top:0,behavior:behavior()}));
+/* ---------- Fiche : panneau ouvert par « Voir » ---------- */
+function openFiche(id){const x=item(id);if(!x)return;selected=id;
+ $("selectedType").textContent=typeLabel(x);
+ $("detail").innerHTML=detailHTML(x,db.links.filter(r=>r.source===id||r.target===id));
+ $("detail").querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>openFiche(b.dataset.goto)));
+ $("ficheModal").hidden=false;$("detail").scrollTop=0}
+function closeFiche(){$("ficheModal").hidden=true;selected=null}
+$("closeFiche").addEventListener("click",closeFiche);
+$("ficheModal").addEventListener("click",e=>{if(e.target===$("ficheModal"))closeFiche()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("modal").hidden&&!$("ficheModal").hidden)closeFiche()});
 
 /* ---------- Constructeur ---------- */
 function resetForm(){editing=null;draft={};pendingIllustrate=null;returnToLearn=false;$("editorForm").reset();renderTemplate($("type").value,draft);$("status").value="À examiner";$("life").value="Actif";renderFoundations([]);$("editorTitle").textContent="Créer un élément";$("editMode").textContent="Nouveau";$("saveItem").textContent="Créer l'élément";$("deleteItem").hidden=true}
@@ -597,14 +425,13 @@ $("editorForm").addEventListener("submit",async e=>{e.preventDefault();const nm=
   if(bad.length){if(!await ask(`Ce changement rend ${bad.length} relation(s) incompatible(s) avec le modèle :\n${bad.map(r=>"• "+get(r.source).name+" — "+r.type+" → "+get(r.target).name+" : "+relCheck(r,get)).join("\n")}\n\nLes supprimer et enregistrer ?`,"Supprimer et enregistrer",true))return;const del=new Set(bad.map(r=>r.id));db.links=db.links.filter(r=>!del.has(r.id))}}
  const pend=!editing&&type==="Exemple"&&pendingIllustrate&&item(pendingIllustrate)?pendingIllustrate:null,back=!!pend&&returnToLearn;
  if(editing){const i=db.items.findIndex(y=>y.id===editing);if(i>=0)db.items[i]=x;say("Élément modifié.")}else{db.items.push(x);if(pend)db.links.push({id:uid(),source:x.id,target:pend,type:"Illustre",note:""});say(pend?`Exemple créé : il illustre « ${itemName(pend)} ».`:"Élément créé.")}
- selected=x.id;persist();resetForm();refreshSelects();if(back)setView("learn");else{setView("explore");select(x.id)}renderLibrary()});
+ persist();resetForm();refreshSelects();setView("learn");if(!back)openFiche(x.id)});
 $("clearForm").addEventListener("click",resetForm);
 /* iOS : la touche « suivant » envoie Entrée, ce qui soumettait le formulaire. Entrée passe au champ suivant ; on enregistre avec le bouton. */
 $("editorForm").addEventListener("keydown",e=>{if(e.key!=="Enter"||e.isComposing||e.target.tagName!=="INPUT")return;e.preventDefault();const f=[...$("editorForm").querySelectorAll("input,select,textarea")].filter(el=>!el.disabled&&!el.closest("[hidden]")&&el.offsetParent!==null),i=f.indexOf(e.target);if(i>=0&&i<f.length-1)f[i+1].focus();else e.target.blur()});
-$("deleteItem").addEventListener("click",async()=>{if(!editing)return;const id=editing;if(!await ask("Supprimer cet élément et ses relations ?","Supprimer",true))return;db.items=db.items.filter(x=>x.id!==id);db.links=db.links.filter(r=>r.source!==id&&r.target!==id);selected=null;persist();resetForm();refreshSelects();clearDetail();setView("explore");say("Élément supprimé.")});
-$("addGraph").addEventListener("click",()=>{resetForm();setView("edit")});
-$("editSelected").addEventListener("click",()=>editItem(selected));
-$("linkSelected").addEventListener("click",()=>{setView("links");if(selected)$("source").value=selected;refreshRelationTypes()});
+$("deleteItem").addEventListener("click",async()=>{if(!editing)return;const id=editing;if(!await ask("Supprimer cet élément et ses relations ?","Supprimer",true))return;db.items=db.items.filter(x=>x.id!==id);db.links=db.links.filter(r=>r.source!==id&&r.target!==id);closeFiche();persist();resetForm();refreshSelects();setView("learn");say("Élément supprimé.")});
+$("editSelected").addEventListener("click",()=>{const id=selected;closeFiche();editItem(id)});
+$("linkSelected").addEventListener("click",()=>{const id=selected;closeFiche();setView("links");if(id)$("source").value=id;refreshRelationTypes()});
 
 /* ---------- Relations ---------- */
 function refreshSelects(){const opts=db.items.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.type)}</option>`).join("");const oldS=$("source").value,oldT=$("target").value;$("source").innerHTML=opts||'<option value="">Aucun élément</option>';$("target").innerHTML=opts||'<option value="">Aucun élément</option>';if(item(oldS))$("source").value=oldS;else if(selected&&item(selected))$("source").value=selected;if(item(oldT))$("target").value=oldT;refreshRelationTypes()}
@@ -617,14 +444,9 @@ function refreshTargets(){const s=item($("source").value),rel=$("relationType").
  const nk=db.items.filter(x=>x.type==="Règle"&&!kindOf(x)&&x.life!=="Archivé").length;
  $("relHelp").textContent=(REL_HELP[rel]||"")+((rel==="Applique"||rel==="S’appuie sur")&&nk?` ${nk} règle(s) sans nature précisée (descriptive ou d’action) ne sont pas proposées.`:"")+(rel===DEFREL&&isPrim(s)?` « ${s.name} » est un terme primitif : il n’est pas défini à partir d’autres concepts.`:"")}
 $("source").addEventListener("change",refreshRelationTypes);$("relationType").addEventListener("change",refreshTargets);
-$("addRelation").addEventListener("click",()=>{const s=item($("source").value),t=item($("target").value),type=$("relationType").value;if(!s||!t||!type){say("Choisis une source, une relation et une cible compatibles.");return}if(db.links.some(r=>r.source===s.id&&r.target===t.id&&r.type===type)||(type==="Se contredit avec"&&db.links.some(r=>r.source===t.id&&r.target===s.id&&r.type===type))){say("Cette relation existe déjà.");return}if(!validTargets(s,type).some(x=>x.id===t.id)){say("Cette relation n’est pas compatible avec les types choisis.");return}if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();db.links.push({id:uid(),source:s.id,target:t.id,type,note:$("relationNote").value.trim()});$("relationNote").value="";persist();renderLinks();draw();if(selected)select(selected);say("Relation ajoutée ; le graphe est actualisé.")});
+$("addRelation").addEventListener("click",()=>{const s=item($("source").value),t=item($("target").value),type=$("relationType").value;if(!s||!t||!type){say("Choisis une source, une relation et une cible compatibles.");return}if(db.links.some(r=>r.source===s.id&&r.target===t.id&&r.type===type)||(type==="Se contredit avec"&&db.links.some(r=>r.source===t.id&&r.target===s.id&&r.type===type))){say("Cette relation existe déjà.");return}if(!validTargets(s,type).some(x=>x.id===t.id)){say("Cette relation n’est pas compatible avec les types choisis.");return}if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();db.links.push({id:uid(),source:s.id,target:t.id,type,note:$("relationNote").value.trim()});$("relationNote").value="";persist();renderLinks();say("Relation ajoutée.")});
 $("relationNote").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.target.blur()}});
-function renderLinks(){refreshSelects();$("relationsList").innerHTML=db.links.length?db.links.map(r=>`<div class="itemrow"><span class="name">${esc(itemName(r.source))} <b>— ${esc(r.type)} →</b> ${esc(itemName(r.target))}${r.note?' <span class="muted">('+esc(r.note)+')</span>':""}${relCheck(r)?' <span class="warn">⚠ '+esc(relCheck(r))+'</span>':""}</span><button data-remove-link="${esc(r.id)}" aria-label="Supprimer la relation">×</button></div>`).join(""):'<div class="empty">Aucune relation enregistrée.</div>';$("relationsList").querySelectorAll("[data-remove-link]").forEach(b=>b.addEventListener("click",()=>{db.links=db.links.filter(r=>r.id!==b.dataset.removeLink);persist();renderLinks();draw();if(selected)select(selected);say("Relation supprimée.")}))}
-
-/* ---------- Bibliothèque ---------- */
-function renderLibrary(){$("restoreBackup").hidden=!hasBackup();const q=$("search").value.toLowerCase(),f=$("filter").value;const rows=db.items.filter(x=>(f==="Tous"||x.type===f)&&(`${x.name} ${x.formulation||""} ${Object.values(x.fields||{}).join(" ")} ${(x.foundations||[]).map(f=>f.text).join(" ")}`).toLowerCase().includes(q));$("libraryCount").textContent=db.items.length+" éléments";$("libraryList").innerHTML=rows.length?rows.map(x=>`<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${esc(typeLabel(x))} · ${esc(x.status)}${x.life==="Archivé"?" · archivé":""} · ${conformity(x).length?conformity(x).length+" écart(s) au modèle":"conforme"} ${badge(x)}</div></span><button data-open="${esc(x.id)}">Voir</button><button data-edit="${esc(x.id)}">Modifier</button></div>`).join(""):'<div class="empty">Aucun résultat.</div>';$("libraryList").querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>{setView("explore");select(b.dataset.open,true)}));$("libraryList").querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)))}
-$("search").addEventListener("input",renderLibrary);$("filter").addEventListener("change",renderLibrary);
-$("search").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.target.blur()}});
+function renderLinks(){refreshSelects();$("relationsList").innerHTML=db.links.length?db.links.map(r=>`<div class="itemrow"><span class="name">${esc(itemName(r.source))} <b>— ${esc(r.type)} →</b> ${esc(itemName(r.target))}${r.note?' <span class="muted">('+esc(r.note)+')</span>':""}${relCheck(r)?' <span class="warn">⚠ '+esc(relCheck(r))+'</span>':""}</span><button data-remove-link="${esc(r.id)}" aria-label="Supprimer la relation">×</button></div>`).join(""):'<div class="empty">Aucune relation enregistrée.</div>';$("relationsList").querySelectorAll("[data-remove-link]").forEach(b=>b.addEventListener("click",()=>{db.links=db.links.filter(r=>r.id!==b.dataset.removeLink);persist();renderLinks();say("Relation supprimée.")}))}
 
 /* ---------- Export : feuille de partage iOS (→ Enregistrer dans Fichiers), sinon téléchargement ---------- */
 function download(json,name){const url=URL.createObjectURL(new Blob([json],{type:"application/json"})),a=document.createElement("a");a.href=url;a.download=name;a.rel="noopener";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);say("Export JSON généré.")}
@@ -639,7 +461,7 @@ $("exportData").addEventListener("click",async()=>{
 /* ---------- Import : <label> natif (fiable sur iOS), pas de filtre accept (évite les .json grisés dans Fichiers) ---------- */
 const readText=f=>typeof f.text==="function"?f.text():new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsText(f)});
 $("importData").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("fileInput").click()}});
-$("fileInput").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;try{const p=normalize(JSON.parse(await readText(f)));if(!p)throw Error("format");const g=id=>p.items.find(x=>x.id===id),nb=p.links.filter(r=>relCheck(r,g,p.links)).length;if(!await ask(`Remplacer les données actuelles par ce fichier (${p.items.length} éléments, ${p.links.length} relations) ?${nb?`\n\n${nb} relation(s) ne respectent pas le modèle : elles seront conservées et signalées dans le contrôle.`:""}`,"Remplacer",true))return;db=p;selected=null;persist();draw();renderLibrary();renderLinks();clearDetail();say(nb?`Import terminé : ${nb} relation(s) à vérifier.`:"Import terminé.")}catch(err){say("Fichier JSON invalide ou incompatible.")}finally{$("fileInput").value=""}});
+$("fileInput").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;try{const p=normalize(JSON.parse(await readText(f)));if(!p)throw Error("format");const g=id=>p.items.find(x=>x.id===id),nb=p.links.filter(r=>relCheck(r,g,p.links)).length;if(!await ask(`Remplacer les données actuelles par ce fichier (${p.items.length} éléments, ${p.links.length} relations) ?${nb?`\n\n${nb} relation(s) ne respectent pas le modèle : elles seront conservées et signalées dans le contrôle.`:""}`,"Remplacer",true))return;db=p;closeFiche();persist();renderLinks();renderLearn();say(nb?`Import terminé : ${nb} relation(s) à vérifier.`:"Import terminé.")}catch(err){say("Fichier JSON invalide ou incompatible.")}finally{$("fileInput").value=""}});
 
 /* ---------- Clavier iOS : masque la barre d'onglets pendant la saisie ---------- */
 const isText=el=>el&&el.matches&&el.matches("input:not([type=file]),textarea");
@@ -846,10 +668,10 @@ function row(x,extra){return `<div class="itemrow"><i class="dot" style="backgro
 function qrow(x,is,word){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${is.length} ${word}${is.length>1?"s":""} : ${esc(is[0])}</div></span><button data-edit="${esc(x.id)}">Compléter</button><button data-open="${esc(x.id)}">Voir</button></div>`}
 function nrow(x,is){const nodef=x.type==="Concept"&&!isPrim(x)&&!defsOf(x).length,few=exOf(x).length<MIN_EX;
  return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${is.length} manque${is.length>1?"s":""} : ${esc(is[0])}</div></span>${nodef?`<button data-deflink="${esc(x.id)}">Relier</button>`:few?`<button data-addex="${esc(x.id)}">Ajouter un exemple</button>`:`<button data-edit="${esc(x.id)}">Compléter</button>`}<button data-open="${esc(x.id)}">Voir</button></div>`}
-function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventListener("click",()=>review(b.dataset.review)));el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>{setView("explore");select(b.dataset.open,true)}));el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)));
+function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventListener("click",()=>review(b.dataset.review)));el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openFiche(b.dataset.open)));el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)));
  el.querySelectorAll("[data-addex]").forEach(b=>b.addEventListener("click",()=>addExample(b.dataset.addex)));
  el.querySelectorAll("[data-deflink]").forEach(b=>b.addEventListener("click",()=>{setView("links");$("source").value=b.dataset.deflink;refreshRelationTypes();$("relationType").value=DEFREL;refreshTargets()}))}
-function renderLearn(){const act=active(),n=act.length,ok=act.filter(x=>(x.level||0)===2).length,dd=new Map();
+function renderLearn(){$("restoreBackup").hidden=!hasBackup();const act=active(),n=act.length,ok=act.filter(x=>(x.level||0)===2).length,dd=new Map();
  $("learnProgress").textContent=`${ok} / ${n} acquis`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";renderQuiz();
  $("pathList").innerHTML=(()=>{const L=db.links.filter(r=>r.type===PREREQ&&relCheck(r));return L.length?`<ul class="issues">${L.map(r=>`<li>Boucle de prérequis : « ${esc(itemName(r.source))} » → « ${esc(itemName(r.target))} ». Supprime l’un des liens de la boucle (onglet Relations) pour que le parcours puisse être ordonné.</li>`).join("")}</ul>`:""})()+PATH.map(([title,types])=>{const xs=act.filter(x=>types.includes(x.type)).sort((a,b)=>defDepth(a,dd)-defDepth(b,dd)||depth(a)-depth(b)||a.name.localeCompare(b.name,"fr"));
   return `<div class="pathgroup">${esc(title)}</div>`+(xs.length?xs.map(x=>{const p=prereqs(x),d=defsOf(x);return row(x,esc(typeLabel(x))+(d.length?" · à partir de "+d.map(y=>esc(y.name)).join(", "):"")+(p.length?" · après "+p.map(y=>esc(y.name)).join(", "):""))}).join(""):'<p class="muted">Aucun élément.</p>')}).join("");wire($("pathList"));
@@ -857,14 +679,14 @@ function renderLearn(){const act=active(),n=act.length,ok=act.filter(x=>(x.level
  $("qualityList").innerHTML=`<div class="pathgroup">Conformité au modèle</div><p class="muted">${n-bad.length} élément(s) conforme(s) sur ${n}.</p>`+(bad.length?bad.map(([x,is])=>qrow(x,is,"écart")).join(""):'<p class="ok">Tous les éléments respectent le modèle.</p>')+
   `<div class="pathgroup">Exigences d’apprentissage</div><p class="muted">Chaque concept, propriété, règle et procédure est présenté avec ses termes primitifs et ses définitions nécessaires, et illustré par au moins ${MIN_EX} exemples.</p>`+(needs.length?needs.map(([x,is])=>nrow(x,is)).join(""):'<p class="ok">Toutes les exigences d’apprentissage sont remplies.</p>')+
   `<div class="pathgroup">Pistes d’enrichissement (facultatif)</div>`+(tips.length?tips.map(([x,is])=>qrow(x,is,"piste")).join(""):'<p class="muted">Aucune piste.</p>');wire($("qualityList"))}
-function review(id){$("quizFilter").value="Tous";quizId=id;revealed=false;hinted=false;setView("learn")}
+function review(id){$("quizFilter").value="Tous";quizId=id;revealed=false;hinted=false;if($("learn").hidden)setView("learn");else renderLearn();if(mqNarrow.matches)$("quizPanel").scrollIntoView({behavior:behavior(),block:"start"});else $("quizPanel").scrollTop=0}
 $("quizFilter").addEventListener("change",()=>{nextCard();renderQuiz()});
-$("reviewSelected").addEventListener("click",()=>{if(selected)review(selected)});
+$("reviewSelected").addEventListener("click",()=>{const id=selected;closeFiche();if(id)review(id)});
 $("restoreBackup").addEventListener("click",async()=>{let p=null;try{p=normalize(JSON.parse(localStorage.getItem(BACKUP)))}catch(_){}
  if(!p){say("La copie de sécurité est illisible.");return}
  if(!await ask(`Restaurer les données d’avant la mise à jour (${p.items.length} éléments, ${p.links.length} relations) ? Elles remplaceront les données actuelles.`,"Restaurer",true))return;
- db=p;selected=null;persist();try{localStorage.removeItem(BACKUP)}catch(_){}refreshSelects();clearDetail();draw();renderLibrary();say("Données restaurées.")});
-$("loadDemo").addEventListener("click",async()=>{if(!await ask("Remplacer les données actuelles par l’exemple guidé (pseudo-code) ? Exporte d’abord tes données si tu veux les conserver.","Remplacer",true))return;db=demoData();selected=null;persist();refreshSelects();clearDetail();draw();renderLibrary();say("Exemple guidé chargé.")});
+ db=p;selected=null;persist();try{localStorage.removeItem(BACKUP)}catch(_){}refreshSelects();closeFiche();renderLearn();say("Données restaurées.")});
+$("loadDemo").addEventListener("click",async()=>{if(!await ask("Remplacer les données actuelles par l’exemple guidé (pseudo-code) ? Exporte d’abord tes données si tu veux les conserver.","Remplacer",true))return;db=demoData();closeFiche();persist();refreshSelects();renderLearn();say("Exemple guidé chargé.")});
 
 /* ---------- Rappel du modèle (généré à partir des mêmes définitions que l'application) ---------- */
 function relTable(){const rows=[];Object.entries(RULES).forEach(([src,l])=>l.forEach(r=>rows.push([src,r[0],r[4]||r[1].join(", ")])));rows.push(["Propriété ou Règle",CONTRA,"Propriété ou Règle"]);
@@ -878,41 +700,8 @@ $("modelMemo").innerHTML=Object.entries(MODEL).map(([t,m])=>`<p><b>${esc(t)}</b>
  `<p><b>Statut et cycle de vie</b><br>Statut épistémique : ${STATUSES.join(", ")}. Cycle de vie : actif ou archivé ; un élément archivé reste consultable mais sort du parcours et du contrôle.</p>`+
  `<p><b>Fondements</b><br>${FOUND_TYPES.slice(1).join(", ")}. Un élément peut en avoir plusieurs.</p>`;
 
-/* ---------- Vue par rôles : anneaux concentriques (grand écran) ou bandes (petit écran) ---------- */
-let viewMode=(()=>{try{return localStorage.getItem(STORE+"-vue")==="reseau"?"reseau":"roles"}catch(_){return "roles"}})();
-$("viewToggle").addEventListener("click",()=>{viewMode=viewMode==="roles"?"reseau":"roles";try{localStorage.setItem(STORE+"-vue",viewMode)}catch(_){}pan={x:0,y:0};zoom=1;draw()});
-const ROLE_GROUPS=[["Concepts",["Concept"]],["Propriétés et règles",["Propriété","Règle"]],["Procédures",["Procédure"]],["Exemples et contre-exemples",["Exemple","Contre-exemple"]]];
-/* Ordonne un groupe selon la position moyenne de ses voisins déjà placés (réduit les croisements) */
-function roleOrder(xs,ref,mean){const want=new Map();xs.forEach(x=>{const v=[...neighborsOf(x.id)].map(id=>ref.get(id)).filter(v=>v!=null);if(v.length)want.set(x.id,mean(v))});
- const a=xs.filter(x=>want.has(x.id)).sort((p,q)=>want.get(p.id)-want.get(q.id)),b=xs.filter(x=>!want.has(x.id)).sort((p,q)=>p.name.localeCompare(q.name,"fr"));return {list:[...a,...b],want}}
-function computeRoles(BW){
- const groups=ROLE_GROUPS.map(([label,types])=>({label,xs:db.items.filter(x=>types.includes(x.type))})).filter(g=>g.xs.length),pos={},ref=new Map();
- if(BW<520){const cw=92,rh=76,mx=8,bands=[];let y=0;
-  groups.forEach((g,k)=>{const {list}=roleOrder(g.xs,ref,v=>v.reduce((s,a)=>s+a,0)/v.length),cols=Math.max(1,Math.floor((BW-2*mx)/cw)),first=y+62;
-   bands.push({y,label:`${g.label} (${g.xs.length})`,sep:k>0});
-   list.forEach((x,i)=>{const r=Math.floor(i/cols),inRow=Math.min(cols,list.length-r*cols),x0=(BW-inRow*cw)/2+cw/2;pos[x.id]={x:+(x0+(i%cols)*cw).toFixed(1),y:+(first+r*rh).toFixed(1)};ref.set(x.id,pos[x.id].x)});
-   y=first+(Math.ceil(list.length/cols)-1)*rh+44});
-  return {S:1,W:BW,H:Math.max(y,120),pos,bands}}
- const gap=112,step=94,mx=66,top=40,bot=52,radii=[];let r=0;
- groups.forEach((g,k)=>{const n=g.xs.length,need=n>1?gap/(2*Math.sin(Math.PI/n)):0;r=k===0?(n>1?Math.max(need,48):0):Math.max(r+step,need);radii.push(r)});
- const Rm=radii.length?radii[radii.length-1]:0,W=Math.max(BW,2*(Rm+mx)),H0=2*Rm+top+bot,H=Math.max(H0,240),cx=W/2,cy=top+Rm+(H-H0)/2,rings=[];
- const cmean=v=>Math.atan2(v.reduce((s,a)=>s+Math.sin(a),0),v.reduce((s,a)=>s+Math.cos(a),0));
- groups.forEach((g,k)=>{const rr=radii[k],{list,want}=roleOrder(g.xs,ref,cmean),n=list.length;
-  if(rr===0){pos[list[0].id]={x:+cx.toFixed(1),y:+cy.toFixed(1)};return}
-  rings.push({cx:+cx.toFixed(1),cy:+cy.toFixed(1),r:rr,label:g.label});
-  const slot=2*Math.PI/n,d=list.map((x,i)=>want.has(x.id)?want.get(x.id)-i*slot:null).filter(v=>v!=null),off=d.length?cmean(d):-Math.PI/2+(k%2?slot/2:0);
-  list.forEach((x,i)=>{const a=off+i*slot;pos[x.id]={x:+(cx+Math.cos(a)*rr).toFixed(1),y:+(cy+Math.sin(a)*rr).toFixed(1)};ref.set(x.id,a)})});
- /* Libellé de chaque anneau : point du cercle le plus éloigné des nœuds et de leurs noms (légère préférence pour le haut) */
- const P=Object.values(pos),segD=(p,x0,x1,y)=>{const qx=Math.max(x0,Math.min(x1,p.x));return Math.min(Math.hypot(p.x-qx,p.y-y),Math.hypot(p.x-qx,p.y+NODE_R+10-y))};
- rings.forEach(g=>{const hw=g.label.length*3.2+6;let best=null,bs=-1e9;
-  for(let s=0;s<72;s++){const a=-Math.PI+s*Math.PI/36,x=g.cx+Math.cos(a)*g.r,y=g.cy+Math.sin(a)*g.r+4;
-   if(x-hw<4||x+hw>W-4||y<12||y>H-6)continue;
-   const sc=Math.min(...P.map(p=>segD(p,x-hw,x+hw,y)))-(Math.sin(a)>0.2?8:0);if(sc>bs){bs=sc;best={x,y}}}
-  if(best){g.lx=+best.x.toFixed(1);g.ly=+best.y.toFixed(1)}else g.label=""});
- return {S:W/BW,W,H,pos,rings}}
-
 load();db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}}); /* formulations à jour après migration */
-resetForm();draw();renderLibrary();refreshSelects();
+resetForm();refreshSelects();setView("learn");
 if(upgraded){persist();say("Exemple guidé mis à jour : termes primitifs, définitions nécessaires et au moins 3 exemples par élément. Ta progression est conservée.")}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(_){}
 })();
