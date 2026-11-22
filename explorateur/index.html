@@ -99,7 +99,7 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.2</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.3</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="explore" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="18" cy="19" r="2"/><circle cx="5" cy="18" r="2"/><path d="M6.5 6.5l3.3 3.3M17.3 7.2l-3.2 3.1M16.6 17.6l-2.5-3.5M6.6 16.6l3.2-2.8"/></svg>Graphe</button>
@@ -306,6 +306,16 @@ const DEMO=[
  D("pc-ex-affectation","Exemple","x ← 5 puis x ← 8","Établi",{case:"Après x ← 5 puis x ← 8, x vaut 8",shown:"la seconde affectation efface la valeur 5"}),
  D("pc-ex-indices","Exemple","T = [7, 2, 9]","Établi",{case:"Le tableau T = [7, 2, 9] a pour indices 0, 1 et 2",shown:"N = 3 et le dernier indice vaut 2, soit N − 1"}),
  D("pc-ex-somme","Exemple","Somme de [3, 4, 5]","Établi",{case:"La procédure appliquée à T = [3, 4, 5] renvoie 12",shown:"la somme passe par 0, 3, 7 puis 12 : chaque passage ajoute un élément"}),
+ D("pc-ex-age","Exemple","age ← age + 1","Établi",{case:"Après age ← 17 puis age ← age + 1, age vaut 18",shown:"age + 1 est évaluée avec l’ancienne valeur (17), puis le résultat 18 la remplace"}),
+ D("pc-ex-echange","Exemple","Échange avec tmp","Établi",{case:"Avec a = 3 et b = 5, tmp ← a ; a ← b ; b ← tmp donne a = 5 et b = 3",shown:"sans tmp, a ← b effacerait la valeur 3 : une variable ne garde qu’une seule valeur"}),
+ D("pc-ex-copie","Exemple","Copie y ← x","Établi",{case:"Après x ← 5 ; y ← x ; x ← 9, y vaut toujours 5",shown:"y a reçu une copie de la valeur 5 ; x ne contient plus que 9"}),
+ D("pc-ex-compteur","Exemple","Compteur à 0","Établi",{case:"compteur ← 0 avant la boucle, puis compteur ← compteur + 1 à chaque passage",shown:"compteur reçoit une valeur avant sa première lecture dans compteur + 1"}),
+ D("pc-ex-lire","Exemple","lire(n)","Établi",{case:"lire(n) puis afficher(n × 2) affiche le double du nombre saisi",shown:"lire(n) affecte une valeur à n avant que n × 2 la lise"}),
+ D("pc-ex-max","Exemple","Maximum de T","Établi",{case:"Pour le maximum d’un tableau T non vide : max ← T[0] avant la boucle, puis max ← T[i] si T[i] > max",shown:"max reçoit une valeur avant d’être comparée, et T[i] donne un accès direct à chaque élément"}),
+ D("pc-ex-notes","Exemple","notes[1] = 15","Établi",{case:"Dans notes = [12, 15, 9, 18], notes[1] vaut 15",shown:"on accède directement à un élément par son indice, et le premier indice est 0"}),
+ D("pc-ex-dernier","Exemple","Dernier : T[N−1]","Établi",{case:"Pour T = [4, 8, 15, 16, 23], N = 5 et le dernier élément est T[4] = 23",shown:"le dernier indice vaut N − 1 = 4"}),
+ D("pc-ex-somme-vide","Exemple","Somme de [ ]","Établi",{case:"Appliquée à un tableau vide (N = 0), la procédure renvoie 0",shown:"la boucle de 0 à −1 ne s’exécute pas : somme garde sa valeur initiale 0"}),
+ D("pc-ex-somme-neg","Exemple","Somme [−2, 5, −3]","Établi",{case:"Appliquée à T = [−2, 5, −3], la procédure renvoie 0",shown:"chaque passage ajoute T[i], même négatif : la somme passe par 0, −2, 3 puis 0"}),
  D("pc-cx-lua","Contre-exemple","Indexation dès 1","Établi",{case:"En Lua, un tableau de 3 éléments a pour indices 1, 2 et 3",condition:"la convention d’indexation commence à 1",verdict:"Hors du domaine prévu (2a) : pas de contradiction dans le domaine"}),
  D("pc-cx-parametre","Contre-exemple","Paramètre lu","Établi",{case:"Dans « Fonction carré(n) : renvoyer n × n », n est lue sans affectation dans la fonction",condition:"la variable est un paramètre d’entrée",verdict:"Traité : énoncé révisé"})
 ];
@@ -317,7 +327,16 @@ const DEMO_LINKS=[
  DL("pc-somme","pc-avant-lecture","Applique"),DL("pc-somme","pc-remplacement","S’appuie sur"),DL("pc-somme","pc-tableau","S’appuie sur"),DL("pc-somme","pc-indices","S’appuie sur"),
  DL("pc-ex-affectation","pc-remplacement","Illustre"),DL("pc-ex-affectation","pc-unique","Illustre"),DL("pc-ex-affectation","pc-affectation","Illustre"),
  DL("pc-ex-indices","pc-indices","Illustre"),DL("pc-ex-indices","pc-tableau","Illustre"),DL("pc-ex-somme","pc-somme","Illustre"),
- DL("pc-cx-lua","pc-indices","Met à l’épreuve"),DL("pc-cx-parametre","pc-avant-lecture","Met à l’épreuve")
+ DL("pc-cx-lua","pc-indices","Met à l’épreuve"),DL("pc-cx-parametre","pc-avant-lecture","Met à l’épreuve"),
+ DL("pc-ex-age","pc-affectation","Illustre"),DL("pc-ex-age","pc-remplacement","Illustre"),DL("pc-ex-age","pc-variable","Illustre"),
+ DL("pc-ex-echange","pc-unique","Illustre"),DL("pc-ex-echange","pc-remplacement","Illustre"),DL("pc-ex-echange","pc-affectation","Illustre"),
+ DL("pc-ex-copie","pc-unique","Illustre"),DL("pc-ex-copie","pc-remplacement","Illustre"),DL("pc-ex-copie","pc-affectation","Illustre"),
+ DL("pc-ex-compteur","pc-avant-lecture","Illustre"),DL("pc-ex-compteur","pc-variable","Illustre"),
+ DL("pc-ex-lire","pc-avant-lecture","Illustre"),DL("pc-ex-lire","pc-variable","Illustre"),
+ DL("pc-ex-max","pc-avant-lecture","Illustre"),DL("pc-ex-max","pc-tableau","Illustre"),
+ DL("pc-ex-notes","pc-tableau","Illustre"),DL("pc-ex-notes","pc-indices","Illustre"),
+ DL("pc-ex-dernier","pc-indices","Illustre"),DL("pc-ex-dernier","pc-tableau","Illustre"),
+ DL("pc-ex-somme-vide","pc-somme","Illustre"),DL("pc-ex-somme-neg","pc-somme","Illustre")
 ];
 const STORE="knowledge-explorer-v7-html";
 const ZMIN=.7,ZMAX=3,ROOT_R=40,NODE_R=22;
@@ -373,6 +392,19 @@ function persist(){db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.
 const BACKUP=STORE+"-avant-migration";
 /* Vrai seulement si les données sont l’ancienne démonstration jamais modifiée (noms, formulations, statut, fondement, liens de démo). Dans le doute : on garde les données. */
 function untouchedOldDemo(p){return p.items.length===6&&p.items.every(x=>{const o=OLD_DEMO[x.id];return o&&x.name===o[0]&&x.formulation===o[1]&&x.status==="Établi"&&x.life!=="Archivé"&&!Object.keys(x.fields||{}).length&&(x.foundations||[]).every(f=>f.text===OLD_FOUND)})&&p.links.every(r=>/^demo-l\d+$/.test(r.id))}
+const DEMO_REV=2,DEMO_REV_KEY=STORE+"-exemple-guide";
+const NEW_EX=new Set(["pc-ex-age","pc-ex-echange","pc-ex-copie","pc-ex-compteur","pc-ex-lire","pc-ex-max","pc-ex-notes","pc-ex-dernier","pc-ex-somme-vide","pc-ex-somme-neg"]);
+function upgradeDemo(){let rev=0;try{rev=+localStorage.getItem(DEMO_REV_KEY)||0}catch(_){}
+ if(rev>=DEMO_REV)return;
+ const has=id=>db.items.some(x=>x.id===id),done=()=>{try{localStorage.setItem(DEMO_REV_KEY,String(DEMO_REV))}catch(_){}};
+ if(!["pc-variable","pc-affectation","pc-tableau"].some(has)){done();return}
+ let added=0,filled=0;
+ DEMO.forEach(d=>{if(NEW_EX.has(d.id)&&!has(d.id)){db.items.push({...d,fields:{...d.fields},foundations:d.foundations.map(f=>({...f})),level:0,seen:0});added++}
+  const x=item(d.id),xf=x&&(x.fields||{});
+  if(x&&d.fields.primitives&&!xf.primitives&&xf.definition===d.fields.definition){x.fields={...xf,primitives:d.fields.primitives};filled++}});
+ DEMO_LINKS.forEach(l=>{if(NEW_EX.has(l.source)&&has(l.source)&&has(l.target)&&!db.links.some(r=>r.id===l.id||(r.source===l.source&&r.target===l.target&&r.type===l.type)))db.links.push({...l})});
+ done();
+ if(added||filled){persist();setTimeout(()=>say(`Exemple guidé complété : termes primitifs pour ${filled} concept(s), ${added} exemple(s) ajouté(s).`),400)}}
 const hasBackup=()=>{try{return !!localStorage.getItem(BACKUP)}catch(_){return false}};
 function load(){let raw=null;try{raw=localStorage.getItem(STORE)}catch(e){}
  if(raw){let p=null;try{p=normalize(JSON.parse(raw))}catch(e){}
@@ -804,7 +836,7 @@ function computeRoles(BW){
   if(best){g.lx=+best.x.toFixed(1);g.ly=+best.y.toFixed(1)}else g.label=""});
  return {S:W/BW,W,H,pos,rings}}
 
-load();db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}}); /* formulations à jour après migration */
+load();upgradeDemo();db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}}); /* formulations à jour après migration */
 resetForm();draw();renderLibrary();refreshSelects();
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(_){}
 })();
