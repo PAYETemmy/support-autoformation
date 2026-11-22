@@ -99,7 +99,7 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.4</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Cartographier, relier et examiner les connaissances · Support d’autoformation · Version 9.5</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="explore" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="18" cy="19" r="2"/><circle cx="5" cy="18" r="2"/><path d="M6.5 6.5l3.3 3.3M17.3 7.2l-3.2 3.1M16.6 17.6l-2.5-3.5M6.6 16.6l3.2-2.8"/></svg>Graphe</button>
@@ -751,8 +751,8 @@ const prereqs=x=>outRel(x,PREREQ).map(r=>item(r.target)).filter(Boolean);
 const excText=f=>f.exceptionMode==="Exception réelle"?f.exception:f.exceptionMode;
 function questionBase(x){const f=x.fields||{};
  switch(x.type){
-  case "Concept":if(f.definition)return {q:`Que désigne le concept « ${x.name} » ? Sur quels termes primitifs sa définition s’appuie-t-elle ? Quelles sont ses caractéristiques ?`,a:[["Définition",f.definition],["Termes primitifs",primList(x).join(", ")||"Non précisés : à compléter dans le Constructeur."],["Caractéristiques",f.traits]]};break;
-  case "Propriété":{const subj=f.subject||propConcepts(x.id);if(subj&&f.relation)return {q:`Dans le domaine ${f.domain||"[non précisé]"}, complète : « ${subj} ${f.relation} … »`,a:[["Réponse",f.object],["Énoncé complet",x.formulation]]};break}
+  case "Concept":if(f.definition)return {q:`Que désigne le concept « ${x.name} » ? Quelles sont ses caractéristiques ?`,a:[["Définition",f.definition],["Termes primitifs",primList(x).join(", ")||"Non précisés : à compléter dans le Constructeur."],["Caractéristiques",f.traits]]};break;
+  case "Propriété":if(f.subject&&f.relation)return {q:`Dans le domaine ${f.domain||"[non précisé]"}, complète : « ${f.subject} ${f.relation} … »`,a:[["Réponse",f.object],["Énoncé complet",x.formulation]]};break;
   case "Règle":if(f.condition)return {q:`${f.context?"Dans le contexte "+f.context+", s":"S"}i ${f.condition}, alors… ? Y a-t-il une exception ? Est-ce une règle descriptive ou d’action ?`,a:[["Alors",f.conclusion],["Sauf si",excText(f)],["Nature",f.kind]]};break;
   case "Procédure":if(f.goal)return {q:`Pour ${f.goal}${f.inputs?", à partir de "+f.inputs:""} : quelles sont les étapes, et à quelles conditions la procédure réussit-elle ?`,a:[["Étapes",f.steps],["Résultat",f.result],["Conditions de réussite",f.success]]};break;
   case "Exemple":if(f.case)return {q:`« ${f.case} » : qu’est-ce que ce cas illustre, et pourquoi ?`,a:[["Illustre",linkedDesc(x.id,"Illustre")],["Parce que",f.shown]]};break;
@@ -763,7 +763,7 @@ function questionBase(x){const f=x.fields||{};
 function exampleAnswer(x){const ex=examplesOf(x),n=ex.length,lines=ex.map(e=>{const f=e.fields||{};return "• "+(f.case?`« ${f.case} »${f.shown?" : "+f.shown:""}`:e.name)});
  if(!n)return ["Exemples (0)","Aucun exemple relié : ajoutes-en au moins 3 (Constructeur, puis relation « Illustre »)."];
  return [`Exemples (${n})`,lines.join("\n")+(n<3?`\n(Vise au moins 3 exemples : il en manque ${3-n}.)`:"")]}
-function question(x){const r=questionBase(x);if(ILLUSTRABLE.includes(x.type)){r.q+=" Donne au moins 3 exemples.";r.a=[...r.a,exampleAnswer(x)]}return r}
+function question(x){const r=questionBase(x);if(ILLUSTRABLE.includes(x.type))r.a=[...r.a,exampleAnswer(x)];return r}
 const active=()=>db.items.filter(x=>x.life!=="Archivé");
 const pool=()=>{const f=$("quizFilter").value;return active().filter(x=>f==="Tous"||x.type===f)};
 function nextCard(skip){const P=[...pool()].sort((a,b)=>(a.level||0)-(b.level||0)||(a.seen||0)-(b.seen||0));quizId=P.length?(P.find(x=>x.id!==skip)||P[0]).id:null;revealed=false}
