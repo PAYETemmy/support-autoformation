@@ -586,7 +586,8 @@ function examplesHTML(x){const G=exampleGroups(x);
 function addExample(tid){const t=item(tid);if(!t)return;const fromLearn=!$("learn").hidden;resetForm();pendingIllustrate=t.id;returnToLearn=fromLearn;$("type").value="Exemple";renderTemplate("Exemple",draft);$("editorTitle").textContent="Ajouter un exemple";setView("edit")}
 const active=()=>db.items.filter(x=>x.life!=="Archivé");
 const pool=()=>{const f=$("quizFilter").value;return active().filter(x=>f==="Tous"||x.type===f)};
-function nextCard(skip){const P=[...pool()].sort((a,b)=>(a.level||0)-(b.level||0)||(a.seen||0)-(b.seen||0));quizId=P.length?(P.find(x=>x.id!==skip)||P[0]).id:null;revealed=false;hinted=false}
+let skipped=[];
+function nextCard(skip){const k=x=>skipped.indexOf(x.id),P=[...pool()].sort((a,b)=>(k(a)>=0)-(k(b)>=0)||(a.level||0)-(b.level||0)||(a.seen||0)-(b.seen||0)||k(a)-k(b));quizId=P.length?(P.find(x=>x.id!==skip)||P[0]).id:null;revealed=false;hinted=false}
 function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();const x=item(quizId);
  if(!x){$("quiz").innerHTML='<div class="empty">Aucun élément à réviser pour ce filtre.</div>';return}
  const q=question(x),pre=prereqs(x).filter(p=>(p.level||0)<2),fs=x.foundations||[];
@@ -597,9 +598,9 @@ function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();cons
    :`<p class="notice">Réponds de mémoire, à voix haute ou par écrit, avant d’afficher la réponse.${hinted?"":" Les exemples peuvent servir d’indice."}</p><div class="actions"><button class="primary" id="revealBtn">Afficher la réponse</button>${hinted?"":'<button id="hintBtn">Indice : les exemples</button>'}<button id="skipBtn">Passer</button></div>`+(hinted?examplesHTML(x):""))+`</div>`;
  const rb=$("revealBtn");if(rb)rb.addEventListener("click",()=>{revealed=true;renderQuiz()});
  const hb=$("hintBtn");if(hb)hb.addEventListener("click",()=>{hinted=true;renderQuiz()});
- const sb=$("skipBtn");if(sb)sb.addEventListener("click",()=>{nextCard(x.id);renderQuiz()});
+ const sb=$("skipBtn");if(sb)sb.addEventListener("click",()=>{skipped=skipped.filter(i=>i!==x.id).concat(x.id);nextCard(x.id);renderQuiz()});
  wire($("quiz"));
- $("quiz").querySelectorAll("[data-rate]").forEach(b=>b.addEventListener("click",()=>{x.level=+b.dataset.rate;x.seen=Date.now();persist(false);say(`« ${x.name} » : ${LEVELS[x.level].toLowerCase()}.`);nextCard(x.id);renderLearn()}))}
+ $("quiz").querySelectorAll("[data-rate]").forEach(b=>b.addEventListener("click",()=>{x.level=+b.dataset.rate;x.seen=Date.now();skipped=skipped.filter(i=>i!==x.id);persist(false);say(`« ${x.name} » : ${LEVELS[x.level].toLowerCase()}.`);nextCard(x.id);renderLearn()}))}
 const PATH=[["1. Les objets : concepts (termes primitifs d’abord)",["Concept"]],["2. Les affirmations : propriétés et règles",["Propriété","Règle"]],["3. Les méthodes : procédures",["Procédure"]],["4. Illustrer et délimiter : exemples et contre-exemples",["Exemple","Contre-exemple"]]];
 function depth(x,seen=new Set()){if(seen.has(x.id))return 0;seen.add(x.id);const p=prereqs(x);return p.length?1+Math.max(...p.map(y=>depth(y,seen))):0}
 function row(x,extra){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${extra} ${badge(x)}</div></span><button data-review="${esc(x.id)}">Réviser</button><button data-open="${esc(x.id)}">Voir</button></div>`}
