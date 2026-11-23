@@ -104,7 +104,6 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
 p.warn{margin:8px 0 0}
 @media(max-width:420px){.prep .fields{grid-template-columns:1fr;gap:1px 0}.prep .fields dd{margin-bottom:7px}}
 .note .notehead{font-weight:650;color:#24364d;display:flex;align-items:center;gap:6px;margin-bottom:4px}
-.note .notehead span{font-weight:500;font-size:12.5px;color:var(--muted)}
 .note textarea{min-height:110px}
 .note .notice{margin-top:6px}
 /* Espaces d’apprentissage : Concepts · Règles · Procédures (barre collante, pour changer d’espace sans remonter) */
@@ -116,7 +115,7 @@ p.warn{margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.2</p></header>
+<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.3</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -306,9 +305,8 @@ const NOTES_KEY=STORE+"-notes";
 let notes={};try{notes=JSON.parse(localStorage.getItem(NOTES_KEY)||"{}")||{}}catch(_){notes={}}
 const noteOf=id=>notes[id]||"";
 function setNote(id,t){if(t.trim())notes[id]=t;else delete notes[id];try{localStorage.setItem(NOTES_KEY,JSON.stringify(notes))}catch(_){say("Stockage local indisponible : la note ne sera pas conservée.")}}
-const noteState=n=>n.trim()?"(écrite)":"(vide)";
-function noteHTML(x){const n=noteOf(x.id);return `<div class="section note"><div class="notehead">Ma définition <span>${noteState(n)}</span></div><textarea data-note="${esc(x.id)}" aria-label="Ma définition de ${esc(x.name)}" placeholder="Avec tes mots : qu’est-ce que « ${esc(x.name)} » ?">${esc(n)}</textarea><p class="notice">Enregistrée automatiquement, sur cet appareil.</p></div>`}
-function wireNotes(el){el.querySelectorAll("[data-note]").forEach(t=>t.addEventListener("input",()=>{setNote(t.dataset.note,t.value);t.closest(".note").querySelector(".notehead span").textContent=noteState(t.value)}))}
+function noteHTML(x){const n=noteOf(x.id);return `<div class="section note"><div class="notehead">Ma définition</div><textarea data-note="${esc(x.id)}" aria-label="Ma définition de ${esc(x.name)}" placeholder="Avec tes mots : qu’est-ce que « ${esc(x.name)} » ?">${esc(n)}</textarea><p class="notice">Enregistrée automatiquement, sur cet appareil.</p></div>`}
+function wireNotes(el){el.querySelectorAll("[data-note]").forEach(t=>t.addEventListener("input",()=>{setNote(t.dataset.note,t.value)}))}
 const item=id=>db.items.find(x=>x.id===id);
 const itemName=id=>item(id)?.name||"Élément inconnu";
 
