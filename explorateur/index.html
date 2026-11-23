@@ -103,10 +103,14 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
 .exlist li{margin:6px 0}
 p.warn{margin:8px 0 0}
 @media(max-width:420px){.prep .fields{grid-template-columns:1fr;gap:1px 0}.prep .fields dd{margin-bottom:7px}}
+.note summary{cursor:pointer;font-weight:650;color:#24364d;min-height:44px;display:flex;align-items:center;gap:6px}
+.note summary span{font-weight:500;font-size:12.5px;color:var(--muted)}
+.note textarea{margin-top:4px;min-height:110px}
+.note .notice{margin-top:6px}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.7</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.8</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -290,6 +294,14 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const uid=()=> "k"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const behavior=()=>mqReduce.matches?"auto":"smooth";
+/* ---------- Mes notes : texte libre par élément, rangé à part du contenu (survit aux mises à jour de donnees.json) ---------- */
+const NOTES_KEY=STORE+"-notes";
+let notes={};try{notes=JSON.parse(localStorage.getItem(NOTES_KEY)||"{}")||{}}catch(_){notes={}}
+const noteOf=id=>notes[id]||"";
+function setNote(id,t){if(t.trim())notes[id]=t;else delete notes[id];try{localStorage.setItem(NOTES_KEY,JSON.stringify(notes))}catch(_){say("Stockage local indisponible : la note ne sera pas conservée.")}}
+const noteState=n=>n.trim()?"(écrite)":"(vide)";
+function noteHTML(x,open){const n=noteOf(x.id);return `<details class="section note"${open?" open":""}><summary>Mes notes <span>${noteState(n)}</span></summary><textarea data-note="${esc(x.id)}" aria-label="Mes notes sur ${esc(x.name)}" placeholder="Écris ce que tu veux sur « ${esc(x.name)} »">${esc(n)}</textarea><p class="notice">Enregistrée automatiquement, sur cet appareil.</p></details>`}
+function wireNotes(el){el.querySelectorAll("[data-note]").forEach(t=>t.addEventListener("input",()=>{setNote(t.dataset.note,t.value);t.closest("details").querySelector("summary span").textContent=noteState(t.value)}))}
 const item=id=>db.items.find(x=>x.id===id);
 const itemName=id=>item(id)?.name||"Élément inconnu";
 
@@ -352,7 +364,7 @@ document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",(
 /* ---------- Fiche : panneau ouvert par « Voir » ---------- */
 function openFiche(id){const x=item(id);if(!x)return;selected=id;
  $("selectedType").textContent=typeLabel(x);
- $("detail").innerHTML=detailHTML(x,db.links.filter(r=>r.source===id||r.target===id));
+ $("detail").innerHTML=detailHTML(x,db.links.filter(r=>r.source===id||r.target===id))+noteHTML(x,true);wireNotes($("detail"));
  $("detail").querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>openFiche(b.dataset.goto)));
  $("ficheModal").hidden=false;$("detail").scrollTop=0}
 function closeFiche(){$("ficheModal").hidden=true;selected=null}
@@ -553,7 +565,7 @@ function learningNeeds(x){const out=[];if(!CORE.includes(x.type)||x.life==="Arch
  return out}
 
 /* ---------- Apprendre : rappel actif, parcours et contrôle ---------- */
-let quizId=null,revealed=false,hinted=false;
+let quizId=null,revealed=false,hinted=false,noteOpen=false;
 const prereqs=x=>outRel(x,PREREQ).map(r=>item(r.target)).filter(Boolean);
 const excText=f=>f.exceptionMode==="Exception réelle"?f.exception:f.exceptionMode;
 function question(x){const f=x.fields||{};
@@ -599,15 +611,17 @@ function addExample(tid){const t=item(tid);if(!t)return;const fromLearn=!$("lear
 const active=()=>db.items.filter(x=>x.life!=="Archivé");
 const pool=()=>{const f=$("quizFilter").value;return active().filter(x=>f==="Tous"||x.type===f)};
 let skipped=[];
-function nextCard(skip){const k=x=>skipped.indexOf(x.id),P=[...pool()].sort((a,b)=>(k(a)>=0)-(k(b)>=0)||(a.level||0)-(b.level||0)||(a.seen||0)-(b.seen||0)||k(a)-k(b));quizId=P.length?(P.find(x=>x.id!==skip)||P[0]).id:null;revealed=false;hinted=false}
+function nextCard(skip){const k=x=>skipped.indexOf(x.id),P=[...pool()].sort((a,b)=>(k(a)>=0)-(k(b)>=0)||(a.level||0)-(b.level||0)||(a.seen||0)-(b.seen||0)||k(a)-k(b));quizId=P.length?(P.find(x=>x.id!==skip)||P[0]).id:null;revealed=false;hinted=false;noteOpen=false}
 function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();const x=item(quizId);
  if(!x){$("quiz").innerHTML='<div class="empty">Aucun élément à réviser pour ce filtre.</div>';return}
  const q=question(x),pre=prereqs(x).filter(p=>(p.level||0)<2),fs=x.foundations||[];
  $("quiz").innerHTML=`<div class="qcard"><div class="panelhead" style="margin-bottom:6px"><span class="tag">${esc(typeLabel(x))}</span>${badge(x)}</div><div class="cardtitle">${esc(x.name)}</div>`+prepHTML(x)+
   `<div class="qhead">Question</div><p class="prompt">${esc(q.q)}</p>`+
   (pre.length?`<p class="notice">Prérequis pas encore acquis : ${pre.map(p=>"« "+esc(p.name)+" »").join(", ")}.</p>`:"")+
-  (revealed?`<div class="answer"><dl class="fields">${q.a.filter(a=>a[1]).map(a=>`<dt>${esc(a[0])}</dt><dd>${esc(a[1])}</dd>`).join("")}${fs.length?`<dt>Fondements</dt><dd>${esc(fs.map(g=>g.type+" : "+g.text).join("\n"))}</dd>`:""}</dl></div>`+examplesHTML(x)+`<p class="notice">Compare honnêtement avec ta réponse, puis évalue-toi.</p><div class="actions"><button data-rate="0">À revoir</button><button data-rate="1">Presque</button><button class="primary" data-rate="2">Acquis</button></div>`
-   :`<p class="notice">Réponds de mémoire, à voix haute ou par écrit, avant d’afficher la réponse.${hinted?"":" Les exemples peuvent servir d’indice."}</p><div class="actions"><button class="primary" id="revealBtn">Afficher la réponse</button>${hinted?"":'<button id="hintBtn">Indice : les exemples</button>'}<button id="skipBtn">Passer</button></div>`+(hinted?examplesHTML(x):""))+`</div>`;
+  (revealed?`<div class="answer"><dl class="fields">${q.a.filter(a=>a[1]).map(a=>`<dt>${esc(a[0])}</dt><dd>${esc(a[1])}</dd>`).join("")}${fs.length?`<dt>Fondements</dt><dd>${esc(fs.map(g=>g.type+" : "+g.text).join("\n"))}</dd>`:""}</dl></div>`+examplesHTML(x)+noteHTML(x,true)+`<p class="notice">Compare honnêtement avec ta réponse, puis évalue-toi.</p><div class="actions"><button data-rate="0">À revoir</button><button data-rate="1">Presque</button><button class="primary" data-rate="2">Acquis</button></div>`
+   :`<p class="notice">Réponds de mémoire, à voix haute ou par écrit, avant d’afficher la réponse.${hinted?"":" Les exemples peuvent servir d’indice."}</p><div class="actions"><button class="primary" id="revealBtn">Afficher la réponse</button>${hinted?"":'<button id="hintBtn">Indice : les exemples</button>'}<button id="skipBtn">Passer</button></div>`+(hinted?examplesHTML(x):"")+noteHTML(x,noteOpen))+`</div>`;
+ /* Notes : repliées avant la réponse (ne pas souffler pendant le rappel) ; après, ouvertes et placées avant l’auto-évaluation, qui passe à la carte suivante */
+ const nd=$("quiz").querySelector("details.note");nd.addEventListener("toggle",()=>{noteOpen=nd.open});wireNotes($("quiz"));
  const rb=$("revealBtn");if(rb)rb.addEventListener("click",()=>{revealed=true;renderQuiz()});
  const hb=$("hintBtn");if(hb)hb.addEventListener("click",()=>{hinted=true;renderQuiz()});
  const sb=$("skipBtn");if(sb)sb.addEventListener("click",()=>{skipped=skipped.filter(i=>i!==x.id).concat(x.id);nextCard(x.id);renderQuiz();toQuiz()});
