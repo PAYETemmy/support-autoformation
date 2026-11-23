@@ -110,7 +110,7 @@ p.warn{margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.8</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.9</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -626,7 +626,7 @@ function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();cons
  const hb=$("hintBtn");if(hb)hb.addEventListener("click",()=>{hinted=true;renderQuiz()});
  const sb=$("skipBtn");if(sb)sb.addEventListener("click",()=>{skipped=skipped.filter(i=>i!==x.id).concat(x.id);nextCard(x.id);renderQuiz();toQuiz()});
  wire($("quiz"));
- $("quiz").querySelectorAll("[data-rate]").forEach(b=>b.addEventListener("click",()=>{x.level=+b.dataset.rate;x.seen=Date.now();skipped=skipped.filter(i=>i!==x.id);persist(false);say(`« ${x.name} » : ${LEVELS[x.level].toLowerCase()}.`);nextCard(x.id);renderLearn();toQuiz()}))}
+ $("quiz").querySelectorAll("[data-rate]").forEach(b=>b.addEventListener("click",()=>{x.level=+b.dataset.rate;x.seen=Date.now();skipped=skipped.filter(i=>i!==x.id);persist(false);say(`« ${x.name} » : ${LEVELS[x.level].toLowerCase()}.`);nextCard(x.id);renderLearn();if(x.level===2)closeQuiz();else toQuiz()}))} /* « Acquis » ferme la fenêtre : retour au parcours */
 function toQuiz(){$("quizBody").scrollTo({top:0,behavior:behavior()})}
 /* ---------- Fenêtre d’entraînement : le parcours reste en place derrière ---------- */
 let quizFrom=null;
