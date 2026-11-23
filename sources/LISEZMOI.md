@@ -10,3 +10,8 @@
 - `gabarit-modele.html` : gabarit commun (les données remplacent `/*DATA*/`).
 - `donnees-modele-*.js` : un support par fichier (`PAGE` + `EL` : concepts, propriétés, règles, procédures, exemples, contre-exemples, exercice).
 - `construire-modele.py <donnees.js> <dossier> "<nom court>"` : construit la page du dossier.
+
+# Données de l’explorateur pseudo-code
+
+- `donnees-json-pseudo-code/` : générateur de `explorateur-pseudo-code/donnees.json` (concepts, propriétés et règles, procédures, exemples).
+- Construire : `cd sources/donnees-json-pseudo-code && python3 build.py ../../explorateur-pseudo-code/donnees.json` (signale les éléments qui ont moins de 3 exemples).

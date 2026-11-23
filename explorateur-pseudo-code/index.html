@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pseudo-code">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<title>Explorateur — Pseudo-code</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6f9;--panel:#fff;--panel2:#f8fafc;--line:#d8e0e9;--text:#202b3c;--muted:#637083;--accent:#285ea8;--accentbg:#eaf1fb;--danger:#b42318;--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:var(--sb);-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button,.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;cursor:pointer;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;background:#fff;color:var(--text);touch-action:manipulation;-webkit-user-select:none;user-select:none;transition:background-color .15s,border-color .15s,box-shadow .15s}
+button:active:not(:disabled),.btn:active{background:#eef2f7}
+@media(hover:hover){button:hover:not(:disabled),.btn:hover{border-color:#8ea5c3;background:#f8fafc}}
+button:disabled{opacity:.48;cursor:not-allowed}
+:focus-visible{outline:3px solid rgba(40,94,168,.3);outline-offset:2px}
+.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:650}.primary:active:not(:disabled){background:#1f4d8b;border-color:#1f4d8b}@media(hover:hover){.primary:hover:not(:disabled){background:#1f4d8b;color:#fff;border-color:#1f4d8b}}.danger{color:var(--danger)}.primary.danger{background:#b42318;border-color:#b42318;color:#fff}
+header{padding:calc(20px + var(--st)) max(20px,var(--sr),calc((100% - 1240px)/2)) 18px max(20px,var(--sl),calc((100% - 1240px)/2));border-bottom:1px solid var(--line);background:#fff}
+header h1{font-size:clamp(21px,3vw,28px);letter-spacing:-.035em;margin:0;color:#172b4d;font-weight:700}header p{margin:3px 0 0;color:var(--muted);font-size:13px}
+main{max-width:1240px;margin:auto;padding:22px max(20px,var(--sr)) 42px max(20px,var(--sl))}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:0 0 18px;border-bottom:1px solid var(--line)}.tabs button{min-height:44px;border:0;border-bottom:2px solid transparent;border-radius:7px 7px 0 0;background:transparent;padding:9px 15px;color:#526174;font-size:14px;font-weight:600}@media(hover:hover){.tabs button:hover{background:#f0f4f8}}.tabs button.active{background:transparent;border-bottom-color:var(--accent);color:var(--accent)}
+.ico{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}.tabs .ico{display:none}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:18px;min-width:0;box-shadow:0 1px 2px rgba(16,24,40,.035)}
+.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.8fr);gap:18px;align-items:start}
+.learnlayout{grid-template-columns:minmax(280px,.85fr) minmax(0,1.3fr)}.wide{grid-column:1/-1}
+.sheet.quizsheet{max-width:680px;height:calc(100vh - 32px);height:calc(100dvh - 32px - var(--st) - var(--sb));padding-bottom:0}#quizBody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:20px}
+html.locked,html.locked body{overflow:hidden}
+.sheet.fiche{max-width:640px}#detail{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.panelhead h2{font-size:16px;margin:0;font-weight:650;color:#24364d}
+.muted{color:var(--muted);font-size:12px}.tag{border:1px solid #d7e0eb;border-radius:6px;padding:3px 8px;background:#f8fafc;color:#5f6e82;font-size:11px;white-space:nowrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}.field label{font-size:12px;color:#445267;font-weight:650}
+input,select,textarea{width:100%;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:10px 12px;color:var(--text);min-width:0;font-size:16px;-webkit-appearance:none;appearance:none}
+input::placeholder,textarea::placeholder{color:#8995a6}
+input:focus,select:focus,textarea:focus{border-color:#5b82ba;outline:3px solid rgba(40,94,168,.12)}
+select{padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23637083' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:13px}
+input[type=search]::-webkit-search-decoration{-webkit-appearance:none}
+textarea{min-height:96px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.section{border-top:1px solid #e7ebf0;padding-top:13px;margin-top:14px}
+.cardtitle{font-size:19px;font-weight:700;overflow-wrap:anywhere;color:#1c2c43}.relation{display:block;width:100%;min-height:44px;padding:10px 0;border:0;border-bottom:1px solid #e8edf2;border-radius:0;background:none;text-align:left;font-size:13px;line-height:1.45;overflow-wrap:anywhere}.relation:active:not(:disabled){background:#eef2f7}@media(hover:hover){.relation:hover:not(:disabled){background:#f8fafc}}
+.itemrow{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #e8edf2;min-width:0}.itemrow .name{flex:1;min-width:0;overflow-wrap:anywhere}.itemrow button{padding:6px 10px;min-width:44px;min-height:44px}
+.empty{padding:24px 18px;text-align:center;color:var(--muted);font-size:13px}.notice{font-size:11px;color:var(--muted);margin:11px 0 0}
+.vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;opacity:0}
+.hint{background:var(--accentbg);border:1px solid #cddcf0;border-radius:8px;padding:10px 12px;font-size:13px;color:#24406a;margin:0 0 13px}.hint b{color:#173a67}
+.small{min-height:44px;padding:5px 12px;font-size:13px;margin-top:7px;align-self:flex-start}
+.fields{display:grid;grid-template-columns:minmax(110px,34%) 1fr;gap:6px 12px;margin:8px 0 0;font-size:13px}.fields dt{color:var(--muted);font-weight:650}.fields dd{margin:0;overflow-wrap:anywhere;white-space:pre-line}
+.issues{margin:8px 0 0;padding:10px 12px 10px 28px;border:1px solid #f1d6a6;background:#fff8eb;border-radius:8px;font-size:13px;color:#7a4a00}.issues li{margin:2px 0}.ok{color:#18794e;font-size:13px}
+.progress{height:8px;border-radius:5px;background:#e7ecf2;overflow:hidden}.progress i{display:block;height:100%;width:0;background:#2e8b57;transition:width .3s}
+.qcard{border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:4px;background:var(--panel2)}.qcard .prompt{font-size:14px;color:#3b4a5e;margin:8px 0 12px}.answer{border-top:1px solid #e1e7ee;margin-top:12px;padding-top:12px}
+.lvl{font-size:11px;border-radius:5px;padding:2px 7px;white-space:nowrap;border:1px solid}.lvl0{color:#8a6100;border-color:#f0d9a8;background:#fff8e6}.lvl1{color:#285ea8;border-color:#cddcf0;background:#eef4fc}.lvl2{color:#18794e;border-color:#bfe3cf;background:#ecf8f1}
+.section h2{font-size:16px;margin:0 0 8px;font-weight:650;color:#24364d}.itemrow .lvl{margin-left:4px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.foundrow{display:grid;grid-template-columns:minmax(130px,36%) 1fr 44px;gap:6px;margin-bottom:6px}.foundrow button{padding:0}
+.tips{margin:8px 0 0;padding:10px 12px 10px 28px;border:1px solid #d3e0f1;background:#f3f7fc;border-radius:8px;font-size:13px;color:#2a4a75}.tips li,.issues li{margin:2px 0}
+.warn{color:#b42318;font-size:12px;font-weight:600}
+.reltable{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}.reltable th,.reltable td{border-bottom:1px solid #e8edf2;padding:6px 4px;text-align:left;vertical-align:top}.reltable th{color:var(--muted);font-weight:650}
+#modalText{white-space:pre-line;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pathgroup{margin:12px 0 4px;font-size:12px;font-weight:700;color:#445267;text-transform:uppercase;letter-spacing:.04em}
+.memo summary{cursor:pointer;font-weight:650;color:#24364d;padding:11px 0}.memo p{font-size:13px;margin:8px 0}
+.headright{display:flex;align-items:center;gap:8px}.iconbtn{min-width:44px;padding:0;font-size:22px;line-height:1}
+[hidden]{display:none!important}
+footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,var(--sl));color:var(--muted);font-size:11px}
+#message{position:fixed;left:50%;bottom:calc(20px + var(--sb));z-index:70;width:max-content;max-width:min(92vw,460px);margin:0;padding:10px 14px;border:1px solid #285ea8;border-radius:9px;background:#173a67;color:#fff;font-size:13px;box-shadow:0 6px 20px rgba(16,24,40,.18);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .2s,transform .2s}
+#message.show{opacity:1;transform:translate(-50%,0)}
+.modal{position:fixed;top:0;right:0;bottom:0;left:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(22,34,51,.42)}
+.sheet{display:flex;flex-direction:column;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px - var(--st) - var(--sb));width:100%;max-width:440px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:0 16px 45px rgba(16,24,40,.2)}.sheet p{margin:0 0 6px;font-size:15px}.sheet .actions{justify-content:flex-end}
+@media(max-width:760px){
+ header{padding-top:calc(14px + var(--st));padding-bottom:13px}header p{font-size:12px}
+ main{padding:15px max(13px,var(--sr)) 34px max(13px,var(--sl))}
+ body{--tb:max(4px,calc(var(--sb) - 18px));padding-bottom:calc(66px + var(--tb))}
+ .layout{grid-template-columns:1fr;gap:13px}.panel{padding:14px;border-radius:10px}
+ .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:5px max(8px,var(--sr)) var(--tb) max(8px,var(--sl));background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);border-bottom:0;box-shadow:0 -3px 12px rgba(16,24,40,.06)}
+ .tabs button{flex-direction:column;gap:2px;min-height:48px;padding:4px 2px;border:0;border-radius:7px;background:transparent;color:#66758a;font-size:11px;font-weight:600}
+ .tabs button.active{background:var(--accentbg);color:var(--accent)}.tabs .ico{display:block}
+ body.typing .tabs{display:none}
+ #message{bottom:calc(70px + var(--tb))}body.typing #message{bottom:calc(16px + var(--sb))}
+ .modal{align-items:flex-end;padding:0 8px calc(8px + var(--sb))}.sheet .actions{flex-direction:column-reverse}.sheet .actions button{width:100%}.fiche .actions{flex-direction:row}.fiche .actions button{width:auto;flex:1 1 auto}
+ .quizsheet .actions{flex-direction:row}.quizsheet .actions button{width:auto;flex:1 1 auto}
+}
+@media(max-width:620px){.grid3{grid-template-columns:1fr 1fr}.grid3 .field:first-child{grid-column:1/-1}}
+@media(max-width:420px){.foundrow{grid-template-columns:1fr 44px}.foundrow select{grid-column:1/-1}.itemrow button{padding:6px 8px;font-size:13px}.grid2{grid-template-columns:1fr;gap:0}.panelhead h2{font-size:15px}.tag{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.prep{margin:10px 0 0;padding:10px 12px;border:1px solid #dfe6ef;border-left:3px solid #9fb3cc;border-radius:8px;background:#fff}
+.prep.p{border-left-color:#528bd4}
+.prep.ex{border-left-color:#4aa9b9}
+.prephead,.qhead{font-size:11.5px;font-weight:700;color:#445267;text-transform:uppercase;letter-spacing:.04em}
+.prephead span{text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted);margin-left:4px}
+.qhead{margin-top:14px}
+.qcard .qhead+.prompt{margin-top:4px}
+.prep .fields{margin-top:6px}
+.prep .notice,.prep .warn{margin:8px 0 0}
+.qcard>.notice{margin-top:10px}
+.exlist{margin:6px 0 0;padding-left:20px;font-size:13px;color:var(--text)}
+.exlist li{margin:6px 0}
+p.warn{margin:8px 0 0}
+@media(max-width:420px){.prep .fields{grid-template-columns:1fr;gap:1px 0}.prep .fields dd{margin-bottom:7px}}
+.note summary{cursor:pointer;font-weight:650;color:#24364d;min-height:44px;display:flex;align-items:center;gap:6px}
+.note summary span{font-weight:500;font-size:12.5px;color:var(--muted)}
+.note textarea{margin-top:4px;min-height:110px}
+.note .notice{margin-top:6px}
+/* Espaces d’apprentissage : Concepts · Règles · Procédures (barre collante, pour changer d’espace sans remonter) */
+.spaces{position:sticky;top:0;z-index:20;display:flex;gap:6px;margin:-6px 0 12px;padding:6px 0 8px;background:var(--bg)}
+.spaces button{flex:1 1 0;min-width:0;min-height:48px;padding:5px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.2}
+.spaces button small{font-size:11.5px;font-weight:500;color:var(--muted)}
+.spaces button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.spaces button[aria-pressed="true"] small{color:#dbe6f6}
+/* Flèche du titre repliable « Mes notes » (le display:flex retire le marqueur natif) */
+.note>summary{list-style:none}.note>summary::-webkit-details-marker{display:none}
+.note>summary::before{content:"";flex:none;width:0;height:0;border:5px solid transparent;border-left:6px solid currentColor;border-right:0;margin-right:2px;transition:transform .15s}
+.note[open]>summary::before{transform:rotate(90deg)}
+@media(prefers-reduced-motion:reduce){.note>summary::before{transition:none}}</style>
+</head>
+<body>
+<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.1</p></header>
+<main>
+<nav class="tabs" aria-label="Espaces de travail">
+<button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
+<button data-view="edit"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg>Constructeur</button>
+<button data-view="links"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/></svg>Relations</button>
+</nav>
+
+<section id="edit" hidden>
+<div class="panel">
+ <div class="panelhead"><h2 id="editorTitle">Créer un élément</h2><span class="tag" id="editMode">Nouveau</span></div>
+ <form id="editorForm" novalidate>
+  <div class="grid3">
+   <div class="field"><label for="type">Type d'élément</label><select id="type"><option>Concept</option><option>Propriété</option><option>Règle</option><option>Procédure</option><option>Exemple</option><option>Contre-exemple</option></select></div>
+   <div class="field"><label for="status">Statut épistémique</label><select id="status"><option>À examiner</option><option>Proposé</option><option>Établi</option><option>Contesté</option><option>Réfuté</option></select></div>
+   <div class="field"><label for="life">Cycle de vie</label><select id="life"><option>Actif</option><option>Archivé</option></select></div>
+  </div>
+  <div class="field"><label for="name">Désignation</label><input id="name" required placeholder="Nom court de l'élément" autocomplete="off" enterkeyhint="next"></div>
+  <div id="templateFields"></div>
+  <div class="field"><label for="formulation">Formulation (rédigée ou composée)</label><textarea id="formulation" placeholder="Laisse vide pour composer automatiquement à partir du gabarit…"></textarea><button type="button" id="composeBtn" class="small">Composer la formulation à partir du gabarit</button></div>
+  <div class="field"><label>Fondements</label><div id="foundList"></div><button type="button" class="small" id="addFound">＋ Ajouter un fondement</button><p class="notice" style="margin-top:4px">Plusieurs fondements possibles. Des exemples ou des observations rendent un énoncé crédible ; ils ne le prouvent pas.</p></div>
+  <div class="actions"><button class="primary" type="submit" id="saveItem">Créer l'élément</button><button type="button" id="clearForm">Réinitialiser</button><button type="button" class="danger" id="deleteItem" hidden>Supprimer</button></div>
+ </form>
+ <p class="notice">Les champs du gabarit suivent le modèle de représentation. Aucun n’est bloquant : un champ vide est signalé dans le contrôle. Ce qu’un exemple illustre, ou ce qu’un contre-exemple met à l’épreuve, se déclare uniquement par une relation (onglet Relations).</p>
+</div>
+</section>
+
+<section id="links" hidden>
+<div class="panel">
+ <div class="panelhead"><h2>Construire une relation</h2><span class="tag">Relations encadrées</span></div>
+ <div class="field"><label for="source">Élément source</label><select id="source"></select></div>
+ <div class="field"><label for="relationType">Type de relation</label><select id="relationType"></select><p class="notice" id="relHelp" style="margin-top:4px"></p></div>
+ <div class="field"><label for="target">Élément cible</label><select id="target"></select></div>
+ <div class="field"><label for="relationNote">Précision facultative</label><input id="relationNote" placeholder="Précision sur le lien" autocomplete="off" enterkeyhint="done"></div>
+ <div class="actions"><button class="primary" id="addRelation">Ajouter la relation</button></div>
+ <p class="notice">Seules les relations définies par le modèle sont proposées, et seules les cibles compatibles apparaissent. « Applique » ne vise que des règles d’action ; pour une règle, « S’appuie sur » ne vise que des règles descriptives. « Se définit à partir de » relie un concept défini aux concepts qui servent à le définir ; un terme primitif n’en a pas. « A pour prérequis » est une relation pédagogique, hors modèle : elle ordonne le parcours.</p>
+ <div class="section"><h2>Relations enregistrées</h2><div id="relationsList"></div></div>
+</div>
+</section>
+
+<section id="learn">
+<div class="spaces" id="spaceBar" role="group" aria-label="Espaces d’apprentissage"></div>
+<div class="layout learnlayout">
+ <div class="panel wide" id="trainPanel">
+  <div class="panelhead"><h2>Entraînement par rappel</h2><span class="tag" id="learnProgress"></span></div>
+  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+  <div class="actions"><button class="primary" id="openQuiz">S’entraîner</button></div>
+ </div>
+ <div class="panel wide" id="pathPanel">
+  <div class="panelhead"><h2>Parcours conseillé</h2><span class="tag" id="spaceTag"></span></div>
+  <p class="notice" style="margin-top:0" id="spaceHint"></p>
+  <div id="pathList"></div>
+ </div>
+ <div class="panel wide">
+  <div class="panelhead"><h2>Contrôle du modèle</h2></div>
+  <div id="qualityList"></div>
+  <details class="section memo"><summary>Rappel du modèle de représentation</summary><div id="modelMemo"></div></details>
+ </div>
+</div>
+</section>
+</main>
+<footer>Explorateur de connaissances · Données : fichier donnees.json du même dossier, sinon ce navigateur.</footer>
+<div id="message" role="status" aria-live="polite"></div>
+<div class="modal" id="ficheModal" hidden><div class="sheet fiche" role="dialog" aria-modal="true" aria-labelledby="ficheTitle">
+ <div class="panelhead"><h2 id="ficheTitle">Fiche de connaissance</h2><div class="headright"><span class="tag" id="selectedType"></span><button id="closeFiche" class="iconbtn" aria-label="Fermer la fiche" title="Fermer la fiche">×</button></div></div>
+ <div id="detail"></div>
+ <div class="actions" id="detailActions"><button class="primary" id="editSelected">Modifier</button><button id="linkSelected">Créer une relation</button><button id="reviewSelected">Réviser</button></div>
+</div></div>
+<div class="modal" id="quizModal" hidden><div class="sheet quizsheet" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
+ <div class="panelhead"><h2 id="quizTitle">Entraînement par rappel</h2><div class="headright"><span class="tag" id="quizProgress"></span><button id="closeQuiz" class="iconbtn" aria-label="Fermer l’entraînement" title="Fermer l’entraînement">×</button></div></div>
+ <div id="quizBody">
+  <div class="field"><label for="quizFilter">Réviser</label><select id="quizFilter"><option>Tous</option><option>Concept</option><option>Propriété</option><option>Règle</option><option>Procédure</option><option>Exemple</option><option>Contre-exemple</option></select></div>
+  <div id="quiz"></div>
+ </div>
+</div></div>
+<div class="modal" id="modal" hidden><div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="modalText"><p id="modalText"></p><div class="actions"><button id="modalCancel">Annuler</button><button class="primary" id="modalOk">Confirmer</button></div></div></div>
+
+<script>
+(()=> {
+"use strict";
+const $=id=>document.getElementById(id);
+const TYPES=["Concept","Propriété","Règle","Procédure","Exemple","Contre-exemple"];
+const COLORS={"Concept":"#528bd4","Propriété":"#2eaa91","Règle":"#d99a42","Procédure":"#9874d5","Exemple":"#4aa9b9","Contre-exemple":"#d66e75"};
+const PREREQ="A pour prérequis",CONTRA="Se contredit avec";
+const DEFREL="Se définit à partir de",PRIM="Terme primitif (non défini)",MIN_EX=3,CORE=["Concept","Propriété","Règle","Procédure"];
+const DE={"Concept":"du concept","Propriété":"de la propriété","Règle":"de la règle","Procédure":"de la procédure","Exemple":"de l’exemple","Contre-exemple":"du contre-exemple"};
+const STATUSES=["À examiner","Proposé","Établi","Contesté","Réfuté"];
+const FOUND_TYPES=["Non précisé","Définition de référence","Démonstration ou raisonnement","Source documentaire","Observation ou expérience"];
+const ART={"Concept":"le concept","Propriété":"la propriété","Règle":"la règle","Procédure":"la procédure","Exemple":"l’exemple","Contre-exemple":"le contre-exemple"};
+/* ---------- Modèle de représentation : définitions, gabarits et champs ---------- */
+const MODEL={
+ "Concept":{
+  def:"Une chose, une catégorie, une grandeur ou une idée dont on peut préciser le sens et les caractéristiques.",
+  tpl:"[Concept] : [définition]. Caractéristiques : [caractéristiques].",
+  note:"Un concept est soit défini à partir d’autres concepts (relation « Se définit à partir de », onglet Relations), soit un terme primitif : il n’est pas défini, on en donne le sens intuitif, les caractéristiques et des exemples. Toute chaîne de définitions aboutit à des termes primitifs.",
+  fields:[
+   {k:"domain",label:"Domaine",ph:"Ex. : le pseudo-code"},
+   {k:"nature",label:"Nature du concept",options:["Défini à partir d’autres concepts",PRIM]},
+   {k:"definition",label:"Définition (sens)",ph:"Ce que désigne ce concept, à l’aide d’autres concepts",area:true,showIf:["nature",""]},
+   {k:"intuition",label:"Sens intuitif",ph:"Ex. : ce que l’on range dans une variable : un nombre, un texte, VRAI ou FAUX…",area:true,showIf:["nature",PRIM]},
+   {k:"traits",label:"Caractéristiques principales",ph:"Ce qui le distingue des concepts voisins",area:true}]},
+ "Propriété":{
+  def:"Une caractéristique d’un concept, ou un lien entre concepts, toujours vrai à l’intérieur d’un domaine précisé.",
+  tpl:"Dans le domaine [D], [concept relié] [précision] [relation] [caractéristique ou autre concept].",
+  note:"Le concept n’est pas saisi en texte : il vient de la relation, et la formulation se complète d’elle-même. Le champ « Précision » sert seulement à le qualifier. Relie la propriété à son concept : « Définit » si elle fait partie de sa définition, « Caractérise » si elle est vraie sans le définir, « Met en relation » si elle lie plusieurs concepts.",
+  fields:[
+   {k:"domain",label:"Domaine [D]",ph:"Ex. : du pseudo-code indexé à partir de 0"},
+   {k:"qualifier",label:"Précision sur le concept (facultatif)",ph:"Ex. : de taille N"},
+   {k:"relation",label:"Relation",ph:"Ex. : a des indices"},
+   {k:"object",label:"Caractéristique ou autre concept",ph:"Ex. : allant de 0 à N−1"}]},
+ "Règle":{
+  def:"Une relation qui dit ce qui arrive ou ce qu’il faut faire lorsque certaines conditions sont réunies.",
+  tpl:"Dans le contexte [C], si [condition], alors [conséquence ou action], sauf si [exception].",
+  note:"Descriptive : la conclusion dit ce qui se passe. D’action : la conclusion dit ce qu’il faut faire. La différence tient à la conclusion, pas à la structure. « Sauf si » est un champ à examiner, pas une obligation d’inventer une exception.",
+  fields:[
+   {k:"kind",label:"Nature de la règle",options:["À préciser","Descriptive","D’action"]},
+   {k:"context",label:"Contexte [C]",ph:"Ex. : de l’exécution d’un pseudo-code"},
+   {k:"condition",label:"Si… (condition)",ph:"Ex. : x ← e s’exécute correctement"},
+   {k:"conclusion",label:"Alors… (conséquence ou action)",ph:"Ex. : la nouvelle valeur de x remplace l’ancienne"},
+   {k:"exceptionMode",label:"Sauf si… (champ à examiner)",options:["Non examiné","Exception réelle","Aucune exception identifiée dans ce domaine","Limites encore inconnues"]},
+   {k:"exception",label:"Sauf si… (exception réelle)",ph:"Formule l’exception réelle",showIf:["exceptionMode","Exception réelle"]}]},
+ "Procédure":{
+  def:"Une structure qui ordonne des étapes et peut contenir des règles d’action, des choix, des répétitions ou des prérequis.",
+  tpl:"Dans le contexte [C], pour [but], à partir de [entrées et préconditions] : [étapes, choix ou répétitions]. Elle produit [résultat], si [conditions de réussite].",
+  note:"La procédure n’est pas une catégorie concurrente de la règle : elle peut en contenir. Elle « applique » des règles d’action et « s’appuie sur » des concepts, des propriétés et des règles descriptives.",
+  fields:[
+   {k:"context",label:"Contexte [C]",ph:"Ex. : du pseudo-code"},
+   {k:"goal",label:"Pour… (but)",ph:"Ex. : calculer la somme des éléments d’un tableau T"},
+   {k:"inputs",label:"À partir de… (entrées et préconditions)",ph:"Ex. : un tableau T de N nombres, N ≥ 0"},
+   {k:"steps",label:"Étapes, choix ou répétitions",ph:"Une étape par ligne :\n1. …\n2. Si …, alors …\n3. Répéter … tant que …",area:true},
+   {k:"result",label:"Elle produit… (résultat)",ph:"Ex. : la somme des éléments de T"},
+   {k:"success",label:"Si… (conditions de réussite)",ph:"Ex. : les indices restent entre 0 et N−1"}]},
+ "Exemple":{
+  def:"Un cas concret qui illustre un concept, une propriété, une règle ou une procédure.",
+  tpl:"[cas concret] illustre [concept, propriété, règle ou procédure] parce que [caractéristique montrée].",
+  note:"Ce que l’exemple illustre se déclare par la relation « Illustre » (onglet Relations) : la formulation se complète alors d’elle-même. Les exemples rendent un énoncé plus crédible ; ils ne le démontrent pas.",
+  fields:[
+   {k:"case",label:"Cas concret",ph:"Ex. : après x ← 5 puis x ← 8, x vaut 8",area:true},
+   {k:"shown",label:"Parce que… (caractéristique montrée)",ph:"Ex. : la seconde affectation efface la valeur 5"}]},
+ "Contre-exemple":{
+  def:"Un cas qui met un énoncé à l’épreuve.",
+  tpl:"[cas] montre que [affirmation] ne s’applique pas lorsque [condition].",
+  note:"L’énoncé mis à l’épreuve se déclare par la relation « Met à l’épreuve ». Un contre-exemple n’est pas automatiquement une exception : a) le cas est-il hors du domaine prévu ? b) sinon, faut-il préciser la condition ? c) sinon, réviser l’énoncé. Un seul contre-exemple valable suffit à réfuter un énoncé.",
+  fields:[
+   {k:"case",label:"Cas",ph:"Ex. : en Lua, un tableau de 3 éléments a pour indices 1, 2 et 3",area:true},
+   {k:"condition",label:"Ne s’applique pas lorsque…",ph:"Ex. : la convention d’indexation commence à 1"},
+   {k:"verdict",label:"Analyse (convention 2)",options:["À analyser","Hors du domaine prévu (2a) : pas de contradiction dans le domaine","Condition à préciser (2b)","Énoncé à réviser, éventuellement par une exception (2c)","Traité : énoncé révisé"]}]}
+};
+/* ---------- Relations du modèle : [nom, types cibles, filtre éventuel, motif de refus, libellé des cibles] ---------- */
+const kindOf=t=>(t.fields||{}).kind||"";
+const RULES={
+ "Concept":[[DEFREL,["Concept"],null,"","Concept (défini ou terme primitif)"]],
+ "Propriété":[["Définit",["Concept"]],["Caractérise",["Concept"]],["Met en relation",["Concept"]]],
+ "Règle":[["Porte sur",["Concept"]]],
+ "Procédure":[
+  ["Applique",["Règle"],t=>kindOf(t)==="D’action","« Applique » ne vise que des règles d’action","Règle d’action"],
+  ["S’appuie sur",["Concept","Propriété","Règle"],t=>t.type!=="Règle"||kindOf(t)==="Descriptive","pour une règle, « S’appuie sur » ne vise que des règles descriptives","Concept, Propriété, Règle descriptive"],
+  ["Contient",["Procédure"]]],
+ "Exemple":[["Illustre",["Concept","Propriété","Règle","Procédure"]]],
+ "Contre-exemple":[["Met à l’épreuve",["Concept","Propriété","Règle","Procédure"],null,"","Propriété, Règle, Procédure, définition d’un Concept"]]
+};
+const AFFIRMATIONS=["Propriété","Règle"];
+const KNOWN=new Set([PREREQ,CONTRA,...Object.values(RULES).flatMap(l=>l.map(r=>r[0]))]);
+const REL_HELP={
+ [DEFREL]:"La définition du concept source utilise le concept cible. En remontant ces relations, on atteint les termes primitifs, qui ne sont pas définis. Un terme primitif ne peut pas être source de cette relation ; les cibles qui rendraient la définition circulaire ne sont pas proposées.",
+ "Définit":"La propriété fait partie de la définition du concept : sans elle, ce ne serait plus ce concept.",
+ "Caractérise":"La propriété est toujours vraie du concept dans le domaine, sans faire partie de sa définition.",
+ "Met en relation":"La propriété établit un lien entre concepts : relie-la à chacun des concepts concernés (au moins deux).",
+ "Porte sur":"Le concept intervient dans la condition ou dans la conclusion de la règle.",
+ "Applique":"La procédure contient cette règle d’action (un choix, un test, une décision).",
+ "S’appuie sur":"La procédure utilise ce concept, cette propriété ou cette règle descriptive, sans l’exécuter comme une action.",
+ "Contient":"La cible est une sous-procédure, c’est-à-dire une étape de la source.",
+ "Illustre":"Le cas concret montre une caractéristique de la cible.",
+ "Met à l’épreuve":"Le cas teste l’énoncé cible ; analyse-le ensuite selon la convention 2.",
+ [PREREQ]:"Relation pédagogique, hors modèle : la cible doit être apprise avant la source. Elle ordonne le parcours. Les cibles qui créeraient une boucle ne sont pas proposées.",
+ [CONTRA]:"Deux affirmations incompatibles : au moins l’une doit être restreinte ou révisée."
+};
+const LEVELS=["À apprendre","En cours","Acquis"];
+const STORE="knowledge-explorer-v7-html-pseudo-code" /* stockage séparé de celui de l’explorateur Python (même origine) */;
+const mqNarrow=matchMedia("(max-width:760px)"),mqReduce=matchMedia("(prefers-reduced-motion: reduce)");
+let db={items:[],links:[]},selected=null,editing=null;
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=> "k"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const behavior=()=>mqReduce.matches?"auto":"smooth";
+/* ---------- Mes notes : texte libre par élément, rangé à part du contenu (survit aux mises à jour de donnees.json) ---------- */
+const NOTES_KEY=STORE+"-notes";
+let notes={};try{notes=JSON.parse(localStorage.getItem(NOTES_KEY)||"{}")||{}}catch(_){notes={}}
+const noteOf=id=>notes[id]||"";
+function setNote(id,t){if(t.trim())notes[id]=t;else delete notes[id];try{localStorage.setItem(NOTES_KEY,JSON.stringify(notes))}catch(_){say("Stockage local indisponible : la note ne sera pas conservée.")}}
+const noteState=n=>n.trim()?"(écrite)":"(vide)";
+function noteHTML(x,open){const n=noteOf(x.id);return `<details class="section note"${open?" open":""}><summary>Mes notes <span>${noteState(n)}</span></summary><textarea data-note="${esc(x.id)}" aria-label="Mes notes sur ${esc(x.name)}" placeholder="Écris ce que tu veux sur « ${esc(x.name)} »">${esc(n)}</textarea><p class="notice">Enregistrée automatiquement, sur cet appareil.</p></details>`}
+function wireNotes(el){el.querySelectorAll("[data-note]").forEach(t=>t.addEventListener("input",()=>{setNote(t.dataset.note,t.value);t.closest("details").querySelector("summary span").textContent=noteState(t.value)}))}
+const item=id=>db.items.find(x=>x.id===id);
+const itemName=id=>item(id)?.name||"Élément inconnu";
+
+/* ---------- Retour utilisateur : toast + confirmation (remplace confirm(), bloqué dans certaines vues web iOS) ---------- */
+let toastTimer=0;
+function say(s){const m=$("message");m.textContent=s;m.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>m.classList.remove("show"),3500)}
+function ask(text,okLabel="Confirmer",danger=false){return new Promise(resolve=>{
+ const m=$("modal"),ok=$("modalOk"),cancel=$("modalCancel"),prev=document.activeElement;
+ $("modalText").textContent=text;ok.textContent=okLabel;ok.classList.toggle("danger",danger);m.hidden=false;ok.focus();
+ const onKey=e=>{if(e.key==="Escape")done(false)};
+ const done=v=>{m.hidden=true;ok.onclick=cancel.onclick=m.onclick=null;document.removeEventListener("keydown",onKey);if(prev&&prev.tagName==="BUTTON")prev.focus();resolve(v)};
+ ok.onclick=()=>done(true);cancel.onclick=()=>done(false);m.onclick=e=>{if(e.target===m)done(false)};document.addEventListener("keydown",onKey);
+})}
+
+/* ---------- Données ---------- */
+function normalize(p){
+ if(!p||!Array.isArray(p.items)||!Array.isArray(p.links))return null;
+ const items=p.items.filter(x=>x&&typeof x==="object").map(x=>{const y={...x,id:String(x.id??uid()),type:TYPES.includes(x.type)?x.type:"Concept",status:STATUSES.includes(x.status)?x.status:"À examiner",life:x.life==="Archivé"||x.status==="Abandonné"?"Archivé":"Actif",name:String(x.name||"Sans nom"),formulation:String(x.formulation||""),foundations:cleanFoundations(x),fields:cleanFields(x.fields),level:clamp(parseInt(x.level,10)||0,0,2),seen:+x.seen||0};delete y.foundation;if(y.type==="Concept"&&y.fields.nature===PRIM&&y.fields.definition){if(!y.fields.intuition)y.fields.intuition=y.fields.definition;delete y.fields.definition}const md=MODEL[y.type];if(md)md.fields.forEach(d=>{if(d.options&&y.fields[d.k]===d.options[0])delete y.fields[d.k]});return y});
+ const ids=new Set(items.map(x=>x.id));
+ const links=p.links.filter(r=>r&&ids.has(String(r.source))&&ids.has(String(r.target))).map(r=>({...r,id:String(r.id??uid()),source:String(r.source),target:String(r.target),type:String(r.type||""),note:String(r.note||"")}));
+ const byId=new Map(items.map(x=>[x.id,x])),seenL=new Set(),out=[];
+ links.map(r=>migrateLink(r,byId)).forEach(r=>{const k=(r.type===CONTRA?[r.source,r.target].sort().join("|"):r.source+"|"+r.target)+"|"+r.type;if(!seenL.has(k)){seenL.add(k);out.push(r)}});
+ /* Anciennes mentions textuelles (v8) supprimées dès que la relation correspondante existe : la relation est la source de vérité */
+ /* Propriété (v9.0 → v9.1) : l’ancien champ « Concept » devient une précision quand le concept relié y est nommé ; sinon il reste signalé à convertir */
+ items.forEach(x=>{const f=x.fields;if(x.type!=="Propriété"||!f.subject)return;
+  for(const t of out.filter(r=>r.source===x.id&&PROP_RELS.includes(r.type)).map(r=>byId.get(r.target)).filter(Boolean)){const rest=afterName(f.subject,t.name);if(rest===null)continue;if(rest&&f.qualifier)break;if(rest)f.qualifier=rest;delete f.subject;break}});
+ items.forEach(x=>{const f=x.fields;if(x.type==="Exemple"&&f.target&&out.some(r=>r.source===x.id&&r.type==="Illustre"))delete f.target;if(x.type==="Contre-exemple"&&f.claim&&out.some(r=>r.source===x.id&&r.type==="Met à l’épreuve"))delete f.claim});
+ return {items,links:out};
+}
+function cleanFields(f){const o={};if(f&&typeof f==="object")Object.keys(f).forEach(k=>{const v=String(f[k]??"").trim();if(v)o[k]=v});return o}
+function cleanFoundations(x){if(Array.isArray(x.foundations))return x.foundations.filter(f=>f&&String(f.text??"").trim()).map(f=>({type:FOUND_TYPES.includes(f.type)?f.type:"Non précisé",text:String(f.text).trim()}));const t=String(x.foundation??"").trim();return t?[{type:"Non précisé",text:t}]:[]}
+/* Anciennes relations (v7, v8) → relations du modèle (v9) */
+function migrateLink(r,byId){const s=byId.get(r.source),t=byId.get(r.target);if(!s||!t)return r;const rev=type=>({...r,source:r.target,target:r.source,type});
+ if(r.type==="Est défini par"&&s.type==="Concept"&&t.type==="Propriété")return rev("Définit");
+ if(r.type==="Porte sur"&&AFFIRMATIONS.includes(s.type)&&t.type==="Exemple")return rev("Illustre");
+ if(r.type==="Porte sur"&&s.type==="Propriété")return {...r,type:"Caractérise"};
+ if(r.type==="S’applique à")return {...r,type:"Porte sur"};
+ if(r.type==="Contient l’étape")return {...r,type:"Contient"};
+ if(s.type==="Procédure"&&(r.type==="Mobilise"||r.type==="Applique")){if(t.type==="Procédure")return {...r,type:"Contient"};if(t.type==="Règle")return {...r,type:kindOf(t)==="Descriptive"?"S’appuie sur":"Applique"};return {...r,type:"S’appuie sur"}}
+ return r}
+function persist(content=true){db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}});try{localStorage.setItem(STORE,JSON.stringify(db));if(content)localStorage.setItem(DIRTY_KEY,"1")}catch(e){say("Stockage local indisponible : les modifications ne seront pas conservées.")}}
+let hadLocal=false;
+/* Copie de travail du navigateur (contenu chargé depuis donnees.json, éventuellement modifié dans l’app) ; aucun contenu n’est intégré à la page */
+function load(){let raw=null;try{raw=localStorage.getItem(STORE)}catch(e){}hadLocal=!!raw;db={items:[],links:[]};
+ if(raw){try{const p=normalize(JSON.parse(raw));if(p)db=p}catch(e){}}}
+
+/* ---------- Navigation ---------- */
+/* « Apprendre » garde sa position de défilement : en y revenant, on retrouve l’endroit du parcours où l’on était */
+let learnY=0;
+function setView(v){
+ if(v!=="learn"&&!$("quizModal").hidden)closeQuiz(false);
+ if(!$("learn").hidden)learnY=window.scrollY;
+ ["learn","edit","links"].forEach(k=>$(k).hidden=k!==v);
+ document.querySelectorAll("[data-view]").forEach(b=>{const on=b.dataset.view===v;b.classList.toggle("active",on);on?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current")});
+ if(v==="links")renderLinks();if(v==="learn")renderLearn();
+ window.scrollTo(0,v==="learn"?learnY:0);
+}
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>{if(!$(b.dataset.view).hidden){window.scrollTo({top:0,behavior:behavior()});return}setView(b.dataset.view)}));
+
+/* ---------- Fiche : panneau ouvert par « Voir » ---------- */
+function openFiche(id){const x=item(id);if(!x)return;selected=id;
+ $("selectedType").textContent=typeLabel(x);
+ $("detail").innerHTML=detailHTML(x,db.links.filter(r=>r.source===id||r.target===id))+noteHTML(x,true);wireNotes($("detail"));
+ $("detail").querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>openFiche(b.dataset.goto)));
+ $("ficheModal").hidden=false;$("detail").scrollTop=0}
+function closeFiche(){$("ficheModal").hidden=true;selected=null}
+$("closeFiche").addEventListener("click",closeFiche);
+$("ficheModal").addEventListener("click",e=>{if(e.target===$("ficheModal"))closeFiche()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("modal").hidden&&!$("ficheModal").hidden)closeFiche()});
+
+/* ---------- Constructeur ---------- */
+function resetForm(){editing=null;draft={};pendingIllustrate=null;returnToLearn=false;reopenQuiz=false;$("editorForm").reset();renderTemplate($("type").value,draft);$("status").value="À examiner";$("life").value="Actif";renderFoundations([]);$("editorTitle").textContent="Créer un élément";$("editMode").textContent="Nouveau";$("saveItem").textContent="Créer l'élément";$("deleteItem").hidden=true}
+function editItem(id){const x=item(id);if(!x)return;editing=id;draft={...(x.fields||{})};$("type").value=x.type;renderTemplate(x.type,draft);$("status").value=x.status;$("name").value=x.name;$("formulation").value=x.formulation||"";$("status").value=STATUSES.includes(x.status)?x.status:"À examiner";$("life").value=x.life||"Actif";renderFoundations(x.foundations||[]);$("editorTitle").textContent="Modifier un élément";$("editMode").textContent="Modification";$("saveItem").textContent="Enregistrer";$("deleteItem").hidden=false;setView("edit")}
+$("editorForm").addEventListener("submit",async e=>{e.preventDefault();const nm=$("name").value.trim();if(!nm){say("La désignation est obligatoire.");$("name").focus();return}
+ if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+ const prev=editing?item(editing):null,id=editing||uid(),type=$("type").value,fields=readFields(),typed=$("formulation").value.trim(),auto=!typed||typed===compose(type,nm,fields,id)||!!(prev&&prev.autoForm&&typed===prev.formulation);
+ const x={...(prev||{}),id,type,status:$("status").value,name:nm,fields,formulation:auto?compose(type,nm,fields,id):typed,autoForm:auto,foundations:readFoundations(),life:$("life").value,level:prev?prev.level||0:0,seen:prev?prev.seen||0:0};
+ if(editing){const get=id=>id===x.id?x:item(id),bad=db.links.filter(r=>(r.source===x.id||r.target===x.id)&&!relCheck(r)&&relCheck(r,get));
+  if(bad.length){if(!await ask(`Ce changement rend ${bad.length} relation(s) incompatible(s) avec le modèle :\n${bad.map(r=>"• "+get(r.source).name+" — "+r.type+" → "+get(r.target).name+" : "+relCheck(r,get)).join("\n")}\n\nLes supprimer et enregistrer ?`,"Supprimer et enregistrer",true))return;const del=new Set(bad.map(r=>r.id));db.links=db.links.filter(r=>!del.has(r.id))}}
+ const pend=!editing&&type==="Exemple"&&pendingIllustrate&&item(pendingIllustrate)?pendingIllustrate:null,back=!!pend&&returnToLearn,rq=back&&reopenQuiz;
+ if(editing){const i=db.items.findIndex(y=>y.id===editing);if(i>=0)db.items[i]=x;say("Élément modifié.")}else{db.items.push(x);if(pend)db.links.push({id:uid(),source:x.id,target:pend,type:"Illustre",note:""});say(pend?`Exemple créé : il illustre « ${itemName(pend)} ».`:"Élément créé.")}
+ persist();resetForm();refreshSelects();setView("learn");if(rq)openQuiz();else if(!back)openFiche(x.id)});
+$("clearForm").addEventListener("click",resetForm);
+/* iOS : la touche « suivant » envoie Entrée, ce qui soumettait le formulaire. Entrée passe au champ suivant ; on enregistre avec le bouton. */
+$("editorForm").addEventListener("keydown",e=>{if(e.key!=="Enter"||e.isComposing||e.target.tagName!=="INPUT")return;e.preventDefault();const f=[...$("editorForm").querySelectorAll("input,select,textarea")].filter(el=>!el.disabled&&!el.closest("[hidden]")&&el.offsetParent!==null),i=f.indexOf(e.target);if(i>=0&&i<f.length-1)f[i+1].focus();else e.target.blur()});
+$("deleteItem").addEventListener("click",async()=>{if(!editing)return;const id=editing;if(!await ask("Supprimer cet élément et ses relations ?","Supprimer",true))return;db.items=db.items.filter(x=>x.id!==id);db.links=db.links.filter(r=>r.source!==id&&r.target!==id);closeFiche();persist();resetForm();refreshSelects();setView("learn");say("Élément supprimé.")});
+$("editSelected").addEventListener("click",()=>{const id=selected;closeFiche();editItem(id)});
+$("linkSelected").addEventListener("click",()=>{const id=selected;closeFiche();setView("links");if(id)$("source").value=id;refreshRelationTypes()});
+
+/* ---------- Relations ---------- */
+function refreshSelects(){const opts=db.items.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.type)}</option>`).join("");const oldS=$("source").value,oldT=$("target").value;$("source").innerHTML=opts||'<option value="">Aucun élément</option>';$("target").innerHTML=opts||'<option value="">Aucun élément</option>';if(item(oldS))$("source").value=oldS;else if(selected&&item(selected))$("source").value=selected;if(item(oldT))$("target").value=oldT;refreshRelationTypes()}
+function relOptions(src){if(!src)return {model:[],peda:[]};const m=(RULES[src.type]||[]).map(r=>r[0]);if(AFFIRMATIONS.includes(src.type))m.push(CONTRA);return {model:m,peda:[PREREQ]}}
+function validTargets(src,rel){if(!src||!rel)return[];const get=id=>id===src.id?src:item(id);return db.items.filter(x=>x.id!==src.id&&x.life!=="Archivé"&&!relCheck({source:src.id,target:x.id,type:rel},get))}
+function refreshRelationTypes(){const s=item($("source").value),o=relOptions(s),opt=v=>`<option value="${esc(v)}">${esc(v)}</option>`;
+ $("relationType").innerHTML=s?(o.model.length?`<optgroup label="Relations du modèle">${o.model.map(opt).join("")}</optgroup>`:"")+`<optgroup label="Relation pédagogique (hors modèle)">${o.peda.map(opt).join("")}</optgroup>`:'<option value="">Aucune relation disponible</option>';refreshTargets()}
+function refreshTargets(){const s=item($("source").value),rel=$("relationType").value,valid=validTargets(s,rel);
+ $("target").innerHTML=valid.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${esc(x.type)}${x.type==="Règle"&&kindOf(x)?" ("+esc(kindOf(x).toLowerCase())+")":""}</option>`).join("")||'<option value="">Aucune cible compatible</option>';$("addRelation").disabled=!valid.length;
+ const nk=db.items.filter(x=>x.type==="Règle"&&!kindOf(x)&&x.life!=="Archivé").length;
+ $("relHelp").textContent=(REL_HELP[rel]||"")+((rel==="Applique"||rel==="S’appuie sur")&&nk?` ${nk} règle(s) sans nature précisée (descriptive ou d’action) ne sont pas proposées.`:"")+(rel===DEFREL&&isPrim(s)?` « ${s.name} » est un terme primitif : il n’est pas défini à partir d’autres concepts.`:"")}
+$("source").addEventListener("change",refreshRelationTypes);$("relationType").addEventListener("change",refreshTargets);
+$("addRelation").addEventListener("click",()=>{const s=item($("source").value),t=item($("target").value),type=$("relationType").value;if(!s||!t||!type){say("Choisis une source, une relation et une cible compatibles.");return}if(db.links.some(r=>r.source===s.id&&r.target===t.id&&r.type===type)||(type==="Se contredit avec"&&db.links.some(r=>r.source===t.id&&r.target===s.id&&r.type===type))){say("Cette relation existe déjà.");return}if(!validTargets(s,type).some(x=>x.id===t.id)){say("Cette relation n’est pas compatible avec les types choisis.");return}if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();db.links.push({id:uid(),source:s.id,target:t.id,type,note:$("relationNote").value.trim()});$("relationNote").value="";persist();renderLinks();say("Relation ajoutée.")});
+$("relationNote").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.target.blur()}});
+function renderLinks(){refreshSelects();$("relationsList").innerHTML=db.links.length?db.links.map(r=>`<div class="itemrow"><span class="name">${esc(itemName(r.source))} <b>— ${esc(r.type)} →</b> ${esc(itemName(r.target))}${r.note?' <span class="muted">('+esc(r.note)+')</span>':""}${relCheck(r)?' <span class="warn">⚠ '+esc(relCheck(r))+'</span>':""}</span><button data-remove-link="${esc(r.id)}" aria-label="Supprimer la relation">×</button></div>`).join(""):'<div class="empty">Aucune relation enregistrée.</div>';$("relationsList").querySelectorAll("[data-remove-link]").forEach(b=>b.addEventListener("click",()=>{db.links=db.links.filter(r=>r.id!==b.dataset.removeLink);persist();renderLinks();say("Relation supprimée.")}))}
+
+/* ---------- Données : fichier donnees.json placé dans le même dossier que la page ----------
+   Au démarrage, s’il existe et qu’il a changé depuis le dernier chargement, il remplace les données (la progression est conservée).
+   Si des modifications ont été faites dans l’app depuis, une confirmation est demandée. Absent ou illisible : données locales. */
+const DATA_FILE="donnees.json",FILE_KEY=STORE+"-fichier",DIRTY_KEY=STORE+"-modifie";
+const getK=k=>{try{return localStorage.getItem(k)}catch(_){return null}},setK=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(_){}};
+let fileState="chargement";
+/* Signature du contenu seul (sans la progression ni les formulations composées automatiquement) */
+const contentSig=p=>hashStr(JSON.stringify([[...p.items].sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0).map(x=>[x.id,x.type,x.name,x.status,x.life||"Actif",Object.keys(x.fields||{}).sort().map(k=>[k,x.fields[k]]),(x.foundations||[]).map(f=>[f.type,f.text]),x.autoForm?"":x.formulation||""]),p.links.map(r=>[r.source,r.target,r.type,r.note||""].join("|")).sort()]));
+const hashStr=t=>{let h=5381;for(let i=0;i<t.length;i++)h=(Math.imul(h,33)+t.charCodeAt(i))>>>0;return t.length+"-"+h.toString(36)};
+async function loadFile(){let txt;
+ try{const r=await fetch(DATA_FILE,{cache:"no-cache"});if(!r.ok){fileState="absent";renderLearn();return}txt=await r.text()}catch(_){fileState="bloque";renderLearn();return}
+ const h=hashStr(txt);if(h===getK(FILE_KEY)){fileState="ok";renderLearn();return}
+ let p=null;try{p=normalize(JSON.parse(txt))}catch(_){}
+ if(!p){fileState="illisible";renderLearn();if(db.items.length)say(`${DATA_FILE} est illisible : les données actuelles sont conservées.`);return}
+ fileState="ok";
+ if(db.items.length&&contentSig(p)===contentSig(db)){setK(FILE_KEY,h);setK(DIRTY_KEY,null);renderLearn();return}
+ const dirty=db.items.length>0&&(getK(DIRTY_KEY)==="1"||(getK(FILE_KEY)==null&&hadLocal));
+ if(dirty&&!await ask(`Le fichier ${DATA_FILE} (${p.items.length} éléments, ${p.links.length} relations) est différent des données de l’app.\nLe charger remplace les modifications faites dans l’app ; ta progression est conservée.`,"Charger le fichier",true)){setK(FILE_KEY,h);renderLearn();return}
+ const old=new Map(db.items.map(x=>[x.id,x]));p.items.forEach(x=>{const o=old.get(x.id);if(o){x.level=o.level||0;x.seen=o.seen||0}});
+ db=p;persist(false);setK(FILE_KEY,h);setK(DIRTY_KEY,null);
+ closeFiche();refreshSelects();resetForm();renderLinks();renderLearn();
+ const nb=p.links.filter(r=>relCheck(r,id=>p.items.find(x=>x.id===id),p.links)).length;
+ say(`${DATA_FILE} chargé : ${p.items.length} éléments, ${p.links.length} relations${nb?` (${nb} relation(s) à vérifier)`:""}.`)}
+
+/* ---------- Clavier iOS : masque la barre d'onglets pendant la saisie ---------- */
+const isText=el=>el&&el.matches&&el.matches("input:not([type=file]),textarea");
+document.addEventListener("focusin",e=>{if(isText(e.target))document.body.classList.add("typing")});
+document.addEventListener("focusout",()=>setTimeout(()=>{if(!isText(document.activeElement))document.body.classList.remove("typing")},60));
+
+/* ---------- Gabarits : saisie guidée et composition de la formulation ---------- */
+let draft={},pendingIllustrate=null,returnToLearn=false,reopenQuiz=false;
+function renderTemplate(type,vals){const m=MODEL[type];if(!m){$("templateFields").innerHTML="";return}
+ $("templateFields").innerHTML=`<div class="hint"><b>${esc(type)}</b> — ${esc(m.def)}<br>Gabarit : « ${esc(m.tpl)} »${m.note?`<br>${esc(m.note)}`:""}</div>`+m.fields.map(f=>{const id="f_"+f.k,val=vals[f.k]||"";let ctl;
+  if(f.options)ctl=`<select id="${id}" data-f="${f.k}">${f.options.map((o,i)=>`<option value="${i?esc(o):""}"${(i?o:"")===val?" selected":""}>${esc(o)}</option>`).join("")}</select>`;
+  else if(f.area)ctl=`<textarea id="${id}" data-f="${f.k}" placeholder="${esc(f.ph||"")}">${esc(val)}</textarea>`;
+  else ctl=`<input id="${id}" data-f="${f.k}" value="${esc(val)}" placeholder="${esc(f.ph||"")}" autocomplete="off" enterkeyhint="next">`;
+  return `<div class="field"><label for="${id}">${esc(f.label)}</label>${ctl}</div>`}).join("");
+ if(type==="Propriété"){const c=editing?propConcepts(editing):"";
+  $("templateFields").insertAdjacentHTML("afterbegin",`<p class="notice" style="margin:0 0 10px">${c?`Concept(s) relié(s) : ${esc(c)} — modifiable dans l’onglet Relations.`:"Aucun concept relié : après l’enregistrement, relie la propriété à son concept (onglet Relations)."}</p>`);
+  if(vals.subject)$("templateFields").insertAdjacentHTML("beforeend",`<div class="field"><label for="f_subject">Ancien champ « Concept » (à convertir)</label><input id="f_subject" data-f="subject" value="${esc(vals.subject)}" autocomplete="off" enterkeyhint="next"><p class="notice" style="margin-top:4px">Le concept vient maintenant de la relation. Reporte la précision éventuelle dans le champ « Précision », puis vide celui-ci.</p></div>`)}
+ /* Champs conditionnels (showIf) : exception réelle ; définition ou sens intuitif selon la nature du concept */
+ m.fields.filter(d=>d.showIf).forEach(d=>{const c=$("f_"+d.showIf[0]),el=$("f_"+d.k);if(!c||!el)return;const sync=()=>{el.closest(".field").hidden=c.value!==d.showIf[1]};c.addEventListener("change",sync);sync()});
+ const pt=type==="Exemple"&&pendingIllustrate?item(pendingIllustrate):null;
+ if(pt)$("templateFields").insertAdjacentHTML("afterbegin",`<p class="notice" id="pendingNote" style="margin:0 0 10px">Cet exemple illustrera ${esc(ART[pt.type])} « ${esc(pt.name)} » : la relation « Illustre » sera créée à l’enregistrement.</p>`)}
+function readFields(){const o={};$("templateFields").querySelectorAll("[data-f]").forEach(el=>{const v=el.value.trim();if(v&&!el.closest("[hidden]"))o[el.dataset.f]=v});return o}
+const dot=t=>/[.!?…»]$/.test(t)?t:t+".";
+function because(t,cap){const s=(/^[aeiouéèêàâîïôûœ]/i.test(t)?"parce qu’":"parce que ")+t;return cap?s.charAt(0).toUpperCase()+s.slice(1):s}
+const PROP_RELS=["Définit","Caractérise","Met en relation"];
+function propConcepts(id,links=db.links,items=db.items){const n=[...new Set(links.filter(r=>r.source===id&&PROP_RELS.includes(r.type)).map(r=>r.target))].map(t=>items.find(x=>x.id===t)).filter(Boolean).map(t=>`« ${t.name} »`);return n.length<2?n.join(""):n.slice(0,-1).join(", ")+" et "+n[n.length-1]}
+/* Texte qui suit le nom du concept dans l’ancien champ (« un tableau de taille N » + « Tableau » → « de taille N ») ; null si le nom n’y figure pas */
+function afterName(text,name){const fc=c=>c.normalize("NFD").charAt(0).toLowerCase(),A=[...String(text)],B=[...String(name).trim()],a=A.map(fc).join(""),b=B.map(fc).join("");if(!b)return null;
+ const m=new RegExp("(^|[^a-z0-9])("+b.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")(s|x)?(?![a-z0-9])").exec(a);if(!m)return null;
+ return A.slice(m.index+m[1].length+m[2].length+(m[3]||"").length).join("").replace(/^[\s,;:–—-]+/,"").trim()}
+function linkedDesc(id,type,links=db.links,items=db.items){const n=links.filter(r=>r.source===id&&r.type===type).map(r=>items.find(x=>x.id===r.target)).filter(Boolean).map(t=>`${ART[t.type]||""} « ${t.name} »`.trim());return n.length<2?n.join(""):n.slice(0,-1).join(", ")+" et "+n[n.length-1]}
+function compose(type,name,f,id,links,items){f=f||{};if(!Object.keys(f).some(k=>f[k]))return"";const v=(k,ph)=>(f[k]||"").trim()||ph;
+ switch(type){
+  case "Concept":return (f.nature===PRIM?`${name} : terme primitif, non défini. Sens intuitif : ${dot(v("intuition","[sens intuitif]"))}`:dot(`${name} : ${v("definition","[définition]")}`))+(f.traits?" Caractéristiques : "+dot(f.traits):"");
+  case "Propriété":{const subj=f.subject||propConcepts(id,links,items)||"[concept relié]";return dot(`Dans le domaine ${v("domain","[D]")}, ${subj}${f.qualifier?" "+f.qualifier:""} ${v("relation","[relation]")} ${v("object","[caractéristique ou autre concept]")}`)}
+  case "Règle":{const m=f.exceptionMode,exc=m==="Exception réelle"?`, sauf si ${v("exception","[exception]")}`:m==="Aucune exception identifiée dans ce domaine"?" (aucune exception identifiée dans ce domaine)":m==="Limites encore inconnues"?" (limites encore inconnues)":", sauf si [exception à examiner]";
+   return dot(`Dans le contexte ${v("context","[C]")}, si ${v("condition","[condition]")}, alors ${v("conclusion","[conséquence ou action]")}${exc}`)}
+  case "Procédure":return `Dans le contexte ${v("context","[C]")}, pour ${v("goal","[but]")}, à partir de ${v("inputs","[entrées et préconditions]")} :\n${v("steps","[étapes, choix ou répétitions]")}\nElle produit ${v("result","[résultat]")}, si ${dot(v("success","[conditions de réussite]"))}`;
+  case "Exemple":return dot(`« ${v("case","[cas concret]")} » illustre ${linkedDesc(id,"Illustre",links,items)||"[élément illustré]"} ${because(v("shown","[caractéristique montrée]"))}`);
+  case "Contre-exemple":return dot(`« ${v("case","[cas]")} » montre que ${linkedDesc(id,"Met à l’épreuve",links,items)||f.claim||"[affirmation]"} ne s’applique pas lorsque ${v("condition","[condition]")}`);
+ }return""}
+$("type").addEventListener("change",()=>{draft={...draft,...readFields()};renderTemplate($("type").value,draft)});
+$("composeBtn").addEventListener("click",()=>{const t=compose($("type").value,$("name").value.trim()||"[désignation]",readFields(),editing);if(!t){say("Remplis d’abord au moins un champ du gabarit.");return}$("formulation").value=t;say("Formulation composée à partir du gabarit.")});
+
+/* ---------- Fondements structurés ---------- */
+function foundRow(f={}){return `<div class="foundrow"><select data-ft aria-label="Type de fondement">${FOUND_TYPES.map(t=>`<option${t===(f.type||"Non précisé")?" selected":""}>${esc(t)}</option>`).join("")}</select><input data-fx value="${esc(f.text||"")}" placeholder="Ex. : manuel, démonstration, expérience…" autocomplete="off" aria-label="Contenu du fondement"><button type="button" data-rm aria-label="Retirer ce fondement">×</button></div>`}
+function wireFound(){$("foundList").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{b.closest(".foundrow").remove();if(!$("foundList").children.length)renderFoundations([])})}
+function renderFoundations(list){$("foundList").innerHTML=(list.length?list:[{}]).map(foundRow).join("");wireFound()}
+function readFoundations(){return [...$("foundList").querySelectorAll(".foundrow")].map(r=>({type:r.querySelector("[data-ft]").value,text:r.querySelector("[data-fx]").value.trim()})).filter(f=>f.text)}
+$("addFound").addEventListener("click",()=>{$("foundList").insertAdjacentHTML("beforeend",foundRow());wireFound();$("foundList").lastElementChild.querySelector("input").focus()});
+
+/* ---------- Validité sémantique d'une relation (source de vérité : le tableau RULES) ---------- */
+/* Un parcours ne peut être ordonné que si les prérequis ne forment aucune boucle (graphe orienté acyclique, tri topologique) */
+function prereqReach(from,to,links,type=PREREQ){const seen=new Set([from]),stack=[from];while(stack.length){const c=stack.pop();if(c===to)return true;links.forEach(l=>{if(l.type===type&&l.source===c&&!seen.has(l.target)){seen.add(l.target);stack.push(l.target)}})}return false}
+function relCheck(r,get=item,links=db.links){const s=get(r.source),t=get(r.target);
+ if(!s||!t)return "élément manquant";if(r.source===r.target)return "un élément ne peut pas être relié à lui-même";
+ if(!KNOWN.has(r.type))return "type de relation inconnu du modèle";
+ if(r.type===PREREQ){const others=links.filter(l=>l!==r&&!(r.id&&l.id===r.id));return prereqReach(r.target,r.source,others)?`boucle de prérequis : « ${t.name} » dépend déjà, directement ou non, de « ${s.name} »`:""}
+ if(r.type===CONTRA)return AFFIRMATIONS.includes(s.type)&&AFFIRMATIONS.includes(t.type)?"":"« Se contredit avec » ne relie que des propriétés et des règles";
+ const rule=(RULES[s.type]||[]).find(x=>x[0]===r.type);
+ if(!rule)return `un élément de type « ${s.type} » ne peut pas être source de « ${r.type} »`;
+ if(!rule[1].includes(t.type))return `« ${r.type} » ne peut pas viser un élément de type « ${t.type} »`;
+ if(rule[2]&&!rule[2](t))return rule[3];
+ if(r.type===DEFREL){if(isPrim(s))return "un terme primitif n’est pas défini : il ne peut pas « se définir à partir » d’autres concepts";const others=links.filter(l=>l!==r&&!(r.id&&l.id===r.id));if(prereqReach(r.target,r.source,others,DEFREL))return `définition circulaire : « ${t.name} » se définit déjà, directement ou non, à partir de « ${s.name} »`}
+ return ""}
+
+/* ---------- Contrôle : conformité au modèle ---------- */
+const outRel=(x,...types)=>db.links.filter(r=>r.source===x.id&&types.includes(r.type));
+const inRel=(x,...types)=>db.links.filter(r=>r.target===x.id&&types.includes(r.type));
+const isOpen=c=>{const v=(c.fields||{}).verdict||"";return !v||v==="À analyser"||v.startsWith("Condition")||v.startsWith("Énoncé à réviser")};
+function conformity(x){const f=x.fields||{},out=[],need=(k,msg)=>{if(!f[k])out.push(msg)};
+ switch(x.type){
+  case "Concept":if(isPrim(x))need("intuition","Sens intuitif non précisé : un terme primitif n’est pas défini, mais son sens doit être donné par des mots simples et des exemples.");else need("definition","Définition (sens) non précisée.");need("traits","Caractéristiques non précisées.");break;
+  case "Propriété":need("domain","Domaine non précisé : une propriété n’est vraie qu’à l’intérieur d’un domaine.");if(f.subject)out.push(`Ancien champ « Concept » à convertir (« ${f.subject} ») : le concept vient désormais de la relation ; garde seulement la précision (ex. : « de taille N »).`);need("relation","Relation non renseignée.");need("object","Caractéristique ou concept lié non renseigné.");
+   if(!outRel(x,"Définit","Caractérise","Met en relation").length)out.push("Propriété reliée à aucun concept (« Définit », « Caractérise » ou « Met en relation »).");
+   if(outRel(x,"Met en relation").length===1)out.push("« Met en relation » lie des concepts entre eux : relie la propriété à au moins deux concepts.");
+   {const d=new Set(outRel(x,"Définit").map(r=>r.target));if(outRel(x,"Caractérise").some(r=>d.has(r.target)))out.push("La propriété « définit » et « caractérise » le même concept : choisis l’une des deux relations.")}
+   break;
+  case "Règle":need("kind","Nature non précisée : règle descriptive ou d’action ?");need("context","Contexte non précisé.");need("condition","Condition (si…) absente.");need("conclusion","Conclusion (alors…) absente.");
+   if(!f.exceptionMode)out.push("Champ « sauf si » non examiné (convention 1).");else if(f.exceptionMode==="Exception réelle"&&!f.exception)out.push("Exception réelle annoncée mais non formulée.");
+   if(!outRel(x,"Porte sur").length)out.push("Règle reliée à aucun concept (« Porte sur ») : une règle est une affirmation sur des concepts.");break;
+  case "Procédure":need("goal","But non précisé.");need("inputs","Entrées et préconditions non précisées.");need("steps","Étapes absentes.");need("result","Résultat non précisé.");need("success","Conditions de réussite non précisées.");break;
+  case "Exemple":need("case","Cas concret non décrit.");need("shown","« Parce que… » absent : quelle caractéristique ce cas montre-t-il ?");
+   if(!outRel(x,"Illustre").length)out.push("Un exemple illustre un concept, une propriété, une règle ou une procédure : ajoute la relation « Illustre »."+(f.target?` Ancienne mention à convertir : « ${f.target} ».`:""));break;
+  case "Contre-exemple":need("case","Cas non décrit.");need("condition","Condition (« lorsque… ») non précisée.");
+   if(!outRel(x,"Met à l’épreuve").length)out.push("Un contre-exemple met un énoncé à l’épreuve : ajoute la relation « Met à l’épreuve »."+(f.claim?` Ancienne mention à convertir : ${f.claim}.`:""));
+   if(!f.verdict)out.push("Analyse à faire (convention 2) : hors domaine, condition à préciser ou énoncé à réviser ?");break;
+ }
+ db.links.filter(r=>r.source===x.id&&r.type!==PREREQ).forEach(r=>{const m=relCheck(r);if(m)out.push(`Relation « ${r.type} » vers « ${itemName(r.target)} » non conforme : ${m}.`)});
+ const open=inRel(x,"Met à l’épreuve").map(r=>item(r.source)).filter(c=>c&&c.life!=="Archivé"&&isOpen(c));
+ if(open.length&&x.status==="Établi")out.push(`Statut « Établi » alors qu’un contre-exemple n’est pas résolu (${open.map(c=>"« "+c.name+" »").join(", ")}) : un seul contre-exemple valable suffit à réfuter (convention 3). Analyse-le ou passe le statut à « Contesté ».`);
+ if(x.status==="Réfuté"&&!["Exemple","Contre-exemple"].includes(x.type)&&!inRel(x,"Met à l’épreuve").map(r=>item(r.source)).some(c=>c&&c.life!=="Archivé"&&/^(Condition|Énoncé à réviser)/.test((c.fields||{}).verdict||"")))
+  out.push("Statut « Réfuté » sans contre-exemple valable : relie un contre-exemple (« Met à l’épreuve ») dont l’analyse conclut à une condition à préciser (2b) ou à un énoncé à réviser (2c). Un cas hors du domaine (2a) ne réfute pas l’énoncé (convention 3).");
+ if(!x.formulation)out.push("Formulation absente (bouton « Composer »).");
+ return out}
+const badge=x=>`<span class="lvl lvl${x.level||0}">${LEVELS[x.level||0]}</span>`;
+function detailHTML(x,rs){const f=x.fields||{},m=MODEL[x.type],c=conformity(x),nd=learningNeeds(x),fs=x.foundations||[];
+ const rows=m?m.fields.filter(d=>f[d.k]&&!(d.k==="exceptionMode"&&f.exceptionMode==="Exception réelle"&&f.exception)).map(d=>`<dt>${esc(d.label)}</dt><dd>${esc(f[d.k])}</dd>`).join(""):"";
+ return `<div class="cardtitle">${esc(x.name)}</div><div class="muted">${esc(typeLabel(x))} · ${esc(x.status)}${x.life==="Archivé"?" · archivé":""} · ${badge(x)}</div>`+
+  `<div class="section"><b>Formulation</b><p style="white-space:pre-line">${esc(x.formulation)||'<span class="muted">Non renseignée</span>'}</p></div>`+
+  (rows?`<div class="section"><b>Selon le gabarit</b><dl class="fields">${rows}</dl></div>`:"")+
+  `<div class="section"><b>Fondements (${fs.length})</b>${fs.length?`<dl class="fields">${fs.map(g=>`<dt>${esc(g.type)}</dt><dd>${esc(g.text)}</dd>`).join("")}</dl>`:'<p class="muted">Aucun fondement renseigné.</p>'}</div>`+
+  `<div class="section"><b>Conformité au modèle</b>${c.length?`<ul class="issues">${c.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:'<p class="ok">Conforme au modèle de représentation.</p>'}</div>`+
+  (CORE.includes(x.type)?`<div class="section"><b>Exigences d’apprentissage</b>${nd.length?`<ul class="issues">${nd.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:'<p class="ok">Définitions nécessaires, termes primitifs et au moins 3 exemples : complet.</p>'}</div>`:"")+
+
+  `<div class="section"><b>Relations (${rs.length})</b>${rs.length?rs.map(r=>{const w=relCheck(r);return `<button class="relation" data-goto="${esc(r.source===x.id?r.target:r.source)}">${esc(itemName(r.source))} — <b>${esc(r.type)}</b> → ${esc(itemName(r.target))}${r.note?" · "+esc(r.note):""}${w?` <span class="warn">⚠ ${esc(w)}</span>`:""}</button>`}).join(""):'<p class="muted">Aucune relation enregistrée.</p>'}</div>`}
+
+/* ---------- Définitions et termes primitifs : ce dont chaque élément a besoin pour être compris ---------- */
+function isPrim(x){return !!x&&x.type==="Concept"&&(x.fields||{}).nature===PRIM}
+function typeLabel(x){return x.type+(isPrim(x)?" (terme primitif)":"")}
+function defsOf(x){return outRel(x,DEFREL).map(r=>item(r.target)).filter(t=>t&&t.life!=="Archivé")}
+function exOf(t){return [...new Set(inRel(t,"Illustre").map(r=>r.source))].map(item).filter(e=>e&&e.type==="Exemple"&&e.life!=="Archivé")}
+/* Concepts directement mobilisés par un élément, d’après ses relations du modèle */
+function baseConcepts(x,seen=new Set()){if(!x||seen.has(x.id))return[];seen.add(x.id);const tg=(...t)=>outRel(x,...t).map(r=>item(r.target)).filter(y=>y&&y.life!=="Archivé");
+ switch(x.type){
+  case "Concept":return [x];
+  case "Propriété":return tg(...PROP_RELS);
+  case "Règle":return tg("Porte sur");
+  case "Procédure":return tg("S’appuie sur","Applique","Contient").flatMap(y=>baseConcepts(y,seen));
+  case "Exemple":return tg("Illustre").flatMap(y=>baseConcepts(y,seen));
+  case "Contre-exemple":return tg("Met à l’épreuve").flatMap(y=>baseConcepts(y,seen));
+ }return[]}
+/* Fermeture par « Se définit à partir de » : chaque concept vient après ceux qui servent à le définir */
+function defClosure(roots){const seen=new Set(),out=[],visit=c=>{if(!c||seen.has(c.id))return;seen.add(c.id);defsOf(c).forEach(visit);out.push(c)};roots.forEach(visit);return out}
+function defDepth(x,memo=new Map(),stack=new Set()){if(memo.has(x.id))return memo.get(x.id);if(stack.has(x.id))return 0;stack.add(x.id);const d=defsOf(x),v=d.length?1+Math.max(...d.map(y=>defDepth(y,memo,stack))):0;stack.delete(x.id);memo.set(x.id,v);return v}
+const needRoots=x=>x.type==="Concept"?defsOf(x):baseConcepts(x);
+/* Exigences d’apprentissage : définitions nécessaires, termes primitifs, au moins MIN_EX exemples */
+function learningNeeds(x){const out=[];if(!CORE.includes(x.type)||x.life==="Archivé")return out;
+ const roots=needRoots(x),cl=defClosure(roots);
+ if(x.type==="Concept"&&!isPrim(x)&&!roots.length)out.push("Concept défini sans « Se définit à partir de » : indique les concepts qui servent à le définir, ou marque-le comme terme primitif.");
+ if(x.type==="Procédure"&&!roots.length)out.push("Aucun concept mobilisé : relie la procédure (« S’appuie sur », « Applique », « Contient ») à ce qu’elle utilise, pour en déduire les définitions nécessaires.");
+ if(cl.length&&!cl.some(isPrim))out.push("Aucun terme primitif atteint : complète la chaîne « Se définit à partir de » jusqu’à des termes primitifs.");
+ const n=exOf(x).length;if(n<MIN_EX)out.push(`${n?`Seulement ${n} exemple${n>1?"s":""}`:"Aucun exemple"} sur les ${MIN_EX} attendus : ajoute des exemples qui l’illustrent (relation « Illustre »).`);
+ return out}
+
+/* ---------- Apprendre : rappel actif, parcours et contrôle ---------- */
+let quizId=null,revealed=false,hinted=false,noteOpen=false;
+const prereqs=x=>outRel(x,PREREQ).map(r=>item(r.target)).filter(Boolean);
+const excText=f=>f.exceptionMode==="Exception réelle"?f.exception:f.exceptionMode;
+function question(x){const f=x.fields||{};
+ switch(x.type){
+  case "Concept":
+   if(isPrim(x)){if(f.intuition||f.traits)return {q:`« ${x.name} » est un terme primitif : il n’est pas défini. Quel est son sens intuitif ? Quelles sont ses caractéristiques ?`,a:[["Sens intuitif",f.intuition],["Caractéristiques",f.traits]]};break}
+   if(f.definition)return {q:`Que désigne le concept « ${x.name} » ? Quelles sont ses caractéristiques ?`,a:[["Définition",f.definition],["Caractéristiques",f.traits]]};break;
+  case "Propriété":{const subj=f.subject||[propConcepts(x.id),f.qualifier].filter(Boolean).join(" ");if(subj&&f.relation)return {q:`Dans le domaine ${f.domain||"[non précisé]"}, complète : « ${subj} ${f.relation} … »`,a:[["Réponse",f.object],["Énoncé complet",x.formulation]]};break}
+  case "Règle":if(f.condition)return {q:`${f.context?"Dans le contexte "+f.context+", s":"S"}i ${f.condition}, alors… ? Y a-t-il une exception ? Est-ce une règle descriptive ou d’action ?`,a:[["Alors",f.conclusion],["Sauf si",excText(f)],["Nature",f.kind]]};break;
+  case "Procédure":if(f.goal)return {q:`Pour ${f.goal}${f.inputs?", à partir de "+f.inputs:""} : quelles sont les étapes, et à quelles conditions la procédure réussit-elle ?`,a:[["Étapes",f.steps],["Résultat",f.result],["Conditions de réussite",f.success]]};break;
+  /* Exemple et contre-exemple : la cible est donnée (les définitions affichées la laissent deviner) ; on demande ce que le cas montre */
+  case "Exemple":if(f.case){const t=linkedDesc(x.id,"Illustre");return {q:t?`« ${f.case} » illustre ${t}. Quelle caractéristique ce cas montre-t-il ?`:`« ${f.case} » : qu’est-ce que ce cas illustre, et pourquoi ?`,a:[["Parce que",f.shown]]}}break;
+  case "Contre-exemple":if(f.case){const T=outRel(x,"Met à l’épreuve").map(r=>item(r.target)).filter(Boolean),t=linkedDesc(x.id,"Met à l’épreuve")||f.claim;return {q:t?`« ${f.case} » met à l’épreuve ${t}. Dans quel cas l’énoncé ne s’applique-t-il pas, et qu’en conclure (convention 2) ?`:`« ${f.case} » : quel énoncé ce cas met-il à l’épreuve, et qu’en conclure ?`,a:[["Énoncé mis à l’épreuve",T.map(y=>y.formulation||y.name).join("\n")||f.claim],["Ne s’applique pas lorsque",f.condition],["Analyse",f.verdict]]}}break;
+ }
+ return {q:`Énonce « ${x.name} » (${x.type.toLowerCase()}) avec tes propres mots.`,a:[["Formulation",x.formulation||"Non renseignée"]]}}
+/* Avant la question : termes primitifs puis définitions nécessaires, du plus simple au plus composé */
+function prepHTML(x){const roots=needRoots(x),cl=defClosure(roots).filter(c=>c.id!==x.id),dd=new Map(),
+  prim=cl.filter(isPrim).sort((a,b)=>a.name.localeCompare(b.name,"fr")),defd=cl.filter(c=>!isPrim(c)).sort((a,b)=>defDepth(a,dd)-defDepth(b,dd)||a.name.localeCompare(b.name,"fr")),notes=[];
+ if(isPrim(x)){}
+ else if(x.type==="Concept"&&!roots.length)notes.push("Les concepts qui servent à définir celui-ci ne sont pas indiqués : relie-le à eux par « Se définit à partir de » (onglet Relations), ou marque-le comme terme primitif.");
+ else if(!cl.length)notes.push("Aucun concept relié : les définitions nécessaires ne peuvent pas être déterminées (onglet Relations).");
+ else if(!prim.length)notes.push("Aucun terme primitif atteint : la chaîne de définitions est incomplète.");
+ const dl=(l,txt)=>`<dl class="fields">${l.map(c=>`<dt>${esc(c.name)}</dt><dd>${txt(c,c.fields||{})}</dd>`).join("")}</dl>`;
+ return `<div class="prep p"><div class="prephead">Termes primitifs <span>non définis : on les comprend par leur sens intuitif</span></div>`+
+   (prim.length?dl(prim,(c,f)=>esc(f.intuition||"Sens intuitif non renseigné.")):`<p class="muted" style="margin:6px 0 0">${isPrim(x)?"Ce concept est lui-même un terme primitif.":"Aucun terme primitif atteint."}</p>`)+`</div>`+
+  `<div class="prep"><div class="prephead">Définitions nécessaires <span>du plus simple au plus composé</span></div>`+
+   (defd.length?dl(defd,(c,f)=>{const d=defsOf(c);return esc(f.definition||"Définition non renseignée.")+(d.length?`<br><span class="muted">À partir de : ${esc(d.map(y=>y.name).join(", "))}</span>`:"")}):`<p class="muted" style="margin:6px 0 0">${isPrim(x)?"Aucune : un terme primitif ne se définit pas.":"Aucune définition préalable."}</p>`)+
+   notes.map(t=>`<p class="notice">${esc(t)}</p>`).join("")+`</div>`}
+/* Exemples : ceux de l’élément ; pour un exemple, les autres exemples des éléments qu’il illustre (sans doublon) ; pour un contre-exemple, ceux de l’énoncé testé */
+function exampleGroups(x){const tg=type=>outRel(x,type).map(r=>item(r.target)).filter(t=>t&&t.life!=="Archivé");
+ if(x.type==="Exemple"){const T=tg("Illustre");if(!T.length)return[];const on=new Map();
+  T.forEach(t=>exOf(t).forEach(e=>{if(e.id===x.id)return;if(!on.has(e.id))on.set(e.id,{e,ts:[]});on.get(e.id).ts.push(t)}));
+  return [{list:[...on.values()].map(v=>v.e),also:T.length>1?new Map([...on].map(([k,v])=>[k,v.ts])):null,title:T.length>1?"Autres exemples des mêmes éléments":`Autres exemples ${DE[T[0].type]} « ${T[0].name} »`,req:T}]}
+ if(x.type==="Contre-exemple")return tg("Met à l’épreuve").map(t=>({list:exOf(t),title:`Exemples ${DE[t.type]} « ${t.name} », là où l’énoncé s’applique`,req:[t]}));
+ return [{list:exOf(x),title:"Exemples",req:[x]}]}
+function examplesHTML(x){const G=exampleGroups(x);
+ if(!G.length)return `<div class="prep ex"><div class="prephead">Exemples</div><p class="notice">Relie d’abord ce cas à l’élément qu’il ${x.type==="Exemple"?"illustre":"met à l’épreuve"} : ses exemples s’afficheront ici.</p></div>`;
+ return G.map(g=>`<div class="prep ex"><div class="prephead">${esc(g.title)} <span>(${g.list.length})</span></div>`+
+  (g.list.length?`<ol class="exlist">${g.list.map(e=>{const f=e.fields||{},ts=g.also&&g.also.get(e.id);return `<li><b>${esc(f.case||e.name)}</b>${f.shown?`<br><span class="muted">${esc(because(f.shown,true))}</span>`:""}${ts?`<br><span class="muted">Illustre aussi : ${esc(ts.map(t=>t.name).join(", "))}</span>`:""}</li>`}).join("")}</ol>`:`<p class="muted" style="margin:6px 0 0">${x.type==="Exemple"?"Aucun autre exemple.":"Aucun exemple."}</p>`)+
+  g.req.map(t=>{const n=exOf(t).length;return n<MIN_EX?`<p class="warn">${n?`Seulement ${n} exemple${n>1?"s":""}`:"Aucun exemple"} pour ${esc(ART[t.type])} « ${esc(t.name)} » : il en faut au moins ${MIN_EX}.</p><button type="button" class="small" data-addex="${esc(t.id)}">Ajouter un exemple</button>`:""}).join("")+`</div>`).join("")}
+/* Ouvre le constructeur sur un nouvel exemple ; la relation « Illustre » est créée à l’enregistrement */
+function addExample(tid){const t=item(tid);if(!t)return;const fromLearn=!$("learn").hidden,fromQuiz=!$("quizModal").hidden;resetForm();pendingIllustrate=t.id;returnToLearn=fromLearn;reopenQuiz=fromQuiz;$("type").value="Exemple";renderTemplate("Exemple",draft);$("editorTitle").textContent="Ajouter un exemple";setView("edit")}
+const active=()=>db.items.filter(x=>x.life!=="Archivé");
+const pool=()=>{const f=$("quizFilter").value;return active().filter(x=>inSpace(x)&&(f==="Tous"||x.type===f))};
+let skipped=[];
+function nextCard(skip){const k=x=>skipped.indexOf(x.id),P=[...pool()].sort((a,b)=>(k(a)>=0)-(k(b)>=0)||(a.level||0)-(b.level||0)||(a.seen||0)-(b.seen||0)||k(a)-k(b));quizId=P.length?(P.find(x=>x.id!==skip)||P[0]).id:null;revealed=false;hinted=false;noteOpen=false}
+function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();const x=item(quizId);
+ if(!x){$("quiz").innerHTML='<div class="empty">Aucun élément à réviser pour ce filtre.</div>';return}
+ const q=question(x),pre=prereqs(x).filter(p=>(p.level||0)<2),fs=x.foundations||[];
+ $("quiz").innerHTML=`<div class="qcard"><div class="panelhead" style="margin-bottom:6px"><span class="tag">${esc(typeLabel(x))}</span>${badge(x)}</div><div class="cardtitle">${esc(x.name)}</div>`+prepHTML(x)+
+  `<div class="qhead">Question</div><p class="prompt">${esc(q.q)}</p>`+
+  (pre.length?`<p class="notice">Prérequis pas encore acquis : ${pre.map(p=>"« "+esc(p.name)+" »").join(", ")}.</p>`:"")+
+  (revealed?`<div class="answer"><dl class="fields">${q.a.filter(a=>a[1]).map(a=>`<dt>${esc(a[0])}</dt><dd>${esc(a[1])}</dd>`).join("")}${fs.length?`<dt>Fondements</dt><dd>${esc(fs.map(g=>g.type+" : "+g.text).join("\n"))}</dd>`:""}</dl></div>`+examplesHTML(x)+noteHTML(x,true)+`<p class="notice">Compare honnêtement avec ta réponse, puis évalue-toi.</p><div class="actions"><button data-rate="0">À revoir</button><button data-rate="1">Presque</button><button class="primary" data-rate="2">Acquis</button></div>`
+   :`<p class="notice">Réponds de mémoire, à voix haute ou par écrit, avant d’afficher la réponse.${hinted?"":" Les exemples peuvent servir d’indice."}</p><div class="actions"><button class="primary" id="revealBtn">Afficher la réponse</button>${hinted?"":'<button id="hintBtn">Indice : les exemples</button>'}<button id="skipBtn">Passer</button></div>`+(hinted?examplesHTML(x):"")+noteHTML(x,noteOpen))+`</div>`;
+ /* Notes : repliées avant la réponse (ne pas souffler pendant le rappel) ; après, ouvertes et placées avant l’auto-évaluation, qui passe à la carte suivante */
+ const nd=$("quiz").querySelector("details.note");nd.addEventListener("toggle",()=>{noteOpen=nd.open});wireNotes($("quiz"));
+ const rb=$("revealBtn");if(rb)rb.addEventListener("click",()=>{revealed=true;renderQuiz()});
+ const hb=$("hintBtn");if(hb)hb.addEventListener("click",()=>{hinted=true;renderQuiz()});
+ const sb=$("skipBtn");if(sb)sb.addEventListener("click",()=>{skipped=skipped.filter(i=>i!==x.id).concat(x.id);nextCard(x.id);renderQuiz();toQuiz()});
+ wire($("quiz"));
+ $("quiz").querySelectorAll("[data-rate]").forEach(b=>b.addEventListener("click",()=>{x.level=+b.dataset.rate;x.seen=Date.now();skipped=skipped.filter(i=>i!==x.id);persist(false);say(`« ${x.name} » : ${LEVELS[x.level].toLowerCase()}.`);nextCard(x.id);renderLearn();if(x.level===2)closeQuiz();else toQuiz()}))} /* « Acquis » ferme la fenêtre : retour au parcours */
+function toQuiz(){$("quizBody").scrollTo({top:0,behavior:behavior()})}
+/* ---------- Fenêtre d’entraînement : le parcours reste en place derrière ---------- */
+let quizFrom=null;
+/* from : bouton à refocaliser à la fermeture, ou {review:id} (le bouton « Réviser » de la ligne, recréé à chaque rendu) ; absent : on garde le précédent */
+function openQuiz(from){const m=$("quizModal");if(from!==undefined)quizFrom=from;
+ m.hidden=false;document.documentElement.classList.add("locked");$("quizBody").scrollTop=0;$("closeQuiz").focus({preventScroll:true})}
+function closeQuiz(restore=true){$("quizModal").hidden=true;document.documentElement.classList.remove("locked");
+ if(!restore)return;const el=quizFrom&&quizFrom.review?(B=>B[quizFrom.nth||0]||B[0])([...$("pathList").querySelectorAll("[data-review]")].filter(b=>b.dataset.review===quizFrom.review)):quizFrom;quizFrom=null;
+ if(el&&el.isConnected&&el.offsetParent)el.focus({preventScroll:true})}
+$("openQuiz").addEventListener("click",()=>{renderQuiz();openQuiz($("openQuiz"))});
+$("closeQuiz").addEventListener("click",()=>closeQuiz());
+$("quizModal").addEventListener("click",e=>{if(e.target===$("quizModal"))closeQuiz()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("modal").hidden&&$("ficheModal").hidden&&!$("quizModal").hidden)closeQuiz()});
+/* ---------- Espaces d’apprentissage (types de contenus de Merrill : concepts, principes, procédures ; ordre de Gagné) ----------
+   Chaque exemple ou contre-exemple vit dans l’espace de ce qu’il illustre ou met à l’épreuve, en fin de parcours (liste à plat). */
+const SPACES=[
+ {id:"concepts",label:"Concepts",core:["Concept","Propriété"],filters:["Concept","Propriété","Exemple","Contre-exemple"],
+  hint:"Les objets de connaissance : les concepts (termes primitifs d’abord, puis chacun après ceux qui le définissent), leurs propriétés, puis leurs exemples."},
+ {id:"regles",label:"Règles",core:["Règle"],filters:["Règle","Exemple","Contre-exemple"],
+  hint:"Les règles relient les concepts : chacune indique ce sur quoi elle porte. À aborder une fois ses concepts compris."},
+ {id:"methodes",label:"Procédures",core:["Procédure"],filters:["Procédure","Exemple","Contre-exemple"],
+  hint:"Les procédures : des étapes qui s’appuient sur les concepts et appliquent les règles. À aborder après les deux autres espaces."}];
+const ILL=["Illustre","Met à l’épreuve"],isIll=x=>x.type==="Exemple"||x.type==="Contre-exemple";
+const illTargets=x=>outRel(x,...ILL).map(r=>item(r.target)).filter(t=>t&&t.life!=="Archivé"&&!isIll(t));
+function spacesOf(x){if(!isIll(x))return SPACES.filter(s=>s.core.includes(x.type));const T=illTargets(x),S=SPACES.filter(s=>T.some(t=>s.core.includes(t.type)));return S.length?S:[SPACES[0]]}
+let curSpace=SPACES[0];try{curSpace=SPACES.find(s=>s.id===localStorage.getItem(STORE+"-espace"))||curSpace}catch(_){}
+const inSpace=(x,s=curSpace)=>spacesOf(x).includes(s);
+const spaceY={};
+function fillFilter(){$("quizFilter").innerHTML=["Tous",...curSpace.filters].map(t=>`<option>${t}</option>`).join("")}
+fillFilter();
+/* Changer d’espace : chaque espace garde sa position dans la page */
+function setSpace(s,focus=true){if(s===curSpace)return;const vis=!$("learn").hidden;if(vis)spaceY[curSpace.id]=window.scrollY;curSpace=s;try{localStorage.setItem(STORE+"-espace",s.id)}catch(_){}
+ fillFilter();quizId=null;renderLearn();if(!vis)return;
+ /* première visite d’un espace : début de son parcours (haut de la section, la barre étant collante) */
+ const top=$("learn").getBoundingClientRect().top+window.scrollY;window.scrollTo(0,spaceY[s.id]!=null?spaceY[s.id]:Math.min(window.scrollY,top));
+ const b=$("spaceBar").querySelector('[aria-pressed="true"]');if(focus&&b)b.focus({preventScroll:true})}
+function depth(x,seen=new Set()){if(seen.has(x.id))return 0;seen.add(x.id);const p=prereqs(x);return p.length?1+Math.max(...p.map(y=>depth(y,seen))):0}
+function row(x,extra){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${extra} ${badge(x)}</div></span><button data-review="${esc(x.id)}">Réviser</button><button data-open="${esc(x.id)}">Voir</button></div>`}
+function qrow(x,is,word){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${is.length} ${word}${is.length>1?"s":""} : ${esc(is[0])}</div></span><button data-edit="${esc(x.id)}">Compléter</button><button data-open="${esc(x.id)}">Voir</button></div>`}
+function nrow(x,is){const nodef=x.type==="Concept"&&!isPrim(x)&&!defsOf(x).length,few=exOf(x).length<MIN_EX;
+ return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${is.length} manque${is.length>1?"s":""} : ${esc(is[0])}</div></span>${nodef?`<button data-deflink="${esc(x.id)}">Relier</button>`:few?`<button data-addex="${esc(x.id)}">Ajouter un exemple</button>`:`<button data-edit="${esc(x.id)}">Compléter</button>`}<button data-open="${esc(x.id)}">Voir</button></div>`}
+function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventListener("click",()=>review(b.dataset.review,b)));el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openFiche(b.dataset.open)));el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)));
+ el.querySelectorAll("[data-addex]").forEach(b=>b.addEventListener("click",()=>addExample(b.dataset.addex)));
+ el.querySelectorAll("[data-deflink]").forEach(b=>b.addEventListener("click",()=>{setView("links");$("source").value=b.dataset.deflink;refreshRelationTypes();$("relationType").value=DEFREL;refreshTargets()}))}
+function renderLearn(){const act=active(),dd=new Map(),sm=new Map(act.map(x=>[x.id,spacesOf(x)])),inS=x=>sm.get(x.id).includes(curSpace),
+  mine=act.filter(inS),n=mine.length,ok=mine.filter(x=>(x.level||0)===2).length,k=SPACES.indexOf(curSpace);
+ $("spaceBar").innerHTML=SPACES.map(s=>{const xs=act.filter(x=>sm.get(x.id).includes(s));return `<button type="button" data-space="${s.id}" aria-pressed="${s===curSpace}"><b>${s.label}</b><small>${xs.filter(x=>(x.level||0)===2).length} / ${xs.length} acquis</small></button>`}).join("");
+ $("spaceBar").querySelectorAll("[data-space]").forEach(b=>b.addEventListener("click",()=>setSpace(SPACES.find(s=>s.id===b.dataset.space))));
+ $("learnProgress").textContent=`${curSpace.label} · ${ok} / ${n} acquis`;$("quizProgress").textContent=`${curSpace.label} · ${ok} / ${n}`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";
+ $("spaceTag").textContent=`Espace ${k+1} sur ${SPACES.length}`;$("spaceHint").textContent=curSpace.hint;renderQuiz();
+ const names=l=>l.map(y=>esc(y.name)).join(", "),sortL=xs=>xs.sort((a,b)=>defDepth(a,dd)-defDepth(b,dd)||depth(a)-depth(b)||a.name.localeCompare(b.name,"fr")),
+  after=x=>{const p=prereqs(x);return p.length?" · après "+names(p):""},
+  meta=x=>{const d=x.type==="Concept"?defsOf(x):[];return esc(typeLabel(x))+(d.length?" · à partir de "+names(d):"")+after(x)},
+  group=(title,xs,f=x=>row(x,meta(x)))=>`<div class="pathgroup">${esc(title)}</div>`+(xs.length?xs.map(f).join(""):'<p class="muted">Aucun élément.</p>'),
+  of=(...t)=>sortL(act.filter(x=>t.includes(x.type)&&inS(x))),
+  ills=n=>group(`${n}. Illustrer et délimiter : exemples et contre-exemples`,of("Exemple","Contre-exemple"));
+ const body=curSpace.id==="concepts"?group("1. Les objets : concepts (termes primitifs d’abord)",of("Concept"))+group("2. Les affirmations : propriétés",of("Propriété"))+ills(3)
+  :curSpace.id==="regles"?group("1. Les affirmations : règles",of("Règle"),x=>{const on=outRel(x,"Porte sur").map(r=>item(r.target)).filter(Boolean);return row(x,"Règle"+(on.length?" · porte sur "+names(on):"")+after(x))})+ills(2)
+  :group("1. Les procédures",of("Procédure"),x=>{const t=(...r)=>outRel(x,...r).map(r=>item(r.target)).filter(Boolean),su=t("S’appuie sur"),ap=t("Applique");return row(x,"Procédure"+(su.length?" · s’appuie sur "+names(su):"")+(ap.length?" · applique "+names(ap):"")+after(x))})+ills(2);
+ $("pathList").innerHTML=(db.items.length?"":`<ul class="issues"><li>${esc({chargement:`Chargement du contenu (${DATA_FILE})…`,absent:`Aucun contenu : le fichier ${DATA_FILE} est introuvable dans le dossier de la page.`,bloque:`Le navigateur n’a pas pu lire ${DATA_FILE}. Ouvre la page depuis son adresse en ligne : ouverte comme fichier local, la lecture du JSON est bloquée.`,illisible:`Le fichier ${DATA_FILE} est illisible (JSON invalide).`,ok:`Le fichier ${DATA_FILE} ne contient aucun élément.`}[fileState])}</li></ul>`)+(()=>{const L=db.links.filter(r=>r.type===PREREQ&&relCheck(r));return L.length?`<ul class="issues">${L.map(r=>`<li>Boucle de prérequis : « ${esc(itemName(r.source))} » → « ${esc(itemName(r.target))} ». Supprime l’un des liens de la boucle (onglet Relations) pour que le parcours puisse être ordonné.</li>`).join("")}</ul>`:""})()+(db.items.length?body:"");
+ wire($("pathList"));
+ const bad=act.map(x=>[x,conformity(x)]).filter(e=>e[1].length).sort((a,b)=>b[1].length-a[1].length),needs=act.map(x=>[x,learningNeeds(x)]).filter(e=>e[1].length);
+ $("qualityList").innerHTML=`<div class="pathgroup">Conformité au modèle</div><p class="muted">${act.length-bad.length} élément(s) conforme(s) sur ${act.length}.</p>`+(bad.length?bad.map(([x,is])=>qrow(x,is,"écart")).join(""):'<p class="ok">Tous les éléments respectent le modèle.</p>')+
+  `<div class="pathgroup">Exigences d’apprentissage</div><p class="muted">Chaque concept, propriété, règle et procédure est présenté avec ses termes primitifs et ses définitions nécessaires, et illustré par au moins ${MIN_EX} exemples.</p>`+(needs.length?needs.map(([x,is])=>nrow(x,is)).join(""):'<p class="ok">Toutes les exigences d’apprentissage sont remplies.</p>');wire($("qualityList"))}
+function review(id,btn){const x=item(id);if(!x)return;
+ let nth=0;if(btn&&$("pathList").contains(btn))nth=Math.max(0,[...$("pathList").querySelectorAll("[data-review]")].filter(b=>b.dataset.review===id).indexOf(btn));
+ const S=spacesOf(x);if(!S.includes(curSpace))setSpace(S[0],false);
+ $("quizFilter").value="Tous";quizId=id;revealed=false;hinted=false;noteOpen=false;if($("learn").hidden)setView("learn");else renderLearn();
+ openQuiz({review:id,nth})}
+$("quizFilter").addEventListener("change",()=>{nextCard();renderQuiz()});
+$("reviewSelected").addEventListener("click",()=>{const id=selected;closeFiche();if(id)review(id)});
+
+/* ---------- Rappel du modèle (généré à partir des mêmes définitions que l'application) ---------- */
+function relTable(){const rows=[];Object.entries(RULES).forEach(([src,l])=>l.forEach(r=>rows.push([src,r[0],r[4]||r[1].join(", ")])));rows.push(["Propriété ou Règle",CONTRA,"Propriété ou Règle"]);
+ return `<table class="reltable"><thead><tr><th>Source</th><th>Relation</th><th>Cible</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td><b>${esc(r[1])}</b></td><td>${esc(r[2])}</td></tr>`).join("")}</tbody></table><p class="muted">« ${PREREQ} » est une relation pédagogique, hors modèle : elle ordonne le parcours d’apprentissage.</p>`}
+$("modelMemo").innerHTML=Object.entries(MODEL).map(([t,m])=>`<p><b>${esc(t)}</b> : ${esc(m.def)}<br><span class="muted">« ${esc(m.tpl)} »</span></p>`).join("")+
+ `<p><b>Relations</b></p>${relTable()}`+
+ `<p><b>Conventions</b><br>1. « Sauf si… » est un champ à examiner : exception réelle, « aucune exception identifiée dans ce domaine » ou « limites encore inconnues ».<br>2. Un contre-exemple n’est pas automatiquement une exception : a) hors du domaine prévu ? il ne contredit pas l’énoncé dans son domaine, sans le prouver ; b) sinon, préciser la condition ; c) sinon, réviser l’énoncé, éventuellement en ajoutant une exception.<br>3. Un seul contre-exemple valable suffit à réfuter un énoncé ; aucun nombre d’exemples ne suffit à le prouver.</p>`+
+ `<p><b>Définitions et termes primitifs</b><br>Un concept est soit défini à partir d’autres concepts (relation « ${DEFREL} »), soit un terme primitif : il n’est pas défini, on en donne le sens intuitif, les caractéristiques et des exemples. Toute chaîne de définitions aboutit à des termes primitifs ; une définition circulaire n’est pas acceptée.</p>`+
+ `<p><b>Exigences d’apprentissage</b><br>Dans « Apprendre », chaque élément est présenté avec les termes primitifs et les définitions dont il a besoin, puis illustré par au moins ${MIN_EX} exemples. Le contrôle signale ce qui manque.</p>`+
+ `<p><b>Rôles</b><br>Concepts : les objets de connaissance. Propriétés et règles : les affirmations sur ces objets. Procédures : les méthodes composées d’étapes et de règles d’action. Exemples et contre-exemples : ils illustrent, testent et délimitent les éléments précédents.</p>`+
+ `<p><b>Statut et cycle de vie</b><br>Statut épistémique : ${STATUSES.join(", ")}. Cycle de vie : actif ou archivé ; un élément archivé reste consultable mais sort du parcours et du contrôle.</p>`+
+ `<p><b>Fondements</b><br>${FOUND_TYPES.slice(1).join(", ")}. Un élément peut en avoir plusieurs.</p>`;
+
+load();db.items.forEach(x=>{if(x.autoForm){const t=compose(x.type,x.name,x.fields,x.id);if(t)x.formulation=t}}); /* formulations à jour après migration */
+resetForm();refreshSelects();setView("learn");loadFile();
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(_){}
+})();
+</script>
+</body>
+</html>
