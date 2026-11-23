@@ -122,7 +122,7 @@ p.warn{margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.7</p></header>
+<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.8</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -642,10 +642,11 @@ function nextCard(skip){const k=x=>skipped.indexOf(x.id),P=[...pool()].sort((a,b
 function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();const x=item(quizId);
  if(!x){$("quiz").innerHTML='<div class="empty">Aucun élément à réviser pour ce filtre.</div>';return}
  const q=question(x),pre=prereqs(x).filter(p=>(p.level||0)<2),fs=x.foundations||[];
- $("quiz").innerHTML=`<div class="qcard"><div class="panelhead" style="margin-bottom:6px"><span class="tag">${esc(typeLabel(x))}</span>${badge(x)}</div><div class="cardtitle">${esc(x.name)}</div>`+prepHTML(x)+
-  `<div class="qhead">Question</div><p class="prompt">${esc(q.q)}</p>`+
-  (pre.length?`<p class="notice">Prérequis pas encore acquis : ${pre.map(p=>"« "+esc(p.name)+" »").join(", ")}.</p>`:"")+
-  (revealed?`<div class="answer"><dl class="fields">${q.a.filter(a=>a[1]).map(a=>`<dt>${esc(a[0])}</dt><dd>${esc(a[1])}</dd>`).join("")}${fs.length?`<dt>Fondements</dt><dd>${esc(fs.map(g=>g.type+" : "+g.text).join("\n"))}</dd>`:""}</dl></div>`+examplesHTML(x)+noteHTML(x)+`<p class="notice">Compare honnêtement avec ta réponse, puis évalue-toi.</p><div class="actions"><button data-rate="0">À revoir</button><button data-rate="1">Presque</button><button class="primary" data-rate="2">Acquis</button></div>`
+ /* Concepts : tout s’affiche d’emblée (question en haut, puis termes primitifs, définitions, réponse, exemples, Ma définition) ; pas de bouton « Afficher la réponse » */
+ const open=x.type==="Concept",head=`<div class="qcard"><div class="panelhead" style="margin-bottom:6px"><span class="tag">${esc(typeLabel(x))}</span>${badge(x)}</div><div class="cardtitle">${esc(x.name)}</div>`,
+  qHTML=`<div class="qhead">Question</div><p class="prompt">${esc(q.q)}</p>`+(pre.length?`<p class="notice">Prérequis pas encore acquis : ${pre.map(p=>"« "+esc(p.name)+" »").join(", ")}.</p>`:"");
+ $("quiz").innerHTML=(open?head+qHTML+prepHTML(x):head+prepHTML(x)+qHTML)+
+  (revealed||open?`<div class="answer"><dl class="fields">${q.a.filter(a=>a[1]).map(a=>`<dt>${esc(a[0])}</dt><dd>${esc(a[1])}</dd>`).join("")}${fs.length?`<dt>Fondements</dt><dd>${esc(fs.map(g=>g.type+" : "+g.text).join("\n"))}</dd>`:""}</dl></div>`+examplesHTML(x)+noteHTML(x)+`<p class="notice">Compare honnêtement avec ta réponse, puis évalue-toi.</p><div class="actions"><button data-rate="0">À revoir</button><button data-rate="1">Presque</button><button class="primary" data-rate="2">Acquis</button>${open?'<button id="skipBtn">Passer</button>':""}</div>`
    :`<p class="notice">Réponds de mémoire, à voix haute ou par écrit, avant d’afficher la réponse.${hinted?"":" Les exemples peuvent servir d’indice."}</p><div class="actions"><button class="primary" id="revealBtn">Afficher la réponse</button>${hinted?"":'<button id="hintBtn">Indice : les exemples</button>'}<button id="skipBtn">Passer</button></div>`+(hinted?examplesHTML(x):"")+noteHTML(x))+`</div>`;
  /* Ma définition : sous la question avant la réponse ; après, placée avant l’auto-évaluation, qui passe à la carte suivante */
  wireNotes($("quiz"));

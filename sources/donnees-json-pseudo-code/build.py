@@ -20,7 +20,7 @@ ex = collections.Counter(l["target"] for l in LINKS if l["type"] == "Illustre")
 low = [(x["id"], ex[x["id"]]) for x in ITEMS if x["type"] in ("Concept", "Propriété", "Règle", "Procédure") and ex[x["id"]] < 3]
 print("éléments:", len(ITEMS), dict(collections.Counter(x["type"] for x in ITEMS)), "| relations:", len(LINKS))
 print("MOINS DE 3 EXEMPLES:", low)
-data = {"format": "modele-representation-connaissance", "version": 10.7,
+data = {"format": "modele-representation-connaissance", "version": 10.8,
         "titre": "Pseudo-code : écrire, vérifier et analyser des algorithmes (d’après Éduscol et le programme de NSI)",
         "items": ITEMS, "links": LINKS}
 txt = json.dumps(data, ensure_ascii=False, indent=2)
