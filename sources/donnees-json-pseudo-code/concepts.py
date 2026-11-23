@@ -7,7 +7,7 @@ P("valeur", "Valeur", "Une donnée précise : un nombre comme 12 ou 3.5, un text
   "Une valeur ne change jamais : 12 reste 12. Ce qui change pendant l’exécution, c’est la valeur rangée dans une variable.", ["ED_AFF"])
 P("nom", "Nom (identificateur)", "Un mot choisi par celui qui écrit l’algorithme pour désigner quelque chose : une variable, un sous-programme, l’algorithme lui-même.",
   "Sans espace, il commence par une lettre ; Éduscol l’appelle identificateur, comme le nom écrit sur la façade d’un tiroir.", ["ED_AFF"])
-P("memoire", "Mémoire", "L’endroit où l’ordinateur garde les données pendant que l’algorithme s’exécute.",
+P("memoire", "Mémoire", "L’ensemble des emplacements où l’ordinateur garde les données pendant que l’algorithme s’exécute.",
   "Elle est découpée en emplacements, chacun garde une valeur ; son contenu disparaît à la fin de l’exécution.", ["ED_AFF"])
 P("utilisateur", "Utilisateur", "La personne qui se sert de l’algorithme une fois écrit : elle tape les données et lit les résultats.",
   "Ce n’est pas forcément celui qui a écrit l’algorithme ; il ne voit pas les instructions, seulement les messages et les résultats.", ["ED_ES"])

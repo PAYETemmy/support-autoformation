@@ -30,15 +30,13 @@ def _item(id, type, name, fields, foundations):
 def link(s, t, type):
     LINKS.append({"source": s, "target": t, "type": type, "note": ""})
 
-MOTS = {  # mots imposés de « Ma définition » pour les termes primitifs : mots du quotidien, tirés du sens intuitif
- "instruction": "ordre, ordinateur, exécuter", "valeur": "nombre, texte, vrai", "nom": "mot, désigner, choisir",
- "memoire": "ordinateur, garder, valeur", "utilisateur": "personne, taper, résultat", "probleme": "question, données, résoudre",
- "operation": "calcul, valeur, résultat", "execution": "ordinateur, instruction, ordre"}
+from mots import MOTS
 def P(id, name, intuition, traits, src):            # terme primitif
     _item("pc-" + id, "Concept", name, {"domain": "le pseudo-code", "nature": PRIM, "intuition": intuition, "traits": traits,
-          "motsImposes": MOTS.get(id, "")}, fnd(*src))
+          "motsImposes": ", ".join(MOTS.get(id, []))}, fnd(*src))
 def C(id, name, defs, definition, traits, src):      # concept défini
-    _item("pc-" + id, "Concept", name, {"domain": "le pseudo-code", "definition": definition, "traits": traits}, fnd(*src))
+    _item("pc-" + id, "Concept", name, {"domain": "le pseudo-code", "definition": definition, "traits": traits,
+          "motsImposes": ", ".join(MOTS.get(id, []))}, fnd(*src))
     for d in defs: link("pc-" + id, "pc-" + d, "Se définit à partir de")
 def PR(id, name, rel, targets, domain, relation, obj, src, qualifier=""):   # propriété
     _item("pc-pr-" + id, "Propriété", name, {"domain": domain, "qualifier": qualifier, "relation": relation, "object": obj}, fnd(*src))

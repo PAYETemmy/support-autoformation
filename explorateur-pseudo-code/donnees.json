@@ -1,6 +1,6 @@
 {
   "format": "modele-representation-connaissance",
-  "version": 10.8,
+  "version": 10.9,
   "titre": "Pseudo-code : écrire, vérifier et analyser des algorithmes (d’après Éduscol et le programme de NSI)",
   "items": [
     {
@@ -14,7 +14,7 @@
         "nature": "Terme primitif (non défini)",
         "intuition": "Un ordre élémentaire que l’ordinateur sait exécuter : ranger une valeur, faire un calcul, afficher un message.",
         "traits": "S’écrit en général sur une ligne ; fait une seule chose ; l’ordinateur l’exécute sans l’interpréter : il fait exactement ce qui est écrit.",
-        "motsImposes": "ordre, ordinateur, exécuter"
+        "motsImposes": "ordre, élémentaire, ordinateur, exécuter"
       },
       "foundations": [
         {
@@ -36,7 +36,7 @@
         "nature": "Terme primitif (non défini)",
         "intuition": "Une donnée précise : un nombre comme 12 ou 3.5, un texte comme \"Bonjour\", ou bien vrai, ou bien faux.",
         "traits": "Une valeur ne change jamais : 12 reste 12. Ce qui change pendant l’exécution, c’est la valeur rangée dans une variable.",
-        "motsImposes": "nombre, texte, vrai"
+        "motsImposes": "donnée précise, nombre, texte, vrai, faux"
       },
       "foundations": [
         {
@@ -58,7 +58,7 @@
         "nature": "Terme primitif (non défini)",
         "intuition": "Un mot choisi par celui qui écrit l’algorithme pour désigner quelque chose : une variable, un sous-programme, l’algorithme lui-même.",
         "traits": "Sans espace, il commence par une lettre ; Éduscol l’appelle identificateur, comme le nom écrit sur la façade d’un tiroir.",
-        "motsImposes": "mot, désigner, choisir"
+        "motsImposes": "mot, choisi, désigner"
       },
       "foundations": [
         {
@@ -78,9 +78,9 @@
       "fields": {
         "domain": "le pseudo-code",
         "nature": "Terme primitif (non défini)",
-        "intuition": "L’endroit où l’ordinateur garde les données pendant que l’algorithme s’exécute.",
+        "intuition": "L’ensemble des emplacements où l’ordinateur garde les données pendant que l’algorithme s’exécute.",
         "traits": "Elle est découpée en emplacements, chacun garde une valeur ; son contenu disparaît à la fin de l’exécution.",
-        "motsImposes": "ordinateur, garder, valeur"
+        "motsImposes": "emplacements, ordinateur, garde, données, exécute"
       },
       "foundations": [
         {
@@ -102,7 +102,7 @@
         "nature": "Terme primitif (non défini)",
         "intuition": "La personne qui se sert de l’algorithme une fois écrit : elle tape les données et lit les résultats.",
         "traits": "Ce n’est pas forcément celui qui a écrit l’algorithme ; il ne voit pas les instructions, seulement les messages et les résultats.",
-        "motsImposes": "personne, taper, résultat"
+        "motsImposes": "personne, algorithme, tape, données, résultats"
       },
       "foundations": [
         {
@@ -124,7 +124,7 @@
         "nature": "Terme primitif (non défini)",
         "intuition": "Une question précise à résoudre à partir de données : calculer une moyenne, trouver le plus grand nombre, trier une liste.",
         "traits": "Un même problème peut se résoudre par plusieurs algorithmes ; une instance du problème, ce sont des données précises, par exemple les notes 12, 15 et 9.",
-        "motsImposes": "question, données, résoudre"
+        "motsImposes": "question précise, résoudre, données"
       },
       "foundations": [
         {
@@ -146,7 +146,7 @@
         "nature": "Terme primitif (non défini)",
         "intuition": "Un calcul élémentaire sur une ou deux valeurs : additionner, multiplier, comparer, combiner vrai et faux.",
         "traits": "Elle donne une valeur comme résultat et ne modifie pas les valeurs utilisées : 3 + 4 donne 7, 3 et 4 restent inchangés.",
-        "motsImposes": "calcul, valeur, résultat"
+        "motsImposes": "calcul, élémentaire, valeurs"
       },
       "foundations": [
         {
@@ -168,7 +168,7 @@
         "nature": "Terme primitif (non défini)",
         "intuition": "Le déroulement d’un algorithme par l’ordinateur, instruction après instruction, avec des données précises.",
         "traits": "Deux exécutions du même algorithme avec des données différentes peuvent donner des résultats différents ; on peut la simuler à la main.",
-        "motsImposes": "ordinateur, instruction, ordre"
+        "motsImposes": "déroulement, algorithme, ordinateur, instruction après instruction"
       },
       "foundations": [
         {
@@ -188,7 +188,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Suite finie d’instructions, à exécuter dans un ordre déterminé, qui résout un problème.",
-        "traits": "Il se termine ; chaque instruction est sans ambiguïté ; il transforme des données (entrées) en résultats (sorties) ; il ne dépend d’aucun langage de programmation."
+        "traits": "Il se termine ; chaque instruction est sans ambiguïté ; il transforme des données (entrées) en résultats (sorties) ; il ne dépend d’aucun langage de programmation.",
+        "motsImposes": "suite finie, instructions, ordre, résout, problème"
       },
       "foundations": [
         {
@@ -208,7 +209,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Façon d’écrire un algorithme en français, avec quelques mots-clés fixes, sans suivre la syntaxe d’un langage de programmation.",
-        "traits": "Sert à réfléchir à la méthode avant de programmer ; plus précis que des phrases, moins strict qu’un langage ; il n’existe pas de norme unique."
+        "traits": "Sert à réfléchir à la méthode avant de programmer ; plus précis que des phrases, moins strict qu’un langage ; il n’existe pas de norme unique.",
+        "motsImposes": "écrire, algorithme, français, mots-clés, langage"
       },
       "foundations": [
         {
@@ -232,7 +234,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Algorithme traduit dans un langage de programmation (Python, C++…), dont l’ordinateur peut exécuter les instructions.",
-        "traits": "Il doit respecter exactement la syntaxe du langage ; un même algorithme donne des programmes différents selon le langage choisi."
+        "traits": "Il doit respecter exactement la syntaxe du langage ; un même algorithme donne des programmes différents selon le langage choisi.",
+        "motsImposes": "algorithme, traduit, langage, ordinateur, exécuter"
       },
       "foundations": [
         {
@@ -252,7 +255,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Mot réservé du pseudo-code, dont le sens est fixé : Algorithme, Variables, Début, Fin, Si, Pour, TantQue…",
-        "traits": "S’écrit toujours de la même façon (ici avec une majuscule) ; ne peut pas servir de nom de variable."
+        "traits": "S’écrit toujours de la même façon (ici avec une majuscule) ; ne peut pas servir de nom de variable.",
+        "motsImposes": "mot, réservé, pseudo-code, sens, fixé"
       },
       "foundations": [
         {
@@ -272,7 +276,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Texte d’explication écrit après // dans un pseudo-code, que l’exécution ignore.",
-        "traits": "S’adresse au lecteur, pas à l’ordinateur ; explique pourquoi une ligne est là ; va jusqu’à la fin de la ligne."
+        "traits": "S’adresse au lecteur, pas à l’ordinateur ; explique pourquoi une ligne est là ; va jusqu’à la fin de la ligne.",
+        "motsImposes": "texte, explication, //, ignore"
       },
       "foundations": [
         {
@@ -292,7 +297,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Suite d’instructions qui forment un tout et s’exécutent ensemble : entre Début et Fin, après Alors, dans une boucle…",
-        "traits": "S’ouvre après un mot-clé et se ferme par un mot-clé de fin (Fin, FinSi, FinPour…) ; ses lignes sont décalées vers la droite ; Éduscol le marque d’une barre verticale."
+        "traits": "S’ouvre après un mot-clé et se ferme par un mot-clé de fin (Fin, FinSi, FinPour…) ; ses lignes sont décalées vers la droite ; Éduscol le marque d’une barre verticale.",
+        "motsImposes": "suite, instructions, un tout, ensemble"
       },
       "foundations": [
         {
@@ -312,7 +318,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Décalage vers la droite des lignes d’un bloc, qui montre à quel bloc chaque instruction appartient.",
-        "traits": "Même retrait pour toutes les lignes d’un bloc, un retrait de plus par bloc imbriqué ; en pseudo-code elle sert la lecture, en Python elle est obligatoire."
+        "traits": "Même retrait pour toutes les lignes d’un bloc, un retrait de plus par bloc imbriqué ; en pseudo-code elle sert la lecture, en Python elle est obligatoire.",
+        "motsImposes": "décalage, droite, lignes, bloc"
       },
       "foundations": [
         {
@@ -332,7 +339,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Suite d’instructions exécutées l’une après l’autre, dans l’ordre où elles sont écrites.",
-        "traits": "La structure la plus simple ; changer l’ordre de deux instructions peut changer le résultat."
+        "traits": "La structure la plus simple ; changer l’ordre de deux instructions peut changer le résultat.",
+        "motsImposes": "suite, instructions, l’une après l’autre, ordre, écrites"
       },
       "foundations": [
         {
@@ -352,7 +360,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Valeur qu’un algorithme reçoit pour faire son travail : tapée par l’utilisateur, lue dans un fichier ou donnée en paramètre.",
-        "traits": "Se repère avant d’écrire l’algorithme, avec son type et ses valeurs permises ; correspond à l’étape de préparation d’Éduscol."
+        "traits": "Se repère avant d’écrire l’algorithme, avec son type et ses valeurs permises ; correspond à l’étape de préparation d’Éduscol.",
+        "motsImposes": "valeur, algorithme, reçoit, travail"
       },
       "foundations": [
         {
@@ -372,7 +381,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Valeur qu’un algorithme produit et communique : affichée à l’écran, enregistrée ou retournée.",
-        "traits": "C’est le résultat attendu ; un algorithme sans sortie ne sert à rien."
+        "traits": "C’est le résultat attendu ; un algorithme sans sortie ne sert à rien.",
+        "motsImposes": "valeur, algorithme, produit, communique"
       },
       "foundations": [
         {
@@ -392,7 +402,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Partie d’un algorithme formée des instructions qui calculent les sorties à partir des entrées.",
-        "traits": "Se place entre la préparation (les entrées) et la sortie des résultats ; contient les calculs, les tests et les boucles."
+        "traits": "Se place entre la préparation (les entrées) et la sortie des résultats ; contient les calculs, les tests et les boucles.",
+        "motsImposes": "partie, instructions, calculent, sorties, entrées"
       },
       "foundations": [
         {
@@ -412,7 +423,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Emplacement de la mémoire, désigné par un nom, qui contient une valeur à la fois.",
-        "traits": "Sa valeur peut changer pendant l’exécution ; Éduscol la compare à un tiroir qui porte un nom sur sa façade ; elle a un type."
+        "traits": "Sa valeur peut changer pendant l’exécution ; Éduscol la compare à un tiroir qui porte un nom sur sa façade ; elle a un type.",
+        "motsImposes": "emplacement, mémoire, nom, valeur, à la fois"
       },
       "foundations": [
         {
@@ -432,7 +444,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Catégorie de valeurs : il fixe les valeurs possibles et les opérations permises sur elles.",
-        "traits": "Se désigne par un mot-clé : entier, réel, booléen, caractère, chaîne ; on ne fait pas les mêmes calculs sur un nombre et sur un texte."
+        "traits": "Se désigne par un mot-clé : entier, réel, booléen, caractère, chaîne ; on ne fait pas les mêmes calculs sur un nombre et sur un texte.",
+        "motsImposes": "catégorie, valeurs, possibles, opérations"
       },
       "foundations": [
         {
@@ -452,7 +465,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Type des nombres sans partie décimale : …, −2, −1, 0, 1, 2, …",
-        "traits": "Sert à compter et à numéroter ; permet div et mod ; s’écrit sans point : 12, −3."
+        "traits": "Sert à compter et à numéroter ; permet div et mod ; s’écrit sans point : 12, −3.",
+        "motsImposes": "type, nombres, sans partie décimale"
       },
       "foundations": [
         {
@@ -472,7 +486,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Type des nombres qui peuvent avoir une partie décimale, écrite après un point : 3.5, −0.25.",
-        "traits": "Sert à mesurer : prix, moyenne, distance ; le résultat de / est toujours un réel."
+        "traits": "Sert à mesurer : prix, moyenne, distance ; le résultat de / est toujours un réel.",
+        "motsImposes": "type, nombres, partie décimale, point"
       },
       "foundations": [
         {
@@ -492,7 +507,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Type qui n’a que deux valeurs : vrai et faux.",
-        "traits": "C’est le résultat d’une comparaison ; il se combine avec et, ou, non ; il sert de condition dans Si et TantQue."
+        "traits": "C’est le résultat d’une comparaison ; il se combine avec et, ou, non ; il sert de condition dans Si et TantQue.",
+        "motsImposes": "type, deux valeurs, vrai, faux"
       },
       "foundations": [
         {
@@ -512,7 +528,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Type d’un seul symbole (lettre, chiffre, ponctuation ou espace), écrit entre apostrophes droites : 'a', '7', '?'.",
-        "traits": "'7' est un caractère, pas le nombre 7 ; une chaîne est faite de caractères."
+        "traits": "'7' est un caractère, pas le nombre 7 ; une chaîne est faite de caractères.",
+        "motsImposes": "type, seul symbole, apostrophes"
       },
       "foundations": [
         {
@@ -532,7 +549,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Type des textes : une suite de caractères écrite entre guillemets droits, comme \"Bonjour\" ou \"\" (la chaîne vide).",
-        "traits": "Se met bout à bout avec + ; sa longueur est son nombre de caractères ; \"12\" est une chaîne, pas un nombre."
+        "traits": "Se met bout à bout avec + ; sa longueur est son nombre de caractères ; \"12\" est une chaîne, pas un nombre.",
+        "motsImposes": "type, textes, suite, caractères, guillemets"
       },
       "foundations": [
         {
@@ -552,7 +570,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Ligne de la section Variables qui annonce une variable : son nom, deux-points, son type : age : entier.",
-        "traits": "Se place avant Début ; plusieurs variables du même type se déclarent ensemble : a, b : entier ; elle ne donne aucune valeur."
+        "traits": "Se place avant Début ; plusieurs variables du même type se déclarent ensemble : a, b : entier ; elle ne donne aucune valeur.",
+        "motsImposes": "ligne, section Variables, annonce, nom, type"
       },
       "foundations": [
         {
@@ -572,7 +591,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Nom associé à une valeur fixée une fois pour toutes, qui ne change pas pendant l’exécution : Constante TVA = 0.2.",
-        "traits": "Se déclare avant Début avec sa valeur ; rend l’algorithme plus lisible et plus facile à modifier : une seule ligne à changer."
+        "traits": "Se déclare avant Début avec sa valeur ; rend l’algorithme plus lisible et plus facile à modifier : une seule ligne à changer.",
+        "motsImposes": "nom, valeur, fixée, ne change pas"
       },
       "foundations": [
         {
@@ -592,7 +612,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Symbole ou mot-clé qui désigne une opération : +, *, div, <, et…",
-        "traits": "S’applique à une ou deux valeurs ; chaque opérateur n’accepte que certains types."
+        "traits": "S’applique à une ou deux valeurs ; chaque opérateur n’accepte que certains types.",
+        "motsImposes": "symbole, mot-clé, désigne, opération"
       },
       "foundations": [
         {
@@ -612,7 +633,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Écriture qui se calcule pour donner une valeur : des valeurs et des variables reliées par des opérateurs, avec d’éventuelles parenthèses : 2 * prix + 1.",
-        "traits": "N’est pas une instruction : elle se place à droite de ←, dans Écrire ou dans une condition ; sa valeur a un type."
+        "traits": "N’est pas une instruction : elle se place à droite de ←, dans Écrire ou dans une condition ; sa valeur a un type.",
+        "motsImposes": "écriture, calcule, valeur, variables, opérateurs"
       },
       "foundations": [
         {
@@ -632,7 +654,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Opérateur de calcul sur des nombres : + (addition), - (soustraction), * (multiplication), / (division), div et mod.",
-        "traits": "* et / passent avant + et - ; / donne un réel ; div et mod ne s’appliquent qu’à des entiers."
+        "traits": "* et / passent avant + et - ; / donne un réel ; div et mod ne s’appliquent qu’à des entiers.",
+        "motsImposes": "opérateur, calcul, nombres"
       },
       "foundations": [
         {
@@ -652,7 +675,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Opérateurs de la division euclidienne entre entiers : a div b donne le quotient entier, a mod b le reste.",
-        "traits": "17 div 5 vaut 3 et 17 mod 5 vaut 2, car 17 = 5 × 3 + 2 ; mod sert à tester la divisibilité et la parité."
+        "traits": "17 div 5 vaut 3 et 17 mod 5 vaut 2, car 17 = 5 × 3 + 2 ; mod sert à tester la divisibilité et la parité.",
+        "motsImposes": "division euclidienne, entiers, quotient, reste"
       },
       "foundations": [
         {
@@ -672,7 +696,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Opérateur qui compare deux valeurs et donne un booléen : = (égal), <> (différent), <, >, <=, >=.",
-        "traits": "= compare, il ne range rien ; on compare deux nombres, ou deux valeurs du même type."
+        "traits": "= compare, il ne range rien ; on compare deux nombres, ou deux valeurs du même type.",
+        "motsImposes": "opérateur, compare, deux valeurs, booléen"
       },
       "foundations": [
         {
@@ -696,7 +721,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Opérateur qui combine des booléens : et, ou, non.",
-        "traits": "Sert à écrire des conditions composées : age >= 18 et age < 65 ; non passe avant et, qui passe avant ou."
+        "traits": "Sert à écrire des conditions composées : age >= 18 et age < 65 ; non passe avant et, qui passe avant ou.",
+        "motsImposes": "opérateur, combine, booléens, non"
       },
       "foundations": [
         {
@@ -716,7 +742,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Expression dont la valeur est un booléen : vrai ou faux.",
-        "traits": "Simple (une comparaison : a < b) ou composée (des comparaisons reliées par et, ou, non) ; décide du chemin suivi dans Si, TantQue et Répéter."
+        "traits": "Simple (une comparaison : a < b) ou composée (des comparaisons reliées par et, ou, non) ; décide du chemin suivi dans Si, TantQue et Répéter.",
+        "motsImposes": "expression, valeur, booléen"
       },
       "foundations": [
         {
@@ -736,7 +763,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Opération qui met deux chaînes bout à bout, notée + : \"Bon\" + \"jour\" donne \"Bonjour\".",
-        "traits": "L’ordre compte ; aucun espace n’est ajouté automatiquement ; ne s’applique qu’à des chaînes."
+        "traits": "L’ordre compte ; aucun espace n’est ajouté automatiquement ; ne s’applique qu’à des chaînes.",
+        "motsImposes": "opération, deux chaînes, bout à bout, +"
       },
       "foundations": [
         {
@@ -756,7 +784,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Instruction qui range dans une variable la valeur d’une expression : x ← expression, qui se lit « x prend la valeur… ».",
-        "traits": "Remplace l’ancienne valeur ; à gauche une seule variable, à droite une expression ; s’écrit ← (ou <- au clavier)."
+        "traits": "Remplace l’ancienne valeur ; à gauche une seule variable, à droite une expression ; s’écrit ← (ou <- au clavier).",
+        "motsImposes": "instruction, range, variable, valeur, expression"
       },
       "foundations": [
         {
@@ -776,7 +805,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Instruction Lire x : elle attend une valeur tapée par l’utilisateur et la range dans la variable x.",
-        "traits": "Fait entrer une donnée dans l’algorithme ; Éduscol l’écrit Saisir x ; elle remplace l’ancienne valeur de x."
+        "traits": "Fait entrer une donnée dans l’algorithme ; Éduscol l’écrit Saisir x ; elle remplace l’ancienne valeur de x.",
+        "motsImposes": "instruction, attend, valeur, utilisateur, range"
       },
       "foundations": [
         {
@@ -796,7 +826,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Instruction Écrire qui affiche à l’écran des messages et des valeurs : Écrire \"Moyenne : \", m.",
-        "traits": "Fait sortir un résultat ; les textes entre guillemets s’affichent tels quels, les variables par leur valeur ; Éduscol l’écrit Afficher."
+        "traits": "Fait sortir un résultat ; les textes entre guillemets s’affichent tels quels, les variables par leur valeur ; Éduscol l’écrit Afficher.",
+        "motsImposes": "instruction, affiche, écran, messages, valeurs"
       },
       "foundations": [
         {
@@ -816,7 +847,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Instruction qui décide quels blocs s’exécutent et combien de fois : alternative (Si, Selon) ou boucle (Pour, TantQue, Répéter).",
-        "traits": "Sans elle, un algorithme n’est qu’une séquence ; elle s’ouvre par un mot-clé et se ferme par un mot-clé de fin."
+        "traits": "Sans elle, un algorithme n’est qu’une séquence ; elle s’ouvre par un mot-clé et se ferme par un mot-clé de fin.",
+        "motsImposes": "instruction, décide, blocs, combien de fois"
       },
       "foundations": [
         {
@@ -836,7 +868,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Structure de contrôle qui exécute un bloc si une condition est vraie, et éventuellement un autre bloc sinon : Si … Alors … Sinon … FinSi.",
-        "traits": "Un seul des deux blocs s’exécute ; Sinon est facultatif ; elle se ferme par FinSi."
+        "traits": "Un seul des deux blocs s’exécute ; Sinon est facultatif ; elle se ferme par FinSi.",
+        "motsImposes": "structure de contrôle, bloc, condition, vraie, sinon"
       },
       "foundations": [
         {
@@ -856,7 +889,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Alternative placée à l’intérieur d’un bloc d’une autre alternative.",
-        "traits": "Permet de distinguer plus de deux cas ; chaque niveau prend un retrait de plus ; chaque Si a son propre FinSi."
+        "traits": "Permet de distinguer plus de deux cas ; chaque niveau prend un retrait de plus ; chaque Si a son propre FinSi.",
+        "motsImposes": "alternative, intérieur, bloc, autre alternative"
       },
       "foundations": [
         {
@@ -876,7 +910,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Structure de contrôle qui exécute le bloc du Cas égal à la valeur d’une variable : Selon x Faire, Cas 1 : …, Autrement : …, FinSelon.",
-        "traits": "Ne teste que l’égalité à des valeurs précises ; un seul Cas s’exécute ; Autrement traite toutes les autres valeurs."
+        "traits": "Ne teste que l’égalité à des valeurs précises ; un seul Cas s’exécute ; Autrement traite toutes les autres valeurs.",
+        "motsImposes": "structure de contrôle, bloc, Cas, égal, valeur, variable"
       },
       "foundations": [
         {
@@ -896,7 +931,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Structure de contrôle qui répète un bloc d’instructions.",
-        "traits": "Bornée (Pour : nombre de tours connu d’avance) ou non bornée (TantQue, Répéter : arrêt par une condition) ; se ferme par un mot-clé de fin."
+        "traits": "Bornée (Pour : nombre de tours connu d’avance) ou non bornée (TantQue, Répéter : arrêt par une condition) ; se ferme par un mot-clé de fin.",
+        "motsImposes": "structure de contrôle, répète, bloc"
       },
       "foundations": [
         {
@@ -920,7 +956,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Une exécution complète du bloc d’une boucle.",
-        "traits": "Une boucle fait zéro, une ou plusieurs itérations ; les variables peuvent changer de valeur d’une itération à l’autre."
+        "traits": "Une boucle fait zéro, une ou plusieurs itérations ; les variables peuvent changer de valeur d’une itération à l’autre.",
+        "motsImposes": "exécution, complète, bloc, boucle"
       },
       "foundations": [
         {
@@ -940,7 +977,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Variable entière qui compte quelque chose : les tours d’une boucle, ou le nombre de valeurs qui vérifient une condition.",
-        "traits": "Commence en général à 0 ; augmente de 1 à chaque fois : n ← n + 1 ; dans une boucle Pour, il avance tout seul."
+        "traits": "Commence en général à 0 ; augmente de 1 à chaque fois : n ← n + 1 ; dans une boucle Pour, il avance tout seul.",
+        "motsImposes": "variable, entière, compte, tours"
       },
       "foundations": [
         {
@@ -960,7 +998,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Boucle bornée qui répète son bloc pour chaque valeur d’un compteur, d’une valeur de départ à une valeur d’arrivée : Pour i de 1 à N Faire … FinPour.",
-        "traits": "Le nombre de tours est connu avant de commencer ; le compteur augmente de 1 à chaque tour, sauf si un pas est donné ; Éduscol écrit « Pour I de 1 jusqu’à N faire »."
+        "traits": "Le nombre de tours est connu avant de commencer ; le compteur augmente de 1 à chaque tour, sauf si un pas est donné ; Éduscol écrit « Pour I de 1 jusqu’à N faire ».",
+        "motsImposes": "boucle bornée, répète, compteur, départ, arrivée"
       },
       "foundations": [
         {
@@ -984,7 +1023,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Valeur ajoutée au compteur d’une boucle Pour après chaque tour, 1 par défaut : Pour i de 0 à 10 pas 2.",
-        "traits": "Peut être négatif pour compter à rebours : Pour i de 10 à 1 pas -1 ; ne vaut jamais 0."
+        "traits": "Peut être négatif pour compter à rebours : Pour i de 10 à 1 pas -1 ; ne vaut jamais 0.",
+        "motsImposes": "valeur, ajoutée, compteur, après chaque tour"
       },
       "foundations": [
         {
@@ -1004,7 +1044,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Boucle non bornée qui teste une condition avant chaque tour et répète son bloc tant qu’elle est vraie : TantQue condition Faire … FinTantQue.",
-        "traits": "Le nombre de tours n’est pas connu d’avance ; elle peut faire zéro tour ; son bloc doit pouvoir rendre la condition fausse."
+        "traits": "Le nombre de tours n’est pas connu d’avance ; elle peut faire zéro tour ; son bloc doit pouvoir rendre la condition fausse.",
+        "motsImposes": "boucle non bornée, condition, avant chaque tour, vraie"
       },
       "foundations": [
         {
@@ -1024,7 +1065,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Boucle non bornée qui exécute son bloc puis teste une condition, et recommence jusqu’à ce qu’elle soit vraie : Répéter … Jusqu’à condition.",
-        "traits": "Fait toujours au moins un tour ; s’arrête quand la condition devient vraie, à l’inverse de TantQue ; idéale pour redemander une saisie."
+        "traits": "Fait toujours au moins un tour ; s’arrête quand la condition devient vraie, à l’inverse de TantQue ; idéale pour redemander une saisie.",
+        "motsImposes": "boucle non bornée, bloc, puis teste, condition, vraie"
       },
       "foundations": [
         {
@@ -1044,7 +1086,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Boucle dont la condition d’arrêt n’est jamais atteinte : l’algorithme ne se termine pas.",
-        "traits": "Erreur majeure selon Éduscol ; vient souvent d’une variable de la condition que le bloc ne modifie jamais."
+        "traits": "Erreur majeure selon Éduscol ; vient souvent d’une variable de la condition que le bloc ne modifie jamais.",
+        "motsImposes": "boucle, arrêt, jamais atteinte, termine pas"
       },
       "foundations": [
         {
@@ -1064,7 +1107,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Variable qui cumule un résultat au fil des tours d’une boucle : somme ← somme + x.",
-        "traits": "Initialisé avant la boucle (0 pour une somme, 1 pour un produit, \"\" pour une chaîne) ; sa valeur finale est le résultat."
+        "traits": "Initialisé avant la boucle (0 pour une somme, 1 pour un produit, \"\" pour une chaîne) ; sa valeur finale est le résultat.",
+        "motsImposes": "variable, cumule, résultat, tours, boucle"
       },
       "foundations": [
         {
@@ -1084,7 +1128,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Variable booléenne qui mémorise qu’un événement s’est produit : trouvé ← vrai.",
-        "traits": "Initialisé avant la boucle ; changé une seule fois, quand l’événement arrive ; peut servir à arrêter une boucle TantQue."
+        "traits": "Initialisé avant la boucle ; changé une seule fois, quand l’événement arrive ; peut servir à arrêter une boucle TantQue.",
+        "motsImposes": "variable booléenne, mémorise, événement"
       },
       "foundations": [
         {
@@ -1104,7 +1149,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Variable qui contient plusieurs valeurs du même type, rangées dans un ordre et repérées par leur position : notes ← [12, 15, 9].",
-        "traits": "Se déclare avec le type de ses valeurs : notes : liste de réel ; s’écrit entre crochets ; on l’appelle aussi tableau."
+        "traits": "Se déclare avec le type de ses valeurs : notes : liste de réel ; s’écrit entre crochets ; on l’appelle aussi tableau.",
+        "motsImposes": "variable, plusieurs valeurs, même type, ordre, position"
       },
       "foundations": [
         {
@@ -1128,7 +1174,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Entier qui donne la position d’une valeur dans une liste, en commençant à 0 : notes[0] est la première.",
-        "traits": "Pour une liste de N valeurs, il va de 0 à N - 1 ; il peut être une variable : notes[i] ; il s’écrit entre crochets."
+        "traits": "Pour une liste de N valeurs, il va de 0 à N - 1 ; il peut être une variable : notes[i] ; il s’écrit entre crochets.",
+        "motsImposes": "entier, position, valeur, liste, 0"
       },
       "foundations": [
         {
@@ -1148,7 +1195,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Une des valeurs rangées dans une liste, désignée par la liste et son indice : notes[2].",
-        "traits": "S’utilise comme une variable : on peut le lire ou lui affecter une valeur ; tous les éléments d’une liste ont le même type."
+        "traits": "S’utilise comme une variable : on peut le lire ou lui affecter une valeur ; tous les éléments d’une liste ont le même type.",
+        "motsImposes": "valeurs, liste, indice"
       },
       "foundations": [
         {
@@ -1168,7 +1216,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Nombre d’éléments d’une liste (ou de caractères d’une chaîne), donné par Longueur(L).",
-        "traits": "Vaut 0 pour la liste vide [] ; le dernier indice est Longueur(L) - 1 ; augmente de 1 avec Ajouter."
+        "traits": "Vaut 0 pour la liste vide [] ; le dernier indice est Longueur(L) - 1 ; augmente de 1 avec Ajouter.",
+        "motsImposes": "nombre, éléments, liste"
       },
       "foundations": [
         {
@@ -1188,7 +1237,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Visite de chaque élément d’une liste, un par un, par une boucle sur les indices.",
-        "traits": "Pour i de 0 à Longueur(L) - 1 Faire … ; sert à calculer une somme ou un maximum, à compter, à chercher ; son coût est linéaire."
+        "traits": "Pour i de 0 à Longueur(L) - 1 Faire … ; sert à calculer une somme ou un maximum, à compter, à chercher ; son coût est linéaire.",
+        "motsImposes": "visite, chaque élément, liste, boucle, indices"
       },
       "foundations": [
         {
@@ -1208,7 +1258,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Liste dont les éléments sont rangés dans l’ordre croissant : chaque élément est inférieur ou égal au suivant.",
-        "traits": "[2, 5, 5, 9] est triée ; la liste vide et une liste d’un seul élément sont triées ; c’est la condition de la recherche dichotomique."
+        "traits": "[2, 5, 5, 9] est triée ; la liste vide et une liste d’un seul élément sont triées ; c’est la condition de la recherche dichotomique.",
+        "motsImposes": "liste, ordre croissant, inférieur ou égal, suivant"
       },
       "foundations": [
         {
@@ -1228,7 +1279,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Liste dont chaque élément est lui-même une liste : un tableau à deux dimensions, en lignes et en colonnes.",
-        "traits": "grille[i] est la ligne i ; grille[i][j] est l’élément de la ligne i et de la colonne j ; se parcourt avec deux boucles imbriquées."
+        "traits": "grille[i] est la ligne i ; grille[i][j] est l’élément de la ligne i et de la colonne j ; se parcourt avec deux boucles imbriquées.",
+        "motsImposes": "liste, chaque élément, lui-même une liste, deux dimensions"
       },
       "foundations": [
         {
@@ -1248,7 +1300,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Type construit qui regroupe sous un seul nom plusieurs valeurs, de types éventuellement différents, appelées champs.",
-        "traits": "Se déclare : Type Élève = Enregistrement nom : chaîne, moyenne : réel FinEnregistrement ; décrit un objet réel (un élève, un produit) ; proche du p-uplet nommé de NSI."
+        "traits": "Se déclare : Type Élève = Enregistrement nom : chaîne, moyenne : réel FinEnregistrement ; décrit un objet réel (un élève, un produit) ; proche du p-uplet nommé de NSI.",
+        "motsImposes": "type construit, regroupe, seul nom, plusieurs valeurs, champs"
       },
       "foundations": [
         {
@@ -1268,7 +1321,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Une des valeurs d’un enregistrement, désignée par un nom et notée avec un point : e.nom.",
-        "traits": "S’utilise comme une variable de son type : e.moyenne ← 14.5 ; deux enregistrements du même type ont les mêmes champs."
+        "traits": "S’utilise comme une variable de son type : e.moyenne ← 14.5 ; deux enregistrements du même type ont les mêmes champs.",
+        "motsImposes": "valeurs, enregistrement, nom, point"
       },
       "foundations": [
         {
@@ -1288,7 +1342,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Algorithme nommé, écrit à part, qu’on peut lancer depuis un autre algorithme autant de fois qu’on veut.",
-        "traits": "C’est une fonction ou une procédure ; évite de recopier le même traitement ; se teste séparément."
+        "traits": "C’est une fonction ou une procédure ; évite de recopier le même traitement ; se teste séparément.",
+        "motsImposes": "algorithme, nommé, à part, lancer, autant de fois"
       },
       "foundations": [
         {
@@ -1308,7 +1363,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Sous-programme qui calcule une valeur et la renvoie avec Retourner : Fonction Carré(x : réel) : réel.",
-        "traits": "Annonce le type de sa valeur de retour ; s’appelle dans une expression : y ← Carré(3) ; ne devrait ni lire ni afficher."
+        "traits": "Annonce le type de sa valeur de retour ; s’appelle dans une expression : y ← Carré(3) ; ne devrait ni lire ni afficher.",
+        "motsImposes": "sous-programme, calcule, valeur, renvoie"
       },
       "foundations": [
         {
@@ -1328,7 +1384,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Sous-programme qui agit sans renvoyer de valeur (afficher, modifier une liste) : Procédure AfficherLigne(n : entier).",
-        "traits": "Pas de Retourner avec une valeur ; s’appelle comme une instruction, seule sur sa ligne."
+        "traits": "Pas de Retourner avec une valeur ; s’appelle comme une instruction, seule sur sa ligne.",
+        "motsImposes": "sous-programme, agit, sans renvoyer, valeur"
       },
       "foundations": [
         {
@@ -1348,7 +1405,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Variable de l’en-tête d’un sous-programme, qui reçoit une valeur au moment de l’appel : x dans Carré(x : réel).",
-        "traits": "Se déclare entre parenthèses avec son type ; n’existe que dans le sous-programme ; on dit aussi paramètre formel."
+        "traits": "Se déclare entre parenthèses avec son type ; n’existe que dans le sous-programme ; on dit aussi paramètre formel.",
+        "motsImposes": "variable, en-tête, sous-programme, reçoit, appel"
       },
       "foundations": [
         {
@@ -1368,7 +1426,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Valeur donnée à un paramètre au moment d’un appel : dans Carré(3), l’argument est 3.",
-        "traits": "Peut être une valeur, une variable ou une expression ; les arguments se placent dans l’ordre des paramètres ; on dit aussi paramètre effectif."
+        "traits": "Peut être une valeur, une variable ou une expression ; les arguments se placent dans l’ordre des paramètres ; on dit aussi paramètre effectif.",
+        "motsImposes": "valeur, donnée, paramètre, appel"
       },
       "foundations": [
         {
@@ -1388,7 +1447,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Instruction ou expression qui lance un sous-programme par son nom, avec ses arguments entre parenthèses : Carré(3).",
-        "traits": "L’algorithme qui appelle attend la fin du sous-programme, puis reprend juste après l’appel."
+        "traits": "L’algorithme qui appelle attend la fin du sous-programme, puis reprend juste après l’appel.",
+        "motsImposes": "instruction, lance, sous-programme, nom, arguments"
       },
       "foundations": [
         {
@@ -1408,7 +1468,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Valeur qu’une fonction renvoie à l’appelant avec Retourner : elle remplace l’appel dans l’expression.",
-        "traits": "Son type est annoncé dans l’en-tête ; Retourner termine aussitôt la fonction."
+        "traits": "Son type est annoncé dans l’en-tête ; Retourner termine aussitôt la fonction.",
+        "motsImposes": "valeur, fonction, renvoie, appelant, remplace"
       },
       "foundations": [
         {
@@ -1428,7 +1489,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Variable déclarée dans un sous-programme, qui n’existe que pendant son exécution.",
-        "traits": "Invisible depuis l’algorithme principal ; deux sous-programmes peuvent avoir chacun une locale du même nom sans conflit."
+        "traits": "Invisible depuis l’algorithme principal ; deux sous-programmes peuvent avoir chacun une locale du même nom sans conflit.",
+        "motsImposes": "variable, déclarée, sous-programme, existe, exécution"
       },
       "foundations": [
         {
@@ -1448,7 +1510,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Partie de l’algorithme où le nom d’une variable est connu et utilisable.",
-        "traits": "Celle d’une variable locale est son sous-programme ; dans ce support, un sous-programme n’utilise que ses paramètres et ses variables locales."
+        "traits": "Celle d’une variable locale est son sous-programme ; dans ce support, un sous-programme n’utilise que ses paramètres et ses variables locales.",
+        "motsImposes": "partie, algorithme, nom, variable, connu"
       },
       "foundations": [
         {
@@ -1468,7 +1531,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Fonction qui s’appelle elle-même, sur une donnée plus petite, pour résoudre son problème.",
-        "traits": "A au moins un cas de base, traité sans appel ; chaque appel doit se rapprocher du cas de base : Factorielle(n) = n × Factorielle(n - 1)."
+        "traits": "A au moins un cas de base, traité sans appel ; chaque appel doit se rapprocher du cas de base : Factorielle(n) = n × Factorielle(n - 1).",
+        "motsImposes": "fonction, elle-même, donnée plus petite, problème"
       },
       "foundations": [
         {
@@ -1488,7 +1552,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Cas d’une fonction récursive traité directement, sans appel récursif, qui arrête la suite des appels.",
-        "traits": "S’écrit en premier, dans un Si : Si n = 0 Alors Retourner 1 ; sans lui, les appels ne s’arrêtent jamais."
+        "traits": "S’écrit en premier, dans un Si : Si n = 0 Alors Retourner 1 ; sans lui, les appels ne s’arrêtent jamais.",
+        "motsImposes": "cas, fonction récursive, directement, sans appel, arrête"
       },
       "foundations": [
         {
@@ -1508,7 +1573,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Condition que les entrées doivent vérifier pour que l’algorithme ou le sous-programme fonctionne : N ≥ 1, liste triée.",
-        "traits": "C’est à l’appelant de la respecter ; elle s’écrit dans la spécification ; hors précondition, le résultat n’est pas garanti."
+        "traits": "C’est à l’appelant de la respecter ; elle s’écrit dans la spécification ; hors précondition, le résultat n’est pas garanti.",
+        "motsImposes": "condition, entrées, vérifier, fonctionne"
       },
       "foundations": [
         {
@@ -1528,7 +1594,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Condition que vérifie le résultat quand les préconditions étaient respectées : « retourne le plus grand élément de L ».",
-        "traits": "Décrit ce que fait le sous-programme, pas comment ; sert de référence pour les tests."
+        "traits": "Décrit ce que fait le sous-programme, pas comment ; sert de référence pour les tests.",
+        "motsImposes": "condition, vérifie, résultat, préconditions"
       },
       "foundations": [
         {
@@ -1548,7 +1615,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Description de ce que fait un sous-programme : son en-tête (nom, paramètres et types, type du résultat), ses préconditions et ses postconditions.",
-        "traits": "S’écrit avant le corps, en commentaire ; permet d’utiliser le sous-programme sans lire ses instructions."
+        "traits": "S’écrit avant le corps, en commentaire ; permet d’utiliser le sous-programme sans lire ses instructions.",
+        "motsImposes": "description, sous-programme, en-tête, préconditions, postconditions"
       },
       "foundations": [
         {
@@ -1568,7 +1636,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Tableau qui note, ligne après ligne, la valeur de chaque variable pendant une exécution faite à la main.",
-        "traits": "Une colonne par variable, une ligne par instruction exécutée ; montre où un algorithme se trompe ; Éduscol demande de valider par des traces."
+        "traits": "Une colonne par variable, une ligne par instruction exécutée ; montre où un algorithme se trompe ; Éduscol demande de valider par des traces.",
+        "motsImposes": "tableau, ligne après ligne, valeur, variable, exécution, à la main"
       },
       "foundations": [
         {
@@ -1588,7 +1657,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Ensemble de cas de test : pour chacun, des entrées choisies et la sortie attendue, à comparer avec la sortie obtenue.",
-        "traits": "Contient des cas ordinaires et des cas limites ; un test réussi ne prouve pas que l’algorithme est correct."
+        "traits": "Contient des cas ordinaires et des cas limites ; un test réussi ne prouve pas que l’algorithme est correct.",
+        "motsImposes": "ensemble, cas de test, entrées, sortie attendue, sortie obtenue"
       },
       "foundations": [
         {
@@ -1612,7 +1682,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Propriété d’un algorithme qui, pour toute entrée qui respecte les préconditions, produit une sortie qui vérifie la postcondition.",
-        "traits": "Se prouve par un raisonnement (un invariant), pas par des tests ; un algorithme peut être correct et lent."
+        "traits": "Se prouve par un raisonnement (un invariant), pas par des tests ; un algorithme peut être correct et lent.",
+        "motsImposes": "propriété, algorithme, toute entrée, préconditions, postcondition"
       },
       "foundations": [
         {
@@ -1632,7 +1703,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Propriété d’un algorithme qui s’arrête après un nombre fini d’instructions, pour toute entrée qui respecte les préconditions.",
-        "traits": "Acquise pour une boucle Pour dont on ne modifie pas le compteur ; à prouver pour TantQue et Répéter, avec un variant."
+        "traits": "Acquise pour une boucle Pour dont on ne modifie pas le compteur ; à prouver pour TantQue et Répéter, avec un variant.",
+        "motsImposes": "propriété, algorithme, s’arrête, nombre fini, toute entrée"
       },
       "foundations": [
         {
@@ -1652,7 +1724,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Condition vraie avant la boucle et après chaque tour, qui permet de prouver ce que la boucle calcule.",
-        "traits": "Exemple : « somme contient la somme des i premiers éléments » ; à la sortie, avec la condition de sortie, il donne la postcondition."
+        "traits": "Exemple : « somme contient la somme des i premiers éléments » ; à la sortie, avec la condition de sortie, il donne la postcondition.",
+        "motsImposes": "condition, vraie, avant la boucle, après chaque tour, prouver"
       },
       "foundations": [
         {
@@ -1672,7 +1745,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Quantité entière, positive ou nulle, qui diminue strictement à chaque tour d’une boucle.",
-        "traits": "Prouve la terminaison : un entier positif ne peut pas diminuer indéfiniment ; en dichotomie, c’est droite - gauche."
+        "traits": "Prouve la terminaison : un entier positif ne peut pas diminuer indéfiniment ; en dichotomie, c’est droite - gauche.",
+        "motsImposes": "quantité entière, positive, diminue strictement, chaque tour"
       },
       "foundations": [
         {
@@ -1692,7 +1766,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Nombre d’opérations élémentaires qu’exécute un algorithme, exprimé en fonction de la taille n de ses données, en ordre de grandeur.",
-        "traits": "On regarde souvent le pire cas ; il compare deux algorithmes sans dépendre de l’ordinateur ; il compte surtout pour de grandes données."
+        "traits": "On regarde souvent le pire cas ; il compare deux algorithmes sans dépendre de l’ordinateur ; il compte surtout pour de grandes données.",
+        "motsImposes": "nombre, opérations élémentaires, algorithme, taille, ordre de grandeur"
       },
       "foundations": [
         {
@@ -1712,7 +1787,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Coût proportionnel à n : doubler la taille des données double à peu près le nombre d’opérations.",
-        "traits": "Typique d’un parcours : une boucle de n tours avec un travail fixe par tour ; noté O(n)."
+        "traits": "Typique d’un parcours : une boucle de n tours avec un travail fixe par tour ; noté O(n).",
+        "motsImposes": "coût, proportionnel à n, doubler, double"
       },
       "foundations": [
         {
@@ -1732,7 +1808,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Coût proportionnel à n² : doubler la taille des données multiplie à peu près par 4 le nombre d’opérations.",
-        "traits": "Typique de deux boucles imbriquées : tri par sélection, tri par insertion dans le pire cas ; noté O(n²)."
+        "traits": "Typique de deux boucles imbriquées : tri par sélection, tri par insertion dans le pire cas ; noté O(n²).",
+        "motsImposes": "coût, proportionnel à n², doubler, par 4"
       },
       "foundations": [
         {
@@ -1752,7 +1829,8 @@
       "fields": {
         "domain": "le pseudo-code",
         "definition": "Coût proportionnel au nombre de fois qu’on peut diviser n par 2 : doubler la taille des données ajoute à peu près une seule étape.",
-        "traits": "Typique de la recherche dichotomique : environ 10 étapes pour 1 000 éléments, 20 pour un million ; noté O(log n)."
+        "traits": "Typique de la recherche dichotomique : environ 10 étapes pour 1 000 éléments, 20 pour un million ; noté O(log n).",
+        "motsImposes": "coût, diviser n par 2, doubler, une seule étape"
       },
       "foundations": [
         {

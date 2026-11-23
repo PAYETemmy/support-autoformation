@@ -1,5 +1,5 @@
 # Règles d'écriture de `donnees.json`
-Explorateur de connaissances, v10.8. Ces règles sont celles que l'application applique quand elle lit le fichier.
+Explorateur de connaissances, v10.9. Ces règles sont celles que l'application applique quand elle lit le fichier.
 
 ## 0. Consigne à donner à une IA (à copier)
 > Remplis `donnees.json` en respectant strictement ce document. Écris un JSON valide, en français, et recopie les valeurs imposées au caractère près, y compris l'apostrophe typographique ’. Chaque concept, propriété, règle et procédure doit avoir au moins 3 exemples. Chaque chaîne de définitions doit aboutir à des termes primitifs. Avant de rendre le fichier, vérifie la check-list de la section 8.
@@ -10,7 +10,7 @@ Explorateur de connaissances, v10.8. Ces règles sont celles que l'application a
 ```json
 {
   "format": "modele-representation-connaissance",
-  "version": 10.8,
+  "version": 10.9,
   "titre": "Nom du contenu",
   "items": [ ... ],
   "links": [ ... ]
@@ -70,7 +70,7 @@ Gabarit : `[Nom] : [définition]. Caractéristiques : [traits].`
 | `nature` | **Absent** = concept défini à partir d'autres concepts. `Terme primitif (non défini)` = terme primitif. | — |
 | `definition` | Uniquement pour un concept défini. Utilise les concepts cibles de « Se définit à partir de ». | — |
 | `intuition` | Uniquement pour un terme primitif : son sens intuitif, en mots simples | — |
-| `motsImposes` | Facultatif, pour un terme primitif : 2 ou 3 mots du quotidien (ou d’autres termes primitifs), séparés par des virgules, à placer dans « Ma définition ». Jamais un concept vu plus loin dans le parcours | — |
+| `motsImposes` | Pour chaque concept : les mots-clés de sa définition, dans l’ordre (genre puis caractères distinctifs), séparés par des virgules. Lus seuls, ils doivent suffire à deviner la définition ; chacun figure dans `definition` (ou `intuition` pour un terme primitif). Sans virgule à l’intérieur d’un mot-clé | — |
 | `traits` | Ce qui le distingue des concepts voisins | — |
 
 ### Propriété
@@ -218,7 +218,7 @@ Cohérence des statuts :
 ```json
 {
   "format": "modele-representation-connaissance",
-  "version": 10.8,
+  "version": 10.9,
   "titre": "Géométrie : le segment",
   "items": [
     { "id": "geo-point", "type": "Concept", "name": "Point", "status": "Établi", "life": "Actif",
