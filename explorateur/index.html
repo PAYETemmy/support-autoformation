@@ -103,9 +103,9 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
 .exlist li{margin:6px 0}
 p.warn{margin:8px 0 0}
 @media(max-width:420px){.prep .fields{grid-template-columns:1fr;gap:1px 0}.prep .fields dd{margin-bottom:7px}}
-.note summary{cursor:pointer;font-weight:650;color:#24364d;min-height:44px;display:flex;align-items:center;gap:6px}
-.note summary span{font-weight:500;font-size:12.5px;color:var(--muted)}
-.note textarea{margin-top:4px;min-height:110px}
+.note .notehead{font-weight:650;color:#24364d;display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.note .notehead span{font-weight:500;font-size:12.5px;color:var(--muted)}
+.note textarea{min-height:110px}
 .note .notice{margin-top:6px}
 /* Espaces d’apprentissage : Concepts · Règles · Procédures (barre collante, pour changer d’espace sans remonter) */
 .spaces{position:sticky;top:0;z-index:20;display:flex;gap:6px;margin:-6px 0 12px;padding:6px 0 8px;background:var(--bg)}
@@ -113,14 +113,10 @@ p.warn{margin:8px 0 0}
 .spaces button small{font-size:11.5px;font-weight:500;color:var(--muted)}
 .spaces button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 .spaces button[aria-pressed="true"] small{color:#dbe6f6}
-/* Flèche du titre repliable « Mes notes » (le display:flex retire le marqueur natif) */
-.note>summary{list-style:none}.note>summary::-webkit-details-marker{display:none}
-.note>summary::before{content:"";flex:none;width:0;height:0;border:5px solid transparent;border-left:6px solid currentColor;border-right:0;margin-right:2px;transition:transform .15s}
-.note[open]>summary::before{transform:rotate(90deg)}
-@media(prefers-reduced-motion:reduce){.note>summary::before{transition:none}}</style>
+</style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.1</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.2</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -305,14 +301,14 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const uid=()=> "k"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const behavior=()=>mqReduce.matches?"auto":"smooth";
-/* ---------- Mes notes : texte libre par élément, rangé à part du contenu (survit aux mises à jour de donnees.json) ---------- */
+/* ---------- Ma définition : définition personnelle, par élément, rangé à part du contenu (survit aux mises à jour de donnees.json) ---------- */
 const NOTES_KEY=STORE+"-notes";
 let notes={};try{notes=JSON.parse(localStorage.getItem(NOTES_KEY)||"{}")||{}}catch(_){notes={}}
 const noteOf=id=>notes[id]||"";
 function setNote(id,t){if(t.trim())notes[id]=t;else delete notes[id];try{localStorage.setItem(NOTES_KEY,JSON.stringify(notes))}catch(_){say("Stockage local indisponible : la note ne sera pas conservée.")}}
 const noteState=n=>n.trim()?"(écrite)":"(vide)";
-function noteHTML(x,open){const n=noteOf(x.id);return `<details class="section note"${open?" open":""}><summary>Mes notes <span>${noteState(n)}</span></summary><textarea data-note="${esc(x.id)}" aria-label="Mes notes sur ${esc(x.name)}" placeholder="Écris ce que tu veux sur « ${esc(x.name)} »">${esc(n)}</textarea><p class="notice">Enregistrée automatiquement, sur cet appareil.</p></details>`}
-function wireNotes(el){el.querySelectorAll("[data-note]").forEach(t=>t.addEventListener("input",()=>{setNote(t.dataset.note,t.value);t.closest("details").querySelector("summary span").textContent=noteState(t.value)}))}
+function noteHTML(x){const n=noteOf(x.id);return `<div class="section note"><div class="notehead">Ma définition <span>${noteState(n)}</span></div><textarea data-note="${esc(x.id)}" aria-label="Ma définition de ${esc(x.name)}" placeholder="Avec tes mots : qu’est-ce que « ${esc(x.name)} » ?">${esc(n)}</textarea><p class="notice">Enregistrée automatiquement, sur cet appareil.</p></div>`}
+function wireNotes(el){el.querySelectorAll("[data-note]").forEach(t=>t.addEventListener("input",()=>{setNote(t.dataset.note,t.value);t.closest(".note").querySelector(".notehead span").textContent=noteState(t.value)}))}
 const item=id=>db.items.find(x=>x.id===id);
 const itemName=id=>item(id)?.name||"Élément inconnu";
 
@@ -375,7 +371,7 @@ document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",(
 /* ---------- Fiche : panneau ouvert par « Voir » ---------- */
 function openFiche(id){const x=item(id);if(!x)return;selected=id;
  $("selectedType").textContent=typeLabel(x);
- $("detail").innerHTML=detailHTML(x,db.links.filter(r=>r.source===id||r.target===id))+noteHTML(x,true);wireNotes($("detail"));
+ $("detail").innerHTML=detailHTML(x,db.links.filter(r=>r.source===id||r.target===id))+noteHTML(x);wireNotes($("detail"));
  $("detail").querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>openFiche(b.dataset.goto)));
  $("ficheModal").hidden=false;$("detail").scrollTop=0}
 function closeFiche(){$("ficheModal").hidden=true;selected=null}
@@ -629,10 +625,10 @@ function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();cons
  $("quiz").innerHTML=`<div class="qcard"><div class="panelhead" style="margin-bottom:6px"><span class="tag">${esc(typeLabel(x))}</span>${badge(x)}</div><div class="cardtitle">${esc(x.name)}</div>`+prepHTML(x)+
   `<div class="qhead">Question</div><p class="prompt">${esc(q.q)}</p>`+
   (pre.length?`<p class="notice">Prérequis pas encore acquis : ${pre.map(p=>"« "+esc(p.name)+" »").join(", ")}.</p>`:"")+
-  (revealed?`<div class="answer"><dl class="fields">${q.a.filter(a=>a[1]).map(a=>`<dt>${esc(a[0])}</dt><dd>${esc(a[1])}</dd>`).join("")}${fs.length?`<dt>Fondements</dt><dd>${esc(fs.map(g=>g.type+" : "+g.text).join("\n"))}</dd>`:""}</dl></div>`+examplesHTML(x)+noteHTML(x,true)+`<p class="notice">Compare honnêtement avec ta réponse, puis évalue-toi.</p><div class="actions"><button data-rate="0">À revoir</button><button data-rate="1">Presque</button><button class="primary" data-rate="2">Acquis</button></div>`
-   :`<p class="notice">Réponds de mémoire, à voix haute ou par écrit, avant d’afficher la réponse.${hinted?"":" Les exemples peuvent servir d’indice."}</p><div class="actions"><button class="primary" id="revealBtn">Afficher la réponse</button>${hinted?"":'<button id="hintBtn">Indice : les exemples</button>'}<button id="skipBtn">Passer</button></div>`+(hinted?examplesHTML(x):"")+noteHTML(x,noteOpen))+`</div>`;
- /* Notes : repliées avant la réponse (ne pas souffler pendant le rappel) ; après, ouvertes et placées avant l’auto-évaluation, qui passe à la carte suivante */
- const nd=$("quiz").querySelector("details.note");nd.addEventListener("toggle",()=>{noteOpen=nd.open});wireNotes($("quiz"));
+  (revealed?`<div class="answer"><dl class="fields">${q.a.filter(a=>a[1]).map(a=>`<dt>${esc(a[0])}</dt><dd>${esc(a[1])}</dd>`).join("")}${fs.length?`<dt>Fondements</dt><dd>${esc(fs.map(g=>g.type+" : "+g.text).join("\n"))}</dd>`:""}</dl></div>`+examplesHTML(x)+noteHTML(x)+`<p class="notice">Compare honnêtement avec ta réponse, puis évalue-toi.</p><div class="actions"><button data-rate="0">À revoir</button><button data-rate="1">Presque</button><button class="primary" data-rate="2">Acquis</button></div>`
+   :`<p class="notice">Réponds de mémoire, à voix haute ou par écrit, avant d’afficher la réponse.${hinted?"":" Les exemples peuvent servir d’indice."}</p><div class="actions"><button class="primary" id="revealBtn">Afficher la réponse</button>${hinted?"":'<button id="hintBtn">Indice : les exemples</button>'}<button id="skipBtn">Passer</button></div>`+(hinted?examplesHTML(x):"")+noteHTML(x))+`</div>`;
+ /* Ma définition : sous la question avant la réponse ; après, placée avant l’auto-évaluation, qui passe à la carte suivante */
+ wireNotes($("quiz"));
  const rb=$("revealBtn");if(rb)rb.addEventListener("click",()=>{revealed=true;renderQuiz()});
  const hb=$("hintBtn");if(hb)hb.addEventListener("click",()=>{hinted=true;renderQuiz()});
  const sb=$("skipBtn");if(sb)sb.addEventListener("click",()=>{skipped=skipped.filter(i=>i!==x.id).concat(x.id);nextCard(x.id);renderQuiz();toQuiz()});
