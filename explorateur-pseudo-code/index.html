@@ -122,7 +122,7 @@ p.warn{margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.9</p></header>
+<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 11.0</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -324,7 +324,7 @@ function mustOf(x){if(x.type!=="Concept")return[];
  if(m.length)return m.map(w=>({label:w,cue:stem(w)}));
  return isPrim(x)?[]:defsOf(x).map(y=>({label:y.name.replace(/\s*\(.*\)/,""),cue:cue(y)}))}
 function noteHTML(x){const n=noteOf(x.id),must=mustOf(x);
- return `<div class="section note${must.length?" short":""}"><div class="notehead">Ma définition${must.length?` <span class="count">${words(n)} / ${MAXW} mots</span>`:""}</div>`+
+ return `<div class="section note${must.length?" short":""}"><div class="notehead">Ma définition de « ${esc(x.name)} »${must.length?` <span class="count">${words(n)} / ${MAXW} mots</span>`:""}</div>`+
   (must.length?`<div class="must">Mots-clés : ${must.map(m=>`<b data-cue="${esc(m.cue)}">${esc(m.label)}</b>`).join("")}</div>`:"")+
   `<textarea data-note="${esc(x.id)}" aria-label="Ma définition de ${esc(x.name)}" placeholder="${must.length?`« ${esc(x.name)} », c’est…`:`Avec tes mots : qu’est-ce que « ${esc(x.name)} » ?`}">${esc(n)}</textarea><p class="notice">Enregistrée automatiquement, sur cet appareil.</p></div>`}
 function markNote(t){const box=t.closest(".note"),v=fold(t.value);box.querySelectorAll("[data-cue]").forEach(b=>b.classList.toggle("ok",v.includes(b.dataset.cue)));

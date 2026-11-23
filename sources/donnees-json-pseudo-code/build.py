@@ -35,7 +35,7 @@ for x in ITEMS:
     for m in mots:
         if stem(m) not in txt: miss.append((x["id"], m))
 print("MOTS IMPOSÉS ABSENTS DE LA DÉFINITION:", miss)
-data = {"format": "modele-representation-connaissance", "version": 10.9,
+data = {"format": "modele-representation-connaissance", "version": 11.0,
         "titre": "Pseudo-code : écrire, vérifier et analyser des algorithmes (d’après Éduscol et le programme de NSI)",
         "items": ITEMS, "links": LINKS}
 txt = json.dumps(data, ensure_ascii=False, indent=2)
