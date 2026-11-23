@@ -122,7 +122,7 @@ p.warn{margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.5</p></header>
+<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.7</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -222,6 +222,7 @@ const MODEL={
    {k:"nature",label:"Nature du concept",options:["Défini à partir d’autres concepts",PRIM]},
    {k:"definition",label:"Définition (sens)",ph:"Ce que désigne ce concept, à l’aide d’autres concepts",area:true,showIf:["nature",""]},
    {k:"intuition",label:"Sens intuitif",ph:"Ex. : ce que l’on range dans une variable : un nombre, un texte, VRAI ou FAUX…",area:true,showIf:["nature",PRIM]},
+   {k:"motsImposes",label:"Mots imposés (Ma définition)",ph:"2 ou 3 mots simples, séparés par des virgules : ordinateur, ordre…",showIf:["nature",PRIM]},
    {k:"traits",label:"Caractéristiques principales",ph:"Ce qui le distingue des concepts voisins",area:true}]},
  "Propriété":{
   def:"Une caractéristique d’un concept, ou un lien entre concepts, toujours vrai à l’intérieur d’un domaine précisé.",
@@ -316,13 +317,14 @@ function setNote(id,t){if(t.trim())notes[id]=t;else delete notes[id];try{localSt
 const MAXW=20,fold=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""),
  cue=y=>{const n=fold(y.name.replace(/\s*\(.*\)/,""));return n.split(/\s+/).length>1?n:n.slice(0,Math.max(4,n.length-2))},
  words=t=>t.trim()?t.trim().split(/\s+/).length:0;
-/* Terme primitif : défini par son usage (définition implicite, Hilbert) — mots imposés = les concepts qui l’emploient, les plus simples d’abord */
-function primCues(x){const dd=new Map(),key=fold(x.name.replace(/\s*\(.*\)/,"")),C=active().filter(y=>y.type==="Concept"&&y.id!==x.id),
-  used=C.filter(y=>defsOf(y).some(d=>d.id===x.id)),said=C.filter(y=>!used.includes(y)&&fold((y.fields||{}).definition||"").includes(key));
- return [...used,...said].sort((a,b)=>(used.includes(b)-used.includes(a))||defDepth(a,dd)-defDepth(b,dd)||a.name.localeCompare(b.name,"fr")).slice(0,3)}
-function noteHTML(x){const n=noteOf(x.id),must=x.type!=="Concept"?[]:isPrim(x)?primCues(x):defsOf(x);
+/* Mots imposés : concept défini → les concepts dont il dépend ; terme primitif → ses mots du quotidien (champ motsImposes) */
+const stem=w=>{const n=fold(w);return n.split(/\s+/).length>1?n:n.slice(0,Math.max(4,n.length-2))};
+function mustOf(x){if(x.type!=="Concept")return[];
+ if(isPrim(x))return String((x.fields||{}).motsImposes||"").split(",").map(w=>w.trim()).filter(Boolean).slice(0,3).map(w=>({label:w,cue:stem(w)}));
+ return defsOf(x).map(y=>({label:y.name.replace(/\s*\(.*\)/,""),cue:cue(y)}))}
+function noteHTML(x){const n=noteOf(x.id),must=mustOf(x);
  return `<div class="section note${must.length?" short":""}"><div class="notehead">Ma définition${must.length?` <span class="count">${words(n)} / ${MAXW} mots</span>`:""}</div>`+
-  (must.length?`<div class="must">Une phrase avec : ${must.map(y=>`<b data-cue="${esc(cue(y))}">${esc(y.name.replace(/\s*\(.*\)/,""))}</b>`).join("")}</div>`:"")+
+  (must.length?`<div class="must">Une phrase avec : ${must.map(m=>`<b data-cue="${esc(m.cue)}">${esc(m.label)}</b>`).join("")}</div>`:"")+
   `<textarea data-note="${esc(x.id)}" aria-label="Ma définition de ${esc(x.name)}" placeholder="${must.length?`« ${esc(x.name)} », c’est…`:`Avec tes mots : qu’est-ce que « ${esc(x.name)} » ?`}">${esc(n)}</textarea><p class="notice">Enregistrée automatiquement, sur cet appareil.</p></div>`}
 function markNote(t){const box=t.closest(".note"),v=fold(t.value);box.querySelectorAll("[data-cue]").forEach(b=>b.classList.toggle("ok",v.includes(b.dataset.cue)));
  const c=box.querySelector(".count");if(c){const w=words(t.value);c.textContent=`${w} / ${MAXW} mots`;c.classList.toggle("over",w>MAXW)}}
