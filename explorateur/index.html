@@ -107,10 +107,25 @@ p.warn{margin:8px 0 0}
 .note summary span{font-weight:500;font-size:12.5px;color:var(--muted)}
 .note textarea{margin-top:4px;min-height:110px}
 .note .notice{margin-top:6px}
-</style>
+/* Espaces d’apprentissage : Concepts · Règles · Méthodes (barre collante, pour changer d’espace sans remonter) */
+.spaces{position:sticky;top:0;z-index:20;display:flex;gap:6px;margin:-6px 0 12px;padding:6px 0 8px;background:var(--bg)}
+.spaces button{flex:1 1 0;min-width:0;min-height:48px;padding:5px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.2}
+.spaces button small{font-size:11.5px;font-weight:500;color:var(--muted)}
+.spaces button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.spaces button[aria-pressed="true"] small{color:#dbe6f6}
+/* Sous un élément : ses propriétés, puis ses exemples (repliés) */
+.sub{margin-left:18px;border-left:2px solid #e8edf2;padding-left:10px}
+details.exs{margin-left:18px}
+details.exs>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#445267}
+details.exs>summary .muted{font-weight:500}
+/* Flèche des titres repliables (le display:flex retire le marqueur natif) */
+details.exs>summary,.note>summary{list-style:none}details.exs>summary::-webkit-details-marker,.note>summary::-webkit-details-marker{display:none}
+details.exs>summary::before,.note>summary::before{content:"";flex:none;width:0;height:0;border:5px solid transparent;border-left:6px solid currentColor;border-right:0;margin-right:2px;transition:transform .15s}
+details.exs[open]>summary::before,.note[open]>summary::before{transform:rotate(90deg)}
+@media(prefers-reduced-motion:reduce){details.exs>summary::before,.note>summary::before{transition:none}}</style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 9.9</p></header>
+<header><h1>Explorateur de connaissances</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 10.0</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -151,6 +166,7 @@ p.warn{margin:8px 0 0}
 </section>
 
 <section id="learn">
+<div class="spaces" id="spaceBar" role="group" aria-label="Espaces d’apprentissage"></div>
 <div class="layout learnlayout">
  <div class="panel wide" id="trainPanel">
   <div class="panelhead"><h2>Entraînement par rappel</h2><span class="tag" id="learnProgress"></span></div>
@@ -158,8 +174,8 @@ p.warn{margin:8px 0 0}
   <div class="actions"><button class="primary" id="openQuiz">S’entraîner</button></div>
  </div>
  <div class="panel wide" id="pathPanel">
-  <div class="panelhead"><h2>Parcours conseillé</h2><span class="tag">Du concept au contre-exemple</span></div>
-  <p class="notice" style="margin-top:0">Étudie d’abord les objets (concepts), en commençant par les termes primitifs, puis les affirmations (propriétés, règles), les méthodes (procédures), et enfin ce qui les illustre et les délimite. Chaque carte rappelle les termes primitifs et les définitions nécessaires, et propose au moins 3 exemples.</p>
+  <div class="panelhead"><h2>Parcours conseillé</h2><span class="tag" id="spaceTag"></span></div>
+  <p class="notice" style="margin-top:0" id="spaceHint"></p>
   <div id="pathList"></div>
  </div>
  <div class="panel wide">
@@ -609,7 +625,7 @@ function examplesHTML(x){const G=exampleGroups(x);
 /* Ouvre le constructeur sur un nouvel exemple ; la relation « Illustre » est créée à l’enregistrement */
 function addExample(tid){const t=item(tid);if(!t)return;const fromLearn=!$("learn").hidden,fromQuiz=!$("quizModal").hidden;resetForm();pendingIllustrate=t.id;returnToLearn=fromLearn;reopenQuiz=fromQuiz;$("type").value="Exemple";renderTemplate("Exemple",draft);$("editorTitle").textContent="Ajouter un exemple";setView("edit")}
 const active=()=>db.items.filter(x=>x.life!=="Archivé");
-const pool=()=>{const f=$("quizFilter").value;return active().filter(x=>f==="Tous"||x.type===f)};
+const pool=()=>{const f=$("quizFilter").value;return active().filter(x=>inSpace(x)&&(f==="Tous"||x.type===f))};
 let skipped=[];
 function nextCard(skip){const k=x=>skipped.indexOf(x.id),P=[...pool()].sort((a,b)=>(k(a)>=0)-(k(b)>=0)||(a.level||0)-(b.level||0)||(a.seen||0)-(b.seen||0)||k(a)-k(b));quizId=P.length?(P.find(x=>x.id!==skip)||P[0]).id:null;revealed=false;hinted=false;noteOpen=false}
 function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();const x=item(quizId);
@@ -634,29 +650,78 @@ let quizFrom=null;
 function openQuiz(from){const m=$("quizModal");if(from!==undefined)quizFrom=from;
  m.hidden=false;document.documentElement.classList.add("locked");$("quizBody").scrollTop=0;$("closeQuiz").focus({preventScroll:true})}
 function closeQuiz(restore=true){$("quizModal").hidden=true;document.documentElement.classList.remove("locked");
- if(!restore)return;const el=quizFrom&&quizFrom.review?[...$("pathList").querySelectorAll("[data-review]")].find(b=>b.dataset.review===quizFrom.review):quizFrom;quizFrom=null;
+ if(!restore)return;const el=quizFrom&&quizFrom.review?(B=>B[quizFrom.nth||0]||B[0])([...$("pathList").querySelectorAll("[data-review]")].filter(b=>b.dataset.review===quizFrom.review)):quizFrom;quizFrom=null;
  if(el&&el.isConnected&&el.offsetParent)el.focus({preventScroll:true})}
 $("openQuiz").addEventListener("click",()=>{renderQuiz();openQuiz($("openQuiz"))});
 $("closeQuiz").addEventListener("click",()=>closeQuiz());
 $("quizModal").addEventListener("click",e=>{if(e.target===$("quizModal"))closeQuiz()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("modal").hidden&&$("ficheModal").hidden&&!$("quizModal").hidden)closeQuiz()});
-const PATH=[["1. Les objets : concepts (termes primitifs d’abord)",["Concept"]],["2. Les affirmations : propriétés et règles",["Propriété","Règle"]],["3. Les méthodes : procédures",["Procédure"]],["4. Illustrer et délimiter : exemples et contre-exemples",["Exemple","Contre-exemple"]]];
+/* ---------- Espaces d’apprentissage (types de contenus de Merrill : concepts, principes, procédures ; ordre de Gagné) ----------
+   Chaque exemple ou contre-exemple vit dans l’espace de ce qu’il illustre ou met à l’épreuve, sous cet élément. */
+const SPACES=[
+ {id:"concepts",label:"Concepts",core:["Concept","Propriété"],filters:["Concept","Propriété","Exemple","Contre-exemple"],
+  hint:"Les objets de connaissance. Termes primitifs d’abord, puis chaque concept après ceux qui le définissent ; ses propriétés sont rangées sous lui, ses exemples à côté."},
+ {id:"regles",label:"Règles",core:["Règle"],filters:["Règle","Exemple","Contre-exemple"],
+  hint:"Les règles relient les concepts : chacune indique ce sur quoi elle porte. À aborder une fois ses concepts compris."},
+ {id:"methodes",label:"Méthodes",core:["Procédure"],filters:["Procédure","Exemple","Contre-exemple"],
+  hint:"Les procédures : des étapes qui s’appuient sur les concepts et appliquent les règles. À aborder après les deux autres espaces."}];
+const ILL=["Illustre","Met à l’épreuve"],isIll=x=>x.type==="Exemple"||x.type==="Contre-exemple";
+const illOf=t=>[...new Set(inRel(t,...ILL).map(r=>r.source))].map(item).filter(e=>e&&isIll(e)&&e.life!=="Archivé").sort((a,b)=>a.name.localeCompare(b.name,"fr"));
+const illTargets=x=>outRel(x,...ILL).map(r=>item(r.target)).filter(t=>t&&t.life!=="Archivé"&&!isIll(t));
+function spacesOf(x){if(!isIll(x))return SPACES.filter(s=>s.core.includes(x.type));const T=illTargets(x),S=SPACES.filter(s=>T.some(t=>s.core.includes(t.type)));return S.length?S:[SPACES[0]]}
+let curSpace=SPACES[0];try{curSpace=SPACES.find(s=>s.id===localStorage.getItem(STORE+"-espace"))||curSpace}catch(_){}
+const inSpace=(x,s=curSpace)=>spacesOf(x).includes(s);
+const openEx=new Set(),spaceY={};
+function fillFilter(){$("quizFilter").innerHTML=["Tous",...curSpace.filters].map(t=>`<option>${t}</option>`).join("")}
+fillFilter();
+/* Changer d’espace : chaque espace garde sa position dans la page */
+function setSpace(s,focus=true){if(s===curSpace)return;const vis=!$("learn").hidden;if(vis)spaceY[curSpace.id]=window.scrollY;curSpace=s;try{localStorage.setItem(STORE+"-espace",s.id)}catch(_){}
+ fillFilter();quizId=null;renderLearn();if(!vis)return;
+ /* première visite d’un espace : début de son parcours (haut de la section, la barre étant collante) */
+ const top=$("learn").getBoundingClientRect().top+window.scrollY;window.scrollTo(0,spaceY[s.id]!=null?spaceY[s.id]:Math.min(window.scrollY,top));
+ const b=$("spaceBar").querySelector('[aria-pressed="true"]');if(focus&&b)b.focus({preventScroll:true})}
 function depth(x,seen=new Set()){if(seen.has(x.id))return 0;seen.add(x.id);const p=prereqs(x);return p.length?1+Math.max(...p.map(y=>depth(y,seen))):0}
 function row(x,extra){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${extra} ${badge(x)}</div></span><button data-review="${esc(x.id)}">Réviser</button><button data-open="${esc(x.id)}">Voir</button></div>`}
 function qrow(x,is,word){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${is.length} ${word}${is.length>1?"s":""} : ${esc(is[0])}</div></span><button data-edit="${esc(x.id)}">Compléter</button><button data-open="${esc(x.id)}">Voir</button></div>`}
 function nrow(x,is){const nodef=x.type==="Concept"&&!isPrim(x)&&!defsOf(x).length,few=exOf(x).length<MIN_EX;
  return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${is.length} manque${is.length>1?"s":""} : ${esc(is[0])}</div></span>${nodef?`<button data-deflink="${esc(x.id)}">Relier</button>`:few?`<button data-addex="${esc(x.id)}">Ajouter un exemple</button>`:`<button data-edit="${esc(x.id)}">Compléter</button>`}<button data-open="${esc(x.id)}">Voir</button></div>`}
-function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventListener("click",()=>review(b.dataset.review)));el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openFiche(b.dataset.open)));el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)));
+function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventListener("click",()=>review(b.dataset.review,b)));el.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openFiche(b.dataset.open)));el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editItem(b.dataset.edit)));
  el.querySelectorAll("[data-addex]").forEach(b=>b.addEventListener("click",()=>addExample(b.dataset.addex)));
  el.querySelectorAll("[data-deflink]").forEach(b=>b.addEventListener("click",()=>{setView("links");$("source").value=b.dataset.deflink;refreshRelationTypes();$("relationType").value=DEFREL;refreshTargets()}))}
-function renderLearn(){const act=active(),n=act.length,ok=act.filter(x=>(x.level||0)===2).length,dd=new Map();
- $("learnProgress").textContent=$("quizProgress").textContent=`${ok} / ${n} acquis`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";renderQuiz();
- $("pathList").innerHTML=(db.items.length?"":`<ul class="issues"><li>${esc({chargement:`Chargement du contenu (${DATA_FILE})…`,absent:`Aucun contenu : le fichier ${DATA_FILE} est introuvable dans le dossier de la page.`,bloque:`Le navigateur n’a pas pu lire ${DATA_FILE}. Ouvre la page depuis son adresse en ligne : ouverte comme fichier local, la lecture du JSON est bloquée.`,illisible:`Le fichier ${DATA_FILE} est illisible (JSON invalide).`,ok:`Le fichier ${DATA_FILE} ne contient aucun élément.`}[fileState])}</li></ul>`)+(()=>{const L=db.links.filter(r=>r.type===PREREQ&&relCheck(r));return L.length?`<ul class="issues">${L.map(r=>`<li>Boucle de prérequis : « ${esc(itemName(r.source))} » → « ${esc(itemName(r.target))} ». Supprime l’un des liens de la boucle (onglet Relations) pour que le parcours puisse être ordonné.</li>`).join("")}</ul>`:""})()+PATH.map(([title,types])=>{const xs=act.filter(x=>types.includes(x.type)).sort((a,b)=>defDepth(a,dd)-defDepth(b,dd)||depth(a)-depth(b)||a.name.localeCompare(b.name,"fr"));
-  return `<div class="pathgroup">${esc(title)}</div>`+(xs.length?xs.map(x=>{const p=prereqs(x),d=defsOf(x);return row(x,esc(typeLabel(x))+(d.length?" · à partir de "+d.map(y=>esc(y.name)).join(", "):"")+(p.length?" · après "+p.map(y=>esc(y.name)).join(", "):""))}).join(""):'<p class="muted">Aucun élément.</p>')}).join("");wire($("pathList"));
+function renderLearn(){const act=active(),dd=new Map(),sm=new Map(act.map(x=>[x.id,spacesOf(x)])),inS=x=>sm.get(x.id).includes(curSpace),
+  mine=act.filter(inS),n=mine.length,ok=mine.filter(x=>(x.level||0)===2).length,k=SPACES.indexOf(curSpace);
+ $("spaceBar").innerHTML=SPACES.map(s=>{const xs=act.filter(x=>sm.get(x.id).includes(s));return `<button type="button" data-space="${s.id}" aria-pressed="${s===curSpace}"><b>${s.label}</b><small>${xs.filter(x=>(x.level||0)===2).length} / ${xs.length} acquis</small></button>`}).join("");
+ $("spaceBar").querySelectorAll("[data-space]").forEach(b=>b.addEventListener("click",()=>setSpace(SPACES.find(s=>s.id===b.dataset.space))));
+ $("learnProgress").textContent=`${curSpace.label} · ${ok} / ${n} acquis`;$("quizProgress").textContent=`${curSpace.label} · ${ok} / ${n}`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";
+ $("spaceTag").textContent=`Espace ${k+1} sur ${SPACES.length}`;$("spaceHint").textContent=curSpace.hint;renderQuiz();
+ const names=l=>l.map(y=>esc(y.name)).join(", "),sortL=xs=>xs.sort((a,b)=>defDepth(a,dd)-defDepth(b,dd)||depth(a)-depth(b)||a.name.localeCompare(b.name,"fr")),
+  after=x=>{const p=prereqs(x);return p.length?" · après "+names(p):""},
+  exBlock=x=>{const L=illOf(x);if(!L.length)return "";const a=L.filter(e=>(e.level||0)===2).length;
+   return `<details class="exs" data-exs="${esc(x.id)}"${openEx.has(x.id)?" open":""}><summary>${L.some(e=>e.type==="Contre-exemple")?"Exemples et contre-exemples":"Exemples"} (${L.length}) <span class="muted">· ${a} acquis</span></summary><div class="sub">${L.map(e=>row(e,esc(e.type))).join("")}</div></details>`},
+  group=(title,xs,f)=>`<div class="pathgroup">${esc(title)}</div>`+(xs.length?xs.map(f).join(""):'<p class="muted">Aucun élément.</p>');
+ let body="";
+ if(curSpace.id==="concepts"){const C=act.filter(x=>x.type==="Concept"),P=act.filter(x=>x.type==="Propriété"),cid=new Set(C.map(c=>c.id)),
+   propsOf=c=>P.filter(p=>outRel(p,...PROP_RELS).some(r=>r.target===c.id)),
+   prow=p=>row(p,"Propriété"+after(p))+exBlock(p),
+   crow=c=>{const d=defsOf(c),ps=propsOf(c);return row(c,esc(typeLabel(c))+(d.length?" · à partir de "+names(d):"")+after(c))+(ps.length?`<div class="sub">${ps.map(prow).join("")}</div>`:"")+exBlock(c)},
+   loose=P.filter(p=>!outRel(p,...PROP_RELS).some(r=>cid.has(r.target))),orph=act.filter(x=>isIll(x)&&!illTargets(x).length);
+  body=group("1. Termes primitifs · non définis",C.filter(isPrim).sort((a,b)=>a.name.localeCompare(b.name,"fr")),crow)+
+   group("2. Concepts définis · chacun après ceux qui le définissent",sortL(C.filter(c=>!isPrim(c))),crow)+
+   (loose.length?group("Propriétés sans concept rattaché",sortL(loose),prow):"")+(orph.length?group("Exemples non rattachés",orph,e=>row(e,esc(e.type))):"")}
+ else if(curSpace.id==="regles")body=group("Règles · chacune après ses prérequis",sortL(act.filter(x=>x.type==="Règle")),x=>{const on=outRel(x,"Porte sur").map(r=>item(r.target)).filter(Boolean);return row(x,"Règle"+(on.length?" · porte sur "+names(on):"")+after(x))+exBlock(x)});
+ else body=group("Procédures · chacune après ses prérequis",sortL(act.filter(x=>x.type==="Procédure")),x=>{const t=(...r)=>outRel(x,...r).map(r=>item(r.target)).filter(Boolean),su=t("S’appuie sur"),ap=t("Applique");return row(x,"Procédure"+(su.length?" · s’appuie sur "+names(su):"")+(ap.length?" · applique "+names(ap):"")+after(x))+exBlock(x)});
+ $("pathList").innerHTML=(db.items.length?"":`<ul class="issues"><li>${esc({chargement:`Chargement du contenu (${DATA_FILE})…`,absent:`Aucun contenu : le fichier ${DATA_FILE} est introuvable dans le dossier de la page.`,bloque:`Le navigateur n’a pas pu lire ${DATA_FILE}. Ouvre la page depuis son adresse en ligne : ouverte comme fichier local, la lecture du JSON est bloquée.`,illisible:`Le fichier ${DATA_FILE} est illisible (JSON invalide).`,ok:`Le fichier ${DATA_FILE} ne contient aucun élément.`}[fileState])}</li></ul>`)+(()=>{const L=db.links.filter(r=>r.type===PREREQ&&relCheck(r));return L.length?`<ul class="issues">${L.map(r=>`<li>Boucle de prérequis : « ${esc(itemName(r.source))} » → « ${esc(itemName(r.target))} ». Supprime l’un des liens de la boucle (onglet Relations) pour que le parcours puisse être ordonné.</li>`).join("")}</ul>`:""})()+(db.items.length?body:"");
+ wire($("pathList"));
+ /* Exemples dépliés : gardés ouverts d’un rendu à l’autre (sinon le parcours se replie et l’on perd sa place) */
+ $("pathList").querySelectorAll("details.exs").forEach(d=>d.addEventListener("toggle",()=>{d.open?openEx.add(d.dataset.exs):openEx.delete(d.dataset.exs)}));
  const bad=act.map(x=>[x,conformity(x)]).filter(e=>e[1].length).sort((a,b)=>b[1].length-a[1].length),needs=act.map(x=>[x,learningNeeds(x)]).filter(e=>e[1].length);
- $("qualityList").innerHTML=`<div class="pathgroup">Conformité au modèle</div><p class="muted">${n-bad.length} élément(s) conforme(s) sur ${n}.</p>`+(bad.length?bad.map(([x,is])=>qrow(x,is,"écart")).join(""):'<p class="ok">Tous les éléments respectent le modèle.</p>')+
+ $("qualityList").innerHTML=`<div class="pathgroup">Conformité au modèle</div><p class="muted">${act.length-bad.length} élément(s) conforme(s) sur ${act.length}.</p>`+(bad.length?bad.map(([x,is])=>qrow(x,is,"écart")).join(""):'<p class="ok">Tous les éléments respectent le modèle.</p>')+
   `<div class="pathgroup">Exigences d’apprentissage</div><p class="muted">Chaque concept, propriété, règle et procédure est présenté avec ses termes primitifs et ses définitions nécessaires, et illustré par au moins ${MIN_EX} exemples.</p>`+(needs.length?needs.map(([x,is])=>nrow(x,is)).join(""):'<p class="ok">Toutes les exigences d’apprentissage sont remplies.</p>');wire($("qualityList"))}
-function review(id){$("quizFilter").value="Tous";quizId=id;revealed=false;hinted=false;if($("learn").hidden)setView("learn");else renderLearn();openQuiz({review:id})}
+function review(id,btn){const x=item(id);if(!x)return;
+ let nth=0;if(btn&&$("pathList").contains(btn))nth=Math.max(0,[...$("pathList").querySelectorAll("[data-review]")].filter(b=>b.dataset.review===id).indexOf(btn));
+ const S=spacesOf(x);if(!S.includes(curSpace))setSpace(S[0],false);
+ $("quizFilter").value="Tous";quizId=id;revealed=false;hinted=false;noteOpen=false;if($("learn").hidden)setView("learn");else renderLearn();
+ openQuiz({review:id,nth})}
 $("quizFilter").addEventListener("change",()=>{nextCard();renderQuiz()});
 $("reviewSelected").addEventListener("click",()=>{const id=selected;closeFiche();if(id)review(id)});
 
