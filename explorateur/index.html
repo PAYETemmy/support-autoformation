@@ -32,7 +32,8 @@ main{max-width:1240px;margin:auto;padding:22px max(20px,var(--sr)) 42px max(20px
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:18px;min-width:0;box-shadow:0 1px 2px rgba(16,24,40,.035)}
 .layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.8fr);gap:18px;align-items:start}
 .learnlayout{grid-template-columns:minmax(280px,.85fr) minmax(0,1.3fr)}.wide{grid-column:1/-1}
-@media(min-width:761px){#quizPanel{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto}}
+.sheet.quizsheet{max-width:680px;height:calc(100vh - 32px);height:calc(100dvh - 32px - var(--st) - var(--sb));padding-bottom:0}#quizBody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:20px}
+html.locked,html.locked body{overflow:hidden}
 .sheet.fiche{max-width:640px}#detail{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.panelhead h2{font-size:16px;margin:0;font-weight:650;color:#24364d}
 .muted{color:var(--muted);font-size:12px}.tag{border:1px solid #d7e0eb;border-radius:6px;padding:3px 8px;background:#f8fafc;color:#5f6e82;font-size:11px;white-space:nowrap}
@@ -68,7 +69,7 @@ textarea{min-height:96px;resize:vertical}
 .headright{display:flex;align-items:center;gap:8px}.iconbtn{min-width:44px;padding:0;font-size:22px;line-height:1}
 [hidden]{display:none!important}
 footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,var(--sl));color:var(--muted);font-size:11px}
-#message{position:fixed;left:50%;bottom:calc(20px + var(--sb));z-index:40;width:max-content;max-width:min(92vw,460px);margin:0;padding:10px 14px;border:1px solid #285ea8;border-radius:9px;background:#173a67;color:#fff;font-size:13px;box-shadow:0 6px 20px rgba(16,24,40,.18);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .2s,transform .2s}
+#message{position:fixed;left:50%;bottom:calc(20px + var(--sb));z-index:70;width:max-content;max-width:min(92vw,460px);margin:0;padding:10px 14px;border:1px solid #285ea8;border-radius:9px;background:#173a67;color:#fff;font-size:13px;box-shadow:0 6px 20px rgba(16,24,40,.18);opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .2s,transform .2s}
 #message.show{opacity:1;transform:translate(-50%,0)}
 .modal{position:fixed;top:0;right:0;bottom:0;left:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(22,34,51,.42)}
 .sheet{display:flex;flex-direction:column;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px - var(--st) - var(--sb));width:100%;max-width:440px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:0 16px 45px rgba(16,24,40,.2)}.sheet p{margin:0 0 6px;font-size:15px}.sheet .actions{justify-content:flex-end}
@@ -83,6 +84,7 @@ footer{max-width:1240px;margin:auto;padding:0 max(20px,var(--sr)) 24px max(20px,
  body.typing .tabs{display:none}
  #message{bottom:calc(70px + var(--tb))}body.typing #message{bottom:calc(16px + var(--sb))}
  .modal{align-items:flex-end;padding:0 8px calc(8px + var(--sb))}.sheet .actions{flex-direction:column-reverse}.sheet .actions button{width:100%}.fiche .actions{flex-direction:row}.fiche .actions button{width:auto;flex:1 1 auto}
+ .quizsheet .actions{flex-direction:row}.quizsheet .actions button{width:auto;flex:1 1 auto}
 }
 @media(max-width:620px){.grid3{grid-template-columns:1fr 1fr}.grid3 .field:first-child{grid-column:1/-1}}
 @media(max-width:420px){.foundrow{grid-template-columns:1fr 44px}.foundrow select{grid-column:1/-1}.itemrow button{padding:6px 8px;font-size:13px}.grid2{grid-template-columns:1fr;gap:0}.panelhead h2{font-size:15px}.tag{font-size:10px}}
@@ -146,16 +148,15 @@ p.warn{margin:8px 0 0}
 
 <section id="learn">
 <div class="layout learnlayout">
- <div class="panel" id="pathPanel">
+ <div class="panel wide" id="trainPanel">
+  <div class="panelhead"><h2>Entraînement par rappel</h2><span class="tag" id="learnProgress"></span></div>
+  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+  <div class="actions"><button class="primary" id="openQuiz">S’entraîner</button></div>
+ </div>
+ <div class="panel wide" id="pathPanel">
   <div class="panelhead"><h2>Parcours conseillé</h2><span class="tag">Du concept au contre-exemple</span></div>
   <p class="notice" style="margin-top:0">Étudie d’abord les objets (concepts), en commençant par les termes primitifs, puis les affirmations (propriétés, règles), les méthodes (procédures), et enfin ce qui les illustre et les délimite. Chaque carte rappelle les termes primitifs et les définitions nécessaires, et propose au moins 3 exemples.</p>
   <div id="pathList"></div>
- </div>
- <div class="panel" id="quizPanel">
-  <div class="panelhead"><h2>Entraînement par rappel</h2><span class="tag" id="learnProgress"></span></div>
-  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
-  <div class="field" style="margin-top:12px"><label for="quizFilter">Réviser</label><select id="quizFilter"><option>Tous</option><option>Concept</option><option>Propriété</option><option>Règle</option><option>Procédure</option><option>Exemple</option><option>Contre-exemple</option></select></div>
-  <div id="quiz"></div>
  </div>
  <div class="panel wide">
   <div class="panelhead"><h2>Contrôle du modèle</h2></div>
@@ -171,6 +172,13 @@ p.warn{margin:8px 0 0}
  <div class="panelhead"><h2 id="ficheTitle">Fiche de connaissance</h2><div class="headright"><span class="tag" id="selectedType"></span><button id="closeFiche" class="iconbtn" aria-label="Fermer la fiche" title="Fermer la fiche">×</button></div></div>
  <div id="detail"></div>
  <div class="actions" id="detailActions"><button class="primary" id="editSelected">Modifier</button><button id="linkSelected">Créer une relation</button><button id="reviewSelected">Réviser</button></div>
+</div></div>
+<div class="modal" id="quizModal" hidden><div class="sheet quizsheet" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
+ <div class="panelhead"><h2 id="quizTitle">Entraînement par rappel</h2><div class="headright"><span class="tag" id="quizProgress"></span><button id="closeQuiz" class="iconbtn" aria-label="Fermer l’entraînement" title="Fermer l’entraînement">×</button></div></div>
+ <div id="quizBody">
+  <div class="field"><label for="quizFilter">Réviser</label><select id="quizFilter"><option>Tous</option><option>Concept</option><option>Propriété</option><option>Règle</option><option>Procédure</option><option>Exemple</option><option>Contre-exemple</option></select></div>
+  <div id="quiz"></div>
+ </div>
 </div></div>
 <div class="modal" id="modal" hidden><div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="modalText"><p id="modalText"></p><div class="actions"><button id="modalCancel">Annuler</button><button class="primary" id="modalOk">Confirmer</button></div></div></div>
 
@@ -329,13 +337,17 @@ function load(){let raw=null;try{raw=localStorage.getItem(STORE)}catch(e){}hadLo
  if(raw){try{const p=normalize(JSON.parse(raw));if(p)db=p}catch(e){}}}
 
 /* ---------- Navigation ---------- */
+/* « Apprendre » garde sa position de défilement : en y revenant, on retrouve l’endroit du parcours où l’on était */
+let learnY=0;
 function setView(v){
+ if(v!=="learn"&&!$("quizModal").hidden)closeQuiz(false);
+ if(!$("learn").hidden)learnY=window.scrollY;
  ["learn","edit","links"].forEach(k=>$(k).hidden=k!==v);
  document.querySelectorAll("[data-view]").forEach(b=>{const on=b.dataset.view===v;b.classList.toggle("active",on);on?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current")});
- window.scrollTo(0,0);
  if(v==="links")renderLinks();if(v==="learn")renderLearn();
+ window.scrollTo(0,v==="learn"?learnY:0);
 }
-document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>{if(!$(b.dataset.view).hidden){window.scrollTo({top:0,behavior:behavior()});return}setView(b.dataset.view)}));
 
 /* ---------- Fiche : panneau ouvert par « Voir » ---------- */
 function openFiche(id){const x=item(id);if(!x)return;selected=id;
@@ -349,7 +361,7 @@ $("ficheModal").addEventListener("click",e=>{if(e.target===$("ficheModal"))close
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("modal").hidden&&!$("ficheModal").hidden)closeFiche()});
 
 /* ---------- Constructeur ---------- */
-function resetForm(){editing=null;draft={};pendingIllustrate=null;returnToLearn=false;$("editorForm").reset();renderTemplate($("type").value,draft);$("status").value="À examiner";$("life").value="Actif";renderFoundations([]);$("editorTitle").textContent="Créer un élément";$("editMode").textContent="Nouveau";$("saveItem").textContent="Créer l'élément";$("deleteItem").hidden=true}
+function resetForm(){editing=null;draft={};pendingIllustrate=null;returnToLearn=false;reopenQuiz=false;$("editorForm").reset();renderTemplate($("type").value,draft);$("status").value="À examiner";$("life").value="Actif";renderFoundations([]);$("editorTitle").textContent="Créer un élément";$("editMode").textContent="Nouveau";$("saveItem").textContent="Créer l'élément";$("deleteItem").hidden=true}
 function editItem(id){const x=item(id);if(!x)return;editing=id;draft={...(x.fields||{})};$("type").value=x.type;renderTemplate(x.type,draft);$("status").value=x.status;$("name").value=x.name;$("formulation").value=x.formulation||"";$("status").value=STATUSES.includes(x.status)?x.status:"À examiner";$("life").value=x.life||"Actif";renderFoundations(x.foundations||[]);$("editorTitle").textContent="Modifier un élément";$("editMode").textContent="Modification";$("saveItem").textContent="Enregistrer";$("deleteItem").hidden=false;setView("edit")}
 $("editorForm").addEventListener("submit",async e=>{e.preventDefault();const nm=$("name").value.trim();if(!nm){say("La désignation est obligatoire.");$("name").focus();return}
  if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
@@ -357,9 +369,9 @@ $("editorForm").addEventListener("submit",async e=>{e.preventDefault();const nm=
  const x={...(prev||{}),id,type,status:$("status").value,name:nm,fields,formulation:auto?compose(type,nm,fields,id):typed,autoForm:auto,foundations:readFoundations(),life:$("life").value,level:prev?prev.level||0:0,seen:prev?prev.seen||0:0};
  if(editing){const get=id=>id===x.id?x:item(id),bad=db.links.filter(r=>(r.source===x.id||r.target===x.id)&&!relCheck(r)&&relCheck(r,get));
   if(bad.length){if(!await ask(`Ce changement rend ${bad.length} relation(s) incompatible(s) avec le modèle :\n${bad.map(r=>"• "+get(r.source).name+" — "+r.type+" → "+get(r.target).name+" : "+relCheck(r,get)).join("\n")}\n\nLes supprimer et enregistrer ?`,"Supprimer et enregistrer",true))return;const del=new Set(bad.map(r=>r.id));db.links=db.links.filter(r=>!del.has(r.id))}}
- const pend=!editing&&type==="Exemple"&&pendingIllustrate&&item(pendingIllustrate)?pendingIllustrate:null,back=!!pend&&returnToLearn;
+ const pend=!editing&&type==="Exemple"&&pendingIllustrate&&item(pendingIllustrate)?pendingIllustrate:null,back=!!pend&&returnToLearn,rq=back&&reopenQuiz;
  if(editing){const i=db.items.findIndex(y=>y.id===editing);if(i>=0)db.items[i]=x;say("Élément modifié.")}else{db.items.push(x);if(pend)db.links.push({id:uid(),source:x.id,target:pend,type:"Illustre",note:""});say(pend?`Exemple créé : il illustre « ${itemName(pend)} ».`:"Élément créé.")}
- persist();resetForm();refreshSelects();setView("learn");if(!back)openFiche(x.id)});
+ persist();resetForm();refreshSelects();setView("learn");if(rq)openQuiz();else if(!back)openFiche(x.id)});
 $("clearForm").addEventListener("click",resetForm);
 /* iOS : la touche « suivant » envoie Entrée, ce qui soumettait le formulaire. Entrée passe au champ suivant ; on enregistre avec le bouton. */
 $("editorForm").addEventListener("keydown",e=>{if(e.key!=="Enter"||e.isComposing||e.target.tagName!=="INPUT")return;e.preventDefault();const f=[...$("editorForm").querySelectorAll("input,select,textarea")].filter(el=>!el.disabled&&!el.closest("[hidden]")&&el.offsetParent!==null),i=f.indexOf(e.target);if(i>=0&&i<f.length-1)f[i+1].focus();else e.target.blur()});
@@ -412,7 +424,7 @@ document.addEventListener("focusin",e=>{if(isText(e.target))document.body.classL
 document.addEventListener("focusout",()=>setTimeout(()=>{if(!isText(document.activeElement))document.body.classList.remove("typing")},60));
 
 /* ---------- Gabarits : saisie guidée et composition de la formulation ---------- */
-let draft={},pendingIllustrate=null,returnToLearn=false;
+let draft={},pendingIllustrate=null,returnToLearn=false,reopenQuiz=false;
 function renderTemplate(type,vals){const m=MODEL[type];if(!m){$("templateFields").innerHTML="";return}
  $("templateFields").innerHTML=`<div class="hint"><b>${esc(type)}</b> — ${esc(m.def)}<br>Gabarit : « ${esc(m.tpl)} »${m.note?`<br>${esc(m.note)}`:""}</div>`+m.fields.map(f=>{const id="f_"+f.k,val=vals[f.k]||"";let ctl;
   if(f.options)ctl=`<select id="${id}" data-f="${f.k}">${f.options.map((o,i)=>`<option value="${i?esc(o):""}"${(i?o:"")===val?" selected":""}>${esc(o)}</option>`).join("")}</select>`;
@@ -583,7 +595,7 @@ function examplesHTML(x){const G=exampleGroups(x);
   (g.list.length?`<ol class="exlist">${g.list.map(e=>{const f=e.fields||{},ts=g.also&&g.also.get(e.id);return `<li><b>${esc(f.case||e.name)}</b>${f.shown?`<br><span class="muted">${esc(because(f.shown,true))}</span>`:""}${ts?`<br><span class="muted">Illustre aussi : ${esc(ts.map(t=>t.name).join(", "))}</span>`:""}</li>`}).join("")}</ol>`:`<p class="muted" style="margin:6px 0 0">${x.type==="Exemple"?"Aucun autre exemple.":"Aucun exemple."}</p>`)+
   g.req.map(t=>{const n=exOf(t).length;return n<MIN_EX?`<p class="warn">${n?`Seulement ${n} exemple${n>1?"s":""}`:"Aucun exemple"} pour ${esc(ART[t.type])} « ${esc(t.name)} » : il en faut au moins ${MIN_EX}.</p><button type="button" class="small" data-addex="${esc(t.id)}">Ajouter un exemple</button>`:""}).join("")+`</div>`).join("")}
 /* Ouvre le constructeur sur un nouvel exemple ; la relation « Illustre » est créée à l’enregistrement */
-function addExample(tid){const t=item(tid);if(!t)return;const fromLearn=!$("learn").hidden;resetForm();pendingIllustrate=t.id;returnToLearn=fromLearn;$("type").value="Exemple";renderTemplate("Exemple",draft);$("editorTitle").textContent="Ajouter un exemple";setView("edit")}
+function addExample(tid){const t=item(tid);if(!t)return;const fromLearn=!$("learn").hidden,fromQuiz=!$("quizModal").hidden;resetForm();pendingIllustrate=t.id;returnToLearn=fromLearn;reopenQuiz=fromQuiz;$("type").value="Exemple";renderTemplate("Exemple",draft);$("editorTitle").textContent="Ajouter un exemple";setView("edit")}
 const active=()=>db.items.filter(x=>x.life!=="Archivé");
 const pool=()=>{const f=$("quizFilter").value;return active().filter(x=>f==="Tous"||x.type===f)};
 let skipped=[];
@@ -601,7 +613,19 @@ function renderQuiz(){if(!quizId||!pool().some(x=>x.id===quizId))nextCard();cons
  const sb=$("skipBtn");if(sb)sb.addEventListener("click",()=>{skipped=skipped.filter(i=>i!==x.id).concat(x.id);nextCard(x.id);renderQuiz();toQuiz()});
  wire($("quiz"));
  $("quiz").querySelectorAll("[data-rate]").forEach(b=>b.addEventListener("click",()=>{x.level=+b.dataset.rate;x.seen=Date.now();skipped=skipped.filter(i=>i!==x.id);persist(false);say(`« ${x.name} » : ${LEVELS[x.level].toLowerCase()}.`);nextCard(x.id);renderLearn();toQuiz()}))}
-function toQuiz(){const q=$("quiz");q.style.scrollMarginTop="calc(12px + var(--st))";q.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
+function toQuiz(){$("quizBody").scrollTo({top:0,behavior:behavior()})}
+/* ---------- Fenêtre d’entraînement : le parcours reste en place derrière ---------- */
+let quizFrom=null;
+/* from : bouton à refocaliser à la fermeture, ou {review:id} (le bouton « Réviser » de la ligne, recréé à chaque rendu) ; absent : on garde le précédent */
+function openQuiz(from){const m=$("quizModal");if(from!==undefined)quizFrom=from;
+ m.hidden=false;document.documentElement.classList.add("locked");$("quizBody").scrollTop=0;$("closeQuiz").focus({preventScroll:true})}
+function closeQuiz(restore=true){$("quizModal").hidden=true;document.documentElement.classList.remove("locked");
+ if(!restore)return;const el=quizFrom&&quizFrom.review?[...$("pathList").querySelectorAll("[data-review]")].find(b=>b.dataset.review===quizFrom.review):quizFrom;quizFrom=null;
+ if(el&&el.isConnected&&el.offsetParent)el.focus({preventScroll:true})}
+$("openQuiz").addEventListener("click",()=>{renderQuiz();openQuiz($("openQuiz"))});
+$("closeQuiz").addEventListener("click",()=>closeQuiz());
+$("quizModal").addEventListener("click",e=>{if(e.target===$("quizModal"))closeQuiz()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("modal").hidden&&$("ficheModal").hidden&&!$("quizModal").hidden)closeQuiz()});
 const PATH=[["1. Les objets : concepts (termes primitifs d’abord)",["Concept"]],["2. Les affirmations : propriétés et règles",["Propriété","Règle"]],["3. Les méthodes : procédures",["Procédure"]],["4. Illustrer et délimiter : exemples et contre-exemples",["Exemple","Contre-exemple"]]];
 function depth(x,seen=new Set()){if(seen.has(x.id))return 0;seen.add(x.id);const p=prereqs(x);return p.length?1+Math.max(...p.map(y=>depth(y,seen))):0}
 function row(x,extra){return `<div class="itemrow"><i class="dot" style="background:${COLORS[x.type]||COLORS.Concept}"></i><span class="name"><b>${esc(x.name)}</b><div class="muted">${extra} ${badge(x)}</div></span><button data-review="${esc(x.id)}">Réviser</button><button data-open="${esc(x.id)}">Voir</button></div>`}
@@ -612,13 +636,13 @@ function wire(el){el.querySelectorAll("[data-review]").forEach(b=>b.addEventList
  el.querySelectorAll("[data-addex]").forEach(b=>b.addEventListener("click",()=>addExample(b.dataset.addex)));
  el.querySelectorAll("[data-deflink]").forEach(b=>b.addEventListener("click",()=>{setView("links");$("source").value=b.dataset.deflink;refreshRelationTypes();$("relationType").value=DEFREL;refreshTargets()}))}
 function renderLearn(){const act=active(),n=act.length,ok=act.filter(x=>(x.level||0)===2).length,dd=new Map();
- $("learnProgress").textContent=`${ok} / ${n} acquis`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";renderQuiz();
+ $("learnProgress").textContent=$("quizProgress").textContent=`${ok} / ${n} acquis`;$("progressBar").style.width=(n?Math.round(ok*100/n):0)+"%";renderQuiz();
  $("pathList").innerHTML=(db.items.length?"":`<ul class="issues"><li>${esc({chargement:`Chargement du contenu (${DATA_FILE})…`,absent:`Aucun contenu : le fichier ${DATA_FILE} est introuvable dans le dossier de la page.`,bloque:`Le navigateur n’a pas pu lire ${DATA_FILE}. Ouvre la page depuis son adresse en ligne : ouverte comme fichier local, la lecture du JSON est bloquée.`,illisible:`Le fichier ${DATA_FILE} est illisible (JSON invalide).`,ok:`Le fichier ${DATA_FILE} ne contient aucun élément.`}[fileState])}</li></ul>`)+(()=>{const L=db.links.filter(r=>r.type===PREREQ&&relCheck(r));return L.length?`<ul class="issues">${L.map(r=>`<li>Boucle de prérequis : « ${esc(itemName(r.source))} » → « ${esc(itemName(r.target))} ». Supprime l’un des liens de la boucle (onglet Relations) pour que le parcours puisse être ordonné.</li>`).join("")}</ul>`:""})()+PATH.map(([title,types])=>{const xs=act.filter(x=>types.includes(x.type)).sort((a,b)=>defDepth(a,dd)-defDepth(b,dd)||depth(a)-depth(b)||a.name.localeCompare(b.name,"fr"));
   return `<div class="pathgroup">${esc(title)}</div>`+(xs.length?xs.map(x=>{const p=prereqs(x),d=defsOf(x);return row(x,esc(typeLabel(x))+(d.length?" · à partir de "+d.map(y=>esc(y.name)).join(", "):"")+(p.length?" · après "+p.map(y=>esc(y.name)).join(", "):""))}).join(""):'<p class="muted">Aucun élément.</p>')}).join("");wire($("pathList"));
  const bad=act.map(x=>[x,conformity(x)]).filter(e=>e[1].length).sort((a,b)=>b[1].length-a[1].length),needs=act.map(x=>[x,learningNeeds(x)]).filter(e=>e[1].length);
  $("qualityList").innerHTML=`<div class="pathgroup">Conformité au modèle</div><p class="muted">${n-bad.length} élément(s) conforme(s) sur ${n}.</p>`+(bad.length?bad.map(([x,is])=>qrow(x,is,"écart")).join(""):'<p class="ok">Tous les éléments respectent le modèle.</p>')+
   `<div class="pathgroup">Exigences d’apprentissage</div><p class="muted">Chaque concept, propriété, règle et procédure est présenté avec ses termes primitifs et ses définitions nécessaires, et illustré par au moins ${MIN_EX} exemples.</p>`+(needs.length?needs.map(([x,is])=>nrow(x,is)).join(""):'<p class="ok">Toutes les exigences d’apprentissage sont remplies.</p>');wire($("qualityList"))}
-function review(id){$("quizFilter").value="Tous";quizId=id;revealed=false;hinted=false;if($("learn").hidden)setView("learn");else renderLearn();if(mqNarrow.matches)$("quizPanel").scrollIntoView({behavior:behavior(),block:"start"});else $("quizPanel").scrollTop=0}
+function review(id){$("quizFilter").value="Tous";quizId=id;revealed=false;hinted=false;if($("learn").hidden)setView("learn");else renderLearn();openQuiz({review:id})}
 $("quizFilter").addEventListener("change",()=>{nextCard();renderQuiz()});
 $("reviewSelected").addEventListener("click",()=>{const id=selected;closeFiche();if(id)review(id)});
 
