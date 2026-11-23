@@ -1,5 +1,5 @@
 # Règles d'écriture de `donnees.json`
-Explorateur de connaissances, v9.6. Ces règles sont celles que l'application applique quand elle lit le fichier.
+Explorateur de connaissances, v9.7. Ces règles sont celles que l'application applique quand elle lit le fichier.
 
 ## 0. Consigne à donner à une IA (à copier)
 > Remplis `donnees.json` en respectant strictement ce document. Écris un JSON valide, en français, et recopie les valeurs imposées au caractère près, y compris l'apostrophe typographique ’. Chaque concept, propriété, règle et procédure doit avoir au moins 3 exemples. Chaque chaîne de définitions doit aboutir à des termes primitifs. Avant de rendre le fichier, vérifie la check-list de la section 8.
@@ -10,7 +10,7 @@ Explorateur de connaissances, v9.6. Ces règles sont celles que l'application ap
 ```json
 {
   "format": "modele-representation-connaissance",
-  "version": 9.6,
+  "version": 9.7,
   "titre": "Nom du contenu",
   "items": [ ... ],
   "links": [ ... ]
@@ -217,7 +217,7 @@ Cohérence des statuts :
 ```json
 {
   "format": "modele-representation-connaissance",
-  "version": 9.6,
+  "version": 9.7,
   "titre": "Géométrie : le segment",
   "items": [
     { "id": "geo-point", "type": "Concept", "name": "Point", "status": "Établi", "life": "Actif",
