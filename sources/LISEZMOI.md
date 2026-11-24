@@ -14,4 +14,5 @@
 # Données de l’explorateur pseudo-code
 
 - `donnees-json-pseudo-code/` : générateur de `explorateur-pseudo-code/donnees.json` (concepts, propriétés et règles, procédures, exemples).
-- Construire : `cd sources/donnees-json-pseudo-code && python3 build.py ../../explorateur-pseudo-code/donnees.json` (signale les éléments qui ont moins de 3 exemples).
+- `mots.py` : les mots-clés de « Ma définition » de chaque concept (groupes de sens de la définition, dans l’ordre) ; `groupes.py` : la vérification d’un groupe, identique à celle de l’app.
+- Construire : `cd sources/donnees-json-pseudo-code && python3 build.py ../../explorateur-pseudo-code/donnees.json` (signale les éléments qui ont moins de 3 exemples et les mots-clés introuvables dans leur définition).

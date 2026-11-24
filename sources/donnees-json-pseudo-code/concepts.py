@@ -45,7 +45,7 @@ C("traitement", "Traitement", ["instruction", "entree", "sortie"], "Partie d’u
 # ---------- 2. Données ----------
 C("variable", "Variable", ["nom", "memoire", "valeur"], "Emplacement de la mémoire, désigné par un nom, qui contient une valeur à la fois.",
   "Sa valeur peut changer pendant l’exécution ; Éduscol la compare à un tiroir qui porte un nom sur sa façade ; elle a un type.", ["ED_AFF"])
-C("type", "Type", ["valeur"], "Catégorie de valeurs : il fixe les valeurs possibles et les opérations permises sur elles.",
+C("type", "Type", ["valeur"], "Catégorie de valeurs qui fixe les valeurs possibles et les opérations permises sur elles.",
   "Se désigne par un mot-clé : entier, réel, booléen, caractère, chaîne ; on ne fait pas les mêmes calculs sur un nombre et sur un texte.", ["LAF"])
 C("entier", "Entier", ["type"], "Type des nombres sans partie décimale : …, −2, −1, 0, 1, 2, …",
   "Sert à compter et à numéroter ; permet div et mod ; s’écrit sans point : 12, −3.", ["LAF"])

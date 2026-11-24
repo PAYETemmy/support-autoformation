@@ -122,7 +122,7 @@ p.warn{margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 11.0</p></header>
+<header><h1>Explorateur de connaissances — Pseudo-code</h1><p>Relier, examiner et apprendre les connaissances · Support d’autoformation · Version 11.1</p></header>
 <main>
 <nav class="tabs" aria-label="Espaces de travail">
 <button class="active" data-view="learn" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>Apprendre</button>
@@ -317,17 +317,25 @@ function setNote(id,t){if(t.trim())notes[id]=t;else delete notes[id];try{localSt
 const MAXW=25,fold=t=>t.toLowerCase().replace(/[’‘]/g,"'").normalize("NFD").replace(/[\u0300-\u036f]/g,""),
  cue=y=>{const n=fold(y.name.replace(/\s*\(.*\)/,""));return n.split(/\s+/).length>1?n:n.slice(0,Math.max(4,n.length-2))},
  words=t=>t.trim()?t.trim().split(/\s+/).length:0;
-/* Mots-clés : le squelette de la définition (champ motsImposes, dans l’ordre) — lus seuls, ils doivent suffire à la deviner ; à défaut, les concepts dont il dépend */
-const stem=w=>{const n=fold(w);return n.split(/\s+/).length>1?n:n.slice(0,Math.max(4,n.length-2))};
+/* Mots-clés : les groupes de sens de la définition (champ motsImposes), dans l’ordre : mot plein + mot de liaison (qui, que, dont, où, et, ou, sans, pour…).
+   Un groupe est vert quand ses mots apparaissent dans l’ordre dans ta phrase ; articles, pronoms et possessifs sont ignorés, les mots de liaison exigés.
+   Même vérification que sources/donnees-json-pseudo-code/groupes.py. À défaut de motsImposes : les concepts dont il dépend. */
+const IGN=new Set("le la les un une des de du au aux a en se ce cet cette y il ils elle elles on lui son sa ses leur leurs".split(" ")),
+ toks=t=>(fold(t).replace(/qu'/g,"que ").replace(/\b([ldsjnmtc])'/g,"$1e ").match(/[a-z0-9²]+|\/\/|\+/g)||[]).filter(w=>!IGN.has(w)),
+ same=(g,w)=>g.length<=3?w===g:w.startsWith(g.slice(0,Math.max(4,g.length-2)));
+function groupOk(group,text,gap=3){const G=toks(group),T=toks(text);if(!G.length)return true;
+ for(let s=0;s<T.length;s++){if(!same(G[0],T[s]))continue;let k=1,p=s;
+  while(k<G.length){let n=-1;for(let q=p+1;q<Math.min(T.length,p+2+gap);q++)if(same(G[k],T[q])){n=q;break}if(n<0)break;k++;p=n}
+  if(k===G.length)return true}
+ return false}
 function mustOf(x){if(x.type!=="Concept")return[];
  const m=String((x.fields||{}).motsImposes||"").split(",").map(w=>w.trim()).filter(Boolean);
- if(m.length)return m.map(w=>({label:w,cue:stem(w)}));
- return isPrim(x)?[]:defsOf(x).map(y=>({label:y.name.replace(/\s*\(.*\)/,""),cue:cue(y)}))}
+ return m.length?m:isPrim(x)?[]:defsOf(x).map(y=>y.name.replace(/\s*\(.*\)/,""))}
 function noteHTML(x){const n=noteOf(x.id),must=mustOf(x);
  return `<div class="section note${must.length?" short":""}"><div class="notehead">Ma définition de « ${esc(x.name)} »${must.length?` <span class="count">${words(n)} / ${MAXW} mots</span>`:""}</div>`+
-  (must.length?`<div class="must">Mots-clés : ${must.map(m=>`<b data-cue="${esc(m.cue)}">${esc(m.label)}</b>`).join("")}</div>`:"")+
+  (must.length?`<div class="must">Mots-clés : ${must.map(m=>`<b data-cue="${esc(m)}">${esc(m)}</b>`).join("")}</div>`:"")+
   `<textarea data-note="${esc(x.id)}" aria-label="Ma définition de ${esc(x.name)}" placeholder="${must.length?`« ${esc(x.name)} », c’est…`:`Avec tes mots : qu’est-ce que « ${esc(x.name)} » ?`}">${esc(n)}</textarea><p class="notice">Enregistrée automatiquement, sur cet appareil.</p></div>`}
-function markNote(t){const box=t.closest(".note"),v=fold(t.value);box.querySelectorAll("[data-cue]").forEach(b=>b.classList.toggle("ok",v.includes(b.dataset.cue)));
+function markNote(t){const box=t.closest(".note");box.querySelectorAll("[data-cue]").forEach(b=>b.classList.toggle("ok",groupOk(b.dataset.cue,t.value)));
  const c=box.querySelector(".count");if(c){const w=words(t.value);c.textContent=`${w} / ${MAXW} mots`;c.classList.toggle("over",w>MAXW)}}
 function wireNotes(el){el.querySelectorAll("[data-note]").forEach(t=>{markNote(t);t.addEventListener("input",()=>{setNote(t.dataset.note,t.value);markNote(t)})})}
 const item=id=>db.items.find(x=>x.id===id);
@@ -736,6 +744,7 @@ $("modelMemo").innerHTML=Object.entries(MODEL).map(([t,m])=>`<p><b>${esc(t)}</b>
  `<p><b>Conventions</b><br>1. « Sauf si… » est un champ à examiner : exception réelle, « aucune exception identifiée dans ce domaine » ou « limites encore inconnues ».<br>2. Un contre-exemple n’est pas automatiquement une exception : a) hors du domaine prévu ? il ne contredit pas l’énoncé dans son domaine, sans le prouver ; b) sinon, préciser la condition ; c) sinon, réviser l’énoncé, éventuellement en ajoutant une exception.<br>3. Un seul contre-exemple valable suffit à réfuter un énoncé ; aucun nombre d’exemples ne suffit à le prouver.</p>`+
  `<p><b>Définitions et termes primitifs</b><br>Un concept est soit défini à partir d’autres concepts (relation « ${DEFREL} »), soit un terme primitif : il n’est pas défini, on en donne le sens intuitif, les caractéristiques et des exemples. Toute chaîne de définitions aboutit à des termes primitifs ; une définition circulaire n’est pas acceptée.</p>`+
  `<p><b>Exigences d’apprentissage</b><br>Dans « Apprendre », chaque élément est présenté avec les termes primitifs et les définitions dont il a besoin, puis illustré par au moins ${MIN_EX} exemples. Le contrôle signale ce qui manque.</p>`+
+ `<p><b>Ma définition</b><br>Pour chaque concept, tu écris sa définition avec tes mots, guidé par ses mots-clés : les groupes de sens de la définition officielle, dans l’ordre (mot plein + mot de liaison : qui, que, dont, où, et…). Un mot-clé passe au vert quand ses mots apparaissent dans l’ordre dans ta phrase ; articles, pronoms et possessifs sont ignorés, les mots de liaison exigés.</p>`+
  `<p><b>Rôles</b><br>Concepts : les objets de connaissance. Propriétés et règles : les affirmations sur ces objets. Procédures : les méthodes composées d’étapes et de règles d’action. Exemples et contre-exemples : ils illustrent, testent et délimitent les éléments précédents.</p>`+
  `<p><b>Statut et cycle de vie</b><br>Statut épistémique : ${STATUSES.join(", ")}. Cycle de vie : actif ou archivé ; un élément archivé reste consultable mais sort du parcours et du contrôle.</p>`+
  `<p><b>Fondements</b><br>${FOUND_TYPES.slice(1).join(", ")}. Un élément peut en avoir plusieurs.</p>`;

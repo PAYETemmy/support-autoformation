@@ -1,8 +1,8 @@
 # Règles d'écriture de `donnees.json`
-Explorateur de connaissances, v11.0. Ces règles sont celles que l'application applique quand elle lit le fichier.
+Explorateur de connaissances, v11.1. Ces règles sont celles que l'application applique quand elle lit le fichier.
 
 ## 0. Consigne à donner à une IA (à copier)
-> Remplis `donnees.json` en respectant strictement ce document. Écris un JSON valide, en français, et recopie les valeurs imposées au caractère près, y compris l'apostrophe typographique ’. Chaque concept, propriété, règle et procédure doit avoir au moins 3 exemples. Chaque chaîne de définitions doit aboutir à des termes primitifs. Avant de rendre le fichier, vérifie la check-list de la section 8.
+> Remplis `donnees.json` en respectant strictement ce document. Pour chaque concept, remplis aussi `motsImposes` : les groupes de sens de sa définition, dans l'ordre (section 3, Concept). Écris un JSON valide, en français, et recopie les valeurs imposées au caractère près, y compris l'apostrophe typographique ’. Chaque concept, propriété, règle et procédure doit avoir au moins 3 exemples. Chaque chaîne de définitions doit aboutir à des termes primitifs. Avant de rendre le fichier, vérifie la check-list de la section 8.
 
 ---
 
@@ -10,7 +10,7 @@ Explorateur de connaissances, v11.0. Ces règles sont celles que l'application a
 ```json
 {
   "format": "modele-representation-connaissance",
-  "version": 11.0,
+  "version": 11.1,
   "titre": "Nom du contenu",
   "items": [ ... ],
   "links": [ ... ]
@@ -70,8 +70,22 @@ Gabarit : `[Nom] : [définition]. Caractéristiques : [traits].`
 | `nature` | **Absent** = concept défini à partir d'autres concepts. `Terme primitif (non défini)` = terme primitif. | — |
 | `definition` | Uniquement pour un concept défini. Utilise les concepts cibles de « Se définit à partir de ». | — |
 | `intuition` | Uniquement pour un terme primitif : son sens intuitif, en mots simples | — |
-| `motsImposes` | Pour chaque concept : les mots-clés de sa définition, dans l’ordre (genre puis caractères distinctifs), séparés par des virgules. Lus seuls, ils doivent suffire à deviner la définition ; chacun figure dans `definition` (ou `intuition` pour un terme primitif). Sans virgule à l’intérieur d’un mot-clé | — |
+| `motsImposes` | Pour chaque concept (terme primitif compris) : les mots-clés de « Ma définition », séparés par des virgules. Voir la règle ci-dessous | — |
 | `traits` | Ce qui le distingue des concepts voisins | — |
+
+#### Mots-clés de « Ma définition » (`motsImposes`)
+Lus seuls, de gauche à droite, les mots-clés doivent suffire à **retrouver la phrase de la définition**.
+1. **Un mot-clé = un groupe de sens** : un mot plein (nom, verbe, adjectif) avec le mot de liaison qui le rattache à la phrase : *qui, que, dont, où, et, ou, sans, pour, par, avec, dans, avant, après, pendant, puis, si…*
+2. **Dans l'ordre de la définition** : d'abord le genre (la catégorie plus large), puis ce qui distingue le concept.
+3. **Tirés mot pour mot de la définition** (ou de `intuition` pour un terme primitif). Si un mot de liaison manque dans la définition (« il fixe »), on réécrit la définition (« qui fixe »).
+4. **On laisse de côté** les exemples placés après « : » et les répétitions.
+5. **2 à 6 groupes**, sans virgule à l'intérieur d'un groupe (la virgule sépare les groupes).
+
+Exemples :
+- Type — définition « Catégorie de valeurs qui fixe les valeurs possibles et les opérations permises sur elles. » → `"catégorie de valeurs, qui fixe, les valeurs possibles, et les opérations permises"`
+- Variable — définition « Emplacement de la mémoire, désigné par un nom, qui contient une valeur à la fois. » → `"emplacement de la mémoire, désigné par un nom, qui contient, une valeur à la fois"`
+
+Ce que vérifie l'application quand on écrit « Ma définition » : un groupe passe au vert quand ses mots apparaissent **dans l'ordre** dans la phrase écrite, avec au plus 3 mots intercalés. Elle ignore les articles, les pronoms et les possessifs (*le, la, les, un, une, des, de, du, au, aux, à, en, se, ce, il, elle, on, son, sa, ses, leur…*), les accents, les majuscules et la forme de l'apostrophe. Elle accepte les fins de mots différentes (pluriel, conjugaison). Elle **exige** les mots de liaison. Le générateur du dépôt applique la même vérification à la définition officielle : chaque groupe doit s'y retrouver.
 
 ### Propriété
 Gabarit : `Dans le domaine [domain], « Concept » [qualifier] [relation] [object].`
@@ -208,6 +222,7 @@ Cohérence des statuts :
 - [ ] Chaque concept est soit défini (`definition` + `Se définit à partir de`), soit primitif (`nature` + `intuition`).
 - [ ] Il n'y a ni boucle de définitions ni boucle de prérequis.
 - [ ] Il y a ≥ 3 exemples par Concept, Propriété, Règle et Procédure.
+- [ ] Chaque concept a `motsImposes` : 2 à 6 groupes de sens, dans l'ordre, chacun retrouvé dans sa `definition` (ou `intuition`), mots de liaison compris.
 - [ ] Aucun nom de concept ou de cible n'est écrit dans les champs d'une Propriété, d'un Exemple ou d'un Contre-exemple.
 - [ ] `formulation` vaut `""` et `autoForm` vaut `true`.
 - [ ] `level` et `seen` sont absents.
@@ -218,18 +233,20 @@ Cohérence des statuts :
 ```json
 {
   "format": "modele-representation-connaissance",
-  "version": 11.0,
+  "version": 11.1,
   "titre": "Géométrie : le segment",
   "items": [
     { "id": "geo-point", "type": "Concept", "name": "Point", "status": "Établi", "life": "Actif",
       "fields": { "domain": "la géométrie plane", "nature": "Terme primitif (non défini)",
         "intuition": "Un emplacement précis, sans longueur ni épaisseur.",
+        "motsImposes": "emplacement précis, sans longueur ni épaisseur",
         "traits": "Il se désigne par une lettre majuscule. Deux points distincts occupent deux emplacements différents." },
       "foundations": [ { "type": "Définition de référence", "text": "Terme primitif de la géométrie euclidienne." } ],
       "formulation": "", "autoForm": true },
     { "id": "geo-segment", "type": "Concept", "name": "Segment", "status": "Établi", "life": "Actif",
       "fields": { "domain": "la géométrie plane",
         "definition": "Portion de droite limitée par deux points, appelés extrémités.",
+        "motsImposes": "portion de droite, limitée par deux points, appelés extrémités",
         "traits": "Il se note [AB]. Il a une longueur. [AB] et [BA] désignent le même segment." },
       "foundations": [ { "type": "Définition de référence", "text": "Définition du cours de géométrie." } ],
       "formulation": "", "autoForm": true },

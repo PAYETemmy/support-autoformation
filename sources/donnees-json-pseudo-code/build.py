@@ -20,22 +20,18 @@ ex = collections.Counter(l["target"] for l in LINKS if l["type"] == "Illustre")
 low = [(x["id"], ex[x["id"]]) for x in ITEMS if x["type"] in ("Concept", "Propriété", "Règle", "Procédure") and ex[x["id"]] < 3]
 print("éléments:", len(ITEMS), dict(collections.Counter(x["type"] for x in ITEMS)), "| relations:", len(LINKS))
 print("MOINS DE 3 EXEMPLES:", low)
-# mots imposés : présents pour chaque concept, et chacun retrouvé dans la définition (ou le sens intuitif)
-import unicodedata
-def fold(t): return "".join(c for c in unicodedata.normalize("NFD", t.lower().replace("’", "'")) if unicodedata.category(c) != "Mn")
-def stem(w):
-    n = fold(w)
-    return n if len(n.split()) > 1 else n[:max(4, len(n) - 2)]
+# mots-clés : chaque groupe de sens se retrouve dans la définition (même vérification que l’app)
+from groupes import groupe_ok
 miss = []
 for x in ITEMS:
     if x["type"] != "Concept": continue
     f = x["fields"]; mots = [m.strip() for m in f.get("motsImposes", "").split(",") if m.strip()]
-    txt = fold(f.get("definition") or f.get("intuition") or "")
-    if len(mots) < 3: miss.append((x["id"], "moins de 3 mots"))
+    txt = f.get("definition") or f.get("intuition") or ""
+    if len(mots) < 2: miss.append((x["id"], "moins de 2 groupes"))
     for m in mots:
-        if stem(m) not in txt: miss.append((x["id"], m))
+        if not groupe_ok(m, txt): miss.append((x["id"], m))
 print("MOTS IMPOSÉS ABSENTS DE LA DÉFINITION:", miss)
-data = {"format": "modele-representation-connaissance", "version": 11.0,
+data = {"format": "modele-representation-connaissance", "version": 11.1,
         "titre": "Pseudo-code : écrire, vérifier et analyser des algorithmes (d’après Éduscol et le programme de NSI)",
         "items": ITEMS, "links": LINKS}
 txt = json.dumps(data, ensure_ascii=False, indent=2)
