@@ -115,6 +115,15 @@ body{background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-
   .msg-in{padding:24px 20px}
   .msg h1{font-size:20px}
 }
+/* Mobile (écran tactile) : + et − à droite, « Effacer » à gauche, boutons plus arrondis */
+@media(hover:none) and (pointer:coarse){
+  .ctl{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:". . zin" "clr . zout";align-items:end;gap:6px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;pointer-events:none}
+  .ctl button{pointer-events:auto;border:1px solid var(--edge);border-radius:12px;background:var(--panel);box-shadow:0 3px 12px rgba(15,23,42,.08)}
+  #zIn{grid-area:zin}
+  #zOut{grid-area:zout}
+  .ctl .clr{grid-area:clr;border-radius:999px;border-top-color:var(--edge)}
+  .pick{border-radius:12px}
+}
 @media(prefers-reduced-motion:reduce){.box,.ctl button,.pick{transition:none}}
 </style>
 </head>
