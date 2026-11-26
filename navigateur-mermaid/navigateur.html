@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigateur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+  Modèle « navigateur-arbre ».
+  Lit un fichier .json écrit selon regles-json.md (par défaut : donnees.json, dans le même dossier).
+  Applique les règles de regles-navigateur.md.
+-->
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#ffffff,#07130d);
+  --ink:light-dark(#0b0b10,#e9f5ee);
+  --soft:light-dark(#55606a,#9fb5a9);
+  --deep:light-dark(#007a47,#3bd08a);
+  --line:light-dark(#9fb9ab,#4a7560);
+  --edge:light-dark(#cfdcd5,#2f5240);
+  --panel:light-dark(#ffffff,#0b1d14);
+  --hover:light-dark(#f3fbf7,#123222);
+  --bar:light-dark(rgba(11,11,16,.06),rgba(233,245,238,.06));
+  --bar-on:light-dark(rgba(11,11,16,.09),rgba(233,245,238,.09));
+}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow:hidden}
+
+/* Graphique plein écran */
+.vp{position:fixed;inset:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.vp[hidden]{display:none}
+.cv{width:max-content;min-width:100%;padding:20px 16px 64px;user-select:none;-webkit-user-select:none}
+
+/* Arbre : chaque élément au-dessus de ceux qui en découlent */
+.org ul{display:flex;justify-content:center;list-style:none;margin:0;padding:26px 0 0;position:relative}
+.org ul::before{content:"";position:absolute;top:0;left:50%;height:26px;border-left:2px solid var(--line)}
+.org>ul{padding-top:0}
+.org>ul::before{display:none}
+.org li{position:relative;padding:26px 4px 0;display:flex;flex-direction:column;align-items:center}
+.org li::before,.org li::after{content:"";position:absolute;top:0;width:50%;height:26px;border-top:2px solid var(--line)}
+.org li::before{right:50%}
+.org li::after{left:50%;border-left:2px solid var(--line)}
+.org li:only-child{padding-top:0}
+.org li:only-child::before,.org li:only-child::after{display:none}
+.org li:first-child::before,.org li:last-child::after{border:0}
+.org li:last-child::before{border-right:2px solid var(--line);border-top-right-radius:8px}
+.org li:first-child::after{border-top-left-radius:8px}
+.org>ul>li{padding-top:0}
+.org>ul>li::before,.org>ul>li::after{display:none}
+
+/* Rectangles */
+.box{all:unset;box-sizing:border-box;width:138px;min-height:58px;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:9px 11px;border:1.5px solid var(--edge);border-radius:10px;background:var(--panel);text-align:left;cursor:pointer;transition:opacity .15s}
+.box .bt{font-size:13.5px;line-height:1.28;font-weight:500}
+.box .meta{font-size:11.5px;line-height:1.3;color:var(--soft)}
+.org>ul>li>.box{width:200px;border:2px solid var(--ink)}
+.box.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.box.on .meta{color:var(--bg);opacity:.85;font-weight:600}
+.box.dim{opacity:.38}
+.box:focus-visible{outline:3px solid var(--deep);outline-offset:2px}
+
+/* Commandes : petites, en bas à gauche, taille fixe quel que soit le zoom */
+.ctl{position:fixed;left:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.ctl[hidden],.ctl [hidden]{display:none}
+.ctl button{all:unset;box-sizing:border-box;min-width:26px;height:26px;padding:0 6px;display:grid;place-items:center;font-size:16px;line-height:1;border-radius:7px;background:var(--panel);border:1px solid var(--edge);color:var(--ink);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.ctl .clr{font-size:11px;font-weight:600;color:var(--deep);padding:0 8px}
+.ctl button:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
+
+/* Ordinateur : glisser à la souris, barres de défilement discrètes */
+@media(hover:hover) and (pointer:fine){
+  .vp{cursor:grab}
+  .vp.grab,.vp.grab .box{cursor:grabbing}
+  .box:not(.on):hover{background:var(--hover)}
+  .vp::-webkit-scrollbar{width:5px;height:5px}
+  .vp::-webkit-scrollbar-track,.vp::-webkit-scrollbar-corner{background:transparent}
+  .vp::-webkit-scrollbar-thumb{background:var(--bar);border-radius:5px}
+  .vp::-webkit-scrollbar-thumb:hover,.vp::-webkit-scrollbar-thumb:active{background:var(--bar-on)}
+  @supports (-moz-appearance:none){.vp{scrollbar-width:thin;scrollbar-color:var(--bar) transparent}}
+}
+
+/* Écrans d'ouverture et d'erreur */
+.msg{position:fixed;inset:0;overflow:auto;display:grid;place-items:center;padding:24px}
+.msg[hidden]{display:none}
+.msg-in{max-width:560px;width:100%}
+.msg h1{font-size:20px;font-weight:600;line-height:1.3;margin:0 0 8px}
+.msg p{margin:0 0 12px;color:var(--soft);font-size:15px}
+.msg ul{margin:0 0 14px;padding-left:20px;font-size:14px}
+.msg li{margin:4px 0}
+.pick{display:inline-block;font-weight:600;font-size:15px;padding:12px 18px;min-height:48px;border-radius:10px;background:var(--deep);color:var(--bg);cursor:pointer}
+.pick:focus-within{outline:3px solid var(--deep);outline-offset:2px}
+
+@media(prefers-reduced-motion:reduce){.box{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="vp" id="vp" tabindex="0" aria-label="Arbre des éléments, du premier terme à ceux qui en découlent" hidden><div class="cv" id="cv"></div></div>
+
+<div class="ctl" id="ctl" hidden>
+  <button type="button" id="zIn" aria-label="Zoomer">+</button>
+  <button type="button" id="zOut" aria-label="Dézoomer">−</button>
+  <button type="button" id="clr" class="clr" hidden>Effacer</button>
+</div>
+
+<div class="msg" id="msg" role="alert" hidden><div class="msg-in" id="msgIn"></div></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- Constantes (voir regles-json.md) ---------- */
+const FORMAT = 'navigateur-arbre/1';
+const CHAMPS_RACINE = ['format', 'titre', 'elements'];
+const CHAMPS_ELEMENT = ['id', 'libelle', 's_appuie_sur'];
+const VERBES_VAGUES = ['comprendre', 'connaître', 'connaitre', 'savoir', 'maîtriser', 'maitriser', 'découvrir', 'decouvrir', 'apprendre'];
+const LIBELLE_MAX = 80;
+const RECTANGLES_MAX = 3000;
+const ZOOM_MIN = 0.1, ZOOM_MAX = 1.6, ZOOM_RECADRAGE_MIN = 0.35;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const pluriel = (n, un, plusieurs) => n > 1 ? plusieurs : un;
+
+/* ---------- Chargement ---------- */
+const nomParDefaut = new URLSearchParams(location.search).get('donnees') || 'donnees.json';
+
+async function charger() {
+  try {
+    const r = await fetch(nomParDefaut, { cache: 'no-store' });
+    if (!r.ok) throw new Error(r.status);
+    demarrer(await r.text(), nomParDefaut);
+  } catch (e) {
+    ecranOuverture();
+  }
+}
+
+function lireFichier(f) {
+  const rd = new FileReader();
+  rd.onload = () => demarrer(String(rd.result), f.name);
+  rd.readAsText(f, 'utf-8');
+}
+
+function ecranOuverture() {
+  afficherMessage(
+    `<h1>Ouvre ton fichier .json</h1>
+     <p>Le modèle n'a pas pu lire « ${esc(nomParDefaut)} » à côté de lui. Choisis le fichier, ou dépose-le sur cette page.</p>
+     <label class="pick">Choisir un fichier<input type="file" id="file" accept=".json,application/json" hidden></label>`);
+  $('file').addEventListener('change', e => { const f = e.target.files[0]; if (f) lireFichier(f); });
+}
+
+function afficherMessage(html) {
+  $('vp').hidden = true; $('ctl').hidden = true;
+  $('msgIn').innerHTML = html; $('msg').hidden = false;
+}
+
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) lireFichier(f); });
+
+/* ---------- Vérification : règles bloquantes de regles-json.md ---------- */
+function verifier(texte) {
+  const E = [];
+  let d;
+  try { d = JSON.parse(texte.replace(/^﻿/, '')); }
+  catch (e) { return { E: [`Le fichier n'est pas un JSON valide : ${e.message}`] }; }
+  if (!d || typeof d !== 'object' || Array.isArray(d)) return { E: ['Le fichier doit contenir un objet JSON { … }.'] };
+
+  Object.keys(d).forEach(k => { if (!CHAMPS_RACINE.includes(k)) E.push(`Champ inconnu à la racine : « ${k} ».`); });
+  if (d.format !== FORMAT) E.push(`Le champ « format » doit valoir "${FORMAT}".`);
+  if (typeof d.titre !== 'string' || !d.titre.trim()) E.push('Le champ « titre » doit être un texte non vide.');
+  if (!Array.isArray(d.elements) || !d.elements.length) { E.push('Le champ « elements » doit être une liste non vide.'); return { E }; }
+
+  const position = new Map(), libelles = new Map();
+  d.elements.forEach((x, i) => {
+    const ici = `Élément en position ${i + 1}`;
+    if (!x || typeof x !== 'object' || Array.isArray(x)) { E.push(`${ici} : doit être un objet { … }.`); return; }
+    const nom = typeof x.id === 'string' && x.id ? `« ${x.id} »` : ici;
+    Object.keys(x).forEach(k => { if (!CHAMPS_ELEMENT.includes(k)) E.push(`${nom} : champ inconnu « ${k} ».`); });
+
+    if (typeof x.id !== 'string' || !/^[a-z][a-z0-9_]*$/.test(x.id)) E.push(`${ici} : « id » doit commencer par une lettre minuscule, puis seulement a-z, 0-9 et _.`);
+    else if (position.has(x.id)) E.push(`« ${x.id} » : id en double (positions ${position.get(x.id) + 1} et ${i + 1}).`);
+    else position.set(x.id, i);
+
+    if (typeof x.libelle !== 'string' || !x.libelle.trim()) E.push(`${nom} : « libelle » doit être un texte non vide.`);
+    else {
+      const l = x.libelle.trim(), premierMot = l.split(/[\s'’]/)[0];
+      if (l.length > LIBELLE_MAX) E.push(`${nom} : libellé trop long (${l.length} caractères, ${LIBELLE_MAX} au plus).`);
+      if (/^\d+\s*[.)\-–:]/.test(l)) E.push(`${nom} : le libellé ne doit pas être numéroté.`);
+      if (VERBES_VAGUES.includes(premierMot.toLowerCase())) E.push(`${nom} : verbe vague « ${premierMot} » ; commence par un verbe observable.`);
+      const cle = l.toLowerCase();
+      if (libelles.has(cle)) E.push(`${nom} : même libellé que « ${libelles.get(cle)} ».`); else libelles.set(cle, x.id);
+    }
+
+    if (!Array.isArray(x.s_appuie_sur) || x.s_appuie_sur.some(a => typeof a !== 'string')) E.push(`${nom} : « s_appuie_sur » doit être une liste d'id, vide pour le premier terme.`);
+    else if (new Set(x.s_appuie_sur).size !== x.s_appuie_sur.length) E.push(`${nom} : un même terme est cité deux fois dans « s_appuie_sur ».`);
+  });
+  if (E.length) return { E };
+
+  const el = d.elements;
+  el.forEach(x => x.s_appuie_sur.forEach(a => {
+    if (a === x.id) E.push(`« ${x.id} » s'appuie sur lui-même.`);
+    else if (!position.has(a)) E.push(`« ${x.id} » s'appuie sur « ${a} », qui n'existe pas.`);
+  }));
+  if (E.length) return { E };
+
+  const premiers = el.filter(x => !x.s_appuie_sur.length);
+  if (premiers.length === 0) E.push('Il manque le premier terme : un élément dont « s_appuie_sur » est vide.');
+  if (premiers.length > 1) E.push(`Il faut un seul premier terme ; il y en a ${premiers.length} : ${premiers.map(x => '« ' + x.id + ' »').join(', ')}.`);
+
+  // L'ordre interdit aussi toute boucle.
+  el.forEach((x, i) => x.s_appuie_sur.forEach(a => {
+    if (position.get(a) > i) E.push(`« ${x.id} » est placé avant son terme primitif « ${a} » : chaque élément vient après ceux sur lesquels il s'appuie.`);
+  }));
+  if (E.length) return { E };
+
+  const parId = Object.fromEntries(el.map(x => [x.id, x]));
+  const primitifs = id => { const s = new Set(), k = [...parId[id].s_appuie_sur]; while (k.length) { const y = k.pop(); if (!s.has(y)) { s.add(y); k.push(...parId[y].s_appuie_sur); } } return s; };
+  el.forEach(x => x.s_appuie_sur.forEach(a => {
+    const autre = x.s_appuie_sur.find(b => b !== a && primitifs(b).has(a));
+    if (autre) E.push(`« ${x.id} » : le lien vers « ${a} » est déduit, car « ${autre} » s'appuie déjà dessus. Retire-le.`);
+  }));
+  if (E.length) return { E };
+
+  const enfants = {}; el.forEach(x => enfants[x.id] = []);
+  el.forEach(x => x.s_appuie_sur.forEach(a => enfants[a].push(x.id)));
+  const taille = {};
+  for (let i = el.length - 1; i >= 0; i--) { const id = el[i].id; taille[id] = 1 + enfants[id].reduce((s, c) => s + taille[c], 0); }
+  const total = taille[premiers[0].id];
+  if (total > RECTANGLES_MAX) E.push(`L'arbre déplié compte ${total} rectangles, ${RECTANGLES_MAX} au plus : découpe le domaine en plusieurs fichiers.`);
+  return { E, d, enfants };
+}
+
+function ecranErreurs(E, nom) {
+  afficherMessage(
+    `<h1>« ${esc(nom)} » ne respecte pas les règles</h1>
+     <ul>${E.slice(0, 60).map(e => `<li>${esc(e)}</li>`).join('')}</ul>
+     ${E.length > 60 ? `<p>Et ${E.length - 60} autres erreurs.</p>` : ''}
+     <p>Corrige le fichier selon regles-json.md, puis recharge la page. Tu peux aussi déposer un autre fichier ici.</p>`);
+}
+
+/* ---------- Démarrage ---------- */
+let z = 1, choisis = new Set(), cle = '', enfants = {}, premier = '', descendants = {};
+
+function demarrer(texte, nom) {
+  const { E, d, enfants: en } = verifier(texte);
+  if (E.length) return ecranErreurs(E, nom);
+  enfants = en;
+  premier = d.elements.find(x => !x.s_appuie_sur.length).id;
+  const parId = Object.fromEntries(d.elements.map(x => [x.id, x]));
+  descendants = {};
+  [...d.elements].reverse().forEach(x => { const s = new Set(); enfants[x.id].forEach(c => { s.add(c); descendants[c].forEach(y => s.add(y)); }); descendants[x.id] = s; });
+
+  document.title = d.titre;
+  const li = id => `<li>${rectangle(id, parId[id].libelle)}${enfants[id].length ? `<ul>${enfants[id].map(li).join('')}</ul>` : ''}</li>`;
+  $('cv').innerHTML = `<div class="org"><ul>${li(premier)}</ul></div>`;
+  rectangles().forEach((b, i) => b.dataset.k = String(i));
+
+  cle = 'navigateur-arbre:' + empreinte(JSON.stringify(d.elements));
+  choisis = new Set();
+  try { const s = JSON.parse(localStorage.getItem(cle) || '[]'); if (Array.isArray(s)) s.forEach(k => { if (document.querySelector(`#cv .box[data-k="${k}"]`)) choisis.add(String(k)); }); } catch (e) {}
+
+  $('msg').hidden = true; $('vp').hidden = false; $('ctl').hidden = false;
+  peindre();
+  const vp = $('vp'), racine = document.querySelector('#cv .box');
+  setZoom(vp.clientWidth < 600 ? 0.9 : 1);
+  vp.scrollTop = 0;
+  if (racine) vp.scrollLeft += racine.getBoundingClientRect().left - vp.getBoundingClientRect().left - (vp.clientWidth - racine.getBoundingClientRect().width) / 2;
+}
+
+function empreinte(s) { let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return h.toString(36); }
+
+/* ---------- Rectangles ---------- */
+const rectangles = () => [...document.querySelectorAll('#cv .box')];
+
+function rectangle(id, libelle) {
+  return `<button type="button" class="box" data-id="${esc(id)}" aria-pressed="false"><span class="bt">${esc(libelle)}</span><span class="meta"></span></button>`;
+}
+
+function info(id) {
+  const n = descendants[id].size;
+  if (id === premier) return `premier terme · ${n} en ${pluriel(n, 'découle', 'découlent')}`;
+  return n ? `${n} ${pluriel(n, 'élément en découle', 'éléments en découlent')}` : "rien n'en découle";
+}
+
+/* ---------- Sélection (regles-navigateur.md) ---------- */
+function brancheAuDessus(b) {
+  const o = [];
+  let li = b.parentElement.parentElement.closest('li');
+  while (li && li.closest('#cv')) { const a = li.querySelector(':scope > .box'); if (a) o.unshift(a); li = li.parentElement.closest('li'); }
+  return o;
+}
+
+function peindre() {
+  const tous = rectangles(), actif = choisis.size > 0;
+  tous.forEach(b => b.classList.remove('on', 'choisi', 'haut', 'bas', 'dim'));
+  tous.forEach(b => {
+    if (!choisis.has(b.dataset.k)) return;
+    b.classList.add('on', 'choisi');
+    b.parentElement.querySelectorAll(':scope > ul .box').forEach(x => x.classList.add('on', 'bas'));
+    brancheAuDessus(b).forEach(x => x.classList.add('on', 'haut'));
+  });
+  tous.forEach(b => {
+    const c = b.classList.contains('choisi'), on = b.classList.contains('on');
+    b.classList.toggle('dim', actif && !on);
+    b.setAttribute('aria-pressed', String(c));
+    b.querySelector('.meta').textContent =
+      c ? 'sélectionné'
+      : on && b.classList.contains('haut') ? (b.dataset.id === premier ? 'premier terme · sélectionné' : 'terme primitif · sélectionné')
+      : on ? 'en découle · sélectionné'
+      : info(b.dataset.id);
+  });
+  $('clr').hidden = !actif;
+  try { localStorage.setItem(cle, JSON.stringify([...choisis])); } catch (e) {}
+}
+
+function recadrer(b) {
+  const vp = $('vp'), els = [...brancheAuDessus(b), b];
+  const zone = () => { const r = els.map(e => e.getBoundingClientRect()); return { g: Math.min(...r.map(x => x.left)), d: Math.max(...r.map(x => x.right)), h: Math.min(...r.map(x => x.top)) }; };
+  let R = zone();
+  const besoin = (vp.clientWidth - 40) * z / (R.d - R.g);
+  if (besoin < z) setZoom(Math.max(ZOOM_RECADRAGE_MIN, besoin));
+  R = zone();
+  const v = vp.getBoundingClientRect();
+  vp.scrollLeft += (R.g + R.d) / 2 - (v.left + v.width / 2);
+  R = zone();
+  if (R.h < v.top || R.h > v.top + vp.clientHeight * 0.6) vp.scrollTop += R.h - v.top - 16;
+}
+
+/* ---------- Zoom et déplacement ---------- */
+function setZoom(v) { z = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, v)); $('cv').style.zoom = z; }
+
+function zoomer(facteur, x, y) {
+  const vp = $('vp'), cx = (vp.scrollLeft + x) / z, cy = (vp.scrollTop + y) / z;
+  setZoom(z * facteur);
+  vp.scrollLeft = cx * z - x; vp.scrollTop = cy * z - y;
+}
+
+let glisse = null, aGlisse = false;
+const vp = $('vp');
+
+vp.addEventListener('wheel', e => {
+  e.preventDefault();
+  const r = vp.getBoundingClientRect();
+  const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
+  zoomer(Math.exp(-dy * 0.0015), e.clientX - r.left, e.clientY - r.top);
+}, { passive: false });
+
+vp.addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'mouse' || e.button !== 0) return;
+  glisse = { x: e.clientX, y: e.clientY, g: vp.scrollLeft, h: vp.scrollTop, bouge: false };
+});
+window.addEventListener('pointermove', e => {
+  if (!glisse) return;
+  const dx = e.clientX - glisse.x, dy = e.clientY - glisse.y;
+  if (!glisse.bouge && Math.hypot(dx, dy) > 4) { glisse.bouge = true; vp.classList.add('grab'); }
+  if (glisse.bouge) { vp.scrollLeft = glisse.g - dx; vp.scrollTop = glisse.h - dy; }
+});
+window.addEventListener('pointerup', () => {
+  if (glisse && glisse.bouge) { aGlisse = true; setTimeout(() => aGlisse = false, 0); }
+  glisse = null; vp.classList.remove('grab');
+});
+
+$('cv').addEventListener('click', e => {
+  if (aGlisse) return;
+  const b = e.target.closest('.box');
+  if (!b) return;
+  const k = b.dataset.k;
+  if (choisis.has(k)) { choisis.delete(k); peindre(); }
+  else if (!b.classList.contains('on')) { choisis.add(k); peindre(); recadrer(b); }
+});
+
+$('zIn').addEventListener('click', () => zoomer(1.12, vp.clientWidth / 2, vp.clientHeight / 2));
+$('zOut').addEventListener('click', () => zoomer(1 / 1.12, vp.clientWidth / 2, vp.clientHeight / 2));
+$('clr').addEventListener('click', () => { choisis.clear(); peindre(); });
+
+charger();
+})();
+</script>
+</body>
+</html>
