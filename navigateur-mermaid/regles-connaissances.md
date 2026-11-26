@@ -1,35 +1,36 @@
-# Règles du modèle developpement.html
+# Règles du modèle connaissances.html
 
-`developpement.html` affiche le développement du navigateur : chaque élément de l'arbre, développé dans sa propre carte. Il lit un fichier .json écrit selon `regles-developpement-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = choix propre au modèle.
+`connaissances.html` affiche les connaissances de chaque élément du navigateur, une carte par élément. Il lit un fichier .json écrit selon `regles-connaissances-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = choix propre au modèle.
 
 ## Fichiers
 
 | Fichier | Rôle |
 | --- | --- |
-| `developpement.html` | Le modèle : lit le .json et affiche le développement. |
-| `developpement.json` | Le contenu : ici, les flowcharts Mermaid. |
-| `regles-developpement-json.md` | Comment écrire le .json. |
-| `regles-developpement.md` | Ce fichier : ce que fait le modèle. |
+| `connaissances.html` | Le modèle : lit le .json et affiche les connaissances. |
+| `connaissances.json` | Le contenu : ici, les flowcharts Mermaid. |
+| `regles-connaissances-json.md` | Comment écrire le .json. |
+| `regles-connaissances.md` | Ce fichier : ce que fait le modèle. |
 
 Pour un autre domaine, seul le .json change.
 
 ## Nature
 
-- Le navigateur donne le plan du domaine ; cette page en donne le développement : une carte par élément du plan. [Consigne ; rhétorique : le plan, puis son développement]
+- Le navigateur donne la structure du domaine ; cette page donne les connaissances de chaque élément. [Doignon et Falmagne : structure de connaissances]
+- Chaque carte réunit les trois types de connaissances : conditionnelles (« Quand »), procédurales (la compétence, « Réussi si ») et déclaratives (les fiches). [Tardif, 1992]
 - Une carte se consulte au besoin : la page ne se lit pas d'un bout à l'autre. [Diátaxis : documentation de consultation, type « référence »]
 - Chaque carte est une compétence, avec sa condition et son critère de réussite. [Mager ; référentiels de compétences de la formation professionnelle, RNCP]
 - Chaque carte forme une unité de sens autonome : elle se comprend sans lire les autres. [OASIS DITA : topic autonome ; Horn, Information Mapping]
 
 ## Chargement
 
-- Le modèle lit `developpement.json`, placé dans le même dossier. [Ajout]
-- Un autre fichier se choisit par l'adresse : `developpement.html?donnees=autre.json`. [Ajout]
+- Le modèle lit `connaissances.json`, placé dans le même dossier. [Ajout]
+- Un autre fichier se choisit par l'adresse : `connaissances.html?donnees=autre.json`. [Ajout]
 - Ouvert d'un double-clic depuis le disque, le navigateur web refuse souvent de lire un fichier voisin. Le modèle propose alors de choisir le fichier, ou de le déposer sur la page. [Ajout]
-- Le fichier est relu à chaque ouverture : modifier le .json met le développement à jour. [Ajout]
+- Le fichier est relu à chaque ouverture : modifier le .json met la page à jour. [Ajout]
 
 ## Vérification
 
-- Avant d'afficher quoi que ce soit, le modèle applique toutes les règles bloquantes de `regles-developpement-json.md`. [Ajout]
+- Avant d'afficher quoi que ce soit, le modèle applique toutes les règles bloquantes de `regles-connaissances-json.md`. [Ajout]
 - Si une règle échoue, il n'affiche que la liste des erreurs, chacune avec la compétence, la fiche ou le cas concernés. [Ajout]
 
 ## Sommaire
@@ -67,6 +68,8 @@ Pour un autre domaine, seul le .json change.
 
 ## Sources
 
+- Tardif, J. (1992). *Pour un enseignement stratégique : l'apport de la psychologie cognitive*. Éditions Logiques : connaissances déclaratives, procédurales et conditionnelles.
+- Doignon, J.-P. et Falmagne, J.-C. (1999). *Knowledge Spaces*. Springer : structure de connaissances.
 - Procida, D. *Diátaxis, a systematic approach to technical documentation* : tutoriel, guide pratique, référence, explication. https://diataxis.fr/
 - OASIS. *Darwin Information Typing Architecture (DITA) Version 1.3* : topics autonomes, réutilisation par conref.
 - Horn, R. E. (1989). *Mapping Hypertext*. The Lexington Institute : découpage en blocs autonomes (Information Mapping).
