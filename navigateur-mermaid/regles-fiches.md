@@ -54,5 +54,7 @@ Ce fichier dit comment écrire le contenu que lit `guide.html`. Source entre cro
 - Chaque fiche est rattachée à au moins un élément. [Ajout]
 - Pas de numéro dans les noms de fiches ; on renvoie à une fiche par son nom. [Ajout]
 - Code entre accents graves dans les textes : `` `A --> B` ``. Le code des exemples va dans `code`, sans accent grave. [Ajout]
-- Une fiche partagée par plusieurs éléments est affichée une fois, au premier élément ; ensuite, un renvoi. [Ajout]
+- Le guide s'ouvre sur un sommaire alphabétique, groupé par initiale. [ISO 999, index]
+- Une seule carte affichée à la fois : celle choisie. Chaque carte se lit seule. [DITA, topic autonome ; Horn, Information Mapping]
+- Une fiche partagée par plusieurs éléments est affichée en entier dans chaque carte. [DITA, réutilisation par conref]
 - Après une modification des fiches dans Notion, refaire la copie et mettre à jour `copie_du`. [Ajout]
