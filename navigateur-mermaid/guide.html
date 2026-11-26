@@ -30,7 +30,6 @@ nav{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid
 nav .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:8px;padding-bottom:8px}
 nav a{flex:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;min-height:36px;display:inline-flex;align-items:center;gap:6px}
 nav a b{font-weight:500;color:var(--soft)}
-nav a.outil{margin-left:auto;color:var(--deep)}
 section{padding-top:12px}
 h2{font-size:13px;font-weight:600;color:var(--soft);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 2px}
 .lettre{font-size:13px;font-weight:600;color:var(--deep);margin:12px 0 0;padding:0 0 2px;border-bottom:1px solid var(--line)}
@@ -103,7 +102,7 @@ function afficher(d,F){
   const lienEl=e=>`<a href="#${esc(e.id)}">${esc(e.libelle)}</a>`;
   const lienFiche=n=>carteDe.has(n)?`<a href="#${esc(carteDe.get(n))}">${esc(n)}</a>`:esc(n);
   const ligne=(t,v)=>v?`<dt>${t}</dt><dd>${v}</dd>`:"";
-  const barre=accueil=>`<nav aria-label="Navigation"><div class="wrap">${accueil?"":`<a href="#">← Sommaire</a>`}<a class="outil" href="navigateur.html">Navigateur</a></div></nav>`;
+  const barre=accueil=>accueil?"":`<nav aria-label="Navigation"><div class="wrap"><a href="#">← Sommaire</a></div></nav>`;
 
   const fiche=n=>{
     const f=F.fiches[n];
