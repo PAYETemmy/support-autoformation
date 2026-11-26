@@ -1,36 +1,36 @@
-# Règles du modèle connaissances.html
+# Règles du modèle base-connaissances.html — Base de connaissances
 
-`connaissances.html` affiche les connaissances de chaque module de « Repères des modules et de leurs prérequis », une carte par module. Il lit un fichier .json écrit selon `regles-connaissances-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = choix propre au modèle.
+`base-connaissances.html` affiche les connaissances de chaque module de « Repères des modules et de leurs prérequis », une carte par module. Il lit un fichier .json écrit selon `regles-base-connaissances-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = choix propre au modèle.
 
 ## Fichiers
 
 | Fichier | Rôle |
 | --- | --- |
-| `connaissances.html` | Le modèle : lit le .json et affiche les connaissances. |
-| `connaissances.json` | Le contenu : ici, les flowcharts Mermaid. |
-| `regles-connaissances-json.md` | Comment écrire le .json. |
-| `regles-connaissances.md` | Ce fichier : ce que fait le modèle. |
+| `base-connaissances.html` | Le modèle : lit le .json et affiche la base de connaissances. |
+| `base-connaissances.json` | Le contenu : ici, les flowcharts Mermaid. |
+| `regles-base-connaissances-json.md` | Comment écrire le .json. |
+| `regles-base-connaissances.md` | Ce fichier : ce que fait le modèle. |
 
 Pour un autre domaine, seul le .json change.
 
 ## Nature
 
 - « Repères des modules et de leurs prérequis » donne la structure du domaine ; cette page donne les connaissances de chaque module. [Doignon et Falmagne : structure de connaissances]
+- Une base de connaissances réunit des cartes autonomes, consultées selon le besoin : la page ne se lit pas d'un bout à l'autre. [ITIL : gestion des connaissances ; Diátaxis : documentation de consultation]
 - Chaque carte réunit les trois types de connaissances : conditionnelles (« Quand »), procédurales (la compétence, « Réussi si ») et déclaratives (les fiches). [Tardif, 1992]
-- Une carte se consulte au besoin : la page ne se lit pas d'un bout à l'autre. [Diátaxis : documentation de consultation, type « référence »]
 - Chaque carte est une compétence, avec sa condition et son critère de réussite. [Mager ; référentiels de compétences de la formation professionnelle, RNCP]
 - Chaque carte forme une unité de sens autonome : elle se comprend sans lire les autres. [OASIS DITA : topic autonome ; Horn, Information Mapping]
 
 ## Chargement
 
-- Le modèle lit `connaissances.json`, placé dans le même dossier. [Ajout]
-- Un autre fichier se choisit par l'adresse : `connaissances.html?donnees=autre.json`. [Ajout]
+- Le modèle lit `base-connaissances.json`, placé dans le même dossier. [Ajout]
+- Un autre fichier se choisit par l'adresse : `base-connaissances.html?donnees=autre.json`. [Ajout]
 - Ouvert d'un double-clic depuis le disque, le navigateur web refuse souvent de lire un fichier voisin. Le modèle propose alors de choisir le fichier, ou de le déposer sur la page. [Ajout]
 - Le fichier est relu à chaque ouverture : modifier le .json met la page à jour. [Ajout]
 
 ## Vérification
 
-- Avant d'afficher quoi que ce soit, le modèle applique toutes les règles bloquantes de `regles-connaissances-json.md`. [Ajout]
+- Avant d'afficher quoi que ce soit, le modèle applique toutes les règles bloquantes de `regles-base-connaissances-json.md`. [Ajout]
 - Si une règle échoue, il n'affiche que la liste des erreurs, chacune avec la compétence, la fiche ou le cas concernés. [Ajout]
 
 ## Sommaire
@@ -70,6 +70,7 @@ Pour un autre domaine, seul le .json change.
 
 - Tardif, J. (1992). *Pour un enseignement stratégique : l'apport de la psychologie cognitive*. Éditions Logiques : connaissances déclaratives, procédurales et conditionnelles.
 - Doignon, J.-P. et Falmagne, J.-C. (1999). *Knowledge Spaces*. Springer : structure de connaissances.
+- AXELOS (2019). *ITIL Foundation, ITIL 4 Edition* : pratique de gestion des connaissances, base de connaissances.
 - Procida, D. *Diátaxis, a systematic approach to technical documentation* : tutoriel, guide pratique, référence, explication. https://diataxis.fr/
 - OASIS. *Darwin Information Typing Architecture (DITA) Version 1.3* : topics autonomes, réutilisation par conref.
 - Horn, R. E. (1989). *Mapping Hypertext*. The Lexington Institute : découpage en blocs autonomes (Information Mapping).

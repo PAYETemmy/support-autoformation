@@ -1,6 +1,6 @@
-# Règles d'écriture du fichier .json des connaissances
+# Règles d'écriture du fichier .json de la base de connaissances
 
-Ce fichier dit comment écrire le contenu que lit `connaissances.html`. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = règle propre au modèle. Les règles **bloquantes** sont vérifiées par le modèle : si une seule échoue, il affiche la liste des erreurs au lieu des cartes.
+Ce fichier dit comment écrire le contenu que lit `base-connaissances.html`. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = règle propre au modèle. Les règles **bloquantes** sont vérifiées par le modèle : si une seule échoue, il affiche la liste des erreurs au lieu des cartes.
 
 ## Ce que décrit le fichier
 
@@ -10,7 +10,7 @@ Toutes les connaissances, dans un seul fichier : les compétences, les fiches qu
 
 ```json
 {
-  "format": "connaissances/1",
+  "format": "base-connaissances/1",
   "titre": "Flowcharts Mermaid",
   "source": "Notion, page « Apprendre le vocabulaire Mermaid avec Frayer »",
   "copie_du": "2026-11-25",
@@ -52,7 +52,7 @@ Toutes les connaissances, dans un seul fichier : les compétences, les fiches qu
 
 | Champ | Type | Rôle |
 | --- | --- | --- |
-| `format` | texte | Toujours `"connaissances/1"`. |
+| `format` | texte | Toujours `"base-connaissances/1"`. |
 | `titre` | texte | Nom du domaine, en tête du sommaire. |
 | `source` | texte, facultatif | D'où vient le contenu. |
 | `copie_du` | date, facultatif | Date de la copie depuis la source, AAAA-MM-JJ. |
@@ -76,7 +76,7 @@ Toutes les connaissances, dans un seul fichier : les compétences, les fiches qu
 
 - JSON valide, encodé en UTF-8, sans commentaire. [Ajout]
 - Seulement les champs du tableau, à chaque niveau. Un champ inconnu est une erreur, souvent une faute de frappe. [Ajout]
-- `format` vaut exactement `"connaissances/1"`. [Ajout]
+- `format` vaut exactement `"base-connaissances/1"`. [Ajout]
 - `titre` est un texte non vide ; `copie_du`, s'il existe, est une date AAAA-MM-JJ. [Ajout]
 - `competences` est une liste non vide ; `fiches` est un objet non vide. [Ajout]
 - Dans tous les textes, les accents graves vont par paires. [Ajout]
@@ -138,7 +138,7 @@ Toutes les connaissances, dans un seul fichier : les compétences, les fiches qu
 
 - **Après une modification dans Notion** : refaire la copie des fiches, puis mettre `copie_du` à jour. [Ajout]
 - **Ajouter une compétence** : l'ajouter aussi dans `reperes.json`, avec le même `id`. [Ajout]
-- **Vérifier** : ouvrir `connaissances.html` et corriger chaque erreur affichée jusqu'à voir le sommaire. [Ajout]
+- **Vérifier** : ouvrir `base-connaissances.html` et corriger chaque erreur affichée jusqu'à voir le sommaire. [Ajout]
 
 ## Sources
 

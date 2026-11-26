@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Connaissances</title>
+<title>Base de connaissances</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <!--
-  Modèle « connaissances ».
-  Lit un fichier .json écrit selon regles-connaissances-json.md (par défaut : connaissances.json, dans le même dossier).
-  Applique les règles de regles-connaissances.md.
+  Modèle « base de connaissances ».
+  Lit un fichier .json écrit selon regles-base-connaissances-json.md (par défaut : base-connaissances.json, dans le même dossier).
+  Applique les règles de regles-base-connaissances.md.
 -->
 <style>
 :root{color-scheme:light;--bg:#fff;--ink:#1e293b;--soft:#64748b;--deep:#2563eb;--line:#dbe2ea;--code:#f8fafc;--sel-ink:#1e40af;--non:#dc2626}
@@ -68,7 +68,7 @@ const app=document.getElementById("app");
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const txt=s=>esc(s).replace(/`([^`]+)`/g,"<code>$1</code>");   /* `code` → <code> */
 const sansAccent=s=>String(s).normalize("NFD").replace(/[̀-ͯ]/g,"");
-const nomFichier=new URLSearchParams(location.search).get("donnees")||"connaissances.json";
+const nomFichier=new URLSearchParams(location.search).get("donnees")||"base-connaissances.json";
 
 /* ---------- Chargement ---------- */
 async function charger(){
@@ -84,7 +84,7 @@ function ouvrir(brut,nom){
   afficher(R);
 }
 function choisir(){
-  app.innerHTML=`<div class="msg"><h1>Ouvre les connaissances</h1><p class="sub">La page n'a pas pu lire « ${esc(nomFichier)} » à côté d'elle. Choisis le fichier, ou dépose-le sur la page.</p><p><label class="pick">Choisir un fichier<input type="file" id="f" accept=".json,application/json" hidden></label></p></div>`;
+  app.innerHTML=`<div class="msg"><h1>Ouvre la base de connaissances</h1><p class="sub">La page n'a pas pu lire « ${esc(nomFichier)} » à côté d'elle. Choisis le fichier, ou dépose-le sur la page.</p><p><label class="pick">Choisir un fichier<input type="file" id="f" accept=".json,application/json" hidden></label></p></div>`;
   document.getElementById("f").addEventListener("change",ev=>lireFichier(ev.target.files[0]));
 }
 function lireFichier(f){if(!f)return;f.text().then(t=>ouvrir(t,f.name))}
@@ -92,10 +92,10 @@ addEventListener("dragover",e=>e.preventDefault());
 addEventListener("drop",e=>{e.preventDefault();lireFichier(e.dataTransfer.files[0])});
 function ecranErreurs(E,nom){
   document.title="Erreurs — "+nom;
-  app.innerHTML=`<div class="msg"><h1>${E.length} erreur${E.length>1?"s":""} dans ${esc(nom)}</h1><p class="sub">Règles : regles-connaissances-json.md.</p><ul>${E.slice(0,60).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>${E.length>60?`<p class="sub">Et ${E.length-60} autres erreurs.</p>`:""}</div>`;
+  app.innerHTML=`<div class="msg"><h1>${E.length} erreur${E.length>1?"s":""} dans ${esc(nom)}</h1><p class="sub">Règles : regles-base-connaissances-json.md.</p><ul>${E.slice(0,60).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>${E.length>60?`<p class="sub">Et ${E.length-60} autres erreurs.</p>`:""}</div>`;
 }
 
-/* ---------- Vérification : règles bloquantes de regles-connaissances-json.md ---------- */
+/* ---------- Vérification : règles bloquantes de regles-base-connaissances-json.md ---------- */
 function verifier(R){
   const E=[];
   const estTexte=v=>typeof v==="string"&&v.trim()!=="";
@@ -106,7 +106,7 @@ function verifier(R){
   const VAGUES=["comprendre","connaitre","savoir","maitriser","decouvrir","apprendre"];
   if(!estObjet(R))return["La racine doit être un objet { … }."];
   champs(R,["format","titre","source","copie_du","competences","fiches","cas"],"Racine");
-  if(R.format!=="connaissances/1")E.push(`format doit valoir "connaissances/1".`);
+  if(R.format!=="base-connaissances/1")E.push(`format doit valoir "base-connaissances/1".`);
   if(!estTexte(R.titre))E.push("titre : texte non vide attendu.");
   if(R.source!==undefined&&!estTexte(R.source))E.push("source : texte non vide attendu.");
   if(R.copie_du!==undefined&&!/^\d{4}-\d{2}-\d{2}$/.test(R.copie_du))E.push("copie_du : date AAAA-MM-JJ attendue.");
@@ -221,8 +221,8 @@ function afficher(R){
       document.title=(c?c.competence:k.titre)+" — "+titre;
       app.innerHTML=`<nav aria-label="Navigation"><div class="wrap"><a href="#">← Sommaire</a></div></nav><main class="wrap">${c?carteComp(c):carteCas(k)}</main>${pied}`;
     }else{
-      document.title=titre+" — connaissances";
-      app.innerHTML=`<header class="wrap"><h1>${esc(titre)}</h1><p class="sub">Connaissances. Choisis une compétence.</p></header>
+      document.title=titre+" — base de connaissances";
+      app.innerHTML=`<header class="wrap"><h1>${esc(titre)}</h1><p class="sub">Base de connaissances. Choisis une compétence.</p></header>
         <main class="wrap"><section><h2>Compétences</h2>${index(R.competences,"competence")}</section>
         ${cas.length?`<section><h2>Cas complets</h2>${index(cas,"titre")}</section>`:""}</main>${pied}`;
     }
