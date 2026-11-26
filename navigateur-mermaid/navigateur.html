@@ -123,7 +123,7 @@ body{background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-
   .ctl{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:". . zin" "clr . zout";align-items:end;gap:6px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;pointer-events:none}
   .ctl button{pointer-events:auto;border:1px solid var(--edge);border-radius:12px;background:var(--panel);box-shadow:0 3px 12px rgba(15,23,42,.08)}
   #zIn{grid-area:zin;border-radius:50%}
-  #zOut{grid-area:zout;border-radius:50%}
+  #zOut{grid-area:zout;border-radius:50%;margin-bottom:28px} /* + et − remontent ensemble : hors du coin arrondi de l'écran en web app */
   .ctl .clr{grid-area:clr;border-radius:999px;border-top-color:var(--edge)}
   .pick{border-radius:12px}
 }
