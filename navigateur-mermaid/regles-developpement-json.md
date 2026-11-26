@@ -1,16 +1,16 @@
-# Règles d'écriture du fichier .json du référentiel
+# Règles d'écriture du fichier .json du développement
 
-Ce fichier dit comment écrire le contenu que lit `referentiel.html`. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = règle propre au modèle. Les règles **bloquantes** sont vérifiées par le modèle : si une seule échoue, il affiche la liste des erreurs au lieu du référentiel.
+Ce fichier dit comment écrire le contenu que lit `developpement.html`. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = règle propre au modèle. Les règles **bloquantes** sont vérifiées par le modèle : si une seule échoue, il affiche la liste des erreurs au lieu du développement.
 
 ## Ce que décrit le fichier
 
-Tout le contenu du référentiel, dans un seul fichier : les compétences, les fiches qu'elles mobilisent et les cas complets. [Consigne]
+Tout le contenu du développement, dans un seul fichier : les compétences, les fiches qu'elles mobilisent et les cas complets. [Consigne]
 
 ## Format
 
 ```json
 {
-  "format": "referentiel/1",
+  "format": "developpement/1",
   "titre": "Flowcharts Mermaid",
   "source": "Notion, page « Apprendre le vocabulaire Mermaid avec Frayer »",
   "copie_du": "2026-11-25",
@@ -52,7 +52,7 @@ Tout le contenu du référentiel, dans un seul fichier : les compétences, les f
 
 | Champ | Type | Rôle |
 | --- | --- | --- |
-| `format` | texte | Toujours `"referentiel/1"`. |
+| `format` | texte | Toujours `"developpement/1"`. |
 | `titre` | texte | Nom du domaine, en tête du sommaire. |
 | `source` | texte, facultatif | D'où vient le contenu. |
 | `copie_du` | date, facultatif | Date de la copie depuis la source, AAAA-MM-JJ. |
@@ -76,7 +76,7 @@ Tout le contenu du référentiel, dans un seul fichier : les compétences, les f
 
 - JSON valide, encodé en UTF-8, sans commentaire. [Ajout]
 - Seulement les champs du tableau, à chaque niveau. Un champ inconnu est une erreur, souvent une faute de frappe. [Ajout]
-- `format` vaut exactement `"referentiel/1"`. [Ajout]
+- `format` vaut exactement `"developpement/1"`. [Ajout]
 - `titre` est un texte non vide ; `copie_du`, s'il existe, est une date AAAA-MM-JJ. [Ajout]
 - `competences` est une liste non vide ; `fiches` est un objet non vide. [Ajout]
 - Dans tous les textes, les accents graves vont par paires. [Ajout]
@@ -138,7 +138,7 @@ Tout le contenu du référentiel, dans un seul fichier : les compétences, les f
 
 - **Après une modification dans Notion** : refaire la copie des fiches, puis mettre `copie_du` à jour. [Ajout]
 - **Ajouter une compétence** : l'ajouter aussi dans `donnees.json`, avec le même `id`. [Ajout]
-- **Vérifier** : ouvrir `referentiel.html` et corriger chaque erreur affichée jusqu'à voir le sommaire. [Ajout]
+- **Vérifier** : ouvrir `developpement.html` et corriger chaque erreur affichée jusqu'à voir le sommaire. [Ajout]
 
 ## Sources
 

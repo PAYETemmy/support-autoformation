@@ -1,34 +1,35 @@
-# Règles du modèle referentiel.html
+# Règles du modèle developpement.html
 
-`referentiel.html` affiche un référentiel : des cartes autonomes, une par compétence, que l'on consulte au besoin au lieu de les lire dans l'ordre. Il lit un fichier .json écrit selon `regles-referentiel-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = choix propre au modèle.
+`developpement.html` affiche le développement du navigateur : chaque élément de l'arbre, développé dans sa propre carte. Il lit un fichier .json écrit selon `regles-developpement-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = choix propre au modèle.
 
 ## Fichiers
 
 | Fichier | Rôle |
 | --- | --- |
-| `referentiel.html` | Le modèle : lit le .json et affiche le référentiel. |
-| `referentiel.json` | Le contenu : ici, les flowcharts Mermaid. |
-| `regles-referentiel-json.md` | Comment écrire le .json. |
-| `regles-referentiel.md` | Ce fichier : ce que fait le modèle. |
+| `developpement.html` | Le modèle : lit le .json et affiche le développement. |
+| `developpement.json` | Le contenu : ici, les flowcharts Mermaid. |
+| `regles-developpement-json.md` | Comment écrire le .json. |
+| `regles-developpement.md` | Ce fichier : ce que fait le modèle. |
 
 Pour un autre domaine, seul le .json change.
 
 ## Nature
 
-- Un référentiel se consulte, il ne se lit pas d'un bout à l'autre : ce n'est ni un tutoriel ni un guide. [Diátaxis : documentation de type « référence »]
+- Le navigateur donne le plan du domaine ; cette page en donne le développement : une carte par élément du plan. [Consigne ; rhétorique : le plan, puis son développement]
+- Une carte se consulte au besoin : la page ne se lit pas d'un bout à l'autre. [Diátaxis : documentation de consultation, type « référence »]
 - Chaque carte est une compétence, avec sa condition et son critère de réussite. [Mager ; référentiels de compétences de la formation professionnelle, RNCP]
 - Chaque carte forme une unité de sens autonome : elle se comprend sans lire les autres. [OASIS DITA : topic autonome ; Horn, Information Mapping]
 
 ## Chargement
 
-- Le modèle lit `referentiel.json`, placé dans le même dossier. [Ajout]
-- Un autre fichier se choisit par l'adresse : `referentiel.html?donnees=autre.json`. [Ajout]
+- Le modèle lit `developpement.json`, placé dans le même dossier. [Ajout]
+- Un autre fichier se choisit par l'adresse : `developpement.html?donnees=autre.json`. [Ajout]
 - Ouvert d'un double-clic depuis le disque, le navigateur web refuse souvent de lire un fichier voisin. Le modèle propose alors de choisir le fichier, ou de le déposer sur la page. [Ajout]
-- Le fichier est relu à chaque ouverture : modifier le .json met le référentiel à jour. [Ajout]
+- Le fichier est relu à chaque ouverture : modifier le .json met le développement à jour. [Ajout]
 
 ## Vérification
 
-- Avant d'afficher quoi que ce soit, le modèle applique toutes les règles bloquantes de `regles-referentiel-json.md`. [Ajout]
+- Avant d'afficher quoi que ce soit, le modèle applique toutes les règles bloquantes de `regles-developpement-json.md`. [Ajout]
 - Si une règle échoue, il n'affiche que la liste des erreurs, chacune avec la compétence, la fiche ou le cas concernés. [Ajout]
 
 ## Sommaire
