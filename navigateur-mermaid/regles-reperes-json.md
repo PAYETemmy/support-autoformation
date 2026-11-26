@@ -1,6 +1,6 @@
-# Règles d'écriture du fichier .json
+# Règles d'écriture du fichier .json — Repères des modules et de leurs prérequis
 
-Ce fichier dit comment écrire les données que lit `navigateur.html`. Chaque règle indique sa source entre crochets ; [Ajout] = règle propre au modèle. Les règles **bloquantes** sont vérifiées par le modèle : si une seule échoue, il affiche la liste des erreurs au lieu de l'arbre.
+Ce fichier dit comment écrire les données que lit `reperes.html`. Chaque règle indique sa source entre crochets ; [Ajout] = règle propre au modèle. Les règles **bloquantes** sont vérifiées par le modèle : si une seule échoue, il affiche la liste des erreurs au lieu de l'arbre.
 
 ## Ce que décrit le fichier
 
@@ -10,7 +10,7 @@ Un domaine découpé en éléments. Chaque élément s'appuie sur des termes plu
 
 ```json
 {
-  "format": "navigateur-arbre/1",
+  "format": "reperes-modules/1",
   "titre": "Flowcharts Mermaid",
   "elements": [
     { "id": "type", "libelle": "Déclarer un type de diagramme (flowchart)", "s_appuie_sur": [] },
@@ -22,7 +22,7 @@ Un domaine découpé en éléments. Chaque élément s'appuie sur des termes plu
 
 | Champ | Type | Rôle |
 | --- | --- | --- |
-| `format` | texte | Toujours `"navigateur-arbre/1"`. |
+| `format` | texte | Toujours `"reperes-modules/1"`. |
 | `titre` | texte | Nom du domaine. Sert de titre à l'onglet. |
 | `elements` | liste | Les éléments, chacun après ses termes primitifs. |
 | `id` | texte | Identifiant court et stable de l'élément. |
@@ -33,7 +33,7 @@ Un domaine découpé en éléments. Chaque élément s'appuie sur des termes plu
 
 - JSON valide, encodé en UTF-8, sans commentaire. [Ajout]
 - Seulement les champs du tableau, à la racine comme dans les éléments. Un champ inconnu est une erreur, souvent une faute de frappe. [Ajout]
-- `format` vaut exactement `"navigateur-arbre/1"`. [Ajout]
+- `format` vaut exactement `"reperes-modules/1"`. [Ajout]
 - `titre` est un texte non vide. [Ajout]
 - `elements` est une liste non vide. [Ajout]
 
@@ -94,7 +94,7 @@ Un domaine découpé en éléments. Chaque élément s'appuie sur des termes plu
 
 - **Ajouter un élément** : le placer après ses termes primitifs, ne citer que les directs, puis retirer les liens devenus déduits ailleurs. [Ajout]
 - **Retirer un élément** : reporter ses termes primitifs sur les éléments qui s'appuyaient sur lui, puis retirer les liens devenus déduits. [Ajout]
-- **Vérifier** : ouvrir le fichier avec `navigateur.html` et corriger chaque erreur affichée jusqu'à voir l'arbre. [Ajout]
+- **Vérifier** : ouvrir le fichier avec `reperes.html` et corriger chaque erreur affichée jusqu'à voir l'arbre. [Ajout]
 
 ## Procédure complète
 
@@ -103,7 +103,7 @@ Un domaine découpé en éléments. Chaque élément s'appuie sur des termes plu
 - Écrire chaque libellé.
 - Ranger la liste : chaque élément après ses termes primitifs.
 - Retirer les liens déduits.
-- Ouvrir le fichier avec `navigateur.html` : aucune erreur, l'arbre s'affiche.
+- Ouvrir le fichier avec `reperes.html` : aucune erreur, l'arbre s'affiche.
 
 ## Sources
 

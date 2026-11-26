@@ -1,6 +1,6 @@
 # Règles du modèle connaissances.html
 
-`connaissances.html` affiche les connaissances de chaque élément du navigateur, une carte par élément. Il lit un fichier .json écrit selon `regles-connaissances-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = choix propre au modèle.
+`connaissances.html` affiche les connaissances de chaque module de « Repères des modules et de leurs prérequis », une carte par module. Il lit un fichier .json écrit selon `regles-connaissances-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = choix propre au modèle.
 
 ## Fichiers
 
@@ -15,7 +15,7 @@ Pour un autre domaine, seul le .json change.
 
 ## Nature
 
-- Le navigateur donne la structure du domaine ; cette page donne les connaissances de chaque élément. [Doignon et Falmagne : structure de connaissances]
+- « Repères des modules et de leurs prérequis » donne la structure du domaine ; cette page donne les connaissances de chaque module. [Doignon et Falmagne : structure de connaissances]
 - Chaque carte réunit les trois types de connaissances : conditionnelles (« Quand »), procédurales (la compétence, « Réussi si ») et déclaratives (les fiches). [Tardif, 1992]
 - Une carte se consulte au besoin : la page ne se lit pas d'un bout à l'autre. [Diátaxis : documentation de consultation, type « référence »]
 - Chaque carte est une compétence, avec sa condition et son critère de réussite. [Mager ; référentiels de compétences de la formation professionnelle, RNCP]
@@ -52,7 +52,7 @@ Pour un autre domaine, seul le .json change.
 
 ## Affichage
 
-- Fond blanc, texte sombre, liens bleus, police Inter. Mêmes couleurs que `navigateur.html`. [Ajout]
+- Fond blanc, texte sombre, liens bleus, police Inter. Mêmes couleurs que `reperes.html`. [Ajout]
 - Le code est en police à chasse fixe, sans retour à la ligne automatique : une ligne trop longue défile à l'horizontale dans son cadre. [Ajout]
 - Dans les textes, ce qui est entre accents graves s'affiche comme du code. [Ajout]
 - Sur téléphone, les intitulés passent au-dessus de leur valeur. [Ajout]

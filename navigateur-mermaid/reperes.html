@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Navigateur</title>
+<title>Repères des modules et de leurs prérequis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <!--
-  Modèle « navigateur-arbre ».
-  Lit un fichier .json écrit selon regles-json.md (par défaut : donnees.json, dans le même dossier).
-  Applique les règles de regles-navigateur.md.
+  Modèle « Repères des modules et de leurs prérequis ».
+  Lit un fichier .json écrit selon regles-reperes-json.md (par défaut : reperes.json, dans le même dossier).
+  Applique les règles de regles-reperes.md.
 -->
 <style>
 :root{
@@ -147,7 +147,7 @@ body{background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-
 'use strict';
 
 /* ---------- Constantes (voir regles-json.md) ---------- */
-const FORMAT = 'navigateur-arbre/1';
+const FORMAT = 'reperes-modules/1';
 const CHAMPS_RACINE = ['format', 'titre', 'elements'];
 const CHAMPS_ELEMENT = ['id', 'libelle', 's_appuie_sur'];
 const VERBES_VAGUES = ['comprendre', 'connaître', 'connaitre', 'savoir', 'maîtriser', 'maitriser', 'découvrir', 'decouvrir', 'apprendre'];
@@ -160,7 +160,7 @@ const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>'
 const pluriel = (n, un, plusieurs) => n > 1 ? plusieurs : un;
 
 /* ---------- Chargement ---------- */
-const nomParDefaut = new URLSearchParams(location.search).get('donnees') || 'donnees.json';
+const nomParDefaut = new URLSearchParams(location.search).get('donnees') || 'reperes.json';
 
 async function charger() {
   try {
@@ -287,7 +287,7 @@ function demarrer(texte, nom) {
   descendants = {};
   [...d.elements].reverse().forEach(x => { const s = new Set(); enfants[x.id].forEach(c => { s.add(c); descendants[c].forEach(y => s.add(y)); }); descendants[x.id] = s; });
 
-  document.title = d.titre;
+  document.title = d.titre + ' — repères des modules et de leurs prérequis';
   const li = id => `<li>${rectangle(id, parId[id].libelle)}${enfants[id].length ? `<ul>${enfants[id].map(li).join('')}</ul>` : ''}</li>`;
   $('cv').innerHTML = `<div class="org"><ul>${li(premier)}</ul></div>`;
   rectangles().forEach((b, i) => b.dataset.k = String(i));
@@ -319,7 +319,7 @@ function info(id) {
   return n ? `${n} ${pluriel(n, 'élément en découle', 'éléments en découlent')}` : "rien n'en découle";
 }
 
-/* ---------- Sélection (regles-navigateur.md) ---------- */
+/* ---------- Sélection (regles-reperes.md) ---------- */
 function brancheAuDessus(b) {
   const o = [];
   let li = b.parentElement.parentElement.closest('li');

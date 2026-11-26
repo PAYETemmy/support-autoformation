@@ -116,8 +116,8 @@ Toutes les connaissances, dans un seul fichier : les compétences, les fiches qu
 - `quand` décrit la situation de départ, pas une consigne : « À partir d'une question à réponse oui ou non ». [Mager : condition]
 - `reussi_si` se constate en regardant le résultat : « Un losange mène à deux branches étiquetées ». [Mager : critère observable]
 - `avant` ne cite que les prérequis directs : si B s'appuie déjà sur A, ne pas citer A. [Gagné, 1968]
-- Les compétences, leurs libellés et `avant` reprennent `donnees.json` du navigateur : `competence` = `libelle`, `avant` = `s_appuie_sur`, mêmes `id`. Modifier l'un, c'est modifier l'autre. [Ajout]
-- L'ordre des compétences dans le fichier n'est pas affiché, mais il décide de la carte ouverte depuis un cas : les ranger comme dans `donnees.json`. [Ajout]
+- Les compétences, leurs libellés et `avant` reprennent `reperes.json` (« Repères des modules et de leurs prérequis ») : `competence` = `libelle`, `avant` = `s_appuie_sur`, mêmes `id`. Modifier l'un, c'est modifier l'autre. [Ajout]
+- L'ordre des compétences dans le fichier n'est pas affiché, mais il décide de la carte ouverte depuis un cas : les ranger comme dans `reperes.json`. [Ajout]
 
 **Fiche**
 
@@ -137,7 +137,7 @@ Toutes les connaissances, dans un seul fichier : les compétences, les fiches qu
 ## Mettre à jour le fichier
 
 - **Après une modification dans Notion** : refaire la copie des fiches, puis mettre `copie_du` à jour. [Ajout]
-- **Ajouter une compétence** : l'ajouter aussi dans `donnees.json`, avec le même `id`. [Ajout]
+- **Ajouter une compétence** : l'ajouter aussi dans `reperes.json`, avec le même `id`. [Ajout]
 - **Vérifier** : ouvrir `connaissances.html` et corriger chaque erreur affichée jusqu'à voir le sommaire. [Ajout]
 
 ## Sources

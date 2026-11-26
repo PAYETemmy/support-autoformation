@@ -1,29 +1,29 @@
-# Règles du modèle navigateur.html
+# Règles du modèle reperes.html — Repères des modules et de leurs prérequis
 
-`navigateur.html` affiche un domaine sous forme d'arbre. Il lit un fichier .json écrit selon `regles-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Ajout] = choix propre au modèle.
+`reperes.html` affiche les modules d'un domaine et leurs prérequis, sous forme d'arbre. Chaque rectangle est un module (« élément » dans le .json). Il lit un fichier .json écrit selon `regles-reperes-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Ajout] = choix propre au modèle.
 
 ## Fichiers
 
 | Fichier | Rôle |
 | --- | --- |
-| `navigateur.html` | Le modèle : lit le .json et dessine l'arbre. |
-| `donnees.json` | Le contenu : ici, les flowcharts Mermaid. |
-| `regles-json.md` | Comment écrire le .json. |
-| `regles-navigateur.md` | Ce fichier : ce que fait le modèle. |
+| `reperes.html` | Le modèle : lit le .json et dessine l'arbre. |
+| `reperes.json` | Le contenu : ici, les flowcharts Mermaid. |
+| `regles-reperes-json.md` | Comment écrire le .json. |
+| `regles-reperes.md` | Ce fichier : ce que fait le modèle. |
 
 Pour un autre domaine, seul le .json change.
 
 ## Chargement
 
-- Le modèle lit `donnees.json`, placé dans le même dossier. [Ajout]
-- Un autre fichier se choisit par l'adresse : `navigateur.html?donnees=autre.json`. [Ajout]
+- Le modèle lit `reperes.json`, placé dans le même dossier. [Ajout]
+- Un autre fichier se choisit par l'adresse : `reperes.html?donnees=autre.json`. [Ajout]
 - Ouvert d'un double-clic depuis le disque, le navigateur web refuse souvent de lire un fichier voisin. Le modèle propose alors de choisir le fichier, ou de le déposer sur la page. [Ajout]
 - Un fichier .json déposé sur la page remplace le contenu affiché. [Ajout]
-- Le titre de l'onglet reprend le champ `titre`. [Ajout]
+- Le titre de l'onglet reprend le champ `titre`, suivi de « repères des modules et de leurs prérequis ». [Ajout]
 
 ## Vérification
 
-- Avant d'afficher quoi que ce soit, le modèle applique toutes les règles bloquantes de `regles-json.md`. [Ajout]
+- Avant d'afficher quoi que ce soit, le modèle applique toutes les règles bloquantes de `regles-reperes-json.md`. [Ajout]
 - Si une règle échoue, il n'affiche que la liste des erreurs, chacune avec l'id ou la position concernés. [Ajout]
 
 ## Arbre

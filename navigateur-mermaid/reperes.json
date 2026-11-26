@@ -1,5 +1,5 @@
 {
-  "format": "navigateur-arbre/1",
+  "format": "reperes-modules/1",
   "titre": "Flowcharts Mermaid",
   "elements": [
     { "id": "type", "libelle": "Déclarer un type de diagramme (flowchart)", "s_appuie_sur": [] },
