@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Référentiel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+  Modèle « référentiel ».
+  Lit un fichier .json écrit selon regles-referentiel-json.md (par défaut : referentiel.json, dans le même dossier).
+  Applique les règles de regles-referentiel.md.
+-->
+<style>
+:root{color-scheme:light;--bg:#fff;--ink:#1e293b;--soft:#64748b;--deep:#2563eb;--line:#dbe2ea;--code:#f8fafc;--sel-ink:#1e40af;--non:#dc2626}
+*{box-sizing:border-box;min-width:0}
+html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:var(--deep);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+header{padding:28px 0 4px}
+h1{font-size:clamp(22px,4vw,28px);line-height:1.2;margin:0 0 4px;font-weight:600;letter-spacing:-.01em}
+.sub{margin:0;color:var(--soft);font-size:14px}
+nav{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;padding-top:8px;padding-bottom:8px}
+nav a{color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;min-height:36px;display:inline-flex;align-items:center}
+section{padding-top:12px}
+h2{font-size:13px;font-weight:600;color:var(--soft);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 2px}
+.lettre{font-size:13px;font-weight:600;color:var(--deep);margin:12px 0 0;padding:0 0 2px;border-bottom:1px solid var(--line)}
+.index{margin:0;padding:0;list-style:none}
+.index a{display:flex;align-items:center;min-height:44px;padding:6px 0;color:var(--ink);border-bottom:1px solid var(--line)}
+.index a:hover{color:var(--deep);text-decoration:none}
+article{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:16px 0 12px}
+article h3{font-size:19px;line-height:1.3;font-weight:600;margin:0 0 10px}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;column-gap:12px;row-gap:3px}
+dt{font-size:13px;font-weight:500;color:var(--soft);padding-top:1px}
+dd{margin:0}
+.fiche{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.fiche h4{font-size:15px;font-weight:600;margin:0 0 6px;color:var(--sel-ink)}
+.fiche h4 span{font-weight:500;color:var(--soft);font-size:13px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;background:var(--code);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+pre{margin:6px 0 0;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:8px 10px;overflow-x:auto;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;tab-size:4}
+pre code{border:0;background:none;padding:0;font-size:inherit}
+.ex{margin-top:10px}
+.k{font-size:13px;font-weight:500;color:var(--soft)}
+.ex p{margin:2px 0 0}
+.non{margin:4px 0 0;padding-left:18px}
+.non li::marker{color:var(--non)}
+table{border-collapse:collapse;margin-top:6px;font-size:14px}
+td,th{border:1px solid var(--line);padding:3px 8px;text-align:left}
+th{font-weight:500;color:var(--soft)}
+.msg{max-width:560px;margin:12vh auto;padding:24px}
+.msg ul{padding-left:18px;font-size:14px}
+.msg li{margin:3px 0}
+.pick{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;border-radius:8px;background:var(--deep);color:#fff;font-weight:600;cursor:pointer}
+footer{padding:20px 0 40px;color:var(--soft);font-size:13px}
+@media (max-width:480px){dl{grid-template-columns:1fr}dt{margin-top:4px}}
+@media print{nav,footer{display:none}article{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+{
+const app=document.getElementById("app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const txt=s=>esc(s).replace(/`([^`]+)`/g,"<code>$1</code>");   /* `code` → <code> */
+const sansAccent=s=>String(s).normalize("NFD").replace(/[̀-ͯ]/g,"");
+const nomFichier=new URLSearchParams(location.search).get("donnees")||"referentiel.json";
+
+/* ---------- Chargement ---------- */
+async function charger(){
+  let brut;
+  try{const r=await fetch(nomFichier,{cache:"no-store"});if(!r.ok)throw 0;brut=await r.text()}
+  catch(e){return choisir()}
+  ouvrir(brut,nomFichier);
+}
+function ouvrir(brut,nom){
+  let R;try{R=JSON.parse(brut)}catch(e){return ecranErreurs(["Le fichier n'est pas un JSON valide : "+e.message],nom)}
+  const E=verifier(R);
+  if(E.length)return ecranErreurs(E,nom);
+  afficher(R);
+}
+function choisir(){
+  app.innerHTML=`<div class="msg"><h1>Ouvre le référentiel</h1><p class="sub">La page n'a pas pu lire « ${esc(nomFichier)} » à côté d'elle. Choisis le fichier, ou dépose-le sur la page.</p><p><label class="pick">Choisir un fichier<input type="file" id="f" accept=".json,application/json" hidden></label></p></div>`;
+  document.getElementById("f").addEventListener("change",ev=>lireFichier(ev.target.files[0]));
+}
+function lireFichier(f){if(!f)return;f.text().then(t=>ouvrir(t,f.name))}
+addEventListener("dragover",e=>e.preventDefault());
+addEventListener("drop",e=>{e.preventDefault();lireFichier(e.dataTransfer.files[0])});
+function ecranErreurs(E,nom){
+  document.title="Erreurs — "+nom;
+  app.innerHTML=`<div class="msg"><h1>${E.length} erreur${E.length>1?"s":""} dans ${esc(nom)}</h1><p class="sub">Règles : regles-referentiel-json.md.</p><ul>${E.slice(0,60).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>${E.length>60?`<p class="sub">Et ${E.length-60} autres erreurs.</p>`:""}</div>`;
+}
+
+/* ---------- Vérification : règles bloquantes de regles-referentiel-json.md ---------- */
+function verifier(R){
+  const E=[];
+  const estTexte=v=>typeof v==="string"&&v.trim()!=="";
+  const estObjet=v=>v&&typeof v==="object"&&!Array.isArray(v);
+  const champs=(o,permis,ou)=>Object.keys(o).filter(k=>!permis.includes(k)).forEach(k=>E.push(`${ou} : champ inconnu « ${k} ».`));
+  const graves=(v,ou)=>{if(typeof v==="string"&&(v.match(/`/g)||[]).length%2)E.push(`${ou} : accent grave \` sans son pendant.`)};
+  const ID=/^[a-z][a-z0-9_]*$/, NUM=/^\s*\d+\s*[.)-]/;
+  const VAGUES=["comprendre","connaitre","savoir","maitriser","decouvrir","apprendre"];
+  if(!estObjet(R))return["La racine doit être un objet { … }."];
+  champs(R,["format","titre","source","copie_du","competences","fiches","cas"],"Racine");
+  if(R.format!=="referentiel/1")E.push(`format doit valoir "referentiel/1".`);
+  if(!estTexte(R.titre))E.push("titre : texte non vide attendu.");
+  if(R.source!==undefined&&!estTexte(R.source))E.push("source : texte non vide attendu.");
+  if(R.copie_du!==undefined&&!/^\d{4}-\d{2}-\d{2}$/.test(R.copie_du))E.push("copie_du : date AAAA-MM-JJ attendue.");
+  if(!Array.isArray(R.competences)||!R.competences.length)E.push("competences : liste non vide attendue.");
+  if(!estObjet(R.fiches)||!Object.keys(R.fiches).length)E.push("fiches : objet non vide attendu.");
+  if(R.cas!==undefined&&!Array.isArray(R.cas))E.push("cas : liste attendue.");
+  if(E.length)return E;
+  const F=R.fiches, ids=new Map(), libelles=new Set(), utilisees=new Set();
+  const noterId=(id,ou)=>{if(!estTexte(id)||!ID.test(id))E.push(`${ou} : id « ${id??""} » invalide (a-z, 0-9, _, commence par une lettre).`);else if(ids.has(id))E.push(`${ou} : id « ${id} » déjà utilisé.`);else ids.set(id,ou)};
+  /* Compétences */
+  R.competences.forEach((c,i)=>{
+    const ou=`Compétence ${i+1}${c&&c.id?` (${c.id})`:""}`;
+    if(!estObjet(c))return E.push(`${ou} : objet attendu.`);
+    champs(c,["id","competence","avant","quand","reussi_si","fiches"],ou);
+    noterId(c.id,ou);
+    if(!estTexte(c.competence))E.push(`${ou} : competence vide.`);
+    else{
+      if(c.competence.length>80)E.push(`${ou} : competence de plus de 80 caractères.`);
+      const l=c.competence.trim().toLowerCase();if(libelles.has(l))E.push(`${ou} : competence en double.`);libelles.add(l);
+      if(NUM.test(c.competence))E.push(`${ou} : pas de numéro en tête.`);
+      const mot=l.replace(NUM,"").trim().split(/\s+/)[0];if(VAGUES.includes(sansAccent(mot)))E.push(`${ou} : verbe vague « ${mot} ».`);
+      graves(c.competence,ou);
+    }
+    ["quand","reussi_si"].forEach(k=>{if(!estTexte(c[k]))E.push(`${ou} : ${k} vide.`);else graves(c[k],ou)});
+    if(!Array.isArray(c.avant))E.push(`${ou} : avant doit être une liste (vide si rien avant).`);
+    if(!Array.isArray(c.fiches)||!c.fiches.length)E.push(`${ou} : fiches : liste non vide attendue.`);
+    else{if(new Set(c.fiches).size!==c.fiches.length)E.push(`${ou} : fiche citée deux fois.`);
+      c.fiches.forEach(n=>{if(!F[n])E.push(`${ou} : fiche « ${n} » absente de fiches.`);else utilisees.add(n)})}
+  });
+  const comp=new Map(R.competences.filter(c=>estObjet(c)&&estTexte(c.id)).map(c=>[c.id,c]));
+  R.competences.forEach(c=>{if(!estObjet(c)||!Array.isArray(c.avant))return;const ou=`Compétence ${c.id}`;
+    if(new Set(c.avant).size!==c.avant.length)E.push(`${ou} : avant cite deux fois le même id.`);
+    c.avant.forEach(a=>{if(a===c.id)E.push(`${ou} : avant se cite elle-même.`);else if(!comp.has(a))E.push(`${ou} : avant cite « ${a} », qui n'est pas une compétence.`)})});
+  /* Pas de boucle dans « avant » */
+  const etat=new Map();let boucle=null;
+  const visite=id=>{if(boucle)return;etat.set(id,1);for(const a of (comp.get(id).avant||[])){if(!comp.has(a)||a===id)continue;
+    if(etat.get(a)===1){boucle=a+" ↔ "+id;return}if(!etat.has(a))visite(a)}etat.set(id,2)};
+  comp.forEach((c,id)=>{if(!etat.has(id)&&Array.isArray(c.avant))visite(id)});
+  if(boucle)E.push(`avant forme une boucle (${boucle}).`);
+  /* Fiches */
+  Object.entries(F).forEach(([n,f])=>{
+    const ou=`Fiche « ${n} »`;
+    if(!n.trim())E.push("Fiche sans nom.");
+    if(NUM.test(n))E.push(`${ou} : pas de numéro en tête.`);
+    if(!estObjet(f))return E.push(`${ou} : objet attendu.`);
+    champs(f,["definition","caracteristiques","exemple","non_exemples","tableau"],ou);
+    ["definition","caracteristiques"].forEach(k=>{if(!estTexte(f[k]))E.push(`${ou} : ${k} vide.`);else graves(f[k],ou)});
+    if(!estObjet(f.exemple))E.push(`${ou} : exemple : objet { titre, texte, code } attendu.`);
+    else{champs(f.exemple,["titre","texte","code"],ou+", exemple");["titre","texte","code"].forEach(k=>{if(!estTexte(f.exemple[k]))E.push(`${ou} : exemple.${k} vide.`)});graves(f.exemple.titre,ou);graves(f.exemple.texte,ou)}
+    if(!Array.isArray(f.non_exemples)||!f.non_exemples.length||!f.non_exemples.every(estTexte))E.push(`${ou} : non_exemples : liste non vide de textes attendue.`);
+    else f.non_exemples.forEach(x=>graves(x,ou));
+    if(f.tableau!==undefined){const t=f.tableau;
+      if(!estObjet(t)||!Array.isArray(t.colonnes)||!t.colonnes.length||!Array.isArray(t.lignes)||!t.lignes.every(l=>Array.isArray(l)&&l.length===t.colonnes.length))
+        E.push(`${ou} : tableau : { colonnes, lignes } avec des lignes de même longueur que colonnes.`);
+      else champs(t,["colonnes","lignes"],ou+", tableau")}
+    if(!utilisees.has(n))E.push(`${ou} : n'est citée par aucune compétence.`);
+  });
+  /* Cas */
+  (R.cas||[]).forEach((c,i)=>{
+    const ou=`Cas ${i+1}${c&&c.id?` (${c.id})`:""}`;
+    if(!estObjet(c))return E.push(`${ou} : objet attendu.`);
+    champs(c,["id","titre","domaine","contexte","objectif","code","fiches"],ou);
+    noterId(c.id,ou);
+    ["titre","domaine","contexte","objectif","code"].forEach(k=>{if(!estTexte(c[k]))E.push(`${ou} : ${k} vide.`);else if(k!=="code")graves(c[k],ou)});
+    if(!Array.isArray(c.fiches)||!c.fiches.length)E.push(`${ou} : fiches : liste non vide attendue.`);
+    else c.fiches.forEach((v,j)=>{if(!estObjet(v)||!F[v.fiche])E.push(`${ou} : fiches[${j+1}] : fiche « ${v&&v.fiche} » absente de fiches.`);
+      else{champs(v,["fiche","precision"],ou+`, fiches[${j+1}]`);if(v.precision!==undefined&&typeof v.precision!=="string")E.push(`${ou} : precision : texte attendu.`);else graves(v.precision,ou)}});
+  });
+  return E;
+}
+
+/* ---------- Affichage ---------- */
+function afficher(R){
+  const titre=R.titre, cas=R.cas||[];
+  const comp=new Map(R.competences.map(c=>[c.id,c]));
+  const parCas=new Map(cas.map(c=>[c.id,c]));
+  const tri=(xs,k)=>[...xs].sort((a,b)=>a[k].localeCompare(b[k],"fr",{sensitivity:"base"}));
+  const carteDe=new Map();   /* fiche → première compétence qui la cite */
+  R.competences.forEach(c=>c.fiches.forEach(n=>{if(!carteDe.has(n))carteDe.set(n,c.id)}));
+  const lienComp=c=>`<a href="#${esc(c.id)}">${esc(c.competence)}</a>`;
+  const lienFiche=n=>`<a href="#${esc(carteDe.get(n))}">${esc(n)}</a>`;
+  const ligne=(t,v)=>v?`<dt>${t}</dt><dd>${v}</dd>`:"";
+
+  const fiche=n=>{
+    const f=R.fiches[n], ex=f.exemple;
+    const tab=f.tableau?`<table><tr>${f.tableau.colonnes.map(c=>`<th>${txt(c)}</th>`).join("")}</tr>${f.tableau.lignes.map(l=>`<tr>${l.map(c=>`<td>${txt(c)}</td>`).join("")}</tr>`).join("")}</table>`:"";
+    return `<div class="fiche"><h4><span>Fiche</span> ${esc(n)}</h4><dl>
+      ${ligne("Définition",txt(f.definition))}${ligne("Caractéristiques",txt(f.caracteristiques))}</dl>${tab}
+      <div class="ex"><div class="k">Exemple — ${txt(ex.titre)}</div><p>${txt(ex.texte)}</p><pre><code>${esc(ex.code)}</code></pre></div>
+      <div class="ex"><div class="k">Non-exemples</div><ul class="non">${f.non_exemples.map(x=>`<li>${txt(x)}</li>`).join("")}</ul></div></div>`;
+  };
+  const carteComp=c=>`<article><h3>${esc(c.competence)}</h3><dl>
+      ${ligne("Avant, savoir",c.avant.map(a=>lienComp(comp.get(a))).join(", "))}${ligne("Quand",txt(c.quand))}${ligne("Réussi si",txt(c.reussi_si))}</dl>
+      ${c.fiches.map(fiche).join("")}</article>`;
+  const carteCas=c=>`<article><h3>${esc(c.titre)}</h3><dl>
+      ${ligne("Domaine",txt(c.domaine))}${ligne("Contexte",txt(c.contexte))}${ligne("Objectif",txt(c.objectif))}</dl>
+      <pre><code>${esc(c.code)}</code></pre>
+      <div class="ex"><div class="k">Fiches utilisées</div><p>${c.fiches.map(v=>lienFiche(v.fiche)+(v.precision?` (${txt(v.precision)})`:"")).join(" ; ")}</p></div></article>`;
+
+  /* Sommaire : ordre alphabétique français, groupé par initiale sans accent */
+  const initiale=s=>sansAccent(s)[0].toUpperCase();
+  const index=(xs,k)=>{let l="",h="";tri(xs,k).forEach(x=>{const i=initiale(x[k]);
+    if(i!==l){h+=(l?"</ul>":"")+`<div class="lettre">${esc(i)}</div><ul class="index">`;l=i}
+    h+=`<li><a href="#${esc(x.id)}">${esc(x[k])}</a></li>`});return h+(l?"</ul>":"")};
+  const date=R.copie_du?new Date(R.copie_du+"T12:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"}):"";
+  const pied=`<footer class="wrap">${R.source?`Source : ${esc(R.source)}${date?`, copie du ${esc(date)}`:""}. `:""}Fichier relu à chaque ouverture.</footer>`;
+
+  function route(){
+    const id=decodeURIComponent(location.hash.slice(1));
+    const c=comp.get(id), k=parCas.get(id);
+    if(c||k){
+      document.title=(c?c.competence:k.titre)+" — "+titre;
+      app.innerHTML=`<nav aria-label="Navigation"><div class="wrap"><a href="#">← Sommaire</a></div></nav><main class="wrap">${c?carteComp(c):carteCas(k)}</main>${pied}`;
+    }else{
+      document.title=titre+" — référentiel";
+      app.innerHTML=`<header class="wrap"><h1>${esc(titre)}</h1><p class="sub">Référentiel. Choisis une compétence.</p></header>
+        <main class="wrap"><section><h2>Compétences</h2>${index(R.competences,"competence")}</section>
+        ${cas.length?`<section><h2>Cas complets</h2>${index(cas,"titre")}</section>`:""}</main>${pied}`;
+    }
+    window.scrollTo(0,0);
+  }
+  window.onhashchange=route;
+  route();
+}
+charger();
+}
+</script>
+</body>
+</html>
