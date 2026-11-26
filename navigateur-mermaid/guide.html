@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — Flowcharts Mermaid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+  Guide du navigateur : à lire d'un bout à l'autre.
+  Lit, à chaque ouverture :
+    - donnees.json (le même que navigateur.html) : l'ordre des éléments et « s'appuie sur » ;
+    - fiches.json (règles : regles-fiches.md) : condition, critère et fiches de chaque élément.
+  Une fiche partagée par plusieurs éléments n'est montrée qu'une fois. Un exemple par fiche.
+-->
+<style>
+:root{color-scheme:light;--bg:#fff;--ink:#1e293b;--soft:#64748b;--deep:#2563eb;--line:#dbe2ea;--code:#f8fafc;--sel:#eff6ff;--sel-ink:#1e40af;--non:#dc2626}
+*{box-sizing:border-box;min-width:0}
+html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:60px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:var(--deep);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+header{padding:28px 0 10px}
+h1{font-size:clamp(22px,4vw,28px);line-height:1.2;margin:0 0 4px;font-weight:600;letter-spacing:-.01em}
+.sub{margin:0;color:var(--soft);font-size:14px}
+nav{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:8px;padding-bottom:8px}
+nav a{flex:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;min-height:36px;display:inline-flex;align-items:center;gap:6px}
+nav a b{font-weight:500;color:var(--soft)}
+nav a.outil{margin-left:auto;color:var(--deep)}
+section{padding-top:16px}
+h2{font-size:20px;font-weight:600;margin:8px 0 10px}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px;padding:0;list-style:none}
+.toc a{display:inline-block;font-size:13px;background:var(--sel);color:var(--sel-ink);border-radius:6px;padding:4px 9px}
+article{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0 0 12px}
+article h3{font-size:17px;line-height:1.35;font-weight:600;margin:0 0 8px}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;column-gap:12px;row-gap:3px}
+dt{font-size:13px;font-weight:500;color:var(--soft);padding-top:1px}
+dd{margin:0}
+.fiche{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.fiche h4{font-size:15px;font-weight:600;margin:0 0 6px;color:var(--sel-ink)}
+.fiche h4 span{font-weight:500;color:var(--soft);font-size:13px}
+.renvoi{margin-top:10px;font-size:14px;color:var(--soft)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;background:var(--code);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+pre{margin:6px 0 0;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:8px 10px;overflow-x:auto;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;tab-size:4}
+pre code{border:0;background:none;padding:0;font-size:inherit}
+.ex{margin-top:10px}
+.k{font-size:13px;font-weight:500;color:var(--soft)}
+.ex p{margin:2px 0 0}
+.non{margin:4px 0 0;padding-left:18px}
+.non li::marker{color:var(--non)}
+table{border-collapse:collapse;margin-top:6px;font-size:14px}
+td,th{border:1px solid var(--line);padding:3px 8px;text-align:left}
+th{font-weight:500;color:var(--soft)}
+.msg{max-width:520px;margin:15vh auto;padding:24px}
+.pick{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;border-radius:8px;background:var(--deep);color:#fff;font-weight:600;cursor:pointer}
+footer{padding:20px 0 40px;color:var(--soft);font-size:13px}
+@media (max-width:480px){dl{grid-template-columns:1fr}dt{margin-top:4px}}
+@media print{nav,footer{display:none}article{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+{
+const app=document.getElementById("app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+/* Texte des fiches : `code` → <code>. */
+const txt=s=>esc(s).replace(/`([^`]+)`/g,"<code>$1</code>");
+const maj=s=>s?s[0].toUpperCase()+s.slice(1):"";
+const slug=s=>"fiche-"+String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+
+async function lire(nom){const r=await fetch(nom,{cache:"no-store"});if(!r.ok)throw nom;return JSON.parse(await r.text())}
+async function charger(){
+  try{afficher(...await Promise.all([lire("donnees.json"),lire("fiches.json")]))}
+  catch(e){choisir()}
+}
+/* Ouvert hors du site (fichier local) : choisir les deux fichiers. */
+function choisir(){
+  app.innerHTML=`<div class="msg"><h1>Ouvre les deux fichiers</h1><p class="sub">Le guide lit <b>donnees.json</b> et <b>fiches.json</b>, à côté de lui. Choisis-les ensemble.</p><p><label class="pick">Choisir<input type="file" id="f" accept=".json,application/json" multiple hidden></label></p></div>`;
+  document.getElementById("f").addEventListener("change",async ev=>{
+    try{const js=await Promise.all([...ev.target.files].map(f=>f.text().then(JSON.parse)));
+      const d=js.find(j=>Array.isArray(j.elements)),f=js.find(j=>j.fiches);
+      if(!d||!f)throw 0;afficher(d,f)}catch(err){erreur()}});
+}
+function erreur(){app.innerHTML=`<div class="msg"><h1>Fichiers illisibles</h1><p class="sub">Il faut donnees.json (navigateur) et fiches.json (guide).</p></div>`}
+
+function afficher(d,F){
+  if(!d||!Array.isArray(d.elements)||!F||!F.fiches)return erreur();
+  const els=d.elements.filter(e=>e&&e.id);
+  const par=new Map(els.map(e=>[e.id,e]));
+  const vues=new Set();
+  const lienEl=e=>`<a href="#${esc(e.id)}">${esc(e.libelle)}</a>`;
+  const lienFiche=n=>F.fiches[n]?`<a href="#${slug(n)}">${esc(n)}</a>`:esc(n);
+  const ligne=(t,v)=>v?`<dt>${t}</dt><dd>${v}</dd>`:"";
+
+  const fiche=(n,e)=>{
+    const f=F.fiches[n];
+    if(!f)return `<div class="renvoi">Fiche « ${esc(n)} » absente de fiches.json.</div>`;
+    if(vues.has(n))return `<div class="renvoi">Fiche ${lienFiche(n)} : vue plus haut.</div>`;
+    vues.add(n);
+    const ex=(f.exemples||[])[0];
+    const tab=f.tableau?`<table><tr>${f.tableau.colonnes.map(c=>`<th>${esc(c)}</th>`).join("")}</tr>${f.tableau.lignes.map(l=>`<tr>${l.map(c=>`<td>${txt(c)}</td>`).join("")}</tr>`).join("")}</table>`:"";
+    return `<div class="fiche" id="${slug(n)}"><h4><span>Fiche</span> ${esc(n)}</h4><dl>
+      ${ligne("Définition",txt(maj(f.definition)))}${ligne("Caractéristiques",txt(maj(f.caracteristiques)))}</dl>${tab}
+      ${ex?`<div class="ex"><div class="k">Exemple — ${txt(ex.titre)}</div><p>${txt(ex.texte)}</p><pre><code>${esc(ex.code)}</code></pre></div>`:""}
+      ${(f.non_exemples||[]).length?`<div class="ex"><div class="k">Non-exemples</div><ul class="non">${f.non_exemples.map(x=>`<li>${txt(x)}</li>`).join("")}</ul></div>`:""}</div>`;
+  };
+
+  const etape=e=>{
+    const g=(F.elements||{})[e.id]||{};
+    const avant=(e.s_appuie_sur||[]).map(i=>par.get(i)).filter(Boolean);
+    return `<article id="${esc(e.id)}"><h3>${esc(e.libelle)}</h3><dl>
+      ${ligne("Avant, savoir",avant.map(lienEl).join(", "))}${ligne("Quand",txt(g.condition))}${ligne("Réussi si",txt(g.critere))}</dl>
+      ${(g.fiches||[]).map(n=>fiche(n,e)).join("")}</article>`;
+  };
+
+  const cas=(F.cas_complets||[]).map((c,i)=>`<article id="cas-${i+1}"><h3>${esc(c.titre)}</h3><dl>
+      ${ligne("Domaine",txt(c.domaine))}${ligne("Contexte",txt(c.contexte))}${ligne("Objectif",txt(maj(c.objectif)))}</dl>
+      <pre><code>${esc(c.code)}</code></pre>
+      ${(c.vocabulaire||[]).length?`<div class="ex"><div class="k">Fiches utilisées</div><p>${c.vocabulaire.map(v=>lienFiche(v.fiche)+(v.precision?` (${txt(v.precision)})`:"")).join(" ; ")}</p></div>`:""}</article>`).join("");
+
+  const titre=d.titre||"Guide";
+  document.title=titre+" — guide";
+  const corps=els.map(etape).join("");
+  app.innerHTML=`<header class="wrap"><h1>${esc(titre)}</h1><p class="sub">Le contenu du navigateur, dans l'ordre d'apprentissage. Un exemple par fiche.</p></header>
+    <nav aria-label="Sections"><div class="wrap"><a href="#etapes">Étapes <b>${els.length}</b></a>${cas?`<a href="#cas">Cas complets <b>${F.cas_complets.length}</b></a>`:""}<a class="outil" href="navigateur.html">Navigateur</a></div></nav>
+    <main class="wrap"><section id="etapes"><h2>Étapes</h2><ul class="toc">${els.map(e=>`<li>${lienEl(e)}</li>`).join("")}</ul>${corps}</section>
+    ${cas?`<section id="cas"><h2>Cas complets</h2>${cas}</section>`:""}</main>
+    <footer class="wrap">Ordre et liens : donnees.json. Contenu : fiches.json${F.copie_du?`, copié de Notion le ${esc(new Date(F.copie_du).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"}))}`:""}. Relus à chaque ouverture.</footer>`;
+  if(location.hash){const el=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(el)el.scrollIntoView()}
+}
+charger();
+}
+</script>
+</body>
+</html>
