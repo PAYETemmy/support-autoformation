@@ -40,9 +40,9 @@ Pour un autre sujet, seul le .json change. Pour un autre langage que Mermaid, le
 ## Fiche d'une notion
 
 - La fiche de Frayer : le nom dans une forme stade, entouré des quatre cases Définition, Caractéristiques, Exemples et Non-exemples. [Frayer, Frederick et Klausmeier, 1969]
-- Sur tous les écrans, les 4 cases s'empilent, le nom en tête ; la fiche ne dépasse pas 804 px de large, la largeur d'un iPhone à l'horizontale. [Consigne]
+- Sur tous les écrans, les 4 cases s'empilent, le nom en tête. [Consigne]
 - Chaque non-exemple montre l'écriture fautive, puis la raison en rouge. [Tennyson et Boutwell, 1974 : la caractéristique qui manque]
-- Sous la fiche : les 2 exemples en entier, le code à côté de son dessin. [Mayer : principe multimédia et contiguïté spatiale]
+- Sous la fiche : les 2 exemples en entier, le code puis son dessin juste en dessous. [Mayer : principe multimédia et contiguïté spatiale]
 - Le tableau de référence, s'il existe, est replié sous les exemples. [Mayer : cohérence, rien de superflu à l'écran]
 - En haut : « ← Parcours » et la place de la notion dans son niveau. [Ajout]
 
@@ -60,6 +60,7 @@ Pour un autre sujet, seul le .json change. Pour un autre langage que Mermaid, le
 
 ## Affichage
 
+- Tout le site tient dans une colonne centrée de 804 px de contenu au plus : le rendu de l'iPhone à l'horizontale, sur tous les écrans. [Consigne]
 - Fond blanc, texte bleu nuit `#17203A`, gris `#5A6478` pour le secondaire. [Ajout]
 - Accent violet `#5B3FA8`, formes stade en `#ECECFF` bordées de `#9370DB` : les couleurs par défaut des nœuds Mermaid. [Ajout]
 - Vert `#1E7A4E` = juste, rouge `#B3261E` = faux et non-exemple. [Ajout]

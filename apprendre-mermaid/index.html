@@ -28,7 +28,7 @@ body{margin:0;background:var(--papier);color:var(--encre);font:17px/1.6 var(--sa
 a{color:var(--accent);text-underline-offset:3px}
 :focus-visible{outline:3px solid var(--contour);outline-offset:2px;border-radius:4px}
 [tabindex="-1"]:focus{outline:none}   /* titre qui reçoit le focus à l'ouverture d'une page */
-.page{max-width:1080px;margin:0 auto;padding:0 20px calc(48px + env(safe-area-inset-bottom))}
+.page{max-width:844px;margin:0 auto;padding:0 20px calc(48px + env(safe-area-inset-bottom))}
 .texte{max-width:66ch}
 h1{font-size:clamp(34px,7vw,58px);line-height:1.05;letter-spacing:-.025em;font-weight:600;margin:44px 0 12px}
 h2{font-size:23px;line-height:1.25;letter-spacing:-.01em;font-weight:600;margin:40px 0 4px}
@@ -71,7 +71,7 @@ pre code{background:none;border:0;padding:0;font-size:inherit;white-space:pre}
 
 /* Fiche de Frayer : 4 cases autour du terme */
 .situer{margin:22px 0 0;color:var(--graphite);font-size:14px}
-.frayer{position:relative;margin:58px 0 0;max-width:804px;border:1.5px solid var(--encre);border-radius:14px;display:grid;grid-template-columns:1fr}
+.frayer{position:relative;margin:58px 0 0;border:1.5px solid var(--encre);border-radius:14px;display:grid;grid-template-columns:1fr}
 .terme{justify-self:center;margin:calc(-.575em - 14px) 0 0;padding:14px 30px;font-size:clamp(24px,5vw,36px);line-height:1.15;font-weight:600;letter-spacing:-.015em;max-width:calc(100% - 24px)}
 .terme code{font-size:.8em}
 .case{padding:10px 20px 20px}
@@ -92,7 +92,6 @@ pre code{background:none;border:0;padding:0;font-size:inherit;white-space:pre}
 .rendu{border:1px solid var(--trait);border-radius:8px;padding:12px;display:flex;justify-content:center;align-items:center;min-height:80px;overflow-x:auto;background:var(--papier)}
 .rendu svg{max-width:100%;height:auto}
 .rendu .attente,.rendu .echec{color:var(--graphite);font-size:14px;text-align:center}
-@media (min-width:860px){.code-rendu{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
 details{margin:24px 0 0;border-top:1px solid var(--trait);padding-top:12px}
 summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
 table{border-collapse:collapse;font-size:15px;margin-top:8px}
