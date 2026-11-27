@@ -90,7 +90,7 @@ Un domaine découpé en notions, une fiche de Frayer par notion, rangées par ni
 - Seulement les champs du tableau, à chaque niveau : un champ inconnu est une erreur, souvent une faute de frappe. [Ajout]
 - `format` vaut exactement `"frayer-apprentissage/1"`. [Ajout]
 - `titre` : texte non vide. `copie_du`, s'il existe : date AAAA-MM-JJ. [Ajout]
-- `niveaux` : liste non vide. `notions` : au moins 4, pour que chaque question ait 3 mauvaises réponses. [Ajout]
+- `niveaux` et `notions` : listes non vides. [Ajout]
 - Dans tous les textes, les accents graves vont par paires. [Ajout]
 
 **Niveaux**
@@ -179,7 +179,7 @@ Un domaine découpé en notions, une fiche de Frayer par notion, rangées par ni
 ## Écarts connus dans contenu.json
 
 - **Raisons ajoutées** : 10 non-exemples de la page Notion n'avaient pas de raison entre parenthèses. Elles ont été écrites pour ce fichier : Sous-graphe (2), Sous-graphe avancé, Configuration (2), Pièges de syntaxe (2), Sous-graphe replié, Espacement, Codes de caractères.
-- **Raisons vagues** (« n'existe pas », « faute », « invalide », « inexistant ») : Diagramme, Direction, Forme, Style, Extrémité de lien (2), Longueur de lien, Chaînage et liens multiples, Thème, Alias `graph` (2), Formes nommées, Animation niveau 2, Courbe par lien, Sous-graphe replié, Rendu. La page ne les propose pas comme mauvaises réponses aux questions.
+- **Raisons vagues** (« n'existe pas », « faute », « invalide », « inexistant ») : Diagramme, Direction, Forme, Style, Extrémité de lien (2), Longueur de lien, Chaînage et liens multiples, Thème, Alias `graph` (2), Formes nommées, Animation niveau 2, Courbe par lien, Sous-graphe replié, Rendu.
 - **Mot de la même famille dans la définition** : Clic (« cliquant »), Animation de lien (« animé »).
 - **Images en ligne** : les 2 exemples d'Image dans un nœud chargent des logos depuis github.com. Sans connexion, le dessin ne s'affiche pas ; le code reste visible.
 

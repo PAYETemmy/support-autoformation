@@ -61,7 +61,7 @@ pre code{background:none;border:0;padding:0;font-size:inherit;white-space:pre}
 .flux li+li .etape::before{content:"";position:absolute;top:-7px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top:6px solid var(--contour);border-bottom:0}
 .etape{min-height:46px;padding:9px 22px;font-size:16px;font-weight:500;text-decoration:none;background:var(--papier);max-width:min(560px,calc(100vw - 40px))}
 .etape:hover{background:#F6F5FF}
-.etat-revoir,.puce.etat-revoir{border-style:dashed}
+.etat-encours,.puce.etat-encours{border-style:dashed}
 .etat-acquise,.puce.etat-acquise{background:var(--noeud)}
 .etat-acquise:hover{background:#E2E2FB}
 .but{margin:0;color:var(--graphite);font-size:15px}
@@ -111,28 +111,12 @@ table{border-collapse:collapse;font-size:15px;margin-top:8px}
 td,th{border-bottom:1px solid var(--trait);padding:6px 16px 6px 0;text-align:left;vertical-align:top}
 th{font-weight:600;color:var(--graphite)}
 
-/* Questions */
-.question{max-width:640px;margin:26px 0 0}
-.compteur{color:var(--graphite);font-size:14px;margin:0 0 10px}
-.enonce{font-size:21px;line-height:1.4;font-weight:600;margin:0 0 14px}
-.cite{border-left:3px solid var(--contour);padding:6px 0 6px 14px;margin:0 0 16px;font-size:18px}
-.choix{display:flex;flex-direction:column;gap:10px}
-.choix button{min-height:52px;text-align:left;padding:12px 18px;border-radius:14px;border:1.5px solid var(--trait);background:var(--papier);color:var(--encre);font:500 17px/1.35 var(--sans);cursor:pointer}
-.choix button:hover:not(:disabled){border-color:var(--contour);background:#F6F5FF}
-.choix button:disabled{cursor:default}
-.choix button.est-juste{border-color:var(--juste);background:#EAF5EF}
-.choix button.est-faux{border-color:var(--faux);background:#FCEDEC}
-.retour-q{margin:14px 0 0;font-size:16px}
-.retour-q b.j{color:var(--juste)} .retour-q b.f{color:var(--faux)}
-.score{font-size:clamp(28px,6vw,40px);font-weight:600;letter-spacing:-.02em;margin:30px 0 6px}
-
 /* Révision */
 .vide-case{min-height:72px}
 .messages{max-width:560px;margin:14vh auto 0}
 .messages ul{padding-left:18px;font-size:15px}
 .choisir{display:inline-flex;align-items:center;min-height:48px;padding:10px 18px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
 footer{margin-top:64px;padding-top:14px;border-top:1px solid var(--trait);color:var(--graphite);font-size:14px}
-@media (prefers-reduced-motion:no-preference){.apparait{animation:apparait .28s ease-out}@keyframes apparait{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}
 @media print{.actions,.retour,footer{display:none}}
 </style>
 </head>
@@ -145,7 +129,6 @@ const fichier = new URLSearchParams(location.search).get('donnees') || 'contenu.
 const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const txt = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');          // `code` → <code>
 const brut = s => String(s ?? '').replace(/`/g, '');                       // nom sans accents graves
-const melange = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
 /* ---------- Chargement ---------- */
 async function charger() {
@@ -188,7 +171,7 @@ function verifier(D) {
   ['source','version_mermaid'].forEach(k => { if (D[k] !== undefined && !texte(D[k])) E.push(`${k} : texte non vide attendu.`); });
   if (D.copie_du !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(D.copie_du)) E.push('copie_du : date AAAA-MM-JJ attendue.');
   if (!Array.isArray(D.niveaux) || !D.niveaux.length) E.push('niveaux : liste non vide attendue.');
-  if (!Array.isArray(D.notions) || D.notions.length < 4) E.push('notions : au moins 4 notions attendues.');
+  if (!Array.isArray(D.notions) || !D.notions.length) E.push('notions : liste non vide attendue.');
   if (D.cas !== undefined && !Array.isArray(D.cas)) E.push('cas : liste attendue.');
   if (!Array.isArray(D.niveaux) || !Array.isArray(D.notions) || (D.cas !== undefined && !Array.isArray(D.cas))) return E;   // structure illisible : on s'arrête là
   const niveaux = new Set(), ids = new Set(), noms = new Set();
@@ -272,8 +255,9 @@ function chargerProgression(D) {
   try { P = JSON.parse(localStorage.getItem(CLE) || '{}') || {}; } catch (e) { P = {}; }
 }
 function sauver() { try { localStorage.setItem(CLE, JSON.stringify(P)); } catch (e) {} }
-const etat = id => (P[id] && P[id].etat) || 'neuf';
-const aReviser = D => D.notions.filter(n => etat(n.id) === 'acquise' && P[n.id].prochaine <= jour());
+/* neuf : jamais ouverte ; encours : ouverte, pas encore refaite de mémoire ; acquise : refaite de mémoire au moins une fois */
+const etat = id => { const e = P[id] && P[id].etat; return e === 'acquise' ? 'acquise' : e ? 'encours' : 'neuf'; };
+const aReviser = D => D.notions.filter(n => etat(n.id) !== 'neuf' && (P[n.id].prochaine || '') <= jour());
 
 /* ---------- Rendu des diagrammes (mermaid.min.js, chargé au premier besoin) ---------- */
 let mermaidPret = null, compteur = 0;
@@ -316,23 +300,23 @@ function demarrer(D) {
   function accueil() {
     titre('');
     const acquises = notions.filter(n => etat(n.id) === 'acquise').length;
-    const suivante = notions.find(n => etat(n.id) !== 'acquise');
+    const suivante = notions.find(n => etat(n.id) === 'neuf');
     const dues = aReviser(D).length;
     const appel = suivante
-      ? `<a class="btn" href="#/n/${esc(suivante.id)}">${acquises || etat(suivante.id) !== 'neuf' ? 'Continuer avec' : 'Commencer par'} « ${esc(brut(suivante.nom))} »</a>`
+      ? `<a class="btn" href="#/n/${esc(suivante.id)}">${notions.some(n => etat(n.id) !== 'neuf') ? 'Continuer avec' : 'Commencer par'} « ${esc(brut(suivante.nom))} »</a>`
       : '';
     afficher(`
       <header class="texte"><h1>${esc(D.titre)}</h1>
-        <p class="doux">Une notion à la fois : sa fiche de Frayer, puis trois questions sans la regarder.${acquises ? ` ${acquises} sur ${notions.length} acquises.` : ''}</p>
+        <p class="doux">Une notion à la fois, avec sa fiche de Frayer. Le lendemain, tu la refais de mémoire.${acquises ? ` ${acquises} sur ${notions.length} acquises.` : ''}</p>
         <div class="actions">${appel}${dues ? `<a class="btn ${suivante ? 'second' : ''}" href="#/reviser">Réviser ${dues} notion${dues > 1 ? 's' : ''}</a>` : ''}</div>
       </header>
       <ul class="legende" aria-label="Légende">
-        <li><span class="puce"></span>À faire</li><li><span class="puce etat-revoir"></span>À revoir</li><li><span class="puce etat-acquise"></span>Acquise</li>
+        <li><span class="puce"></span>À faire</li><li><span class="puce etat-encours"></span>En cours</li><li><span class="puce etat-acquise"></span>Acquise</li>
       </ul>
       ${D.niveaux.map(nv => {
         const ns = duNiveau(nv.id); if (!ns.length) return '';
         return `<section><h2>${esc(nv.titre)}</h2>${nv.but ? `<p class="but">${esc(nv.but)}</p>` : ''}
-          <ol class="flux">${ns.map(n => `<li><a class="noeud etape etat-${etat(n.id)}" href="#/n/${esc(n.id)}" aria-label="${esc(brut(n.nom))}, ${{neuf: 'à faire', revoir: 'à revoir', acquise: 'acquise'}[etat(n.id)]}">${nomHTML(n)}</a></li>`).join('')}</ol></section>`;
+          <ol class="flux">${ns.map(n => `<li><a class="noeud etape etat-${etat(n.id)}" href="#/n/${esc(n.id)}" aria-label="${esc(brut(n.nom))}, ${{neuf: 'à faire', encours: 'en cours', acquise: 'acquise'}[etat(n.id)]}">${nomHTML(n)}</a></li>`).join('')}</ol></section>`;
       }).join('')}
       ${cas.length ? `<section><h2>Cas complets</h2><p class="but">Des diagrammes réels qui réunissent plusieurs notions.</p>
         <ul class="cas-liste">${cas.map(c => `<li><a href="#/cas/${esc(c.id)}">${esc(c.titre)}<span>${esc(c.domaine)}</span></a></li>`).join('')}</ul></section>` : ''}
@@ -360,74 +344,8 @@ function demarrer(D) {
         ${n.exemples.map(x => `<div class="exemple"><h3>${txt(x.domaine)} : ${txt(x.situation)}</h3><p>${txt(x.explication)}</p>${codeEtRendu(x.code)}</div>`).join('')}
         ${n.tableau ? `<details><summary>Tableau : ${n.tableau.lignes.length} lignes</summary><table><tr>${n.tableau.colonnes.map(c => `<th>${txt(c)}</th>`).join('')}</tr>${n.tableau.lignes.map(l => `<tr>${l.map(c => `<td>${txt(c)}</td>`).join('')}</tr>`).join('')}</table></details>` : ''}
       </section>
-      <section class="texte"><h2>Vérifier</h2><p class="doux">Trois questions, sans la fiche sous les yeux. Trois bonnes réponses : la notion est acquise.</p>
-        <div class="actions"><button class="btn" id="go">Répondre aux questions</button></div></section>
       ${pied}`, '.terme');
-    app.querySelector('#go').addEventListener('click', () => questionnaire(n));
-  }
-
-  /* Trois questions tirées de la fiche : définition, caractéristique, non-exemple */
-  const GENERIQUE = /n'existe pas|inexistant|inventée|faute|invalide/i;
-  function questions(n) {
-    const terme = brut(n.nom).replace(/\s*\(.*?\)\s*/g, '').trim().toLowerCase();
-    const parle = t => t.toLowerCase().replace(/`/g, '').includes(terme);   // un piège qui cite le terme prête à confusion
-    const autres = melange((duNiveau(n.niveau).length >= 4 ? duNiveau(n.niveau) : notions).filter(x => x !== n));
-    const q = [];
-    q.push({enonce: 'Quelle notion a cette définition ?', cite: txt(n.definition),
-      choix: melange([{t: nomHTML(n), ok: true}, ...autres.slice(0, 3).map(x => ({t: nomHTML(x), de: x}))]),
-      juste: `C'est bien ${nomHTML(n)}.`, faux: `C'est ${nomHTML(n)}.`});
-    const car = melange(n.caracteristiques)[0];
-    const pieges = [];
-    for (const x of autres) { for (const c of melange(x.caracteristiques)) {  if (pieges.length < 2 && !n.caracteristiques.includes(c) && !parle(c) && !pieges.some(p => p.t === c)) { pieges.push({t: c, de: x}); break; } } }
-    q.push({enonce: `Laquelle est une caractéristique de ${nomHTML(n)} ?`,
-      choix: melange([{t: car, ok: true}, ...pieges]).map(c => ({...c, t: txt(c.t)})),
-      juste: `Oui : ${txt(car)}.`, faux: `La bonne réponse : ${txt(car)}.`, origine: true});
-    const non = melange(n.non_exemples)[0];
-    const raisons = [];
-    for (const x of autres) { for (const r of melange(x.non_exemples)) { if (raisons.length < 2 && !GENERIQUE.test(r.raison) && !parle(r.raison) && r.raison !== non.raison && !raisons.some(p => p.t === r.raison)) { raisons.push({t: r.raison, de: x}); break; } } }
-    q.push({enonce: `Pourquoi ce n'est pas un exemple de ${nomHTML(n)} ?`, cite: txt(non.ecrit),
-      choix: melange([{t: non.raison, ok: true}, ...raisons]).map(c => ({...c, t: txt(c.t)})),
-      juste: `Oui : ${txt(non.raison)}.`, faux: `La raison : ${txt(non.raison)}.`, origine: true});
-    return q;
-  }
-  function questionnaire(n) {
-    const Q = questions(n); let i = 0, bons = 0;
-    const montrer = () => {
-      const q = Q[i];
-      afficher(`
-        <a class="retour" href="#/n/${esc(n.id)}">← Revoir la fiche</a>
-        <div class="question apparait"><p class="compteur">Question ${i + 1} sur ${Q.length}</p>
-          <p class="enonce" tabindex="-1">${q.enonce}</p>${q.cite ? `<div class="cite">${q.cite}</div>` : ''}
-          <div class="choix">${q.choix.map((c, k) => `<button data-k="${k}">${c.t}</button>`).join('')}</div>
-          <div class="retour-q" aria-live="polite"></div><div class="actions" hidden></div></div>`, '.enonce');
-      app.querySelectorAll('.choix button').forEach(b => b.addEventListener('click', () => repondre(+b.dataset.k)));
-    };
-    const repondre = k => {
-      const q = Q[i], c = q.choix[k], ok = !!c.ok; if (ok) bons++;
-      app.querySelectorAll('.choix button').forEach((b, j) => { b.disabled = true; if (q.choix[j].ok) b.classList.add('est-juste'); else if (j === k) b.classList.add('est-faux'); });
-      const origine = !ok && q.origine && c.de ? ` Ta réponse concerne ${nomHTML(c.de)}.` : '';
-      app.querySelector('.retour-q').innerHTML = ok ? `<b class="j">Juste.</b> ${q.juste}` : `<b class="f">Faux.</b> ${q.faux}${origine}`;
-      const a = app.querySelector('.question .actions'); a.hidden = false;
-      a.innerHTML = `<button class="btn">${i < Q.length - 1 ? 'Question suivante' : 'Voir le résultat'}</button>`;
-      a.querySelector('button').addEventListener('click', () => { i++; i < Q.length ? montrer() : resultat(); });
-      a.querySelector('button').focus();
-    };
-    const resultat = () => {
-      const reussi = bons === Q.length;
-      const deja = etat(n.id) === 'acquise';
-      if (reussi) { if (!deja) P[n.id] = {etat: 'acquise', boite: 1, prochaine: dans(INTERVALLES[0])}; }
-      else P[n.id] = {etat: 'revoir'};
-      sauver();
-      const k = notions.indexOf(n), suite = notions[k + 1];
-      afficher(`
-        <a class="retour" href="#/">← Parcours</a>
-        <div class="question apparait"><p class="score" tabindex="-1">${bons} sur ${Q.length}</p>
-          <p>${reussi ? `${nomHTML(n)} est acquise. ${deja ? 'Prochaine' : 'Première'} révision ${P[n.id].prochaine === dans(1) ? 'demain' : 'le ' + esc(date(P[n.id].prochaine))}.` : `${nomHTML(n)} est à revoir : relis la fiche, puis recommence.`}</p>
-          <div class="actions">${reussi && suite ? `<a class="btn" href="#/n/${esc(suite.id)}">Notion suivante : ${esc(brut(suite.nom))}</a>` : ''}
-            ${reussi ? '' : `<a class="btn" href="#/n/${esc(n.id)}">Revoir la fiche</a>`}
-            ${reussi && !suite ? `<a class="btn" href="#/">Parcours</a>` : ''}</div></div>${pied}`, '.score');
-    };
-    montrer();
+    if (etat(n.id) === 'neuf') { P[n.id] = {etat: 'encours', boite: 1, prochaine: dans(INTERVALLES[0])}; sauver(); }   // révision le lendemain
   }
 
   /* Révision : refaire la fiche de mémoire, puis comparer */
@@ -435,9 +353,9 @@ function demarrer(D) {
     titre('Révision');
     const liste = aReviser(D);
     if (!liste.length) {
-      const futures = notions.filter(n => etat(n.id) === 'acquise').map(n => P[n.id].prochaine).sort();
+      const futures = notions.filter(n => etat(n.id) !== 'neuf').map(n => P[n.id].prochaine).sort();
       return afficher(`<a class="retour" href="#/">← Parcours</a><div class="texte"><h1>Rien à réviser</h1>
-        <p class="doux">${futures.length ? `Prochaine révision le ${esc(date(futures[0]))}.` : 'Une notion acquise revient ici le lendemain.'}</p>
+        <p class="doux">${futures.length ? `Prochaine révision le ${esc(date(futures[0]))}.` : 'Une fiche ouverte revient ici le lendemain.'}</p>
         <div class="actions"><a class="btn" href="#/">Parcours</a></div></div>${pied}`);
     }
     const n = liste[0];
@@ -452,7 +370,7 @@ function demarrer(D) {
       const act = app.querySelector('#act');
       act.innerHTML = `<button class="btn" id="oui">Je l'avais</button><button class="btn second" id="non">Il me manquait quelque chose</button>`;
       act.querySelector('#oui').addEventListener('click', () => { const b = Math.min((P[n.id].boite || 1) + 1, INTERVALLES.length); P[n.id] = {etat: 'acquise', boite: b, prochaine: dans(INTERVALLES[b - 1])}; sauver(); revision(); });
-      act.querySelector('#non').addEventListener('click', () => { P[n.id] = {etat: 'acquise', boite: 1, prochaine: dans(INTERVALLES[0])}; sauver(); revision(); });
+      act.querySelector('#non').addEventListener('click', () => { P[n.id] = {etat: 'encours', boite: 1, prochaine: dans(INTERVALLES[0])}; sauver(); revision(); });
       act.querySelector('#oui').focus();
     });
   }
