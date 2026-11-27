@@ -1,4 +1,4 @@
-# Règles d'écriture du fichier .json de la base de connaissances
+# Règles d'écriture du fichier .json de la documentation d'apprentissage
 
 Ce fichier dit comment écrire le contenu que lit `base-connaissances.html`. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = règle propre au modèle. Les règles **bloquantes** sont vérifiées par le modèle : si une seule échoue, il affiche la liste des erreurs au lieu des cartes.
 

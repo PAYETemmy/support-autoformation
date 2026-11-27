@@ -1,4 +1,4 @@
-# Règles du modèle base-connaissances.html — Base de connaissances
+# Règles du modèle base-connaissances.html — Documentation d'apprentissage
 
 `base-connaissances.html` affiche les connaissances de chaque module de « Repères des modules et de leurs prérequis », une carte par module. Il lit un fichier .json écrit selon `regles-base-connaissances-json.md`, puis applique les règles ci-dessous. Chaque règle indique sa source entre crochets ; [Consigne] = demande de l'utilisateur ; [Ajout] = choix propre au modèle.
 
@@ -6,7 +6,7 @@
 
 | Fichier | Rôle |
 | --- | --- |
-| `base-connaissances.html` | Le modèle : lit le .json et affiche la base de connaissances. |
+| `base-connaissances.html` | Le modèle : lit le .json et affiche la documentation d'apprentissage. |
 | `base-connaissances.json` | Le contenu : ici, les flowcharts Mermaid. |
 | `regles-base-connaissances-json.md` | Comment écrire le .json. |
 | `regles-base-connaissances.md` | Ce fichier : ce que fait le modèle. |
@@ -16,7 +16,7 @@ Pour un autre domaine, seul le .json change.
 ## Nature
 
 - « Repères des modules et de leurs prérequis » donne la structure du domaine ; cette page donne les connaissances de chaque module. [Doignon et Falmagne : structure de connaissances]
-- Une base de connaissances réunit des cartes autonomes, consultées selon le besoin : la page ne se lit pas d'un bout à l'autre. [ITIL : gestion des connaissances ; Diátaxis : documentation de consultation]
+- Une documentation d'apprentissage réunit des cartes autonomes, consultées selon le besoin : la page ne se lit pas d'un bout à l'autre. [Consigne : nom « documentation d'apprentissage » ; Diátaxis : documentation orientée apprentissage]
 - Chaque carte réunit les trois types de connaissances : conditionnelles (« Quand »), procédurales (la compétence, « Réussi si ») et déclaratives (les fiches). [Tardif, 1992]
 - Chaque carte est une compétence, avec sa condition et son critère de réussite. [Mager ; référentiels de compétences de la formation professionnelle, RNCP]
 - Chaque carte forme une unité de sens autonome : elle se comprend sans lire les autres. [OASIS DITA : topic autonome ; Horn, Information Mapping]
@@ -70,7 +70,6 @@ Pour un autre domaine, seul le .json change.
 
 - Tardif, J. (1992). *Pour un enseignement stratégique : l'apport de la psychologie cognitive*. Éditions Logiques : connaissances déclaratives, procédurales et conditionnelles.
 - Doignon, J.-P. et Falmagne, J.-C. (1999). *Knowledge Spaces*. Springer : structure de connaissances.
-- AXELOS (2019). *ITIL Foundation, ITIL 4 Edition* : pratique de gestion des connaissances, base de connaissances.
 - Procida, D. *Diátaxis, a systematic approach to technical documentation* : tutoriel, guide pratique, référence, explication. https://diataxis.fr/
 - OASIS. *Darwin Information Typing Architecture (DITA) Version 1.3* : topics autonomes, réutilisation par conref.
 - Horn, R. E. (1989). *Mapping Hypertext*. The Lexington Institute : découpage en blocs autonomes (Information Mapping).
