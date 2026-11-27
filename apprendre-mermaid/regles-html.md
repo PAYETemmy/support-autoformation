@@ -33,7 +33,7 @@ Pour un autre sujet, seul le .json change. Pour un autre langage que Mermaid, le
 - Le titre, une phrase qui dit comment on apprend, puis le bouton de la prochaine notion jamais ouverte. [Ajout]
 - Le bouton « Réviser » n'apparaît que s'il y a des notions à réviser aujourd'hui. [Ajout]
 - Les notions sont rangées par niveau, dans l'ordre du fichier. [Gagné : prérequis d'abord ; Reigeluth : épitomé]
-- Chaque niveau est dessiné comme un flowchart vertical : une forme stade par notion, une flèche vers la suivante. [Ajout : le site parle la langue de son sujet]
+- Chaque niveau est dessiné comme un flowchart vertical, centré dans la page : une forme stade par notion, une flèche vers la suivante. [Ajout : le site parle la langue de son sujet]
 - L'état de chaque notion se lit sur sa forme : contour plein = à faire (jamais ouverte) ; pointillé = en cours (ouverte, pas encore refaite de mémoire, ou refaite avec un manque) ; remplie = acquise (refaite de mémoire sans manque). Une légende le rappelle. [Ajout]
 - En bas : les cas complets. [Sweller et Cooper, 1985 : exemples travaillés]
 
