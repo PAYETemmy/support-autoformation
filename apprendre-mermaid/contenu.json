@@ -1,0 +1,1704 @@
+{
+ "format": "frayer-apprentissage/1",
+ "titre": "Mermaid, les flowcharts",
+ "source": "Notion, page « Apprendre le vocabulaire Mermaid avec Frayer »",
+ "copie_du": "2026-11-25",
+ "version_mermaid": "11.16",
+ "niveaux": [
+  {
+   "id": "bases",
+   "titre": "Bases",
+   "but": "Le minimum pour dessiner un diagramme simple complet."
+  },
+  {
+   "id": "complet",
+   "titre": "Flowchart complet",
+   "but": "Toutes les formes, tous les liens, le texte, le style et la configuration."
+  },
+  {
+   "id": "avance",
+   "titre": "Cas avancés",
+   "but": "Formes nommées, icônes, animations fines, rendu et accessibilité."
+  }
+ ],
+ "notions": [
+  {
+   "id": "diagramme",
+   "nom": "Diagramme",
+   "niveau": "bases",
+   "definition": "Type de schéma déclaré en première ligne.",
+   "caracteristiques": [
+    "Toujours en 1re ligne",
+    "Décide de la syntaxe du reste"
+   ],
+   "exemples": [
+    {
+     "domaine": "RH",
+     "situation": "processus de recrutement",
+     "explication": "Des étapes et des décisions qui s'enchaînent → `flowchart`.",
+     "code": "flowchart LR\n    A[Candidature reçue] --> B{Profil retenu ?}\n    B -->|Oui| C[Entretien]\n    B -->|Non| D[Réponse négative]"
+    },
+    {
+     "domaine": "E-commerce",
+     "situation": "paiement par carte",
+     "explication": "Des échanges entre acteurs, dans l'ordre du temps → `sequenceDiagram`.",
+     "code": "sequenceDiagram\n    Client->>Site: Valide le panier\n    Site->>Banque: Demande d'autorisation\n    Banque-->>Site: Paiement accepté\n    Site-->>Client: Confirmation de commande"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`flowchat`",
+     "raison": "faute de frappe"
+    },
+    {
+     "ecrit": "`flowchart` placé après des nœuds",
+     "raison": "pas en 1re ligne"
+    }
+   ]
+  },
+  {
+   "id": "direction",
+   "nom": "Direction",
+   "niveau": "bases",
+   "definition": "Sens de lecture du schéma.",
+   "caracteristiques": [
+    "2 lettres juste après `flowchart`"
+   ],
+   "exemples": [
+    {
+     "domaine": "Ressources humaines",
+     "situation": "organigramme d'entreprise",
+     "explication": "La hiérarchie se lit de haut en bas → `TD`.",
+     "code": "flowchart TD\n    A[Direction générale] --> B[Ressources humaines]\n    A --> C[Commercial]\n    C --> D[Équipe export]"
+    },
+    {
+     "domaine": "Logistique",
+     "situation": "chaîne d'approvisionnement",
+     "explication": "Le flux avance comme une frise, de gauche à droite → `LR`.",
+     "code": "flowchart LR\n    A[Fournisseur] --> B[Entrepôt] --> C[Transporteur] --> D[Client]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`flowchart DT`",
+     "raison": "n'existe pas"
+    },
+    {
+     "ecrit": "`flowchart left`",
+     "raison": "mot entier refusé"
+    }
+   ]
+  },
+  {
+   "id": "noeud",
+   "nom": "Nœud",
+   "niveau": "bases",
+   "definition": "Boîte qui représente un élément du schéma.",
+   "caracteristiques": [
+    "Identifiant unique",
+    "Texte",
+    "Forme"
+   ],
+   "exemples": [
+    {
+     "domaine": "Restaurant",
+     "situation": "service d'une commande",
+     "explication": "Chaque étape du service est un nœud : un identifiant (`A`) et un texte.",
+     "code": "flowchart LR\n    A[Prise de commande] --> B[Préparation en cuisine] --> C[Service à table]"
+    },
+    {
+     "domaine": "Service client",
+     "situation": "traitement d'une réclamation",
+     "explication": "La question à trancher est un nœud de décision (`B{…}`).",
+     "code": "flowchart TD\n    A[Réclamation reçue] --> B{Produit sous garantie ?}\n    B -->|Oui| C[Échange gratuit]\n    B -->|Non| D[Devis de réparation]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A --> B`",
+     "raison": "c'est un lien"
+    },
+    {
+     "ecrit": "`[Début]` seul",
+     "raison": "pas d'identifiant"
+    }
+   ]
+  },
+  {
+   "id": "forme",
+   "nom": "Forme",
+   "niveau": "bases",
+   "definition": "Contour du nœud, fixé par les symboles autour du texte.",
+   "caracteristiques": [
+    "Symbole ouvrant et fermant assortis"
+   ],
+   "exemples": [
+    {
+     "domaine": "E-commerce",
+     "situation": "vérification du stock",
+     "explication": "Chaque forme a un sens : arrondi = départ, cylindre = base de données, losange = décision, rectangle = action.",
+     "code": "flowchart LR\n    A(Commande reçue) --> B[(Base produits)]\n    B --> C{En stock ?}\n    C -->|Oui| D[Préparer le colis]\n    C -->|Non| E[Prévenir le client]"
+    },
+    {
+     "domaine": "Banque",
+     "situation": "ouverture d'un compte",
+     "explication": "Les cercles marquent les deux issues possibles du processus.",
+     "code": "flowchart TD\n    A(Demande d'ouverture) --> B[Vérification d'identité]\n    B --> C{Identité confirmée ?}\n    C -->|Oui| D((Compte ouvert))\n    C -->|Non| E((Refus))"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A[texte)`",
+     "raison": "symboles mélangés"
+    },
+    {
+     "ecrit": "`A<texte>`",
+     "raison": "n'existe pas"
+    }
+   ]
+  },
+  {
+   "id": "lien",
+   "nom": "Lien",
+   "niveau": "bases",
+   "definition": "Trait qui relie deux nœuds.",
+   "caracteristiques": [
+    "Entre deux identifiants",
+    "Au moins 2 tirets",
+    "Style variable"
+   ],
+   "exemples": [
+    {
+     "domaine": "E-commerce",
+     "situation": "tunnel d'achat",
+     "explication": "Les étapes ont un ordre obligatoire → flèche `-->`.",
+     "code": "flowchart LR\n    A[Panier] --> B[Livraison] --> C[Paiement] --> D[Confirmation]"
+    },
+    {
+     "domaine": "Informatique",
+     "situation": "réseau d'un bureau",
+     "explication": "Les appareils sont reliés, sans sens de circulation → trait `---`.",
+     "code": "flowchart LR\n    A[Box internet] --- B[Switch]\n    B --- C[Ordinateur]\n    B --- D[Imprimante]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A -> B`",
+     "raison": "1 seul tiret"
+    },
+    {
+     "ecrit": "`A B`",
+     "raison": "aucun lien"
+    }
+   ]
+  },
+  {
+   "id": "etiquette",
+   "nom": "Étiquette",
+   "niveau": "bases",
+   "definition": "Texte écrit sur un lien.",
+   "caracteristiques": [
+    "Entre barres verticales, collée à la flèche"
+   ],
+   "exemples": [
+    {
+     "domaine": "Assurance",
+     "situation": "déclaration de sinistre",
+     "explication": "La réponse à la question s'écrit sur le lien → `-->|Oui|`.",
+     "code": "flowchart TD\n    A{Sinistre déclaré dans les délais ?} -->|Oui| B[Étude du dossier]\n    A -->|Non| C[Refus de prise en charge]"
+    },
+    {
+     "domaine": "Logistique",
+     "situation": "livraison en ville",
+     "explication": "L'étiquette n'est pas forcément Oui/Non : ici, le moyen de transport → `-- camion -->`.",
+     "code": "flowchart LR\n    A[Entrepôt de Lyon] -- camion --> B[Plateforme de Paris]\n    B -- vélo cargo --> C[Client]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A --> B |Oui|`",
+     "raison": "mal placée"
+    },
+    {
+     "ecrit": "`A[Oui]`",
+     "raison": "texte de nœud"
+    }
+   ]
+  },
+  {
+   "id": "sous_graphe",
+   "nom": "Sous-graphe",
+   "niveau": "bases",
+   "definition": "Groupe de nœuds encadré avec un titre.",
+   "caracteristiques": [
+    "Commence par `subgraph`, finit par `end`, a un titre"
+   ],
+   "exemples": [
+    {
+     "domaine": "Restaurant",
+     "situation": "salle et cuisine",
+     "explication": "Chaque zone du restaurant est un sous-graphe.",
+     "code": "flowchart LR\n    subgraph Salle\n        A[Prise de commande] --> B[Service]\n    end\n    subgraph Cuisine\n        C[Préparation] --> D[Dressage]\n    end\n    A --> C\n    D --> B"
+    },
+    {
+     "domaine": "Développement web",
+     "situation": "architecture d'une application",
+     "explication": "Le front-end et le back-end sont séparés en deux blocs.",
+     "code": "flowchart LR\n    subgraph Frontend\n        A[Navigateur]\n    end\n    subgraph Backend\n        B[API] --> C[(Base de données)]\n    end\n    A --> B"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`subgraph` sans `end`",
+     "raison": "bloc jamais fermé"
+    },
+    {
+     "ecrit": "un nœud seul",
+     "raison": "aucun groupe de nœuds"
+    }
+   ]
+  },
+  {
+   "id": "style",
+   "nom": "Style",
+   "niveau": "bases",
+   "definition": "Apparence (couleur, bordure) d'un nœud.",
+   "caracteristiques": [
+    "`style` pour un nœud",
+    "`classDef` + `class` pour plusieurs"
+   ],
+   "exemples": [
+    {
+     "domaine": "Support informatique",
+     "situation": "incident serveur",
+     "explication": "L'étape critique est colorée en rouge avec `style`.",
+     "code": "flowchart LR\n    A[Alerte serveur] --> B[Diagnostic] --> C[Correctif]\n    style A fill:#fdd,stroke:#c62828"
+    },
+    {
+     "domaine": "Gestion de projet",
+     "situation": "avancement",
+     "explication": "Les tâches terminées partagent la même classe → `classDef` + `class`.",
+     "code": "flowchart LR\n    A[Cahier des charges] --> B[Maquettes] --> C[Développement] --> D[Recette]\n    classDef fait fill:#d4f8d4,stroke:#2e7d32\n    class A,B fait"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A[Début] color=red`",
+     "raison": "syntaxe inventée"
+    },
+    {
+     "ecrit": "`A{ }`",
+     "raison": "c'est la forme, pas le style"
+    }
+   ]
+  },
+  {
+   "id": "formes_completes",
+   "nom": "Formes complètes",
+   "niveau": "complet",
+   "definition": "Toutes les formes de nœud en syntaxe classique.",
+   "caracteristiques": [
+    "La paire de symboles fixe la forme"
+   ],
+   "exemples": [
+    {
+     "domaine": "Paie",
+     "situation": "calcul du salaire",
+     "explication": "Stade = début et fin, parallélogramme = données saisies, sous-routine = calcul documenté ailleurs, parallélogramme inversé = document produit.",
+     "code": "flowchart LR\n    A([Fin du mois]) --> B[/Saisie des heures/]\n    B --> C[[Calcul des cotisations]]\n    C --> D[\\Bulletin de paie\\]\n    D --> E([Virement du salaire])"
+    },
+    {
+     "domaine": "Industrie",
+     "situation": "maintenance d'une machine",
+     "explication": "Hexagone = préparation, trapèzes = opérations manuelles (conventions de la norme ISO 5807), drapeau = marquage, double cercle = fin.",
+     "code": "flowchart TD\n    A{{Mise en sécurité de la machine}} --> B[/Démontage manuel\\]\n    B --> C[\\Remontage manuel/]\n    C --> D>Étiquette de contrôle posée]\n    D --> E(((Remise en service)))"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A{{texte}`",
+     "raison": "paire incomplète"
+    },
+    {
+     "ecrit": "`A[[texte]`",
+     "raison": "paire incomplète"
+    }
+   ]
+  },
+  {
+   "id": "extremite_de_lien",
+   "nom": "Extrémité de lien",
+   "niveau": "complet",
+   "definition": "Symbole au bout du lien.",
+   "caracteristiques": [
+    "Remplace la pointe `>`",
+    "Peut être des deux côtés"
+   ],
+   "exemples": [
+    {
+     "domaine": "Applications",
+     "situation": "synchronisation des données",
+     "explication": "Les données circulent dans les deux sens → `<-->`.",
+     "code": "flowchart LR\n    A[Application mobile] <--> B[Serveur de synchronisation]\n    B <--> C[Application web]"
+    },
+    {
+     "domaine": "Sécurité",
+     "situation": "droits d'accès",
+     "explication": "La croix signale un accès interdit → `--x`.",
+     "code": "flowchart LR\n    A[Utilisateur invité] --x B[(Données RH)]\n    C[Responsable RH] --> B"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`-->>`",
+     "raison": "n'existe pas en flowchart"
+    },
+    {
+     "ecrit": "`--*`",
+     "raison": "n'existe pas"
+    }
+   ]
+  },
+  {
+   "id": "lien_invisible",
+   "nom": "Lien invisible",
+   "niveau": "complet",
+   "definition": "Lien qui place des nœuds sans tracer de trait.",
+   "caracteristiques": [
+    "3 tildes",
+    "Sert à ajuster la mise en page"
+   ],
+   "exemples": [
+    {
+     "domaine": "Procédure d'entreprise",
+     "situation": "ajout d'une légende",
+     "explication": "La légende se place sous le schéma, sans trait → `~~~`.",
+     "code": "flowchart TD\n    A[Demande] --> B[Validation] --> C[Livraison]\n    C ~~~ L[Légende : délai moyen de 48 h]"
+    },
+    {
+     "domaine": "Production",
+     "situation": "deux équipes",
+     "explication": "Les deux circuits s'affichent l'un après l'autre, sans lien logique entre eux.",
+     "code": "flowchart LR\n    A[Équipe de jour] --> B[Production]\n    C[Équipe de nuit] --> D[Maintenance]\n    B ~~~ C"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A --- B`",
+     "raison": "trait visible"
+    },
+    {
+     "ecrit": "`A ~ B`",
+     "raison": "1 seul tilde"
+    }
+   ]
+  },
+  {
+   "id": "longueur_de_lien",
+   "nom": "Longueur de lien",
+   "niveau": "complet",
+   "definition": "Distance entre deux nœuds, réglée par le nombre de symboles.",
+   "caracteristiques": [
+    "Plus de tirets, de points ou de `=` = lien plus long"
+   ],
+   "exemples": [
+    {
+     "domaine": "Transport",
+     "situation": "ligne de bus",
+     "explication": "Plus le trajet est long, plus le lien est long → `--->`, `---->`.",
+     "code": "flowchart LR\n    A[Gare] --> B[Centre-ville] ---> C[Zone commerciale] ----> D[Aéroport]"
+    },
+    {
+     "domaine": "Commercial",
+     "situation": "relances d'un devis",
+     "explication": "La relance à J+30 est facultative et plus lointaine → `-..->`.",
+     "code": "flowchart LR\n    A[Devis envoyé] --> B[Relance à J+7]\n    A -..-> C[Relance à J+30]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`-->`",
+     "raison": "longueur normale"
+    },
+    {
+     "ecrit": "`->`",
+     "raison": "invalide"
+    }
+   ]
+  },
+  {
+   "id": "chainage_et_liens_multiples",
+   "nom": "Chaînage et liens multiples",
+   "niveau": "complet",
+   "definition": "Plusieurs liens écrits sur une seule ligne.",
+   "caracteristiques": [
+    "`-->` enchaîne, `&` regroupe"
+   ],
+   "exemples": [
+    {
+     "domaine": "Restauration",
+     "situation": "recette de cuisine",
+     "explication": "Les étapes s'enchaînent sur une seule ligne → `-->` répété.",
+     "code": "flowchart LR\n    A[Éplucher] --> B[Couper] --> C[Cuire] --> D[Dresser]"
+    },
+    {
+     "domaine": "RH",
+     "situation": "sources de candidatures",
+     "explication": "Trois sources arrivent au même tri → `&` à gauche.",
+     "code": "flowchart LR\n    A[LinkedIn] & B[Site carrière] & C[Cooptation] --> D[Tri des CV]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A, B --> C`",
+     "raison": "virgule invalide"
+    },
+    {
+     "ecrit": "`A B --> C`",
+     "raison": "espace au lieu de `&`"
+    }
+   ]
+  },
+  {
+   "id": "etiquette_sur_tous_les_liens",
+   "nom": "Étiquette sur tous les liens",
+   "niveau": "complet",
+   "definition": "Texte sur un lien pointillé ou épais.",
+   "caracteristiques": [
+    "Le texte s'insère au milieu du symbole"
+   ],
+   "exemples": [
+    {
+     "domaine": "Service après-vente",
+     "situation": "réparation",
+     "explication": "Étape facultative, avec sa condition écrite sur le pointillé.",
+     "code": "flowchart LR\n    A[Réparation terminée] --> B[Retour au client]\n    A -. si le client le demande .-> C[Nettoyage offert]"
+    },
+    {
+     "domaine": "Support informatique",
+     "situation": "incident critique",
+     "explication": "L'escalade prioritaire est en trait épais, avec sa raison.",
+     "code": "flowchart LR\n    A[Incident détecté] == priorité haute ==> B[Astreinte niveau 2]\n    A --> C[File d'attente normale]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A -.-> texte B`",
+     "raison": "texte mal placé"
+    },
+    {
+     "ecrit": "`A == texte => B`",
+     "raison": "un seul `=` avant la pointe"
+    }
+   ]
+  },
+  {
+   "id": "texte_special",
+   "nom": "Texte spécial",
+   "niveau": "complet",
+   "definition": "Texte de nœud contenant des caractères réservés.",
+   "caracteristiques": [
+    "Entre guillemets",
+    "Entités `#...;` pour les symboles"
+   ],
+   "exemples": [
+    {
+     "domaine": "Commercial",
+     "situation": "calcul d'un devis",
+     "explication": "Les parenthèses et le % imposent les guillemets.",
+     "code": "flowchart LR\n    A[\"Prix HT (hors taxes)\"] --> B[\"TVA (20 %)\"] --> C[\"Prix TTC\"]"
+    },
+    {
+     "domaine": "Service client",
+     "situation": "chatbot",
+     "explication": "On cite la phrase exacte du client avec `#quot;`.",
+     "code": "flowchart LR\n    A[\"Client : #quot;Où est mon colis ?#quot;\"] --> B[Recherche du suivi] --> C[\"Réponse : #quot;Livraison demain#quot;\"]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A[Prix (TTC)]`",
+     "raison": "parenthèses non protégées : erreur"
+    },
+    {
+     "ecrit": "`A[\"texte]`",
+     "raison": "guillemet non fermé"
+    }
+   ]
+  },
+  {
+   "id": "chaine_markdown",
+   "nom": "Chaîne Markdown",
+   "niveau": "complet",
+   "definition": "Texte de nœud formaté (gras, italique, retour à la ligne).",
+   "caracteristiques": [
+    "Guillemets + accents graves autour du texte"
+   ],
+   "exemples": [
+    {
+     "domaine": "RH",
+     "situation": "annonce d'emploi",
+     "explication": "Le titre du poste en gras, les détails sur une 2e ligne.",
+     "code": "flowchart LR\n    A[\"`**Développeur web**\n    CDI, Paris`\"] --> B[\"`**Entretien technique**\n    *1 h, en visio*`\"]"
+    },
+    {
+     "domaine": "Gestion de projet",
+     "situation": "statut des tâches",
+     "explication": "Le statut ressort grâce au gras et à l'italique.",
+     "code": "flowchart LR\n    A[\"`Maquettes : **terminées**`\"] --> B[\"`Développement : *en cours*`\"] --> C[\"`Recette : à faire`\"]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A[**Gras**]`",
+     "raison": "affiché tel quel"
+    },
+    {
+     "ecrit": "`A[\"**Gras**\"]`",
+     "raison": "sans accents graves : pas de formatage"
+    }
+   ]
+  },
+  {
+   "id": "commentaire",
+   "nom": "Commentaire",
+   "niveau": "complet",
+   "definition": "Ligne ignorée à l'affichage.",
+   "caracteristiques": [
+    "Commence par `%%`",
+    "Sur sa propre ligne"
+   ],
+   "exemples": [
+    {
+     "domaine": "RH",
+     "situation": "demande de congés",
+     "explication": "Les notes pour l'équipe restent dans le code, sans s'afficher.",
+     "code": "flowchart LR\n    %% Processus validé par la direction en mars\n    A[Demande de congé] --> B{Solde suffisant ?}\n    %% À ajouter : le cas des congés sans solde\n    B -->|Oui| C[Congé accordé]\n    B -->|Non| D[Refus]"
+    },
+    {
+     "domaine": "E-commerce",
+     "situation": "étape mise en pause",
+     "explication": "On désactive une étape sans la supprimer, en commentant sa ligne.",
+     "code": "flowchart LR\n    A[Commande] --> B[Paiement]\n    %% B --> C[Points de fidélité]\n    B --> D[Expédition]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A --> B %% note`",
+     "raison": "en fin de ligne : risque d'erreur"
+    },
+    {
+     "ecrit": "`// note`",
+     "raison": "syntaxe d'un autre langage"
+    }
+   ]
+  },
+  {
+   "id": "classe",
+   "nom": "Classe",
+   "niveau": "complet",
+   "definition": "Style nommé, réutilisable sur plusieurs nœuds.",
+   "caracteristiques": [
+    "Créée avec `classDef`, appliquée avec `class` ou `:::`"
+   ],
+   "exemples": [
+    {
+     "domaine": "Gestion de projet",
+     "situation": "statut des livrables",
+     "explication": "Chaque statut est une classe, appliquée avec `:::`.",
+     "code": "flowchart LR\n    A[Brief]:::fait --> B[Maquette]:::enCours --> C[Livraison]:::aFaire\n    classDef fait fill:#d4f8d4,stroke:#2e7d32\n    classDef enCours fill:#fff3cd,stroke:#b8860b\n    classDef aFaire fill:#eee,stroke:#999"
+    },
+    {
+     "domaine": "Cybersécurité",
+     "situation": "zones de confiance",
+     "explication": "Les zones externe et interne sont appliquées avec `class`.",
+     "code": "flowchart LR\n    A[Internet] --> B[Pare-feu] --> C[Serveur web] --> D[(Base clients)]\n    classDef externe fill:#fdd,stroke:#c62828\n    classDef interne fill:#d4f8d4,stroke:#2e7d32\n    class A externe\n    class C,D interne"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`style A fill:#f00`",
+     "raison": "style direct, sans nom"
+    },
+    {
+     "ecrit": "`class rouge A`",
+     "raison": "ordre inversé"
+    }
+   ]
+  },
+  {
+   "id": "style_de_lien",
+   "nom": "Style de lien",
+   "niveau": "complet",
+   "definition": "Apparence d'un lien (couleur, épaisseur).",
+   "caracteristiques": [
+    "`linkStyle` + numéro du lien, compté à partir de 0, dans l'ordre d'écriture"
+   ],
+   "exemples": [
+    {
+     "domaine": "Sécurité",
+     "situation": "plan d'évacuation",
+     "explication": "Le chemin d'évacuation (liens 0 et 1) en vert épais, l'ascenseur (lien 2) en rouge.",
+     "code": "flowchart LR\n    A[Bureau] --> B[Couloir] --> C[Sortie de secours]\n    B --> D[Ascenseur]\n    linkStyle 0,1 stroke:#2e7d32,stroke-width:4px\n    linkStyle 2 stroke:#c62828"
+    },
+    {
+     "domaine": "Comptabilité",
+     "situation": "document imprimé en noir et blanc",
+     "explication": "Tous les liens en gris fin → `linkStyle default`.",
+     "code": "flowchart LR\n    A[Commande] --> B[Facture] --> C[Paiement]\n    linkStyle default stroke:#888,stroke-width:1px"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`linkStyle A stroke:red`",
+     "raison": "identifiant de nœud au lieu d'un numéro"
+    },
+    {
+     "ecrit": "`style 0 stroke:red`",
+     "raison": "`style` = nœuds"
+    }
+   ]
+  },
+  {
+   "id": "sous_graphe_avance",
+   "nom": "Sous-graphe avancé",
+   "niveau": "complet",
+   "definition": "Sous-graphe avec identifiant, direction ou liens.",
+   "caracteristiques": [
+    "`subgraph id [Titre]`",
+    "`direction` à l'intérieur",
+    "Peut être relié comme un nœud"
+   ],
+   "exemples": [
+    {
+     "domaine": "E-commerce",
+     "situation": "service de paiement",
+     "explication": "Le sous-graphe a un identifiant (`paiement`), sa propre direction, et se relie comme un nœud.",
+     "code": "flowchart TD\n    subgraph paiement [Service de paiement]\n        direction LR\n        P1[Vérification de la carte] --> P2[Débit]\n    end\n    A[Panier validé] --> paiement\n    paiement --> B[Email de confirmation]"
+    },
+    {
+     "domaine": "BTP",
+     "situation": "phases d'un chantier",
+     "explication": "Des sous-graphes imbriqués : les phases dans le chantier.",
+     "code": "flowchart LR\n    subgraph chantier [Chantier]\n        subgraph gros [Gros œuvre]\n            A[Fondations] --> B[Murs]\n        end\n        subgraph second [Second œuvre]\n            C[Électricité] --> D[Peinture]\n        end\n        gros --> second\n    end"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`direction LR` hors d'un sous-graphe",
+     "raison": "utiliser l'en-tête `flowchart LR`"
+    },
+    {
+     "ecrit": "`subgraph [Matin]` puis `s1 --> C`",
+     "raison": "pas d'identifiant : `s1` ne désigne rien"
+    }
+   ]
+  },
+  {
+   "id": "clic",
+   "nom": "Clic (interaction)",
+   "niveau": "complet",
+   "definition": "Action déclenchée en cliquant sur un nœud.",
+   "caracteristiques": [
+    "`click` + nœud + lien ou fonction",
+    "Ne marche que si l'outil l'autorise (désactivé sur GitHub)"
+   ],
+   "exemples": [
+    {
+     "domaine": "Intranet RH",
+     "situation": "parcours d'intégration",
+     "explication": "Chaque étape renvoie vers sa procédure détaillée (adresses à remplacer par les vraies).",
+     "code": "flowchart LR\n    A[Arrivée] --> B[Accès informatiques] --> C[Formation sécurité]\n    click B \"https://example.com/acces\" \"Procédure de demande d'accès\"\n    click C \"https://example.com/formation\""
+    },
+    {
+     "domaine": "E-commerce",
+     "situation": "suivi de commande",
+     "explication": "Un clic ouvre la page de suivi du colis.",
+     "code": "flowchart LR\n    A[Commande expédiée] --> B[Suivi du colis]\n    click B \"https://example.com/suivi\" \"Voir le suivi en temps réel\""
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A --> \"https://exemple.com\"`",
+     "raison": "pas un clic"
+    },
+    {
+     "ecrit": "`click \"https://exemple.com\"`",
+     "raison": "nœud manquant"
+    }
+   ]
+  },
+  {
+   "id": "nouvelle_syntaxe_des_formes",
+   "nom": "Nouvelle syntaxe des formes (v11.3+)",
+   "niveau": "complet",
+   "definition": "Forme et texte déclarés en propriétés, sans symboles.",
+   "caracteristiques": [
+    "`@{ }` collé à l'identifiant",
+    "Clés `shape` et `label`"
+   ],
+   "exemples": [
+    {
+     "domaine": "Hôtellerie",
+     "situation": "réservation d'une chambre",
+     "explication": "Formes déclarées par leur nom, directement dans les liens.",
+     "code": "flowchart LR\n    A@{ shape: circle, label: \"Début\" } --> B@{ shape: diamond, label: \"Chambre libre ?\" }\n    B -->|Oui| C@{ shape: cyl, label: \"Base des réservations\" }\n    B -->|Non| D@{ shape: rounded, label: \"Liste d'attente\" }"
+    },
+    {
+     "domaine": "Administration",
+     "situation": "archivage du courrier",
+     "explication": "`doc` pour le courrier papier, `cyl` pour l'archive numérique.",
+     "code": "flowchart LR\n    A@{ shape: doc, label: \"Courrier reçu\" } --> B@{ shape: rect, label: \"Numérisation\" }\n    B --> C@{ shape: cyl, label: \"Archive numérique\" }"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A @{ shape: circle }`",
+     "raison": "espace avant `@`"
+    },
+    {
+     "ecrit": "`A{ shape: circle }`",
+     "raison": "`@` manquant"
+    }
+   ]
+  },
+  {
+   "id": "image_dans_un_noeud",
+   "nom": "Image dans un nœud (v11.3+)",
+   "niveau": "complet",
+   "definition": "Nœud qui affiche une image.",
+   "caracteristiques": [
+    "Clé `img` dans `@{ }`",
+    "`label` optionnel"
+   ],
+   "exemples": [
+    {
+     "domaine": "DevOps",
+     "situation": "chaîne d'outils d'un projet",
+     "explication": "Les logos rendent les outils reconnaissables d'un coup d'œil.",
+     "code": "flowchart LR\n    A@{ img: \"https://github.com/github.png\", label: \"Code sur GitHub\", pos: \"t\", h: 60, constraint: \"on\" }\n    B@{ img: \"https://github.com/docker.png\", label: \"Image Docker\", pos: \"t\", h: 60, constraint: \"on\" }\n    A --> B"
+    },
+    {
+     "domaine": "Développement web",
+     "situation": "base de données d'une application",
+     "explication": "Le logo identifie la base utilisée.",
+     "code": "flowchart LR\n    A[Application web] --> B@{ img: \"https://github.com/postgres.png\", label: \"PostgreSQL\", pos: \"b\", w: 60, h: 60 }"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A[![logo](url)]`",
+     "raison": "Markdown non pris en charge"
+    },
+    {
+     "ecrit": "`A@{ image: \"url\" }`",
+     "raison": "clé incorrecte"
+    }
+   ]
+  },
+  {
+   "id": "animation_de_lien",
+   "nom": "Animation de lien (v11+)",
+   "niveau": "complet",
+   "definition": "Lien animé, repéré par un identifiant.",
+   "caracteristiques": [
+    "Identifiant `e1@` avant le lien, puis propriétés"
+   ],
+   "exemples": [
+    {
+     "domaine": "IoT",
+     "situation": "supervision en temps réel",
+     "explication": "Les liens animés montrent que les données circulent en continu.",
+     "code": "flowchart LR\n    A[Capteurs] e1@--> B[Passerelle IoT] e2@--> C[Tableau de bord]\n    e1@{ animate: true }\n    e2@{ animate: true }"
+    },
+    {
+     "domaine": "Formation",
+     "situation": "tutoriel d'une application",
+     "explication": "L'animation attire l'œil sur l'étape en cours.",
+     "code": "flowchart LR\n    A[Inscription] --> B[Profil] e1@--> C[Premier achat]\n    e1@{ animate: true }"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A --> B` puis `e1@{ animate: true }`",
+     "raison": "lien sans identifiant"
+    },
+    {
+     "ecrit": "`linkStyle 0 animate:true`",
+     "raison": "pas cette syntaxe"
+    }
+   ]
+  },
+  {
+   "id": "configuration",
+   "nom": "Configuration",
+   "niveau": "complet",
+   "definition": "Réglages placés tout en haut du code.",
+   "caracteristiques": [
+    "Bloc entre deux lignes `---`",
+    "Titre, thème, forme des traits"
+   ],
+   "exemples": [
+    {
+     "domaine": "Achats",
+     "situation": "procédure pour le rapport annuel",
+     "explication": "Le titre et le thème sont fixés en haut, avant le diagramme.",
+     "code": "---\ntitle: Processus d'achat 2026\nconfig:\n  theme: neutral\n---\nflowchart LR\n    A[Expression du besoin] --> B[Devis] --> C[Bon de commande]"
+    },
+    {
+     "domaine": "Développement web",
+     "situation": "schéma de cache",
+     "explication": "Traits droits pour un rendu technique → `curve: linear`.",
+     "code": "---\nconfig:\n  flowchart:\n    curve: linear\n---\nflowchart TD\n    A[Requête] --> B{En cache ?}\n    B -->|Oui| C[Réponse immédiate]\n    B -->|Non| D[(Base de données)]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "bloc `---` placé après `flowchart`",
+     "raison": "le bloc doit être tout en haut"
+    },
+    {
+     "ecrit": "`theme: dark` seul dans le bloc `---`",
+     "raison": "`config:` manquant au-dessus"
+    }
+   ]
+  },
+  {
+   "id": "theme",
+   "nom": "Thème",
+   "niveau": "complet",
+   "definition": "Jeu de couleurs global du diagramme.",
+   "caracteristiques": [
+    "Réglé dans `config`",
+    "S'applique à tout"
+   ],
+   "exemples": [
+    {
+     "domaine": "Documentation",
+     "situation": "README d'un projet",
+     "explication": "Le thème historique de Mermaid. Depuis Mermaid 12, le thème par défaut est `redux-color` : il faut donc écrire `default` pour le retrouver.",
+     "code": "---\nconfig:\n  theme: default\n---\nflowchart LR\n    A[Cloner le dépôt] --> B[Installer] --> C[Lancer]"
+    },
+    {
+     "domaine": "Développement",
+     "situation": "documentation en mode sombre",
+     "explication": "Fond sombre, confortable pour les écrans des développeurs → `dark`.",
+     "code": "---\nconfig:\n  theme: dark\n---\nflowchart LR\n    A[Commit] --> B[Tests] --> C[Déploiement]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`theme: blue`",
+     "raison": "n'existe pas"
+    },
+    {
+     "ecrit": "`classDef`",
+     "raison": "style local, pas un thème"
+    }
+   ]
+  },
+  {
+   "id": "pieges_de_syntaxe",
+   "nom": "Pièges de syntaxe",
+   "niveau": "complet",
+   "definition": "Écritures valides en apparence qui cassent le diagramme.",
+   "caracteristiques": [
+    "Mots ou lettres interprétés comme du code"
+   ],
+   "exemples": [
+    {
+     "domaine": "Documentation en anglais",
+     "situation": "fin d'un processus",
+     "explication": "`A --> end` provoque une erreur, car `end` ferme les sous-graphes. On écrit le texte entre crochets ou `End`.",
+     "code": "flowchart LR\n    A[Start] --> B[Process] --> C[End]"
+    },
+    {
+     "domaine": "Ressources humaines",
+     "situation": "organigramme avec abréviations",
+     "explication": "`dir---ops` crée un rond et un nœud fantôme `ps`. Avec des espaces autour du lien, tout est correct.",
+     "code": "flowchart TD\n    dir[Direction] --- ops[Opérations]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A[End]`",
+     "raison": "majuscule : aucune erreur, pas un piège"
+    },
+    {
+     "ecrit": "`A --- Ordinateur`",
+     "raison": "espace autour du lien : pas un piège"
+    }
+   ]
+  },
+  {
+   "id": "alias_graph",
+   "nom": "Alias `graph`",
+   "niveau": "avance",
+   "definition": "Ancien mot-clé, équivalent de `flowchart`.",
+   "caracteristiques": [
+    "Même syntaxe",
+    "Encore accepté partout"
+   ],
+   "exemples": [
+    {
+     "domaine": "Wiki d'entreprise",
+     "situation": "ancienne procédure",
+     "explication": "Une page écrite avant l'arrivée de `flowchart` utilise `graph TD` et s'affiche toujours.",
+     "code": "graph TD\n    A[Demande d'achat] --> B[Validation] --> C[Commande]"
+    },
+    {
+     "domaine": "Développement",
+     "situation": "ancien README",
+     "explication": "`graph LR` fonctionne exactement comme `flowchart LR`.",
+     "code": "graph LR\n    A[Développement] --> B[Revue de code] --> C[Fusion]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`graphe TD`",
+     "raison": "faute"
+    },
+    {
+     "ecrit": "`chart TD`",
+     "raison": "n'existe pas"
+    }
+   ]
+  },
+  {
+   "id": "formes_nommees",
+   "nom": "Formes nommées",
+   "niveau": "avance",
+   "definition": "Formes choisies par leur nom, avec `@{ shape: … }`.",
+   "caracteristiques": [
+    "Un nom court par forme",
+    "Certaines ont plusieurs noms"
+   ],
+   "exemples": [
+    {
+     "domaine": "Comptabilité",
+     "situation": "clôture mensuelle",
+     "explication": "`docs` = plusieurs factures, `doc` = un rapport.",
+     "code": "flowchart LR\n    A@{ shape: docs, label: \"Factures du mois\" } --> B@{ shape: rect, label: \"Rapprochement bancaire\" }\n    B --> C@{ shape: doc, label: \"Rapport de clôture\" }"
+    },
+    {
+     "domaine": "Industrie",
+     "situation": "contrôle qualité d'un lot",
+     "explication": "`sl-rect` = saisie manuelle, `diam` = décision, `delay` = attente, `stadium` = fin.",
+     "code": "flowchart LR\n    A@{ shape: sl-rect, label: \"Saisie du lot\" } --> B@{ shape: diam, label: \"Conforme ?\" }\n    B -->|Non| C@{ shape: delay, label: \"Quarantaine\" }\n    B -->|Oui| D@{ shape: stadium, label: \"Expédition\" }"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A@{ shape: docu }`",
+     "raison": "nom inexistant"
+    },
+    {
+     "ecrit": "`A@{ shape rect }`",
+     "raison": "deux-points manquant"
+    }
+   ],
+   "tableau": {
+    "colonnes": [
+     "Usage",
+     "Nom court"
+    ],
+    "lignes": [
+     [
+      "Processus",
+      "`rect`"
+     ],
+     [
+      "Événement",
+      "`rounded`"
+     ],
+     [
+      "Point terminal",
+      "`stadium`"
+     ],
+     [
+      "Sous-processus",
+      "`fr-rect`"
+     ],
+     [
+      "Base de données",
+      "`cyl`"
+     ],
+     [
+      "Début",
+      "`circle`, `sm-circ`"
+     ],
+     [
+      "Fin",
+      "`dbl-circ`, `fr-circ`"
+     ],
+     [
+      "Décision",
+      "`diam`"
+     ],
+     [
+      "Préparation",
+      "`hex`"
+     ],
+     [
+      "Entrée / sortie de données",
+      "`lean-r`, `lean-l`"
+     ],
+     [
+      "Opération manuelle",
+      "`trap-t`"
+     ],
+     [
+      "Action prioritaire",
+      "`trap-b`"
+     ],
+     [
+      "Entrée manuelle",
+      "`sl-rect`"
+     ],
+     [
+      "Document",
+      "`doc`"
+     ],
+     [
+      "Plusieurs documents",
+      "`docs`"
+     ],
+     [
+      "Document ligné",
+      "`lin-doc`"
+     ],
+     [
+      "Document étiqueté",
+      "`tag-doc`"
+     ],
+     [
+      "Plusieurs processus",
+      "`st-rect`"
+     ],
+     [
+      "Processus divisé",
+      "`div-rect`"
+     ],
+     [
+      "Processus ligné",
+      "`lin-rect`"
+     ],
+     [
+      "Processus étiqueté",
+      "`tag-rect`"
+     ],
+     [
+      "Carte",
+      "`notch-rect`"
+     ],
+     [
+      "Stockage interne",
+      "`win-pane`"
+     ],
+     [
+      "Stockage disque",
+      "`lin-cyl`"
+     ],
+     [
+      "Stockage à accès direct",
+      "`h-cyl`"
+     ],
+     [
+      "Données stockées",
+      "`bow-rect`"
+     ],
+     [
+      "Magasin de données",
+      "`datastore`"
+     ],
+     [
+      "Affichage",
+      "`curv-trap`"
+     ],
+     [
+      "Délai",
+      "`delay`"
+     ],
+     [
+      "Extraction",
+      "`tri`"
+     ],
+     [
+      "Fichier manuel",
+      "`flip-tri`"
+     ],
+     [
+      "Assemblage",
+      "`hourglass`"
+     ],
+     [
+      "Lien de communication",
+      "`bolt`"
+     ],
+     [
+      "Commentaire",
+      "`brace`, `brace-r`, `braces`"
+     ],
+     [
+      "Jonction",
+      "`f-circ`"
+     ],
+     [
+      "Fourche / jonction de flux",
+      "`fork`"
+     ],
+     [
+      "Limite de boucle",
+      "`notch-pent`"
+     ],
+     [
+      "Bande papier",
+      "`flag`"
+     ],
+     [
+      "Résumé",
+      "`cross-circ`"
+     ],
+     [
+      "Bloc de texte",
+      "`text`"
+     ],
+     [
+      "Forme libre",
+      "`odd`"
+     ],
+     [
+      "Nuage",
+      "`cloud`"
+     ],
+     [
+      "Explosion",
+      "`bang`"
+     ],
+     [
+      "Dossier",
+      "`folder`"
+     ],
+     [
+      "Personne",
+      "`person`"
+     ],
+     [
+      "Navigateur",
+      "`browser`"
+     ],
+     [
+      "Console",
+      "`console`"
+     ],
+     [
+      "Seau",
+      "`bucket`"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "icone_dans_un_noeud",
+   "nom": "Icône dans un nœud",
+   "niveau": "avance",
+   "definition": "Nœud qui affiche une icône d'un pack enregistré.",
+   "caracteristiques": [
+    "Clé `icon`",
+    "Options `form` (`square`, `circle`, `rounded`), `label`, `pos` (`t` ou `b`), `h` (hauteur, 48 min)"
+   ],
+   "exemples": [
+    {
+     "domaine": "Marketing",
+     "situation": "parcours client",
+     "explication": "Les icônes rendent chaque étape lisible sans texte long (l'outil doit charger le pack d'icônes, sinon un « ? » s'affiche).",
+     "code": "flowchart LR\n    A@{ icon: \"fa:user\", form: \"circle\", label: \"Visiteur\", pos: \"b\" } --> B@{ icon: \"fa:cart-shopping\", form: \"square\", label: \"Panier\", pos: \"b\" }"
+    },
+    {
+     "domaine": "Infrastructure",
+     "situation": "serveur et base de données",
+     "explication": "Des icônes reconnaissables pour un schéma technique.",
+     "code": "flowchart LR\n    A@{ icon: \"fa:server\", form: \"rounded\", label: \"Serveur web\" } --> B@{ icon: \"fa:database\", form: \"rounded\", label: \"Base de données\" }"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A@{ icon: \"user\" }`",
+     "raison": "préfixe du pack manquant"
+    },
+    {
+     "ecrit": "icône d'un pack non chargé par l'outil",
+     "raison": "rien ne s'affiche"
+    }
+   ]
+  },
+  {
+   "id": "icone_fontawesome_dans_le_texte",
+   "nom": "Icône FontAwesome dans le texte",
+   "niveau": "avance",
+   "definition": "Icône insérée directement dans le texte d'un nœud.",
+   "caracteristiques": [
+    "Préfixe `fa:`, `fab:`, `fas:`, `far:`…",
+    "FontAwesome doit être chargé par l'outil"
+   ],
+   "exemples": [
+    {
+     "domaine": "Mobilité",
+     "situation": "choix du mode de transport",
+     "explication": "Une icône devant chaque texte rend le choix visuel.",
+     "code": "flowchart LR\n    A[fa:fa-house Domicile] --> B{Distance ?}\n    B -->|Moins de 5 km| C[fa:fa-bicycle Vélo]\n    B -->|Plus de 5 km| D[fa:fa-car Voiture]"
+    },
+    {
+     "domaine": "Application",
+     "situation": "canaux de notification",
+     "explication": "Chaque canal est identifié par son icône.",
+     "code": "flowchart LR\n    A[fa:fa-bell Notification] --> B[fa:fa-envelope Email]\n    A --> C[fa:fa-mobile SMS]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A[:car: Voiture]`",
+     "raison": "emoji Slack, pas FontAwesome"
+    },
+    {
+     "ecrit": "`A[fa-car]`",
+     "raison": "préfixe `fa:` manquant"
+    }
+   ]
+  },
+  {
+   "id": "clic_avance",
+   "nom": "Clic avancé",
+   "niveau": "avance",
+   "definition": "Clic qui ouvre un lien dans une cible précise ou appelle une fonction.",
+   "caracteristiques": [
+    "`href` + cible",
+    "`call` pour une fonction JavaScript",
+    "Bloqué si `securityLevel` est `strict`"
+   ],
+   "exemples": [
+    {
+     "domaine": "Intranet RH",
+     "situation": "formulaire de congé",
+     "explication": "Le formulaire s'ouvre dans un nouvel onglet → `_blank`.",
+     "code": "flowchart LR\n    A[Demande de congé] --> B[Formulaire en ligne]\n    click B href \"https://example.com/formulaire\" \"Ouvrir le formulaire\" _blank"
+    },
+    {
+     "domaine": "Outil de tickets interne",
+     "situation": "détail d'un ticket",
+     "explication": "Le clic appelle une fonction JavaScript de l'outil → `call`.",
+     "code": "flowchart LR\n    A[Ticket 42] --> B[Résolution]\n    click A call ouvrirTicket(\"42\")"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`click A _blank`",
+     "raison": "lien manquant"
+    },
+    {
+     "ecrit": "fonction appelée avec `securityLevel: strict`",
+     "raison": "ne fait rien"
+    }
+   ]
+  },
+  {
+   "id": "animation_niveau_2",
+   "nom": "Animation, niveau 2",
+   "niveau": "avance",
+   "definition": "Réglage de la vitesse ou du style de l'animation d'un lien.",
+   "caracteristiques": [
+    "`animation: fast` ou `slow`",
+    "Ou une classe avec propriétés CSS"
+   ],
+   "exemples": [
+    {
+     "domaine": "Énergie",
+     "situation": "réseau électrique",
+     "explication": "Flux rapide vers le poste, plus lent vers le quartier → `fast` / `slow`.",
+     "code": "flowchart LR\n    A[Centrale] e1@--> B[Poste de distribution] e2@--> C[Quartier]\n    e1@{ animation: fast }\n    e2@{ animation: slow }"
+    },
+    {
+     "domaine": "Paiement",
+     "situation": "flux bancaire",
+     "explication": "Animation personnalisée avec une classe (virgule échappée en `\\,`).",
+     "code": "flowchart LR\n    A[Carte bancaire] e1@--> B[Banque]\n    classDef flux stroke-dasharray: 9\\,5,stroke-dashoffset: 900,animation: dash 25s linear infinite\n    class e1 flux"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`e1@{ animation: medium }`",
+     "raison": "valeur inexistante"
+    },
+    {
+     "ecrit": "virgule non échappée dans `stroke-dasharray`",
+     "raison": "doit être `\\,`"
+    }
+   ]
+  },
+  {
+   "id": "courbe_par_lien",
+   "nom": "Courbe par lien (v11.10+)",
+   "niveau": "avance",
+   "definition": "Forme du trait réglée pour un seul lien.",
+   "caracteristiques": [
+    "Lien avec identifiant",
+    "Prioritaire sur la courbe globale"
+   ],
+   "exemples": [
+    {
+     "domaine": "Électricité",
+     "situation": "plan d'un logement",
+     "explication": "Un câble droit (`linear`), un autre arrondi (`basis`).",
+     "code": "flowchart LR\n    A[Tableau électrique] e1@--> B[Prise cuisine]\n    A e2@--> C[Éclairage salon]\n    e1@{ curve: linear }\n    e2@{ curve: basis }"
+    },
+    {
+     "domaine": "Informatique",
+     "situation": "câblage d'un ordinateur",
+     "explication": "Angles droits, comme sur un schéma de câblage → `step`.",
+     "code": "flowchart TD\n    A[Alimentation] e1@--> B[Carte mère]\n    A e2@--> C[Disque dur]\n    e1@{ curve: step }\n    e2@{ curve: step }"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`linkStyle 0 curve:linear`",
+     "raison": "pas cette syntaxe"
+    },
+    {
+     "ecrit": "`e1@{ curve: straight }`",
+     "raison": "valeur inexistante"
+    }
+   ]
+  },
+  {
+   "id": "sous_graphe_replie",
+   "nom": "Sous-graphe replié",
+   "niveau": "avance",
+   "definition": "Sous-graphe affiché fermé.",
+   "caracteristiques": [
+    "Clé `view` sur l'identifiant du sous-graphe"
+   ],
+   "exemples": [
+    {
+     "domaine": "Système d'information",
+     "situation": "vue pour la direction",
+     "explication": "Le détail du paiement est masqué pour une présentation au comité de direction (Mermaid 12 et plus : les versions plus anciennes affichent le sous-graphe ouvert).",
+     "code": "flowchart LR\n    subgraph pay [Service de paiement]\n        P1[Vérification] --> P2[Débit] --> P3[Reçu]\n    end\n    A[Site web] --> pay\n    pay --> B[Expédition]\n    pay@{ view: collapsed }"
+    },
+    {
+     "domaine": "Qualité",
+     "situation": "vue d'ensemble d'une production",
+     "explication": "Le contrôle qualité est replié pour alléger le schéma.",
+     "code": "flowchart TD\n    subgraph cq [Contrôle qualité]\n        Q1[Prélèvement] --> Q2[Mesures] --> Q3[Rapport]\n    end\n    A[Fabrication] --> cq\n    cq --> B[Emballage]\n    cq@{ view: collapsed }"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`subgraph s1 collapsed`",
+     "raison": "syntaxe inventée"
+    },
+    {
+     "ecrit": "`A@{ view: collapsed }` sur un simple nœud",
+     "raison": "ne replie qu'un sous-graphe"
+    }
+   ]
+  },
+  {
+   "id": "rendu",
+   "nom": "Rendu (look et layout)",
+   "niveau": "avance",
+   "definition": "Style visuel général et moteur de placement des nœuds.",
+   "caracteristiques": [
+    "Réglés dans `config`",
+    "`look` = apparence, `layout` = placement"
+   ],
+   "exemples": [
+    {
+     "domaine": "Atelier d'innovation",
+     "situation": "brainstorming",
+     "explication": "Un rendu « croquis » montre que rien n'est encore figé → `look: handDrawn`.",
+     "code": "---\nconfig:\n  look: handDrawn\n---\nflowchart LR\n    A[Idée] --> B[Prototype] --> C[Test utilisateurs]"
+    },
+    {
+     "domaine": "Architecture logicielle",
+     "situation": "microservices",
+     "explication": "Beaucoup de liens croisés : ELK les place mieux → `layout: elk` (placement par défaut depuis Mermaid 12).",
+     "code": "---\nconfig:\n  layout: elk\n---\nflowchart LR\n    A[Passerelle API] --> B[Service clients] & C[Service commandes] & D[Service stock]\n    C --> D\n    C --> E[Service paiement]\n    B & C --> F[(Base principale)]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`theme: handDrawn`",
+     "raison": "c'est un `look`, pas un thème"
+    },
+    {
+     "ecrit": "`layout: auto`",
+     "raison": "n'existe pas"
+    }
+   ]
+  },
+  {
+   "id": "espacement",
+   "nom": "Espacement",
+   "niveau": "avance",
+   "definition": "Distance entre les nœuds.",
+   "caracteristiques": [
+    "Dans `config` → `flowchart`",
+    "`nodeSpacing` = même niveau, `rankSpacing` = entre niveaux"
+   ],
+   "exemples": [
+    {
+     "domaine": "Accueil",
+     "situation": "affiche imprimée en A3",
+     "explication": "Beaucoup d'espace pour une lecture à distance.",
+     "code": "---\nconfig:\n  flowchart:\n    nodeSpacing: 100\n    rankSpacing: 120\n---\nflowchart TD\n    A[Accueil du visiteur] --> B[Remise du badge] & C[Consignes de sécurité]"
+    },
+    {
+     "domaine": "Vente",
+     "situation": "frise sur une diapositive chargée",
+     "explication": "Espacement réduit pour tout faire tenir.",
+     "code": "---\nconfig:\n  flowchart:\n    nodeSpacing: 15\n    rankSpacing: 25\n---\nflowchart LR\n    A[Prospection] --> B[Qualification] --> C[Proposition] --> D[Négociation] --> E[Signature]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`---->`",
+     "raison": "allonge un seul lien, pas tout le schéma"
+    },
+    {
+     "ecrit": "`nodeSpacing` hors de `flowchart:`",
+     "raison": "doit être rangé sous `flowchart:`"
+    }
+   ]
+  },
+  {
+   "id": "codes_de_caracteres",
+   "nom": "Codes de caractères",
+   "niveau": "avance",
+   "definition": "Code qui affiche un symbole impossible à taper directement.",
+   "caracteristiques": [
+    "`#` + nom ou numéro + `;`",
+    "Dans un texte entre guillemets"
+   ],
+   "exemples": [
+    {
+     "domaine": "E-commerce",
+     "situation": "liste de favoris",
+     "explication": "`#9829;` affiche un ♥.",
+     "code": "flowchart LR\n    A[Produit consulté] --> B[\"Ajouté aux favoris #9829;\"] --> C[Alerte promo]"
+    },
+    {
+     "domaine": "Développement",
+     "situation": "message d'erreur",
+     "explication": "`#quot;` affiche des guillemets dans le texte.",
+     "code": "flowchart LR\n    A[Saisie du code promo] --> B[\"Erreur : #quot;Code invalide#quot;\"]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`A[\"&quot;\"]`",
+     "raison": "syntaxe HTML, pas Mermaid"
+    },
+    {
+     "ecrit": "`#9829`",
+     "raison": "point-virgule final manquant"
+    }
+   ]
+  },
+  {
+   "id": "accessibilite",
+   "nom": "Accessibilité",
+   "niveau": "avance",
+   "definition": "Titre et description lus par les lecteurs d'écran.",
+   "caracteristiques": [
+    "`accTitle:` sur une ligne",
+    "`accDescr:` sur une ligne ou `accDescr { … }` sur plusieurs"
+   ],
+   "exemples": [
+    {
+     "domaine": "Administration",
+     "situation": "site public soumis au RGAA",
+     "explication": "Les sites publics doivent être accessibles : titre et description sont lus par les lecteurs d'écran.",
+     "code": "flowchart TD\n    accTitle: Demande de carte d'identité\n    accDescr: Prise de rendez-vous, dépôt du dossier en mairie, puis retrait de la carte\n    A[Rendez-vous en ligne] --> B[Dépôt en mairie] --> C[Retrait de la carte]"
+    },
+    {
+     "domaine": "Université",
+     "situation": "description longue",
+     "explication": "`accDescr { … }` permet une description sur plusieurs lignes.",
+     "code": "flowchart LR\n    accTitle: Inscription universitaire\n    accDescr {\n        L'étudiant candidate sur la plateforme.\n        Après acceptation, il paie les frais\n        puis reçoit sa carte étudiante.\n    }\n    A[Candidature] --> B[Acceptation] --> C[Paiement] --> D[Carte étudiante]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`title:` dans le bloc `---`",
+     "raison": "titre visible, pas d'accessibilité"
+    },
+    {
+     "ecrit": "`%% description`",
+     "raison": "commentaire ignoré"
+    }
+   ]
+  },
+  {
+   "id": "directive_init",
+   "nom": "Directive `init` (ancienne méthode)",
+   "niveau": "avance",
+   "definition": "Ancienne façon de configurer, sur une ligne.",
+   "caracteristiques": [
+    "Entre `%%{` et `}%%`",
+    "Remplacée par le bloc `---`"
+   ],
+   "exemples": [
+    {
+     "domaine": "Documentation",
+     "situation": "vieil outil de wiki",
+     "explication": "La directive tient sur une ligne et reste lue par les anciennes versions.",
+     "code": "%%{init: {\"theme\": \"forest\"}}%%\nflowchart LR\n    A[Ancienne procédure] --> B[Toujours lisible]"
+    },
+    {
+     "domaine": "Infrastructure",
+     "situation": "schéma technique hérité",
+     "explication": "Réglage de la forme des traits par la directive.",
+     "code": "%%{init: {\"flowchart\": {\"curve\": \"linear\"}}}%%\nflowchart TD\n    A[Serveur] --> B[Sauvegarde] --> C[Stockage distant]"
+    }
+   ],
+   "non_exemples": [
+    {
+     "ecrit": "`%% init theme dark`",
+     "raison": "simple commentaire"
+    },
+    {
+     "ecrit": "bloc `---`",
+     "raison": "méthode actuelle, à préférer"
+    }
+   ]
+  }
+ ],
+ "cas": [
+  {
+   "id": "connexion",
+   "titre": "Connexion sécurisée à un compte",
+   "domaine": "Génie logiciel",
+   "contexte": "Une banque en ligne subit des tentatives de piratage par essais répétés de mots de passe. L'équipe sécurité impose deux règles : blocage du compte après 3 échecs, et code SMS si la double authentification est activée. Le développeur dessine la règle dans le ticket avant de la coder.",
+   "objectif": "Que le développeur, le testeur et le support appliquent exactement la même règle.",
+   "code": "flowchart TD\n    A([Page de connexion]) --> B[/Saisie email + mot de passe/]\n    B --> C{Identifiants valides ?}\n    C -->|Non| D[Compteur d'échecs +1]\n    D --> E{3 échecs ?}\n    E -->|Non| B\n    E -->|Oui| F[Compte bloqué 15 min]:::alerte\n    C -->|Oui| G{2FA activée ?}\n    G -->|Non| I([Accès au tableau de bord])\n    G -->|Oui| H[/Saisie du code reçu par SMS/]\n    H --> J{Code valide ?}\n    J -->|Oui| I\n    J -->|Non| H\n    classDef alerte fill:#fdd,stroke:#c62828",
+   "notions": [
+    {
+     "id": "formes_completes",
+     "precision": "stade, parallélogramme"
+    },
+    {
+     "id": "forme",
+     "precision": "losange"
+    },
+    {
+     "id": "etiquette",
+     "precision": ""
+    },
+    {
+     "id": "lien",
+     "precision": "boucle de retour"
+    },
+    {
+     "id": "classe",
+     "precision": ""
+    }
+   ]
+  },
+  {
+   "id": "deploiement",
+   "titre": "Pipeline de déploiement (CI/CD)",
+   "domaine": "DevOps",
+   "contexte": "Une start-up met son application à jour plusieurs fois par jour. Chaque `git push` lance des tests automatiques, puis un déploiement sur un serveur de test (staging), validé avant la mise en production.",
+   "objectif": "Qu'un nouveau développeur comprenne, dès le README du dépôt, ce qui se passe après son push.",
+   "code": "flowchart LR\n    subgraph CI [Intégration continue]\n        direction TB\n        B[Installation des dépendances] --> C[Lint] --> D[Tests unitaires]\n    end\n    subgraph CD [Déploiement continu]\n        direction TB\n        G[Build de l'image Docker] --> H[Déploiement en staging] --> I{Validé en staging ?}\n    end\n    A([git push]) --> CI\n    CI --> E{Tests OK ?}\n    E -->|Oui| CD\n    E -->|Non| F[Alerte au développeur]:::ko\n    I -->|Oui| J([Mise en production]):::ok\n    I -->|Non| F\n    classDef ok fill:#d4f8d4,stroke:#2e7d32\n    classDef ko fill:#fdd,stroke:#c62828",
+   "notions": [
+    {
+     "id": "sous_graphe_avance",
+     "precision": "identifiant, direction, liens vers un sous-graphe"
+    },
+    {
+     "id": "chainage_et_liens_multiples",
+     "precision": ""
+    },
+    {
+     "id": "classe",
+     "precision": ""
+    }
+   ]
+  },
+  {
+   "id": "panne_internet",
+   "titre": "Arbre de diagnostic « pas d'Internet »",
+   "domaine": "Support informatique",
+   "contexte": "Le service d'assistance d'une entreprise reçoit chaque jour des appels « je n'ai plus Internet », souvent réglables en deux minutes.",
+   "objectif": "Que l'utilisateur résolve seul les cas simples avant d'appeler, grâce à une fiche de la base de connaissances.",
+   "code": "flowchart TD\n    A([Pas d'accès à Internet]) --> B{Les autres appareils ont-ils Internet ?}\n    B -->|Oui| C[Problème sur ton appareil]\n    B -->|Non| D[Problème de box ou d'opérateur]\n    C --> C1{Wi-Fi activé ?}\n    C1 -->|Non| C2[Activer le Wi-Fi] --> E([Résolu])\n    C1 -->|Oui| C3[Oublier le réseau et se reconnecter] --> E\n    D --> D1[Redémarrer la box] --> D2{Voyant Internet allumé ?}\n    D2 -->|Oui| E\n    D2 -->|Non| D3([Appeler l'opérateur])",
+   "notions": [
+    {
+     "id": "forme",
+     "precision": "losanges en cascade"
+    },
+    {
+     "id": "etiquette",
+     "precision": ""
+    },
+    {
+     "id": "chainage_et_liens_multiples",
+     "precision": "chaînage après une étiquette"
+    },
+    {
+     "id": "formes_completes",
+     "precision": "stade pour le début et les fins"
+    }
+   ]
+  },
+  {
+   "id": "note_de_frais",
+   "titre": "Validation d'une note de frais",
+   "domaine": "Gestion des processus métier (BPM)",
+   "contexte": "Une PME de 50 salariés veut accélérer le remboursement des notes de frais. Au-delà de 500 €, la dépense doit aussi être validée par le directeur administratif et financier (DAF).",
+   "objectif": "Que chaque acteur voie ce qu'il doit faire et à quel moment, grâce à un couloir par acteur.",
+   "code": "flowchart LR\n    subgraph sal [Salarié]\n        A([Dépense professionnelle]) --> B[Note de frais + justificatifs]\n    end\n    subgraph man [Manager]\n        C{Dépense justifiée ?}\n        G[Refus motivé]\n    end\n    subgraph fin [Service financier]\n        D{\"Montant > 500 € ?\"}\n        E[Validation du DAF]\n        F([Remboursement sur la paie])\n    end\n    B --> C\n    C -->|Non| G --> B\n    C -->|Oui| D\n    D -->|Oui| E --> F\n    D -->|Non| F",
+   "notions": [
+    {
+     "id": "sous_graphe",
+     "precision": "couloirs d'acteurs"
+    },
+    {
+     "id": "sous_graphe_avance",
+     "precision": "couloirs d'acteurs"
+    },
+    {
+     "id": "texte_special",
+     "precision": "guillemets à cause du `>`"
+    },
+    {
+     "id": "lien",
+     "precision": "boucle de refus"
+    }
+   ]
+  },
+  {
+   "id": "donnees",
+   "titre": "Pipeline de données (ETL)",
+   "domaine": "Data engineering",
+   "contexte": "Une enseigne de magasins croise ses données clients (CRM), les fichiers de ses fournisseurs et la météo pour prévoir ses stocks. Chaque nuit, les données sont nettoyées, contrôlées puis chargées dans l'entrepôt de données.",
+   "objectif": "Montrer d'où viennent les chiffres du tableau de bord, et où partent les données en erreur.",
+   "code": "flowchart LR\n    S1@{ shape: cyl, label: \"CRM\" }\n    S2@{ shape: docs, label: \"Fichiers CSV\" }\n    S3@{ shape: cloud, label: \"API météo\" }\n    T@{ shape: rect, label: \"Nettoyage et fusion\" }\n    Q@{ shape: diam, label: \"Qualité OK ?\" }\n    DW@{ shape: cyl, label: \"Entrepôt de données\" }\n    R@{ shape: doc, label: \"Rapport d'erreurs\" }\n    DB@{ shape: curv-trap, label: \"Tableau de bord\" }\n    S1 & S2 & S3 --> T --> Q\n    Q -->|Oui| DW\n    Q -->|Non| R\n    DW e1@--> DB\n    e1@{ animate: true }",
+   "notions": [
+    {
+     "id": "formes_nommees",
+     "precision": "`cyl`, `docs`, `cloud`, `doc`, `curv-trap`"
+    },
+    {
+     "id": "chainage_et_liens_multiples",
+     "precision": "`&`"
+    },
+    {
+     "id": "animation_de_lien",
+     "precision": "animation du flux"
+    }
+   ]
+  }
+ ]
+}

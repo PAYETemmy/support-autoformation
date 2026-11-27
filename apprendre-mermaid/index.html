@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Apprendre</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect x=%222%22 y=%229%22 width=%2228%22 height=%2214%22 rx=%227%22 fill=%22%23ECECFF%22 stroke=%22%239370DB%22 stroke-width=%222%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+  Site d'apprentissage rapide avec le modèle de Frayer.
+  Lit contenu.json (règles d'écriture : regles-json.md) ; applique regles-html.md.
+  Dessine les exemples avec mermaid.min.js (copie locale, licence : mermaid-LICENSE.txt).
+-->
+<style>
+:root{
+  color-scheme:light;
+  --papier:#FFFFFF; --encre:#17203A; --graphite:#5A6478; --trait:#D9DEE7;
+  --noeud:#ECECFF; --contour:#9370DB; --accent:#5B3FA8; --code:#F6F7FB;
+  --juste:#1E7A4E; --faux:#B3261E;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;min-width:0}
+html{background:var(--papier);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--papier);color:var(--encre);font:17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:var(--accent);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--contour);outline-offset:2px;border-radius:4px}
+[tabindex="-1"]:focus{outline:none}   /* titre qui reçoit le focus à l'ouverture d'une page */
+.page{max-width:1080px;margin:0 auto;padding:0 20px calc(48px + env(safe-area-inset-bottom))}
+.texte{max-width:66ch}
+h1{font-size:clamp(34px,7vw,58px);line-height:1.05;letter-spacing:-.025em;font-weight:600;margin:44px 0 12px}
+h2{font-size:23px;line-height:1.25;letter-spacing:-.01em;font-weight:600;margin:40px 0 4px}
+h3{font-size:18px;line-height:1.35;font-weight:600;margin:0 0 4px}
+p{margin:0 0 12px}
+.doux{color:var(--graphite)}
+.petit{font-size:14px}
+code{font-family:var(--mono);font-size:.86em;background:var(--code);border:1px solid var(--trait);border-radius:4px;padding:.05em .35em;white-space:break-spaces}
+pre{margin:0;background:var(--code);border:1px solid var(--trait);border-radius:8px;padding:12px 14px;overflow-x:auto;font:14px/1.55 var(--mono);tab-size:4}
+pre code{background:none;border:0;padding:0;font-size:inherit;white-space:pre}
+
+/* Boutons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 20px;border-radius:999px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font:600 16px/1.2 var(--sans);text-decoration:none;cursor:pointer}
+.btn.second{background:var(--papier);color:var(--accent)}
+.btn:hover{filter:brightness(1.08)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0}
+.retour{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;text-decoration:none;font-weight:500}
+
+/* Nœud Mermaid : forme stade, la signature du site */
+.noeud{display:inline-flex;align-items:center;justify-content:center;text-align:center;border:1.5px solid var(--contour);background:var(--noeud);border-radius:999px;color:var(--encre)}
+
+/* Parcours : chaque niveau est un flowchart vertical */
+.legende{display:flex;flex-wrap:wrap;gap:8px 18px;margin:22px 0 0;padding:0;list-style:none;font-size:14px;color:var(--graphite)}
+.legende li{display:flex;align-items:center;gap:8px}
+.puce{width:30px;height:16px;border-radius:999px;border:1.5px solid var(--contour);background:var(--papier)}
+.flux{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;align-items:center;width:fit-content;max-width:100%}
+.flux li{display:flex;flex-direction:column;align-items:center;max-width:100%}
+.flux li+li::before{content:"";width:1.5px;height:18px;background:var(--contour)}
+.flux li+li .etape{position:relative}
+.flux li+li .etape::before{content:"";position:absolute;top:-7px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top:6px solid var(--contour);border-bottom:0}
+.etape{min-height:46px;padding:9px 22px;font-size:16px;font-weight:500;text-decoration:none;background:var(--papier);max-width:min(560px,calc(100vw - 40px))}
+.etape:hover{background:#F6F5FF}
+.etat-revoir,.puce.etat-revoir{border-style:dashed}
+.etat-acquise,.puce.etat-acquise{background:var(--noeud)}
+.etat-acquise:hover{background:#E2E2FB}
+.but{margin:0;color:var(--graphite);font-size:15px}
+.cas-liste{list-style:none;margin:12px 0 0;padding:0;border-top:1px solid var(--trait)}
+.cas-liste a{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 16px;padding:12px 0;min-height:48px;border-bottom:1px solid var(--trait);text-decoration:none;color:var(--encre)}
+.cas-liste a span{color:var(--graphite);font-size:14px}
+
+/* Fiche de Frayer : 4 cases autour du terme */
+.situer{margin:22px 0 0;color:var(--graphite);font-size:14px}
+.frayer{position:relative;margin:58px 0 0;border:1.5px solid var(--encre);border-radius:14px;display:grid;grid-template-columns:1fr}
+.terme{justify-self:center;margin:calc(-.575em - 14px) 0 0;padding:14px 30px;font-size:clamp(24px,5vw,36px);line-height:1.15;font-weight:600;letter-spacing:-.015em;max-width:calc(100% - 24px)}
+.terme code{font-size:.8em}
+.case{padding:10px 20px 20px}
+.case+.case{border-top:1px solid var(--trait);padding-top:16px}
+.case h2{font-size:14px;font-weight:600;color:var(--graphite);margin:0 0 8px;letter-spacing:0}
+.case ul{margin:0;padding-left:20px}
+.case li{margin:0 0 6px}
+.case .def{font-size:19px;line-height:1.5;margin:0}
+.case-ex li::marker{color:var(--juste)}
+.case-non li{list-style:none;margin-left:-20px;padding-left:22px;position:relative}
+.case-non li::before{content:"✕";position:absolute;left:0;top:0;color:var(--faux);font-weight:600}
+.raison{display:block;color:var(--faux);font-size:15px}
+@media (min-width:860px){
+  .frayer{margin-top:18px;grid-template-columns:1fr 1fr;grid-template-rows:auto 0 auto}
+  .terme{grid-row:2;grid-column:1/-1;align-self:center;margin:0;z-index:1;box-shadow:0 0 0 10px var(--papier);max-width:46%}
+  .case{padding:24px 26px 48px}
+  .case+.case{border-top:0;padding-top:24px}
+  .case:nth-of-type(1){grid-row:1;grid-column:1}
+  .case:nth-of-type(2){grid-row:1;grid-column:2}
+  .case:nth-of-type(3){grid-row:3;grid-column:1}
+  .case:nth-of-type(4){grid-row:3;grid-column:2}
+  .case:nth-of-type(odd){border-right:1px solid var(--trait)}
+  .case:nth-of-type(n+3){border-top:1px solid var(--trait);padding-top:48px;padding-bottom:26px}
+}
+
+/* Exemples en code */
+.exemple{margin:28px 0 0}
+.exemple p{max-width:66ch}
+.code-rendu{display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px}
+.rendu{border:1px solid var(--trait);border-radius:8px;padding:12px;display:flex;justify-content:center;align-items:center;min-height:80px;overflow-x:auto;background:var(--papier)}
+.rendu svg{max-width:100%;height:auto}
+.rendu .attente,.rendu .echec{color:var(--graphite);font-size:14px;text-align:center}
+@media (min-width:860px){.code-rendu{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
+details{margin:24px 0 0;border-top:1px solid var(--trait);padding-top:12px}
+summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+table{border-collapse:collapse;font-size:15px;margin-top:8px}
+td,th{border-bottom:1px solid var(--trait);padding:6px 16px 6px 0;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--graphite)}
+
+/* Questions */
+.question{max-width:640px;margin:26px 0 0}
+.compteur{color:var(--graphite);font-size:14px;margin:0 0 10px}
+.enonce{font-size:21px;line-height:1.4;font-weight:600;margin:0 0 14px}
+.cite{border-left:3px solid var(--contour);padding:6px 0 6px 14px;margin:0 0 16px;font-size:18px}
+.choix{display:flex;flex-direction:column;gap:10px}
+.choix button{min-height:52px;text-align:left;padding:12px 18px;border-radius:14px;border:1.5px solid var(--trait);background:var(--papier);color:var(--encre);font:500 17px/1.35 var(--sans);cursor:pointer}
+.choix button:hover:not(:disabled){border-color:var(--contour);background:#F6F5FF}
+.choix button:disabled{cursor:default}
+.choix button.est-juste{border-color:var(--juste);background:#EAF5EF}
+.choix button.est-faux{border-color:var(--faux);background:#FCEDEC}
+.retour-q{margin:14px 0 0;font-size:16px}
+.retour-q b.j{color:var(--juste)} .retour-q b.f{color:var(--faux)}
+.score{font-size:clamp(28px,6vw,40px);font-weight:600;letter-spacing:-.02em;margin:30px 0 6px}
+
+/* Révision */
+.vide-case{min-height:72px}
+.messages{max-width:560px;margin:14vh auto 0}
+.messages ul{padding-left:18px;font-size:15px}
+.choisir{display:inline-flex;align-items:center;min-height:48px;padding:10px 18px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+footer{margin-top:64px;padding-top:14px;border-top:1px solid var(--trait);color:var(--graphite);font-size:14px}
+@media (prefers-reduced-motion:no-preference){.apparait{animation:apparait .28s ease-out}@keyframes apparait{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}
+@media print{.actions,.retour,footer{display:none}}
+</style>
+</head>
+<body>
+<div class="page" id="app"></div>
+<script>
+{
+const app = document.getElementById('app');
+const fichier = new URLSearchParams(location.search).get('donnees') || 'contenu.json';
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const txt = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');          // `code` → <code>
+const brut = s => String(s ?? '').replace(/`/g, '');                       // nom sans accents graves
+const melange = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+/* ---------- Chargement ---------- */
+async function charger() {
+  let t;
+  try { const r = await fetch(fichier, {cache: 'no-store'}); if (!r.ok) throw 0; t = await r.text(); }
+  catch (e) { return choisirFichier(); }
+  ouvrir(t, fichier);
+}
+function ouvrir(t, nom) {
+  let D; try { D = JSON.parse(t); } catch (e) { return ecranErreurs(['Le fichier n\'est pas un JSON valide : ' + e.message], nom); }
+  const E = verifier(D);
+  if (E.length) return ecranErreurs(E, nom);
+  demarrer(D);
+}
+function choisirFichier() {
+  app.innerHTML = `<div class="messages"><h1>Ouvre le contenu</h1><p class="doux">La page n'a pas pu lire « ${esc(fichier)} » à côté d'elle. Choisis le fichier, ou dépose-le sur la page.</p><p><label class="choisir">Choisir un fichier<input type="file" accept=".json,application/json" hidden></label></p></div>`;
+  app.querySelector('input').addEventListener('change', e => lire(e.target.files[0]));
+}
+function lire(f) { if (f) f.text().then(t => ouvrir(t, f.name)); }
+addEventListener('dragover', e => e.preventDefault());
+addEventListener('drop', e => { e.preventDefault(); lire(e.dataTransfer.files[0]); });
+function ecranErreurs(E, nom) {
+  document.title = 'Erreurs dans ' + nom;
+  app.innerHTML = `<div class="messages"><h1>${E.length} erreur${E.length > 1 ? 's' : ''} dans ${esc(nom)}</h1><p class="doux">Corrige le fichier selon regles-json.md, puis recharge la page.</p><ul>${E.slice(0, 60).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${E.length > 60 ? `<p class="doux">Et ${E.length - 60} autres.</p>` : ''}</div>`;
+}
+
+/* ---------- Vérification : règles bloquantes de regles-json.md ---------- */
+function verifier(D) {
+  const E = [];
+  const texte = v => typeof v === 'string' && v.trim() !== '';
+  const objet = v => v && typeof v === 'object' && !Array.isArray(v);
+  const champs = (o, permis, ou) => Object.keys(o).forEach(k => { if (!permis.includes(k)) E.push(`${ou} : champ inconnu « ${k} ».`); });
+  const graves = (v, ou) => { if (typeof v === 'string' && (v.match(/`/g) || []).length % 2) E.push(`${ou} : accent grave sans son pendant.`); };
+  const ID = /^[a-z][a-z0-9_]*$/, NUM = /^\s*\d+\s*[.)-]/;
+  const mots = s => s.replace(/`/g, '').trim().split(/\s+/).filter(Boolean).length;
+  if (!objet(D)) return ['La racine doit être un objet { … }.'];
+  champs(D, ['format','titre','source','copie_du','version_mermaid','niveaux','notions','cas'], 'Racine');
+  if (D.format !== 'frayer-apprentissage/1') E.push('format doit valoir "frayer-apprentissage/1".');
+  if (!texte(D.titre)) E.push('titre : texte non vide attendu.');
+  ['source','version_mermaid'].forEach(k => { if (D[k] !== undefined && !texte(D[k])) E.push(`${k} : texte non vide attendu.`); });
+  if (D.copie_du !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(D.copie_du)) E.push('copie_du : date AAAA-MM-JJ attendue.');
+  if (!Array.isArray(D.niveaux) || !D.niveaux.length) E.push('niveaux : liste non vide attendue.');
+  if (!Array.isArray(D.notions) || D.notions.length < 4) E.push('notions : au moins 4 notions attendues.');
+  if (D.cas !== undefined && !Array.isArray(D.cas)) E.push('cas : liste attendue.');
+  if (!Array.isArray(D.niveaux) || !Array.isArray(D.notions) || (D.cas !== undefined && !Array.isArray(D.cas))) return E;   // structure illisible : on s'arrête là
+  const niveaux = new Set(), ids = new Set(), noms = new Set();
+  D.niveaux.forEach((n, i) => {
+    const ou = `Niveau ${i + 1}`;
+    if (!objet(n)) return E.push(`${ou} : objet attendu.`);
+    champs(n, ['id','titre','but'], ou);
+    if (!texte(n.id) || !ID.test(n.id)) E.push(`${ou} : id invalide.`); else if (niveaux.has(n.id)) E.push(`${ou} : id « ${n.id} » en double.`); else niveaux.add(n.id);
+    if (!texte(n.titre)) E.push(`${ou} : titre vide.`);
+    if (n.but !== undefined && !texte(n.but)) E.push(`${ou} : but vide.`);
+  });
+  D.notions.forEach((n, i) => {
+    const ou = `Notion ${i + 1}${n && n.id ? ` (${n.id})` : ''}`;
+    if (!objet(n)) return E.push(`${ou} : objet attendu.`);
+    champs(n, ['id','nom','niveau','definition','caracteristiques','exemples','non_exemples','tableau'], ou);
+    if (!texte(n.id) || !ID.test(n.id)) E.push(`${ou} : id invalide (a-z, 0-9, _, commence par une lettre).`); else if (ids.has(n.id)) E.push(`${ou} : id en double.`); else ids.add(n.id);
+    if (!texte(n.nom)) E.push(`${ou} : nom vide.`);
+    else {
+      const k = brut(n.nom).toLowerCase(); if (noms.has(k)) E.push(`${ou} : nom en double.`); noms.add(k);
+      if (NUM.test(n.nom)) E.push(`${ou} : pas de numéro en tête du nom.`);
+      graves(n.nom, ou);
+    }
+    if (!niveaux.has(n.niveau)) E.push(`${ou} : niveau « ${n.niveau ?? ''} » absent de niveaux.`);
+    if (!texte(n.definition)) E.push(`${ou} : definition vide.`);
+    else {
+      if (mots(n.definition) > 15) E.push(`${ou} : definition de plus de 15 mots.`);
+      if (!/\.$/.test(n.definition.trim())) E.push(`${ou} : definition sans point final.`);
+      const terme = brut(n.nom || '').replace(/\s*\(.*?\)\s*/g, '').trim().toLowerCase();
+      if (terme && n.definition.toLowerCase().replace(/`/g, '').includes(terme)) E.push(`${ou} : la définition contient le terme défini.`);
+      graves(n.definition, ou);
+    }
+    if (!Array.isArray(n.caracteristiques) || n.caracteristiques.length < 1 || n.caracteristiques.length > 5 || !n.caracteristiques.every(texte)) E.push(`${ou} : caracteristiques : de 1 à 5 textes non vides.`);
+    else n.caracteristiques.forEach(c => graves(c, ou));
+    if (!Array.isArray(n.exemples) || n.exemples.length !== 2) E.push(`${ou} : exactement 2 exemples.`);
+    else {
+      n.exemples.forEach((x, j) => {
+        const o = `${ou}, exemple ${j + 1}`;
+        if (!objet(x)) return E.push(`${o} : objet attendu.`);
+        champs(x, ['domaine','situation','explication','code'], o);
+        ['domaine','situation','explication','code'].forEach(k => { if (!texte(x[k])) E.push(`${o} : ${k} vide.`); else if (k !== 'code') graves(x[k], o); });
+      });
+      if (n.exemples.every(objet) && texte(n.exemples[0].domaine) && n.exemples[0].domaine.trim().toLowerCase() === String(n.exemples[1].domaine || '').trim().toLowerCase()) E.push(`${ou} : les 2 exemples ont le même domaine.`);
+    }
+    if (!Array.isArray(n.non_exemples) || n.non_exemples.length !== 2) E.push(`${ou} : exactement 2 non-exemples.`);
+    else n.non_exemples.forEach((x, j) => {
+      const o = `${ou}, non-exemple ${j + 1}`;
+      if (!objet(x)) return E.push(`${o} : objet attendu.`);
+      champs(x, ['ecrit','raison'], o);
+      ['ecrit','raison'].forEach(k => { if (!texte(x[k])) E.push(`${o} : ${k} vide.`); else graves(x[k], o); });
+    });
+    if (n.tableau !== undefined) {
+      const t = n.tableau;
+      if (!objet(t) || !Array.isArray(t.colonnes) || !t.colonnes.length || !Array.isArray(t.lignes) || !t.lignes.every(l => Array.isArray(l) && l.length === t.colonnes.length)) E.push(`${ou} : tableau : { colonnes, lignes }, chaque ligne aussi longue que colonnes.`);
+      else champs(t, ['colonnes','lignes'], ou + ', tableau');
+    }
+  });
+  const cas = new Set();
+  (D.cas || []).forEach((c, i) => {
+    const ou = `Cas ${i + 1}${c && c.id ? ` (${c.id})` : ''}`;
+    if (!objet(c)) return E.push(`${ou} : objet attendu.`);
+    champs(c, ['id','titre','domaine','contexte','objectif','code','notions'], ou);
+    if (!texte(c.id) || !ID.test(c.id)) E.push(`${ou} : id invalide.`); else if (cas.has(c.id)) E.push(`${ou} : id en double.`); else cas.add(c.id);
+    ['titre','domaine','contexte','objectif','code'].forEach(k => { if (!texte(c[k])) E.push(`${ou} : ${k} vide.`); else if (k !== 'code') graves(c[k], ou); });
+    if (!Array.isArray(c.notions) || c.notions.length < 2) E.push(`${ou} : notions : au moins 2.`);
+    else c.notions.forEach((v, j) => {
+      if (!objet(v) || !ids.has(v.id)) return E.push(`${ou} : notions[${j + 1}] : id « ${v && v.id} » absent de notions.`);
+      champs(v, ['id','precision'], `${ou}, notions[${j + 1}]`);
+      if (v.precision !== undefined && typeof v.precision !== 'string') E.push(`${ou} : precision : texte attendu.`); else graves(v.precision, ou);
+    });
+  });
+  return E;
+}
+
+/* ---------- Progression (gardée dans ce navigateur web) ---------- */
+const INTERVALLES = [1, 3, 7, 15, 30];   // jours, boîte 1 à 5 (Leitner)
+const jour = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;   // date locale
+const dans = n => { const d = new Date(); d.setDate(d.getDate() + n); return jour(d); };
+let CLE = '', P = {};
+function chargerProgression(D) {
+  CLE = 'frayer-apprentissage:' + D.titre;
+  try { P = JSON.parse(localStorage.getItem(CLE) || '{}') || {}; } catch (e) { P = {}; }
+}
+function sauver() { try { localStorage.setItem(CLE, JSON.stringify(P)); } catch (e) {} }
+const etat = id => (P[id] && P[id].etat) || 'neuf';
+const aReviser = D => D.notions.filter(n => etat(n.id) === 'acquise' && P[n.id].prochaine <= jour());
+
+/* ---------- Rendu des diagrammes (mermaid.min.js, chargé au premier besoin) ---------- */
+let mermaidPret = null, compteur = 0;
+function mermaidCharge() {
+  if (!mermaidPret) mermaidPret = new Promise((ok, ko) => {
+    const s = document.createElement('script'); s.src = 'mermaid.min.js';
+    s.onload = () => { window.mermaid.initialize({startOnLoad: false, securityLevel: 'strict', theme: 'default', fontFamily: '"IBM Plex Sans", system-ui, sans-serif'}); ok(window.mermaid); };
+    s.onerror = ko; document.head.appendChild(s);
+  });
+  return mermaidPret;
+}
+async function dessiner(racine) {
+  const zones = [...racine.querySelectorAll('.rendu[data-code]')];
+  if (!zones.length) return;
+  let m; try { m = await mermaidCharge(); } catch (e) { zones.forEach(z => z.innerHTML = '<span class="echec">Rendu indisponible : mermaid.min.js manque.</span>'); return; }
+  for (const z of zones) {
+    if (!z.isConnected) return;
+    try { const {svg} = await m.render('mmd' + (++compteur), z.dataset.code); z.innerHTML = svg; }
+    catch (e) { z.innerHTML = '<span class="echec">Ce diagramme ne s\'affiche pas ici (ressource en ligne ou version de Mermaid).</span>'; document.querySelectorAll('#dmmd' + compteur + ', #mmd' + compteur).forEach(x => x.remove()); }
+  }
+}
+const codeEtRendu = code => `<div class="code-rendu"><pre><code>${esc(code)}</code></pre><div class="rendu" data-code="${esc(code)}"><span class="attente">Dessin du diagramme…</span></div></div>`;
+
+/* ---------- Site ---------- */
+function demarrer(D) {
+  chargerProgression(D);
+  const notions = D.notions, cas = D.cas || [];
+  const parId = new Map(notions.map(n => [n.id, n]));
+  const casId = new Map(cas.map(c => [c.id, c]));
+  const niveau = new Map(D.niveaux.map(n => [n.id, n]));
+  const duNiveau = id => notions.filter(n => n.niveau === id);
+  const nomHTML = n => txt(n.nom);
+  const lienNotion = n => `<a href="#/n/${esc(n.id)}">${nomHTML(n)}</a>`;
+  const date = s => new Date(s + 'T12:00:00').toLocaleDateString('fr-FR', {day: 'numeric', month: 'long', year: 'numeric'});
+  const pied = `<footer>${D.source ? `Source : ${esc(D.source)}${D.copie_du ? `, copie du ${esc(date(D.copie_du))}` : ''}. ` : ''}${D.version_mermaid ? `Exemples testés avec Mermaid ${esc(D.version_mermaid)}. ` : ''}Progression gardée dans ce navigateur.</footer>`;
+  const titre = t => { document.title = t ? `${t} | ${D.titre}` : D.titre; };
+  const afficher = (h, focus) => { app.innerHTML = h; window.scrollTo(0, 0); dessiner(app); if (focus) { const f = app.querySelector(focus); if (f) f.focus({preventScroll: true}); } };
+
+  /* Accueil : le parcours, niveau par niveau */
+  function accueil() {
+    titre('');
+    const acquises = notions.filter(n => etat(n.id) === 'acquise').length;
+    const suivante = notions.find(n => etat(n.id) !== 'acquise');
+    const dues = aReviser(D).length;
+    const appel = suivante
+      ? `<a class="btn" href="#/n/${esc(suivante.id)}">${acquises || etat(suivante.id) !== 'neuf' ? 'Continuer avec' : 'Commencer par'} « ${esc(brut(suivante.nom))} »</a>`
+      : '';
+    afficher(`
+      <header class="texte"><h1>${esc(D.titre)}</h1>
+        <p class="doux">Une notion à la fois : sa fiche de Frayer, puis trois questions sans la regarder.${acquises ? ` ${acquises} sur ${notions.length} acquises.` : ''}</p>
+        <div class="actions">${appel}${dues ? `<a class="btn ${suivante ? 'second' : ''}" href="#/reviser">Réviser ${dues} notion${dues > 1 ? 's' : ''}</a>` : ''}</div>
+      </header>
+      <ul class="legende" aria-label="Légende">
+        <li><span class="puce"></span>À faire</li><li><span class="puce etat-revoir"></span>À revoir</li><li><span class="puce etat-acquise"></span>Acquise</li>
+      </ul>
+      ${D.niveaux.map(nv => {
+        const ns = duNiveau(nv.id); if (!ns.length) return '';
+        return `<section><h2>${esc(nv.titre)}</h2>${nv.but ? `<p class="but">${esc(nv.but)}</p>` : ''}
+          <ol class="flux">${ns.map(n => `<li><a class="noeud etape etat-${etat(n.id)}" href="#/n/${esc(n.id)}" aria-label="${esc(brut(n.nom))}, ${{neuf: 'à faire', revoir: 'à revoir', acquise: 'acquise'}[etat(n.id)]}">${nomHTML(n)}</a></li>`).join('')}</ol></section>`;
+      }).join('')}
+      ${cas.length ? `<section><h2>Cas complets</h2><p class="but">Des diagrammes réels qui réunissent plusieurs notions.</p>
+        <ul class="cas-liste">${cas.map(c => `<li><a href="#/cas/${esc(c.id)}">${esc(c.titre)}<span>${esc(c.domaine)}</span></a></li>`).join('')}</ul></section>` : ''}
+      ${pied}`);
+  }
+
+  /* La fiche de Frayer */
+  const fiche = (n, vide) => `
+    <div class="frayer">
+      <div class="noeud terme" ${vide ? '' : 'tabindex="-1"'}>${nomHTML(n)}</div>
+      <section class="case"><h2>Définition</h2>${vide ? '<div class="vide-case"></div>' : `<p class="def">${txt(n.definition)}</p>`}</section>
+      <section class="case"><h2>Caractéristiques</h2>${vide ? '<div class="vide-case"></div>' : `<ul>${n.caracteristiques.map(c => `<li>${txt(c)}</li>`).join('')}</ul>`}</section>
+      <section class="case case-ex"><h2>Exemples</h2>${vide ? '<div class="vide-case"></div>' : `<ul>${n.exemples.map(x => `<li><b>${txt(x.domaine)}</b> : ${txt(x.situation)}. ${txt(x.explication)}</li>`).join('')}</ul>`}</section>
+      <section class="case case-non"><h2>Non-exemples</h2>${vide ? '<div class="vide-case"></div>' : `<ul>${n.non_exemples.map(x => `<li>${txt(x.ecrit)}<span class="raison">${txt(x.raison)}</span></li>`).join('')}</ul>`}</section>
+    </div>`;
+
+  function pageNotion(n) {
+    titre(brut(n.nom));
+    const ns = duNiveau(n.niveau), rang = ns.indexOf(n) + 1, nv = niveau.get(n.niveau);
+    afficher(`
+      <a class="retour" href="#/">← Parcours</a>
+      <p class="situer">${esc(nv.titre)}, notion ${rang} sur ${ns.length}</p>
+      ${fiche(n)}
+      <section><h2>Les exemples en code</h2>
+        ${n.exemples.map(x => `<div class="exemple"><h3>${txt(x.domaine)} : ${txt(x.situation)}</h3><p>${txt(x.explication)}</p>${codeEtRendu(x.code)}</div>`).join('')}
+        ${n.tableau ? `<details><summary>Tableau : ${n.tableau.lignes.length} lignes</summary><table><tr>${n.tableau.colonnes.map(c => `<th>${txt(c)}</th>`).join('')}</tr>${n.tableau.lignes.map(l => `<tr>${l.map(c => `<td>${txt(c)}</td>`).join('')}</tr>`).join('')}</table></details>` : ''}
+      </section>
+      <section class="texte"><h2>Vérifier</h2><p class="doux">Trois questions, sans la fiche sous les yeux. Trois bonnes réponses : la notion est acquise.</p>
+        <div class="actions"><button class="btn" id="go">Répondre aux questions</button></div></section>
+      ${pied}`, '.terme');
+    app.querySelector('#go').addEventListener('click', () => questionnaire(n));
+  }
+
+  /* Trois questions tirées de la fiche : définition, caractéristique, non-exemple */
+  const GENERIQUE = /n'existe pas|inexistant|inventée|faute|invalide/i;
+  function questions(n) {
+    const terme = brut(n.nom).replace(/\s*\(.*?\)\s*/g, '').trim().toLowerCase();
+    const parle = t => t.toLowerCase().replace(/`/g, '').includes(terme);   // un piège qui cite le terme prête à confusion
+    const autres = melange((duNiveau(n.niveau).length >= 4 ? duNiveau(n.niveau) : notions).filter(x => x !== n));
+    const q = [];
+    q.push({enonce: 'Quelle notion a cette définition ?', cite: txt(n.definition),
+      choix: melange([{t: nomHTML(n), ok: true}, ...autres.slice(0, 3).map(x => ({t: nomHTML(x), de: x}))]),
+      juste: `C'est bien ${nomHTML(n)}.`, faux: `C'est ${nomHTML(n)}.`});
+    const car = melange(n.caracteristiques)[0];
+    const pieges = [];
+    for (const x of autres) { for (const c of melange(x.caracteristiques)) {  if (pieges.length < 2 && !n.caracteristiques.includes(c) && !parle(c) && !pieges.some(p => p.t === c)) { pieges.push({t: c, de: x}); break; } } }
+    q.push({enonce: `Laquelle est une caractéristique de ${nomHTML(n)} ?`,
+      choix: melange([{t: car, ok: true}, ...pieges]).map(c => ({...c, t: txt(c.t)})),
+      juste: `Oui : ${txt(car)}.`, faux: `La bonne réponse : ${txt(car)}.`, origine: true});
+    const non = melange(n.non_exemples)[0];
+    const raisons = [];
+    for (const x of autres) { for (const r of melange(x.non_exemples)) { if (raisons.length < 2 && !GENERIQUE.test(r.raison) && !parle(r.raison) && r.raison !== non.raison && !raisons.some(p => p.t === r.raison)) { raisons.push({t: r.raison, de: x}); break; } } }
+    q.push({enonce: `Pourquoi ce n'est pas un exemple de ${nomHTML(n)} ?`, cite: txt(non.ecrit),
+      choix: melange([{t: non.raison, ok: true}, ...raisons]).map(c => ({...c, t: txt(c.t)})),
+      juste: `Oui : ${txt(non.raison)}.`, faux: `La raison : ${txt(non.raison)}.`, origine: true});
+    return q;
+  }
+  function questionnaire(n) {
+    const Q = questions(n); let i = 0, bons = 0;
+    const montrer = () => {
+      const q = Q[i];
+      afficher(`
+        <a class="retour" href="#/n/${esc(n.id)}">← Revoir la fiche</a>
+        <div class="question apparait"><p class="compteur">Question ${i + 1} sur ${Q.length}</p>
+          <p class="enonce" tabindex="-1">${q.enonce}</p>${q.cite ? `<div class="cite">${q.cite}</div>` : ''}
+          <div class="choix">${q.choix.map((c, k) => `<button data-k="${k}">${c.t}</button>`).join('')}</div>
+          <div class="retour-q" aria-live="polite"></div><div class="actions" hidden></div></div>`, '.enonce');
+      app.querySelectorAll('.choix button').forEach(b => b.addEventListener('click', () => repondre(+b.dataset.k)));
+    };
+    const repondre = k => {
+      const q = Q[i], c = q.choix[k], ok = !!c.ok; if (ok) bons++;
+      app.querySelectorAll('.choix button').forEach((b, j) => { b.disabled = true; if (q.choix[j].ok) b.classList.add('est-juste'); else if (j === k) b.classList.add('est-faux'); });
+      const origine = !ok && q.origine && c.de ? ` Ta réponse concerne ${nomHTML(c.de)}.` : '';
+      app.querySelector('.retour-q').innerHTML = ok ? `<b class="j">Juste.</b> ${q.juste}` : `<b class="f">Faux.</b> ${q.faux}${origine}`;
+      const a = app.querySelector('.question .actions'); a.hidden = false;
+      a.innerHTML = `<button class="btn">${i < Q.length - 1 ? 'Question suivante' : 'Voir le résultat'}</button>`;
+      a.querySelector('button').addEventListener('click', () => { i++; i < Q.length ? montrer() : resultat(); });
+      a.querySelector('button').focus();
+    };
+    const resultat = () => {
+      const reussi = bons === Q.length;
+      const deja = etat(n.id) === 'acquise';
+      if (reussi) { if (!deja) P[n.id] = {etat: 'acquise', boite: 1, prochaine: dans(INTERVALLES[0])}; }
+      else P[n.id] = {etat: 'revoir'};
+      sauver();
+      const k = notions.indexOf(n), suite = notions[k + 1];
+      afficher(`
+        <a class="retour" href="#/">← Parcours</a>
+        <div class="question apparait"><p class="score" tabindex="-1">${bons} sur ${Q.length}</p>
+          <p>${reussi ? `${nomHTML(n)} est acquise. ${deja ? 'Prochaine' : 'Première'} révision ${P[n.id].prochaine === dans(1) ? 'demain' : 'le ' + esc(date(P[n.id].prochaine))}.` : `${nomHTML(n)} est à revoir : relis la fiche, puis recommence.`}</p>
+          <div class="actions">${reussi && suite ? `<a class="btn" href="#/n/${esc(suite.id)}">Notion suivante : ${esc(brut(suite.nom))}</a>` : ''}
+            ${reussi ? '' : `<a class="btn" href="#/n/${esc(n.id)}">Revoir la fiche</a>`}
+            ${reussi && !suite ? `<a class="btn" href="#/">Parcours</a>` : ''}</div></div>${pied}`, '.score');
+    };
+    montrer();
+  }
+
+  /* Révision : refaire la fiche de mémoire, puis comparer */
+  function revision() {
+    titre('Révision');
+    const liste = aReviser(D);
+    if (!liste.length) {
+      const futures = notions.filter(n => etat(n.id) === 'acquise').map(n => P[n.id].prochaine).sort();
+      return afficher(`<a class="retour" href="#/">← Parcours</a><div class="texte"><h1>Rien à réviser</h1>
+        <p class="doux">${futures.length ? `Prochaine révision le ${esc(date(futures[0]))}.` : 'Une notion acquise revient ici le lendemain.'}</p>
+        <div class="actions"><a class="btn" href="#/">Parcours</a></div></div>${pied}`);
+    }
+    const n = liste[0];
+    afficher(`
+      <a class="retour" href="#/">← Parcours</a>
+      <p class="situer">Révision, ${liste.length} restante${liste.length > 1 ? 's' : ''}</p>
+      <div class="texte"><h1 tabindex="-1">Refais la fiche de mémoire</h1><p class="doux">Dis-toi la définition, les caractéristiques, un exemple et un non-exemple. Puis compare.</p></div>
+      <div id="carte">${fiche(n, true)}</div>
+      <div class="actions" id="act"><button class="btn" id="cmp">Comparer avec la fiche</button></div>${pied}`, 'h1');
+    app.querySelector('#cmp').addEventListener('click', () => {
+      app.querySelector('#carte').innerHTML = fiche(n);
+      const act = app.querySelector('#act');
+      act.innerHTML = `<button class="btn" id="oui">Je l'avais</button><button class="btn second" id="non">Il me manquait quelque chose</button>`;
+      act.querySelector('#oui').addEventListener('click', () => { const b = Math.min((P[n.id].boite || 1) + 1, INTERVALLES.length); P[n.id] = {etat: 'acquise', boite: b, prochaine: dans(INTERVALLES[b - 1])}; sauver(); revision(); });
+      act.querySelector('#non').addEventListener('click', () => { P[n.id] = {etat: 'acquise', boite: 1, prochaine: dans(INTERVALLES[0])}; sauver(); revision(); });
+      act.querySelector('#oui').focus();
+    });
+  }
+
+  /* Cas complet */
+  function pageCas(c) {
+    titre(c.titre);
+    afficher(`
+      <a class="retour" href="#/">← Parcours</a>
+      <div class="texte"><h1>${esc(c.titre)}</h1><p class="doux">${esc(c.domaine)}</p>
+        <p>${txt(c.contexte)}</p><p><b>Objectif.</b> ${txt(c.objectif)}</p></div>
+      ${codeEtRendu(c.code)}
+      <section class="texte"><h2>Notions utilisées</h2><ul>${c.notions.map(v => `<li>${lienNotion(parId.get(v.id))}${v.precision ? ` : ${txt(v.precision)}` : ''}</li>`).join('')}</ul></section>
+      ${pied}`);
+  }
+
+  function route() {
+    const [, type, id] = decodeURIComponent(location.hash.slice(1)).split('/');
+    if (type === 'n' && parId.has(id)) return pageNotion(parId.get(id));
+    if (type === 'cas' && casId.has(id)) return pageCas(casId.get(id));
+    if (type === 'reviser') return revision();
+    accueil();
+  }
+  window.onhashchange = route;
+  route();
+}
+charger();
+}
+</script>
+</body>
+</html>
