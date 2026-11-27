@@ -40,7 +40,7 @@ Pour un autre sujet, seul le .json change. Pour un autre langage que Mermaid, le
 ## Fiche d'une notion
 
 - La fiche de Frayer : le nom dans une forme stade, entouré des quatre cases Définition, Caractéristiques, Exemples et Non-exemples. [Frayer, Frederick et Klausmeier, 1969]
-- Sur ordinateur, les 4 cases forment une grille de 2 sur 2, le nom au croisement. Sur téléphone, elles s'empilent, le nom en tête. [Ajout]
+- Sur tous les écrans, les 4 cases s'empilent, le nom en tête ; la fiche ne dépasse pas 804 px de large, la largeur d'un iPhone à l'horizontale. [Consigne]
 - Chaque non-exemple montre l'écriture fautive, puis la raison en rouge. [Tennyson et Boutwell, 1974 : la caractéristique qui manque]
 - Sous la fiche : les 2 exemples en entier, le code à côté de son dessin. [Mayer : principe multimédia et contiguïté spatiale]
 - Le tableau de référence, s'il existe, est replié sous les exemples. [Mayer : cohérence, rien de superflu à l'écran]
