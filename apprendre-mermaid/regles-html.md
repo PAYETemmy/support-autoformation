@@ -42,8 +42,9 @@ Pour un autre sujet, seul le .json change. Pour un autre langage que Mermaid, le
 - La fiche de Frayer : le nom dans une forme stade, entouré des quatre cases Définition, Caractéristiques, Exemples et Non-exemples. [Frayer, Frederick et Klausmeier, 1969]
 - Sur tous les écrans, les 4 cases s'empilent, le nom en tête. [Consigne]
 - Chaque non-exemple montre l'écriture fautive, puis la raison en rouge. [Tennyson et Boutwell, 1974 : la caractéristique qui manque]
-- Sous la fiche : les 2 exemples en entier, le code puis son dessin juste en dessous. [Mayer : principe multimédia et contiguïté spatiale]
-- Le tableau de référence, s'il existe, est replié sous les exemples. [Mayer : cohérence, rien de superflu à l'écran]
+- Ordre des cases : Définition, Caractéristiques, Exemples, Non-exemples. Les non-exemples viennent toujours en dernier, après les exemples complets. [Consigne ; Tennyson et Park, 1980 : l'exemple le plus clair d'abord, les non-exemples ensuite]
+- Dans la case Exemples : chaque exemple en entier, son explication, le code puis son dessin juste en dessous. Chaque exemple n'apparaît qu'une fois. [Mayer : principe multimédia, contiguïté spatiale, redondance]
+- Le tableau de référence, s'il existe, est replié sous la fiche. [Mayer : cohérence, rien de superflu à l'écran]
 - En haut : « ← Parcours » et la place de la notion dans son niveau. [Ajout]
 
 ## Révision
@@ -88,6 +89,7 @@ Pour un autre sujet, seul le .json change. Pour un autre langage que Mermaid, le
 
 - Frayer, D. A., Frederick, W. C. et Klausmeier, H. J. (1969). *A Schema for Testing the Level of Concept Mastery*. Wisconsin Research and Development Center for Cognitive Learning.
 - Tennyson, R. D. et Boutwell, R. C. (1974). Methodology for the sequencing of instances in classroom concept teaching.
+- Tennyson, R. D. et Park, O. (1980). The teaching of concepts: A review of instructional design research literature. *Review of Educational Research*, 50(1), 55–70.
 - Gagné, R. M. (1968). Learning hierarchies. *Educational Psychologist*, 6, 1–9.
 - Reigeluth, C. M. et Stein, F. S. (1983). The elaboration theory of instruction.
 - Sweller, J. et Cooper, G. A. (1985). The use of worked examples as a substitute for problem solving in learning algebra. *Cognition and Instruction*, 2(1), 59–89.

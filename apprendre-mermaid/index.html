@@ -80,13 +80,13 @@ pre code{background:none;border:0;padding:0;font-size:inherit;white-space:pre}
 .case ul{margin:0;padding-left:20px}
 .case li{margin:0 0 6px}
 .case .def{font-size:19px;line-height:1.5;margin:0}
-.case-ex li::marker{color:var(--juste)}
 .case-non li{list-style:none;margin-left:-20px;padding-left:22px;position:relative}
 .case-non li::before{content:"✕";position:absolute;left:0;top:0;color:var(--faux);font-weight:600}
 .raison{display:block;color:var(--faux);font-size:15px}
 
 /* Exemples en code */
-.exemple{margin:28px 0 0}
+.exemple+.exemple{margin-top:22px}
+.exemple h3{font-size:16px}
 .exemple p{max-width:66ch}
 .code-rendu{display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px}
 .rendu{border:1px solid var(--trait);border-radius:8px;padding:12px;display:flex;justify-content:center;align-items:center;min-height:80px;overflow-x:auto;background:var(--papier)}
@@ -316,7 +316,7 @@ function demarrer(D) {
       <div class="noeud terme" ${vide ? '' : 'tabindex="-1"'}>${nomHTML(n)}</div>
       <section class="case"><h2>Définition</h2>${vide ? '<div class="vide-case"></div>' : `<p class="def">${txt(n.definition)}</p>`}</section>
       <section class="case"><h2>Caractéristiques</h2>${vide ? '<div class="vide-case"></div>' : `<ul>${n.caracteristiques.map(c => `<li>${txt(c)}</li>`).join('')}</ul>`}</section>
-      <section class="case case-ex"><h2>Exemples</h2>${vide ? '<div class="vide-case"></div>' : `<ul>${n.exemples.map(x => `<li><b>${txt(x.domaine)}</b> : ${txt(x.situation)}. ${txt(x.explication)}</li>`).join('')}</ul>`}</section>
+      <section class="case case-ex"><h2>Exemples</h2>${vide ? '<div class="vide-case"></div>' : n.exemples.map(x => `<div class="exemple"><h3>${txt(x.domaine)} : ${txt(x.situation)}</h3><p>${txt(x.explication)}</p>${codeEtRendu(x.code)}</div>`).join('')}</section>
       <section class="case case-non"><h2>Non-exemples</h2>${vide ? '<div class="vide-case"></div>' : `<ul>${n.non_exemples.map(x => `<li>${txt(x.ecrit)}<span class="raison">${txt(x.raison)}</span></li>`).join('')}</ul>`}</section>
     </div>`;
 
@@ -327,10 +327,7 @@ function demarrer(D) {
       <a class="retour" href="#/">← Parcours</a>
       <p class="situer">${esc(nv.titre)}, notion ${rang} sur ${ns.length}</p>
       ${fiche(n)}
-      <section><h2>Les exemples en code</h2>
-        ${n.exemples.map(x => `<div class="exemple"><h3>${txt(x.domaine)} : ${txt(x.situation)}</h3><p>${txt(x.explication)}</p>${codeEtRendu(x.code)}</div>`).join('')}
-        ${n.tableau ? `<details><summary>Tableau : ${n.tableau.lignes.length} lignes</summary><table><tr>${n.tableau.colonnes.map(c => `<th>${txt(c)}</th>`).join('')}</tr>${n.tableau.lignes.map(l => `<tr>${l.map(c => `<td>${txt(c)}</td>`).join('')}</tr>`).join('')}</table></details>` : ''}
-      </section>
+      ${n.tableau ? `<details><summary>Tableau : ${n.tableau.lignes.length} lignes</summary><table><tr>${n.tableau.colonnes.map(c => `<th>${txt(c)}</th>`).join('')}</tr>${n.tableau.lignes.map(l => `<tr>${l.map(c => `<td>${txt(c)}</td>`).join('')}</tr>`).join('')}</table></details>` : ''}
       ${pied}`, '.terme');
     if (etat(n.id) === 'neuf') { P[n.id] = {etat: 'encours', boite: 1, prochaine: dans(INTERVALLES[0])}; sauver(); }   // révision le lendemain
   }
@@ -353,7 +350,7 @@ function demarrer(D) {
       <div id="carte">${fiche(n, true)}</div>
       <div class="actions" id="act"><button class="btn" id="cmp">Comparer avec la fiche</button></div>${pied}`, 'h1');
     app.querySelector('#cmp').addEventListener('click', () => {
-      app.querySelector('#carte').innerHTML = fiche(n);
+      app.querySelector('#carte').innerHTML = fiche(n); dessiner(app.querySelector('#carte'));
       const act = app.querySelector('#act');
       act.innerHTML = `<button class="btn" id="oui">Je l'avais</button><button class="btn second" id="non">Il me manquait quelque chose</button>`;
       act.querySelector('#oui').addEventListener('click', () => { const b = Math.min((P[n.id].boite || 1) + 1, INTERVALLES.length); P[n.id] = {etat: 'acquise', boite: b, prochaine: dans(INTERVALLES[b - 1])}; sauver(); revision(); });
